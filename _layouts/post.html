@@ -1,0 +1,36 @@
+---
+layout: default
+---
+<div class="card card-primary blogpost">
+	<div class="card-header">
+		<div class="card-title" itemprop="name headline">{{ page.title | escape }}</div>
+    <div class="blogpost__meta">
+      <time class="blogpost__time" datetime="{{ page.date | date_to_xmlschema }}" itemprop="datePublished">
+        {%- assign date_format = site.minima.date_format | default: "%Y年%-m月%-d日" -%}
+        {{ page.date | date: date_format }}
+      </time>
+      {%- if page.author -%}
+        • <span itemprop="author" itemscope itemtype="http://schema.org/Person"><span class="blogpost__author h-card" itemprop="name">{{ page.author }}</span></span>
+      {%- endif -%}
+     </div>
+	</div>
+  <div class="card-body blogpost__content">
+    {%- if page.tabs -%}
+    	{% assign isActived = ' active' %}
+	    <ul class="nav nav-tabs">
+	      {% for tabname in page.tabs %}
+	      	<li class="nav-item"><a class="nav-link {{ isActived }}" id="home-tab" data-toggle="tab" href="#{{ tabname }}" >{{ tabname }}</a></li>
+    			{% assign isActived = '' %}
+	      {% endfor %}
+			</ul>
+    {%- endif -%}
+  	{{ content }}
+  </div>
+  <div class="card-footer">
+  	<div class="blogpost__tags">Tags: 
+      {% for tag in page.tags %}
+      <a href="{{ site.baseurl }}/tags/#{{ tag }}" title="{{ tag }}"><span class="badge badge-secondary">{{ tag }}</span></a>
+      {% endfor %}
+     </div>
+  </div>
+</div>

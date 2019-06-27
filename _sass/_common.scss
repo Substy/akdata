@@ -1,0 +1,77 @@
+﻿@import "variables";
+
+@import "layout/responsive";
+@import "layout/layout";
+@import "layout/header";
+@import "layout/sidebar";
+@import "layout/footer";
+@import "layout/main";
+
+@import "objects/type";
+
+@import "components/tab";
+@import "components/breadcrumb";
+
+html {
+  overflow-y: scroll;
+}
+
+table.table td {
+  vertical-align: middle;
+}
+
+.p-page__control {
+margin-bottom:1em;
+}
+
+.p-infotable {
+  & > tbody > tr > th,
+  & > tbody > tr > td:first-child {
+    width: 30%;
+    font-weight: bold;
+    text-align: right;
+    padding-right: 1em;
+  }
+  & > tbody > tr > tr:first-child td {
+    border-top: none;
+  }
+}
+
+.c-loading {
+  &__step {
+    display: none;
+    
+    .js-disabled &-0 {
+      color: red;
+      display: block;
+    }
+    .js-loading {
+      .c-loading__step-1 { display: none; }
+      .c-loading__step-2 { display: block; }
+    }
+    
+    .c-loading--step-1 &-1,
+    .c-loading--step-2 &-2,
+    .c-loading--step-3 &-3,
+    .c-loading--step-4 &-4,
+    .c-loading--step-9 &-9 {
+      display: block;
+    }
+    &-2,
+    &-3 {
+      color: blue;
+    }
+    &-4 {
+      color: green;
+    }
+    
+  }
+  
+  &__icon {
+    font-size: 24px;
+    display: inline-block;
+  }
+  &__text {
+    display: inline-block;
+  }
+}

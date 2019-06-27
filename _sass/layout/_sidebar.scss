@@ -1,0 +1,62 @@
+﻿.l-layout__sidebar {
+  flex: 0 0 300px;
+  background: #fafafa;
+  box-shadow: inset -1px 0 0 $layout-border-color;
+}
+
+.l-sidebar {
+  list-style: none;
+  display: flex;
+  margin: 0;
+  padding: 0;
+  flex-direction: column;
+  padding-top: 10px;
+
+  &__item {
+    list-style: none;
+    border: 1px solid transparent;
+
+    &--active {
+      color: #008cff;
+      border-top-color: $layout-border-color;
+      border-bottom-color: $layout-border-color;
+      background-color: #fff;
+    }
+    
+    &:hover:not(.l-sidebar__item--active):not(.l-sidebar__item--level-0) {
+      background-color: #eee;
+    }
+  }
+
+  &__icon {
+    margin-right: 5px;
+  }
+
+  &__link {
+    display: block;
+    padding: 8px 16px;
+    border-bottom: none;
+    text-overflow: ellipsis;
+    overflow: hidden;
+    white-space: nowrap;
+    
+  }
+
+  &__item--level-0 {
+    font-size: small;
+    color: #666;
+    padding: 1em 0.5em 0.5em 1em;
+  }
+  &__item--level-1 { padding-left:  0px; }
+  &__item--level-2 { padding-left: 16px; }
+  &__item--level-3 { padding-left: 32px; }
+  &__item--level-4 { padding-left: 48px; }
+  &__item--level-5 { padding-left: 64px; }
+
+  &__item--level-1 &__link { padding: 8px 16px; }
+  &__item--level-2 &__link { padding: 6px 16px; }
+  &__item--level-3 &__link { padding: 4px 16px; }
+  &__item--level-4 &__link { padding: 2px 16px; }
+  &__item--level-5 &__link { padding: 0px 16px; }
+
+}

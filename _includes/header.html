@@ -1,0 +1,37 @@
+{% if page.collection == "games" %}
+  {% assign gameKey = page.url | split: "/" | shift | first %}
+  {% assign gameHome = "/" | append: gameKey | append: "/" %}
+{% endif %}
+
+<header class="l-layout__header l-header">
+  <div class="l-header__body">
+    <div class="l-header__logo">
+      <a href="{{ gameHome | default: "/" | relative_url }}">
+  		  <img src="{{ site.logo | relative_url }}" alt="Logo">
+  		</a>
+    </div>
+    <nav>
+      <ul class="l-navbar">
+  {% if page.collection == "games" %}
+    			{% for item in site.data.nav[gameKey].nav %}
+        <li class="l-navbar__item">
+          <a href="{{ gameHome | relative_url }}">{{site.data.nav[gameKey].title}}</a>
+          {{item.group}}
+          <ul class="l-navbar__dropdown">
+            <li class="l-navbar__dropdown_title">{{ item.group }}</li>
+            <hr>
+    		    {% for entry in item.nav %}
+              <li class="l-navbar__dropdown_item">
+                <a href="{{ entry.url | relative_url }}">
+                  <i class="fas fa-{{ entry.icon | default: item.icon | default: "file" }}"></i> {{ entry.name }}
+                </a>
+              </li>
+    		    {% endfor %}
+          </ul>
+        </li>
+    			{% endfor %}
+  {% endif %}
+      </ul>
+    </nav>
+  </div>
+</header>

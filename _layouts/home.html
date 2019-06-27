@@ -1,0 +1,19 @@
+---
+layout: default
+---
+
+<div class="l-main__body">
+    <div class="l-page">
+      <div class="l-page__header">
+        <h1 class="l-page__title">
+          {{ page.title | default: site.title }}
+        </h1>
+        <hr>
+      </div>
+      <div class="l-page__body">
+        {{ content }}
+      </div>
+      <div class="l-page__footer">
+      </div>
+    </div>
+</div>

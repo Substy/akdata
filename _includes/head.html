@@ -1,0 +1,102 @@
+<head>
+  <meta charset="utf-8">
+  <meta http-equiv="X-UA-Compatible" content="IE=edge">
+  <meta name="viewport" content="width=device-width, initial-scale=1">
+  <meta http-equiv="Cache-Control" content="max-age=604800">
+  
+
+  <script type="text/javascript" src="https://cdn.polyfill.io/v2/polyfill.min.js"></script>
+    
+  <script>
+    let htmlClass = 'js-enabled js-loading';
+    if ( typeof Symbol != "undefined" ) {
+      htmlClass += ' js-es6';
+    }
+    document.documentElement.className = htmlClass;
+    window.onerror = function () {
+      document.documentElement.className += ' js-error';
+    };
+  </script>
+  <script type="module">
+    document.documentElement.className += ' js-module';
+  </script>
+
+
+  {% assign headJS = site.data.config.js %}
+  {% if page.js %}{% assign headJS = headJS | concat: page.js %}{% endif %}
+  {% assign headCSS = site.data.config.css %}
+  {% if page.css %}{% assign headCSS = headCSS | concat: page.css %}{% endif %}
+  {% assign headModule = site.data.config.modules %}
+  {% if page.modules %}{% assign headModule = headModule | concat: page.modules %}{% endif %}
+  
+  {% for s in headJS %}
+    {% if s contains "://" %}
+      {% capture s2 %}{{ s }}{% endcapture %}
+    {% else %}
+      {% capture s2 %}{{ s | relative_url }}{% endcapture %}
+    {% endif %}
+    <script src="{{s2}}" type="text/javascript" ></script>
+  {% endfor %}
+
+  {% for s in headCSS %}
+  {% if s contains "://" %}
+    {% capture s2 %}{{ s }}{% endcapture %}
+  {% else %}
+    {% capture s2 %}{{ s | relative_url }}{% endcapture %}
+  {% endif %}
+    <link href="{{s2}}" type="text/css" rel="stylesheet">
+  {% endfor %}
+
+  {% for s in headModule %}
+  {% if s contains "://" %}
+    {% capture s2 %}{{ s }}{% endcapture %}
+  {% else %}
+    {% capture s2 %}{{ s | relative_url }}{% endcapture %}
+  {% endif %}
+  <script src="{{s2}}" type="module" ></script>
+  {% endfor %}
+  
+{% if page.layout == 'home' %}
+  <title>{{site.title}}</title>
+{% elsif page.layout == 'gamehome' %}
+  {% assign gameKey = page.url | split: "/" | shift | first %}
+  {% assign gameName = site.data.nav[gameKey].title %}
+  <title>{{gameName}}{{ site.separater | default: ' - '}}{{site.title}}</title>
+{% else %}
+  <title>{{page.title}}{{ site.separater | default: ' - '}}{{site.title}}</title>
+  {% if page.withjs %}
+    {% if page.withjs == true %}
+      {% assign pageName = page.url | split: "/" | last %}
+      <script src="{{site.baseurl}}/{{pageName}}.js" type="module" ></script>
+    {% else %}
+      <script src="{{site.baseurl}}/{{page.withjs}}" type="module" ></script>
+    {% endif %}
+  {% endif %}
+  {% if page.withcss %}
+    {% if page.withcss == true %}
+      {% assign pageName = page.url | split: "/" | last %}
+      <link href="{{site.baseurl}}/{{pageName}}.css" type="text/css" rel="stylesheet">
+    {% else %}
+      <link href="{{site.baseurl}}/{{page.withcss}}" type="text/css" rel="stylesheet">
+    {% endif %}
+  {% endif %}
+{% endif %}
+  
+  <script type="text/javascript" >
+    var siteInfo = {
+      title : "{{ site.title }}",
+      baseurl : "{{ site.baseurl }}",
+      url : "{{ site.url }}",
+      separater : "{{ site.separater }}",
+    };
+    var pageInfo = {
+      title : "{{page.title}}",
+      {% if page.collection %}
+      pageMode : "{{site.data.config.layoutVars[page.layout].pageMode| default: 0}}",
+      {% endif %}
+    };
+  </script>
+
+  {%- include google-analytics.html -%}
+  {%- include baidu-analytics.html -%}
+</head>

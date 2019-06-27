@@ -1,0 +1,61 @@
+﻿.l-footer {
+  font-size:xx-small;
+  //font-weight:bold;
+  //line-height: 20px;
+  background-color: #f2f2f2;
+  //height: 60px;
+  border-top: 1px solid #ccc;
+
+  &__body {
+    display: flex;
+    flex-direction: row;
+    padding: 5px 0;
+    text-align: center;
+    width: var(--main-width);
+    margin: auto;
+  }
+  
+  &__list {
+    flex: 1;
+    list-style: none;
+    padding: 0;
+    margin-left: 10px;
+    
+    li {
+      display: block;
+      float: left;
+      margin-right: 16px;
+      line-height: 20px;
+    }
+  }
+}
+
+
+
+// js-marker
+.js-marker__icon::before {
+  font-family: "Font Awesome 5 Free";
+  content: "\f111";
+  font-weight:900;
+  font-size: xx-small;
+}
+
+// ban f05e
+// check-circle f058
+// times-circle f057
+// minus f068
+
+.js-disabled .js-marker__icon--js::before { content: "\f05e"; color: red; }
+.js-enabled  .js-marker__icon--js::before { content: "\f058"; color: green; }
+
+.js-enabled.js-es6 .js-marker__icon--es6::before { content: "\f058";color: green; }
+.js-enabled:not(.js-es6) .js-marker__icon--es6::before { content: "\f057"; color: red; }
+
+.js-es6.js-module .js-marker__icon--module::before { content: "\f058"; color: green; }
+.js-es6:not(.js-module) .js-marker__icon--module::before { content: "\f057"; color: red; }
+
+.js-module.js-loading .js-marker__icon--loader::before { content: "\f110"; animation: fa-spin 2s infinite linear; }
+.js-module.js-loaded .js-marker__icon--loader::before { content: "\f058"; color: green; }
+.js-module.js-error .js-marker__icon--loader::before { content: "\f057"; color: red; }
+
+.js-marker__icon--extra::before { content: "\f068"; }

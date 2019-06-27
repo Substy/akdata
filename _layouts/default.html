@@ -1,0 +1,14 @@
+<!DOCTYPE html>
+<html class="js-disabled" lang="zh">
+  {%- include head.html -%}
+  <body>
+		<div class="l-layout l-layout--{{ page.layout | default: 'default' }}">
+      {%- include header.html -%}
+      <div class="l-layout__body">
+        {% if page.collection %}{%- include sidebar.html -%}{% endif %}
+        <div class="l-main">{{ content }}</div>
+      </div>
+      {%- include footer.html -%}
+    </div>
+  </body>
+</html>

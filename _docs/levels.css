@@ -1,0 +1,75 @@
+.p-map {
+    --color: black;
+    margin: 3px;
+    border-collapse: separate;
+}
+
+.p-map__cell {
+    width: 32px;
+    height: 32px;
+    padding: 0;
+    border: 2px solid transparent;
+    text-align: center;
+    color: transparent;
+    font-size: small;
+}
+/*
+.p-map__cell::after {
+    display: block;
+    width: 100%;
+    text-align: center;
+    //color: transparent;
+    // 0 0 0 red;
+}
+*/
+
+.p-map__cell {
+    //border-color: gray;
+}
+
+.p-map__cell--forbidden {
+    background-color: #404040;
+}
+
+.p-map__cell--start {
+    border-color: #f00;
+    color: #f00;
+}
+
+.p-map__cell--flystart {
+    border-color: #f99;
+    color: #f99;
+}
+
+.p-map__cell--end {
+    border-color: #00f;
+    color: #00f;
+}
+
+.p-map__cell--wall {
+    border-color: #808080;
+    background-color: #c0c0c0;
+}
+
+.p-map__cell--road {
+    border-color: #c0c0c0;
+    background-color: #f2f2f2;
+}
+
+.p-map__cell--hole {
+    border-color: #404040;
+    //border-radius: 32px;
+}
+
+.p-map__cell--floor {
+    border: 2px dotted #aa0;
+}
+
+.p-map__cell--corrosion {
+    border-color: gold;
+    background-color: #f2f2f2;
+}
+.p-map__cell--healing {
+    border-color: green;
+    background-color: #f2f2f2;
+}

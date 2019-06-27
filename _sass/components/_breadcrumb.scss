@@ -1,0 +1,16 @@
+﻿.c-breadcrumb {
+  display: flex;
+  font-size:small;
+  height:16px;
+  color:#666;
+  a {
+    color: inherit;
+  }
+  &__item {
+  
+    &:after {
+      content: ">";
+      margin: 0 5px;
+    }
+  }
+}

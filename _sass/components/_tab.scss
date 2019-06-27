@@ -1,0 +1,44 @@
+﻿.js-tab-trigger {
+  display: none;
+  &:not(:checked) + div {
+    display: none;
+  }
+}
+
+%display {
+  display: block;
+}
+
+.c-tabs {
+  margin: 25px 0;
+  
+  &__label {
+    background: #eee; 
+    padding: 5px 10px; 
+    border: 1px solid #ccc; 
+    margin-left: -1px; 
+    left: 1px; 
+    float:left;
+  }
+  
+  &__input {
+    display: none;
+    
+    &:checked + .c-tabs__label {
+      background: white;
+      border-bottom: 1px solid white;
+    }
+  }
+  
+  &__content {
+    display: none;
+    clear:both;
+  }
+  
+  @for $i from 0 through 30 {
+    .c-tabs__input--#{$i}:checked ~ .c-tabs__content--#{$i} {
+      @extend %display;
+    }
+  }
+  
+}

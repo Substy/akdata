@@ -1,0 +1,19 @@
+table.p-range {
+    margin: 3px;
+    border-collapse: separate;
+}
+
+table.p-range .p-range__cell {
+    width: 8px;
+    height: 8px;
+    padding: 0;
+    border: 2px solid transparent;
+}
+
+table.p-range .p-range__cell--true {
+    border-color: gray;
+}
+
+table.p-range .p-range__cell--origin {
+    background-color: gray;
+}
