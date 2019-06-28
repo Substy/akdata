@@ -6,7 +6,7 @@ const AKDATA = {
   loadData: function (paths, callback, ...args) {
     let requests = paths.map(path => {
       let name = path.split('/').pop().replace('.json', '');
-      path = '../resources/gamedata/' + path;
+      path = '../resources/gamedata/' + path.toLowerCase();
       return $.getJSON(path, data => AKDATA.Data[name] = data);
     });
     $.when(...requests).then(() => {
