@@ -1,5 +1,16 @@
 import AKDATA from './core.js';
 
+const ProfessionNames = {
+  "PIONEER": "先锋",
+  "WARRIOR": "近卫",
+  "SNIPER": "狙击",
+  "TANK": "重装",
+  "MEDIC": "医疗",
+  "SUPPORT": "辅助",
+  "CASTER": "术师",
+  "SPECIAL": "特种"
+};
+
 function init() {
   AKDATA.loadData([
     'excel/character_table.json',
@@ -15,18 +26,18 @@ function init() {
 function load() {
   let selector = {};
   let list = [];
-  let head = [ 'name', 'number', 'rarity', 'profession', 'cost', 'baseAttackTime' ];
+  let head = [ '干员', '编号', '星级', '职业', '特性' ];
   for (let char in AKDATA.Data.character_table) {
     let charData = AKDATA.Data.character_table[char];
+    if (charData.profession == "TOKEN" || charData.profession == "TRAP") continue;
     let phaseData = charData.phases[0].attributesKeyFrames[0].data;
     selector[char] = charData.displayNumber + ' ' + charData.name;
     list.push([
       `<a href="#!/${char}">${charData.name}</a>`,
+      charData.rarity + 1,
       charData.displayNumber,
-      charData.rarity,
-      charData.profession,
-      phaseData.cost,
-      phaseData.baseAttackTime
+      ProfessionNames[charData.profession],
+      AKDATA.formatString(charData.description),
     ]);
   }
   
@@ -34,18 +45,19 @@ function load() {
 	  pages: [{
       content: pmBase.content.create('sortlist', list, head),
     },{
-      control: selector,
+      selector: selector,
       content: show,
     }]
 	});
 }
 
-function show(name) {
-  var charData = AKDATA.Data.character_table[name];
+function show(hash) {
+  var charId = hash.value;
+  var charData = AKDATA.Data.character_table[charId];
 
   let dataInfo = [
     [ 'name', charData.name ],
-    [ 'description', formatString(charData.description) ],
+    [ 'description', AKDATA.formatString(charData.description) ],
     [ 'displayNumber', charData.displayNumber ],
     [ 'position', charData.position ],
     [ 'rarity', charData.rarity ],
@@ -159,10 +171,6 @@ function createRangeTable(rangeId) {
     + '</tbody></table>';
 
   return html;
-}
-
-function formatString(string) {
-  return string;
 }
 
 pmBase.hook.on( 'init', init );

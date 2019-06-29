@@ -40,7 +40,7 @@ const AKDATA = {
   },
 
   formatString: function (string) {
-    return string.replace(stringRegex, formatStringCallback);
+    return string.replace(stringRegex, formatStringCallback).replace(/\\n/g, '，');
   },
 };
 
@@ -50,7 +50,6 @@ function formatStringCallback(match, name, value) {
   } else {
     return value;
   }
-
 }
 
 window.AKDATA = AKDATA;

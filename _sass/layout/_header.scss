@@ -28,67 +28,91 @@
       max-height: 40px;
     }
   }
+
+  &__navbar {
+    flex-grow: 1;
+  }
 }
 
 .l-navbar {
   list-style: none;
   padding: 0;
-  margin-left: 20px;
-  cursor: pointer;
+  display: flex;
+  justify-content: center;
+  flex-direction: row;
+  text-align: center;
+  margin: 0;
+  height: 100%;
+
   &__item {
-    float:left;
-    line-height: 60px;
-    min-width: 100px;
-    font-weight: bold;
-    color: #eee;
-    
-    &:hover {
+    padding: 5px;
+    margin: 5px;
+    color: #ccc;
+    cursor: pointer;
+
+    &:hover   {
       color: #aaa;
-      .l-navbar__dropdown {
+      .c-navmenu {
         display: block;
       }
     }
   }
-  
-  &__dropdown {
-    display: none;
-    list-style: none;
-    padding: 3px 0;
-    line-height: 32px;
-    overflow: hidden;
-    font-weight: normal;
-    border: 1px solid #aaa;
-    background-color: #fff;
-    border-top: 0;
-    border-radius: 0 0 5px 5px;
-    position: absolute;
-    min-width: 180px;
-    font-size: small;
-    
-    hr {
-      margin: 3px 0;
-      &:first-child {
-      display:none;
-      }
+
+  &__button {
+    display: block;
+    padding: 5px !important;
+    width: 32px;
+    border-radius: .25rem;
+
+    &:focus {
+      box-shadow: 0 0 0 0.2rem rgba(0,123,255,.5);
     }
   }
-  
-  &__dropdown_item {
+}
+
+.c-navmenu {
+  display: none;
+  list-style: none;
+  padding: 3px 0;
+  line-height: 32px;
+  overflow: hidden;
+  font-weight: normal;
+  border: 1px solid #aaa;
+  background-color: #fff;
+  border-radius: 5px;
+  position: absolute;
+  min-width: 180px;
+  font-size: small;
+
+  &--right {
+    right: 3px;
+  }
+
+  &__divider {
+    height: 0;
+    margin: .5rem 0;
+    overflow: hidden;
+    border-top: 1px solid #e9ecef;
+  }
+
+  &__item {
     padding: 0 15px;
     color: #333;
     text-align: left;
     
     &:hover {
       background-color: #456;
+      background-color: #0366d6;
       color: white;
     }
   }
   
-  &__dropdown_title {
+  &__title {
     padding: 0 16px;
     text-align: left;
     font-weight: bold;
     font-size:x-small;
     color: #999;
   }
+
 }

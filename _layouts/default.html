@@ -6,9 +6,11 @@
       {%- include header.html -%}
       <div class="l-layout__body">
         {% if page.collection %}{%- include sidebar.html -%}{% endif %}
-        <div class="l-main">{{ content }}</div>
+        <div class="l-main">
+          {{- content -}}
+          {%- include footer.html -%}
+        </div>
       </div>
-      {%- include footer.html -%}
     </div>
   </body>
 </html>

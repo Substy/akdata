@@ -1,4 +1,6 @@
-let create = function (key, config ) {
+import util from './util.js';
+
+let create = function (key, config) {
   if ( typeof key == 'object' ) {
     config = key;
     key = config.type;
@@ -62,13 +64,25 @@ let createFunctions = {
     </table>`;
   },
 
-  'tabs': function (names, contents) {
+  'tabs': function (config) {
+    config.active = config.active || 0;
     let id = util.getUniqueID();
-    let html = '<div class="c-tabs">';
+    let html = '<ul class="nav nav-tabs">';
+    config.tabs.forEach((tab,i)=>{
+      html += `<li class="nav-item"><a class="nav-link ${i==config.active?'active':''}" data-toggle="tab" href="#" data-target="#tab${i}">${tab.text}</a></li>`;
+    });
+    html += '</ul>';
+    html += '<div class="tab-content pt-3">';
+    config.tabs.forEach((tab,i)=>{
+      html += `<div class="tab-pane  ${i==config.active?'active':''}" id="tab${i}">${tab.content}</div>`;
+    });
+    html += '</div>';
+    return html;
+    html = '<div class="c-tabs">';
     for (let i = 0; i < names.length; i++) {
       html += `
-                 <input type="radio" id="js-tabs-${id}-${i}" class="c-tabs__input c-tabs__input--${i}" name="${id}" ${i===0?'checked':''}>
-                 <label class="c-tabs__label" for="js-tabs-${id}-${i}">${names[i]}</label>
+        <input type="radio" id="js-tabs-${id}-${i}" class="c-tabs__input c-tabs__input--${i}" name="${id}" ${i===0?'checked':''}>
+        <label class="c-tabs__label" for="js-tabs-${id}-${i}">${names[i]}</label>
       `;
     }
     for (let i = 0; i < names.length; i++) {

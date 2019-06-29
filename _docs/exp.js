@@ -1,7 +1,7 @@
 import AKDATA from './core.js';
 
 function init() {
-  AKDATA.loadData(['../excel/gamedata_const.json'], () => {
+  AKDATA.loadData(['excel/gamedata_const.json'], () => {
 
     let head = ['等级', '理智', '升级所需经验', '升级需要理智', '升级需要天数' ];
     let list = [];
@@ -20,6 +20,10 @@ function init() {
     }
 
     let html = '';
+    html+= pmBase.component.create('tabs',{
+      tabs: [{text:123,content:456},{text:7569,content:123123}],
+      active:1,
+     });
     html += pmBase.content.create('list', list, head);
 
     pmBase.content.build({

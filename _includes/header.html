@@ -1,7 +1,17 @@
-{% if page.collection == "games" %}
-  {% assign gameKey = page.url | split: "/" | shift | first %}
-  {% assign gameHome = "/" | append: gameKey | append: "/" %}
-{% endif %}
+{%- if page.collection == "games" -%}
+  {%- assign gameKey = page.url | split: "/" | shift | first -%}
+  {%- assign gameHome = "/" | append: gameKey | append: "/" -%}
+{%- endif -%}
+{%- if page.withcss == true -%}
+  {%- assign cssname = page.url | split: "/" | last | append: '.css' -%}
+{%- elsif page.withcss -%}
+  {%- assign cssname = page.withcss -%}
+{%- endif -%}
+{%- if page.withjs == true -%}
+  {%- assign jsname = page.url | split: "/" | last | append: '.js' -%}
+{%- elsif page.withjs -%}
+  {%- assign jsname = page.withjs -%}
+{%- endif -%}
 
 <header class="l-layout__header l-header">
   <div class="l-header__body">
@@ -10,28 +20,50 @@
   		  <img src="{{ site.logo | relative_url }}" alt="Logo">
   		</a>
     </div>
-    <nav>
+    <nav class="l-header__navbar">
       <ul class="l-navbar">
-  {% if page.collection == "games" %}
-    			{% for item in site.data.nav[gameKey].nav %}
         <li class="l-navbar__item">
           <a href="{{ gameHome | relative_url }}">{{site.data.nav[gameKey].title}}</a>
           {{item.group}}
           <ul class="l-navbar__dropdown">
             <li class="l-navbar__dropdown_title">{{ item.group }}</li>
             <hr>
-    		    {% for entry in item.nav %}
               <li class="l-navbar__dropdown_item">
                 <a href="{{ entry.url | relative_url }}">
                   <i class="fas fa-{{ entry.icon | default: item.icon | default: "file" }}"></i> {{ entry.name }}
                 </a>
               </li>
-    		    {% endfor %}
           </ul>
         </li>
-    			{% endfor %}
-  {% endif %}
       </ul>
     </nav>
+    <div class="l-header__right">
+        <ul class="l-navbar">
+          <li class="l-navbar__item">
+            <div class="l-navbar__button"><i class="far fa-edit"></i></div>
+            <div class="c-navmenu c-navmenu--right">
+              <div class="c-navmenu__item">
+                <a href="{{ site.github.repository_url }}/tree/master/{{ page.relative_path }}">
+                  <i class="fas fa-edit"></i> {{ page.path | split: '/' | last }}
+                </a>
+              </div>
+{%- if jsname -%}
+              <div class="c-navmenu__item">
+                <a href="{{ site.github.repository_url }}/tree/master/{{ page.relative_path | split: '/' | reverse | slice: -1, 100 | reverse | join: '/' }}/{{jsname}}">
+                  <i class="fas fa-edit"></i> {{jsname}}
+                </a>
+              </div>
+{%- endif -%}
+{%- if cssname -%}
+              <div class="c-navmenu__item">
+                <a href="{{ site.github.repository_url }}/tree/master/{{ page.relative_path | split: '/' | reverse | slice: -1, 100 | reverse | join: '/' }}/{{cssname}}">
+                  <i class="fas fa-edit"></i> {{cssname}}
+                </a>
+              </div>
+{%- endif -%}
+            </div>
+          </li>
+        </ul>
+    </div>
   </div>
 </header>

@@ -136,7 +136,7 @@ const initPage = function (pageIndex) {
     page.hasSelector = true;
     let $page = getPageElement(pageIndex);
     let htmlControls = createSelector(page.selector);
-    $page.html(htmlControls);
+    $page.find('.p-page__control').html(htmlControls);
     $page.find('.p-select-prev').click(function () {
       url.setHash($(this).parents('.p-page__control').find('.p-selector option:selected').prev().val());
     });
@@ -266,10 +266,10 @@ let createSelector = function (obj) {
 const setTitle = function (subtitle) {
   let separater = siteInfo.separater || ' - ';
   if ( subtitle ) {
-    window.title =`${subtitle}${separater}${pageInfo.title}${separater}${siteInfo.title}`;
+    document.title =`${subtitle}${separater}${pageInfo.title}${separater}${siteInfo.title}`;
     $('.l-page__title a').html(subtitle);
   } else {
-    window.title =`${pageInfo.title}${separater}${siteInfo.title}`;
+    document.title =`${pageInfo.title}${separater}${siteInfo.title}`;
     $('.l-page__title a').html(pageInfo.title);
   }
 };

@@ -1,5 +1,5 @@
 ---
-title: Stage Data
+title: 关卡信息
 withjs: true
 withcss: true
 parent: /stages/

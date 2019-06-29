@@ -131,8 +131,8 @@ function load() {
     <form>`
 + Object.entries(tagGroups).map( ([name, list]) => `
     <div class="form-group row mb-1">
-      <label class="col-1 col-form-label">${name}</label>
-      <div class="col-11">
+      <!--<label class="col-1 col-form-label">${name}</label>-->
+      <div class="col-12">
         <div class="btn-groupx btn-group-toggle" data-toggle="buttons">
           ${list.map(i=>`<label class="btn btn-outline-primary btn-sm mr-2 mb-2"><input class="p-tag" type="checkbox" name="options" value="${i}"> ${tagNames[i]}</label>`).join('')}
         </div>
@@ -140,6 +140,14 @@ function load() {
     </div>
     `).join('')
 +`
+      <hr>
+      <div class="row">
+        <div class="col-12 offset-0">
+          <div class="btn-groupx btn-group-toggle" data-toggle="buttons">
+            <label class="btn btn-primary btn-sm mr-2 mb-2"><input class="p-reset" type="checkbox" >重置</label>
+          </div>
+        </div>
+      </div>
     </form>
   </div>
 </div>
@@ -154,6 +162,13 @@ function load() {
   });
   
   $('.p-tag').change(change);
+  $('.p-reset').change(reset);
+}
+
+function reset() {
+  $('.p-tag').prop('checked', false);
+  $('.p-tag').parent().removeClass('active');
+  change();
 }
 
 function change() {
@@ -172,40 +187,36 @@ function change() {
         .filter( data => !(!isSpecialTag && data.rarity == 5))
         .sort((a, b) => b.rarity - a.rarity);
       let bestRarity = chars.length > 0 ? chars[chars.length-1].rarity : 0;
-      let isGoodResult = bestRarity >= 3;
+      let isGoodResult = chars.some(x=>x.rarity>=3) && !chars.some(x=>x.rarity==2);
 
       return { tags, chars, bestRarity, isGoodResult };
     })
     .filter( data=> data.chars.length > 0 )
-    .sort((a, b) => b.bestRarity - a.bestRarity)
+    .sort((a, b) => b.isGoodResult - a.isGoodResult)
     ;
   
   let html = "";
 
-  html +='<table class="table">';
+  html +='<table class="table table-sm">';
   query.forEach( (value, index) => {
-    let isGoodResult = value.chars[value.chars.length-1].rarity >= 3;
-
-    let htmlTag = value.tags.map(x=> `<span class="badge badge-primary mr-2">${tagNames[x]}</span>`).join('');
+    let htmlTag = value.tags.map(x=> `<span class="badge badge-${value.isGoodResult?'danger':'primary'} mr-2">${tagNames[x]}</span>`).join('');
     let htmlList = '';
 
     for (let char of value.chars) {
       let name = char.name;
-      let rarity = '★'.repeat(char.rarity+1);
-      let ctag = char.tags.map(x=> `<span class="badge  mr-2 ${value.tags.indexOf(x) >= 0 ? 'badge-primary' : 'badge-secondary'}">${tagNames[x]}</span>`).join('');
-      let color = ['dark', 'light', 'light', 'info', 'warning', 'danger'][char.rarity];
       htmlList += `<div class="c-rare c-rare--${char.rarity}">${name}</div>`;
     }
 
     html +=`
     <tr>
-    <td style="width: 20%;">${htmlTag}</td>
+    <td style="width: 20%;font-size:large;">${htmlTag}</td>
     <td>${htmlList}</td>
     </tr>
     `;
   });
   html += '</table>';
 
+/*
   html +='<div class="accordion">';
   query.forEach( (value, index) => {
     let isGoodResult = value.chars[value.chars.length-1].rarity >= 3;
@@ -224,7 +235,6 @@ function change() {
         <td>${ctag}</td>
       </tr>`;
     }
-
     html +=`
     <div class="card">
     <div class="card-header" id="headingOne" data-toggle="collapse" data-target="#collapse${index}">
@@ -236,6 +246,7 @@ function change() {
     </div>
     `;
   });
+*/
   html += '</div>';
   $('.p-result').html(html);
 }

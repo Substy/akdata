@@ -3,10 +3,16 @@
   <meta http-equiv="X-UA-Compatible" content="IE=edge">
   <meta name="viewport" content="width=device-width, initial-scale=1">
   <meta http-equiv="Cache-Control" content="max-age=604800">
-  
+
+  <title>
+{%- if page.layout == 'home' -%}
+  {{site.title}}
+{%- else -%}
+  {{page.title}}{{ site.separater | default: ' - '}}{{site.title}}
+{%- endif -%}
+  </title>
 
   <script type="text/javascript" src="https://cdn.polyfill.io/v2/polyfill.min.js"></script>
-    
   <script>
     let htmlClass = 'js-enabled js-loading';
     if ( typeof Symbol != "undefined" ) {
@@ -21,82 +27,63 @@
     document.documentElement.className += ' js-module';
   </script>
 
+{%- if jekyll.environment == 'production' -%}
+  {%- include google-analytics.html -%}
+  {%- include baidu-analytics.html -%}
+{%- endif -%}
 
-  {% assign headJS = site.data.config.js %}
-  {% if page.js %}{% assign headJS = headJS | concat: page.js %}{% endif %}
-  {% assign headCSS = site.data.config.css %}
-  {% if page.css %}{% assign headCSS = headCSS | concat: page.css %}{% endif %}
-  {% assign headModule = site.data.config.modules %}
-  {% if page.modules %}{% assign headModule = headModule | concat: page.modules %}{% endif %}
-  
-  {% for s in headJS %}
-    {% if s contains "://" %}
-      {% capture s2 %}{{ s }}{% endcapture %}
-    {% else %}
-      {% capture s2 %}{{ s | relative_url }}{% endcapture %}
-    {% endif %}
-    <script src="{{s2}}" type="text/javascript" ></script>
-  {% endfor %}
-
-  {% for s in headCSS %}
-  {% if s contains "://" %}
-    {% capture s2 %}{{ s }}{% endcapture %}
+{%- for url in site.data.config.css -%}
+  {% if url contains "://" %}
+    {% assign disturl = url %}
   {% else %}
-    {% capture s2 %}{{ s | relative_url }}{% endcapture %}
+    {% assign disturl = url | relative_url %}
   {% endif %}
-    <link href="{{s2}}" type="text/css" rel="stylesheet">
-  {% endfor %}
+  <link href="{{disturl}}" type="text/css" rel="stylesheet">
+{%- endfor -%}
 
-  {% for s in headModule %}
-  {% if s contains "://" %}
-    {% capture s2 %}{{ s }}{% endcapture %}
+{%- for url in site.data.config.js -%}
+  {% if url contains "://" %}
+    {% assign disturl = url %}
   {% else %}
-    {% capture s2 %}{{ s | relative_url }}{% endcapture %}
+    {% assign disturl = url | relative_url %}
   {% endif %}
-  <script src="{{s2}}" type="module" ></script>
-  {% endfor %}
-  
-{% if page.layout == 'home' %}
-  <title>{{site.title}}</title>
-{% elsif page.layout == 'gamehome' %}
-  {% assign gameKey = page.url | split: "/" | shift | first %}
-  {% assign gameName = site.data.nav[gameKey].title %}
-  <title>{{gameName}}{{ site.separater | default: ' - '}}{{site.title}}</title>
-{% else %}
-  <title>{{page.title}}{{ site.separater | default: ' - '}}{{site.title}}</title>
-  {% if page.withjs %}
-    {% if page.withjs == true %}
-      {% assign pageName = page.url | split: "/" | last %}
-      <script src="{{site.baseurl}}/{{pageName}}.js" type="module" ></script>
-    {% else %}
-      <script src="{{site.baseurl}}/{{page.withjs}}" type="module" ></script>
-    {% endif %}
+  <script src="{{disturl}}" type="text/javascript" ></script>
+{%- endfor -%}
+
+{%- for url in site.data.config.modules -%}
+  {% if url contains "://" %}
+    {% assign disturl = url %}
+  {% else %}
+    {% assign disturl = url | relative_url %}
   {% endif %}
-  {% if page.withcss %}
-    {% if page.withcss == true %}
-      {% assign pageName = page.url | split: "/" | last %}
-      <link href="{{site.baseurl}}/{{pageName}}.css" type="text/css" rel="stylesheet">
-    {% else %}
-      <link href="{{site.baseurl}}/{{page.withcss}}" type="text/css" rel="stylesheet">
-    {% endif %}
-  {% endif %}
-{% endif %}
-  
+  <script src="{{disturl}}" type="module" ></script>
+{%- endfor -%}
+
+{%- if page.withcss == true -%}
+  {%- assign pageName = page.url | split: "/" | last -%}
+  <link href="{{site.baseurl}}/{{pageName}}.css" type="text/css" rel="stylesheet">
+{% elsif page.withcss %}
+  <link href="{{site.baseurl}}/{{page.withcss}}" type="text/css" rel="stylesheet">
+{%- endif -%}
+
+{%- if page.withjs == true -%}
+  {%- assign pageName = page.url | split: "/" | last -%}
+  <script src="{{site.baseurl}}/{{pageName}}.js" type="module" ></script>
+{% elsif page.withjs %}
+  <script src="{{site.baseurl}}/{{page.withjs}}" type="module" ></script>
+{%- endif -%}
+
   <script type="text/javascript" >
-    var siteInfo = {
+    const siteInfo = {
       title : "{{ site.title }}",
       baseurl : "{{ site.baseurl }}",
       url : "{{ site.url }}",
       separater : "{{ site.separater }}",
     };
-    var pageInfo = {
+    const pageInfo = {
       title : "{{page.title}}",
-      {% if page.collection %}
-      pageMode : "{{site.data.config.layoutVars[page.layout].pageMode| default: 0}}",
-      {% endif %}
+      layout: "{{page.layout}}",
     };
   </script>
 
-  {%- include google-analytics.html -%}
-  {%- include baidu-analytics.html -%}
 </head>

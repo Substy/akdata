@@ -27,10 +27,30 @@ function extractEnemyData(source, target) {
   }
 }
 
+function createMap(map, tiles, texts, rates, size){
+  let html = '<table class="p-map"><tbody>';
+  map.forEach( row => {
+    html+='<tr>';
+    row.forEach(tileIndex => {
+      let tileData = tiles[tileIndex];
+      let type = tileData.tileKey.slice(5);
+      let text = texts ? texts[tileIndex] : '';
+      if(!!rates) text = `<div style="width:${size};height:${size};line-height:${size};background-color: rgba(255,0,0,${rates[tileIndex]});color:#600;">${text}</div>`;
+      html+= `<td class="p-map__tile p-map__tile--${type} p-map__tile--height-${tileData.heightType} p-map__tile--buildable-${tileData.buildableType}">${text}</td>`;
+    });
+    html+='</tr>';
+  });
+  html +='</tbody></table>';
+  return html;
+}
+
 function show(hash) {
   if (hash.isEmpty) return;
   let levelId = hash.value;
   AKDATA.loadData([
+    `excel/item_table.json`,
+    `excel/building_data.json`,
+    `excel/stage_table.json`,
     `levels/enemydata/enemy_database.json`,
     `levels/${levelId}.json`,
   ], showCallback, levelId);
@@ -39,7 +59,12 @@ function show(hash) {
 function showCallback(levelId) {
   let html = '';
   let levelData = AKDATA.Data[levelId.split('/').pop()];
-
+  let stageData = Object.values(AKDATA.Data.stage_table.stages).find(x=>x.levelId==levelId);
+  let hardStageData;
+  if (stageData.hardStagedId) hardStageData = AKDATA.Data.stage_table.stages[stageData.hardStagedId];
+  console.log(levelData);
+  console.log(stageData);
+  console.log(hardStageData);
   // Enemy
   let finalEnemyData = {};
   levelData.enemyDbRefs.forEach(item => {
@@ -59,23 +84,15 @@ function showCallback(levelId) {
   // Map
   let mapWidth = levelData.mapData.width;
   let mapHeight = levelData.mapData.height;
-  let mapReindex = {};
-  let startIndex = 0,
-    endIndex = 0;
+  let mapReindex = new Array(mapWidth*mapHeight).fill("");
+  let startIndex = 0, endIndex = 0;
   levelData.mapData.tiles.forEach((tile, index) => {
     if (tile.tileKey == 'tile_start' || tile.tileKey == 'tile_flystart') mapReindex[index] = ++startIndex;
     else if (tile.tileKey == 'tile_end') mapReindex[index] = ++endIndex;
   });
-  let mapTable = '<table class="p-map"><tbody>' +
-    levelData.mapData.map.map(row => {
-      return '<tr>' +
-        row.map(tileIndex => {
-          let type = levelData.mapData.tiles[tileIndex].tileKey.slice(5);
-          return `<td class="p-map__cell p-map__cell--${type}">${mapReindex[tileIndex]||''}</td>`;
-        }).join('') +
-        '</tr>';
-    }).join('') +
-    '</tbody></table>';
+  console.log(finalEnemyData);
+
+  let mapTable = createMap( levelData.mapData.map,  levelData.mapData.tiles, mapReindex);
 
   // Routes
   let routeList = levelData.routes.map(data => {
@@ -125,20 +142,24 @@ function showCallback(levelId) {
   // Enemy
   let htmlWave = '';
   let enemyIndex = 0;
+  let enemyIndexBegin = 0;
   let totalDelay = 0;
-  let enemyCount = 0;
+  let totalEnemyCount = 0;
   let totalEnemyHP = 0;
+  let totalEnemyAtk = 0;
+  let atkHeatmap = new Array(levelData.mapData.tiles.length).fill(0);
   let hpHeatmap = new Array(levelData.mapData.tiles.length).fill(0);
   let numberHeatmap = new Array(levelData.mapData.tiles.length).fill(0);
   levelData.waves.forEach((waveData, waveIndex) => {
     let waveDelay = 0;
     let htmlBody = '';
+    enemyIndexBegin = enemyIndex + 1;
     waveData.fragments.forEach((fragmentData, fragmentIndex) => {
       let lastDelay = 0;
       let extendActions = [];
       fragmentData.actions.forEach((actionData, actionIndex) => {
-        if (actionData.actionType == 5) return true;
-        enemyCount += actionData.count;
+        if (actionData.actionType != 0) return true;
+        totalEnemyCount += actionData.count;
         for (let i = 0; i < actionData.count; i++) {
           let preDelay = waveDelay + fragmentData.preDelay + actionData.preDelay + actionData.interval * i;
           // actionData.blockFragment !! care
@@ -159,10 +180,13 @@ function showCallback(levelId) {
       extendActions.forEach((actionData, j) => {
         let number = ++enemyIndex;
         let enemyData = finalEnemyData[actionData.key];
+        if (!enemyData) return true;
         totalEnemyHP += enemyData.maxHp;
+        totalEnemyAtk += enemyData.atk;
         let routeData = routeList[actionData.routeIndex];
         routeData.tiles.forEach( i=> {
           hpHeatmap[i] += enemyData.maxHp;
+          atkHeatmap[i] += enemyData.atk;
           numberHeatmap[i]++;
         });
         enemyData.count++;
@@ -181,15 +205,14 @@ function showCallback(levelId) {
       htmlBody += '</tbody>';
     });
     totalDelay += waveDelay;
-
+    if (enemyIndex < enemyIndexBegin) return true;
     htmlWave += `
     <div class="card">
     <div class="card-header" id="headingOne" data-toggle="collapse" data-target="#collapse${waveIndex}">
-      阶段${waveIndex+1}：${waveData.name}
+      阶段${waveIndex+1}：${waveData.name || enemyIndexBegin + '-' + enemyIndex}
     </div>
     <div id="collapse${waveIndex}" class="collapse ${levelData.waves.length == 1?'show':''}">
       <table class="table table-sm card-body p-0 m-0 text-center">
-        
         ${htmlBody}
       </table>
     </div>
@@ -197,28 +220,18 @@ function showCallback(levelId) {
     `;
   });
   
-  let heatmapTable = '<table class="p-map"><tbody>' +
-    levelData.mapData.map.map(row => {
-      return '<tr>' +
-        row.map(tileIndex => {
-          let type = levelData.mapData.tiles[tileIndex].tileKey.slice(5);
-          let red = (hpHeatmap[tileIndex] / totalEnemyHP).toFixed(2);
-          return `<td class="p-map__cell p-map__cell--${type}" style="width:48px;height:48px;"><div style="line-height:48px;width:100%;height:100%;background-color: rgba(255,0,0,${red});color:#a00;">${red>0?(red*100).toFixed(0)+'%':''}</div></td>`;
-        }).join('') +
-        '</tr>';
-    }).join('') +
-    '</tbody></table>';
-  let heatmapTable2 = '<table class="p-map"><tbody>' +
-    levelData.mapData.map.map(row => {
-      return '<tr>' +
-        row.map(tileIndex => {
-          let type = levelData.mapData.tiles[tileIndex].tileKey.slice(5);
-          let red = (numberHeatmap[tileIndex] / enemyCount).toFixed(2);
-          return `<td class="p-map__cell p-map__cell--${type}" style="width:48px;height:48px;"><div style="line-height:48px;width:100%;height:100%;background-color: rgba(255,0,0,${red});color:#a00;">${numberHeatmap[tileIndex]||''}</div></td>`;
-        }).join('') +
-        '</tr>';
-    }).join('') +
-    '</tbody></table>';
+  let hpHeatmapRates = hpHeatmap.map(x=> (x / totalEnemyHP).toFixed(2));
+  let hpHeatmapText = hpHeatmapRates.map(x=> x>0?(x*100).toFixed(0)+'%':'');
+  let hpHeatmapTable = createMap(levelData.mapData.map, levelData.mapData.tiles, hpHeatmapText, hpHeatmapRates, '32px' );
+
+  let countHeatmapRates = numberHeatmap.map(x=> (x / totalEnemyCount).toFixed(2));
+  let countHeatmapText = numberHeatmap.map(x=> x>0?x:'');
+  let countHeatmapTable = createMap(levelData.mapData.map, levelData.mapData.tiles, countHeatmapText, countHeatmapRates, '32px' );
+
+  let atkHeatmapRates = atkHeatmap.map(x=> (x / totalEnemyAtk).toFixed(2));
+  let atkHeatmapText = atkHeatmapRates.map(x=> x>0?(x*100).toFixed(0)+'%':'');
+  let atkHeatmapTable = createMap(levelData.mapData.map, levelData.mapData.tiles, atkHeatmapText, atkHeatmapRates, '32px' );
+
 
   let enemyHead = ['敌人', '数量', 'HP', '攻击', '防御', '魔抗', '移速', '攻速', 'BAT', '体重'];
   let enemyTable = Object.entries(finalEnemyData).map(([enemyId, enemyData]) => [
@@ -234,6 +247,21 @@ function showCallback(levelId) {
     enemyData.massLevel,
   ]);
 
+  let htmlDrop;
+  if ( !!stageData.stageDropInfo.displayDetailRewards ) {
+    let dropTypes = ['', '首次掉落', '常规掉落', '特殊掉落', '额外物资', '', '', '幸运掉落' ];
+    let dropList = {
+      type: 'list',
+      header: ['道具','掉落类型','掉落概率'],
+      list: stageData.stageDropInfo.displayDetailRewards.map(x=>[
+        AKDATA.getItem(x.type, x.id),
+        dropTypes[x.dropType],
+        x.occPercent,
+      ]),
+    };
+    htmlDrop=pmBase.component.create(dropList);
+  }
+
   let infoTable = [
     ['关卡', ''],
     ['配置上限', levelData.options.characterLimit],
@@ -241,39 +269,42 @@ function showCallback(levelId) {
     ['部署费用回复', levelData.options.costIncreaseTime == 999999 ? '0' : levelData.options.costIncreaseTime + '秒/点'],
     ['部署费用上限', levelData.options.maxCost],
     ['生命值', levelData.options.maxLifePoint],
-    ['敌人数量', enemyCount],
+    ['敌人数量', totalEnemyCount],
     ['最短耗时', Math.floor(totalDelay / 60) + ':' + Math.ceil(totalDelay % 60).toString().padStart(2, '0')],
   ];
+  let tabs = pmBase.component.create({
+    type: 'tabs',
+    tabs: [{
+      text: '基础信息',
+      content: '',
+    },{
+      text: '掉落道具',
+      content: htmlDrop,
+    },{
+      text: '敌人',
+      content: pmBase.content.create('list', enemyTable, enemyHead),
+    },{
+      text: '时间线',
+      content: htmlWave,
+    },{
+      text: '热度<small>（测试）</small>',
+      content: `<div class="row">
+        <div class="col-12 col-lg-12">按HP：${hpHeatmapTable}</div>
+        <div class="col-12 col-lg-12">按数量：${countHeatmapTable}</div>
+        <div class="col-12 col-lg-12">按攻击力：${atkHeatmapTable}</div>
+      </div>`,
+    }]
+  });
 
   html += `
   <div class="row">
-    <div class="col-12 col-lg-8">${pmBase.content.create('info', infoTable)}</div>
-    <div class="col-12 col-lg-4">${mapTable}</div>
+    <div class="col-12 col-lg-7">${pmBase.content.create('info', infoTable)}</div>
+    <div class="col-12 col-lg-5">${mapTable}</div>
   </div>
-<ul class="nav nav-tabs" id="myTab">
-  <li class="nav-item">
-    <a class="nav-link" data-toggle="tab" href="#tab2">敌人</a>
-  </li>
-  <li class="nav-item">
-    <a class="nav-link" data-toggle="tab" href="#tab4">时间线</a>
-  </li>
-  <li class="nav-item">
-    <a class="nav-link" data-toggle="tab" href="#tab3">热度<small>（测试）</small></a>
-  </li>
-</ul>
-<div class="tab-content">
-  <div class="tab-pane fade" id="tab2">${pmBase.content.create('list', enemyTable, enemyHead)}</div>
-  <div class="tab-pane fade" id="tab4"><div class="accordion">${htmlWave}</div></div>
-  <div class="tab-pane fade" id="tab3">
-    <div class="row">
-    <div class="col-12 col-lg-6">按HP：${heatmapTable}</div>
-    <div class="col-12 col-lg-6">按数量：${heatmapTable2}</div>
-    </div>
-  </div>
-</div>
+  ${tabs}
   `;
   
-  return {content: html};
+  return {content: html, title: stageData.name};
 }
 
 pmBase.hook.on('init', init);
