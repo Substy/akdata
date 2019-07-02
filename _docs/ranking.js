@@ -1,5 +1,3 @@
-import AKDATA from './core.js';
-
 const ProfessionNames = {
   "PIONEER": "先锋",
   "WARRIOR": "近卫",

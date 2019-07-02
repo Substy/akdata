@@ -1,0 +1,44 @@
+.o-badge {
+    display: inline-block;
+    /*float: left;*/
+    width: 80px;
+    padding: 3px 0;
+    margin: 3px;
+    border-radius: 3px;
+    text-align: center;
+}
+
+.o-badge--item {
+    width: 120px;
+    font-size: small;
+}
+
+.o-badge--count {
+    width: 40px;
+    text-align: left;
+}
+
+.o-badge--rarity-5 {
+    background-color: rgb(161,72,5);
+    color: rgb(250,195,95);
+}
+.o-badge--rarity-4 {
+    background-color: rgb(250,198,2);
+    color: rgb(46,41,5);
+}
+.o-badge--rarity-3 {
+    background-color: rgb(214,197,214);
+    color: rgb(46,33,63);
+}
+.o-badge--rarity-2 {
+    background-color: rgb(0,179,252);
+    color: black;
+}
+.o-badge--rarity-1 {
+    background-color: rgb(220,229,55);
+    color: black;
+}
+.o-badge--rarity-0 {
+    background-color: rgb(160,160,160);
+    color: black;
+}

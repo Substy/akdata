@@ -1,5 +1,3 @@
-import AKDATA from './core.js';
-
 function init() {
   AKDATA.loadData([
     'excel/activity_table.json',
@@ -42,7 +40,7 @@ function show(hash) {
     header: [ '任务说明', '奖励' ],
     list: missionList.map( x=> [
       x.description,
-      x.rewards.map( y=> AKDATA.getItem(y.type, y.id, y.count) ).join('<br>'),
+      x.rewards.map( y=> AKDATA.getItemBadge(y.type, y.id, y.count) ).join('<br>'),
     ]),
   };
 

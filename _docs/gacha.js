@@ -1,10 +1,33 @@
 function init() {
   AKDATA.loadData([
-    'excel/building_data.json',
+    'excel/gacha_table.json',
   ], load);
 }
 
 function load() {
+  console.log(AKDATA.Data.gacha_table.gachaPoolClient);
+  let list = {
+    type: 'list',
+    header: ['寻访内容', '开始时间', '结束时间', '六星', '五星'],
+
+    list: AKDATA.Data.gacha_table.gachaPoolClient.sort(x=>x.endTime).map( data=> {
+      return [
+        `<a href="#!/${data.gachaPoolId}">${data.gachaPoolName}</a>`,
+        new Date(data.openTime*1000).toLocaleString("default",{ hour12: false }),
+        new Date(data.endTime*1000).toLocaleString("default",{ hour12: false }),
+        data.gachaPoolDetail.match( /\n★★★★★★\\n(.+?)（/)[1],
+        data.gachaPoolDetail.match( /\n★★★★★\\n(.+?)（/)[1],
+      ];
+    }),
+  };
+
+  pmBase.content.build({
+    pages: [{
+      content: pmBase.component.create('list', list),
+    }]
+  });
+
+  /*
   let list = [];
   let selector = {};
 
@@ -38,6 +61,7 @@ function load() {
       control: selector,
     }]
   });
+  */
 }
 
 function show(hash) {

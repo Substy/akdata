@@ -2,7 +2,7 @@
   //background-color: #222d;
   border-bottom: 1px solid $layout-border-color;
   z-index: 999;
-  
+
   &__body {
     display: flex;
     flex-direction: row;
@@ -10,7 +10,7 @@
     text-align: center;
     margin: auto;
   }
-  
+
   &__logo {
     height: 100%;
     width: 300px;
@@ -19,11 +19,11 @@
     text-align: center;
     background: #fafafa;
     border-right: 1px solid $layout-border-color;
-    
+
     a {
       margin: auto;
     }
-    
+
     img {
       max-height: 40px;
     }
@@ -48,10 +48,11 @@
     padding: 5px;
     margin: 5px;
     color: #ccc;
-    cursor: pointer;
+    //cursor: pointer;
 
-    &:hover   {
+    &:hover {
       color: #aaa;
+
       .c-navmenu {
         display: block;
       }
@@ -65,7 +66,7 @@
     border-radius: .25rem;
 
     &:focus {
-      box-shadow: 0 0 0 0.2rem rgba(0,123,255,.5);
+      box-shadow: 0 0 0 0.2rem rgba(0, 123, 255, .5);
     }
   }
 }
@@ -99,19 +100,23 @@
     padding: 0 15px;
     color: #333;
     text-align: left;
-    
+
     &:hover {
       background-color: #456;
       background-color: #0366d6;
       color: white;
     }
+
+    > a:only-child {
+      display: block;
+    }
   }
-  
+
   &__title {
     padding: 0 16px;
     text-align: left;
     font-weight: bold;
-    font-size:x-small;
+    font-size: x-small;
     color: #999;
   }
 

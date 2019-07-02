@@ -1,5 +1,3 @@
-import AKDATA from './core.js';
-
 function init() {
   AKDATA.loadData([
     'excel/character_table.json',

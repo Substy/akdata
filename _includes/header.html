@@ -22,19 +22,6 @@
     </div>
     <nav class="l-header__navbar">
       <ul class="l-navbar">
-        <li class="l-navbar__item">
-          <a href="{{ gameHome | relative_url }}">{{site.data.nav[gameKey].title}}</a>
-          {{item.group}}
-          <ul class="l-navbar__dropdown">
-            <li class="l-navbar__dropdown_title">{{ item.group }}</li>
-            <hr>
-              <li class="l-navbar__dropdown_item">
-                <a href="{{ entry.url | relative_url }}">
-                  <i class="fas fa-{{ entry.icon | default: item.icon | default: "file" }}"></i> {{ entry.name }}
-                </a>
-              </li>
-          </ul>
-        </li>
       </ul>
     </nav>
     <div class="l-header__right">

@@ -1,116 +1,103 @@
 ﻿import hook from './hook.js';
 import config from './config.js';
 
-function toAbsoluteURL(url) {
-  const a = document.createElement("a");
-  a.setAttribute("href", url); // <a href="hoge.html">
-  return a.cloneNode(false).href; // -> "http://example.com/hoge.html"
-}
+const Libs = {
+  'bootstrap-slider': {
+    js: [
+      'https://unpkg.zhimg.com/bootstrap-slider@10.6.1/dist/bootstrap-slider.min.js'
+    ],
+    css: [
+      'https://unpkg.zhimg.com/bootstrap-slider@10.6.1/dist/css/bootstrap-slider.min.css'
+    ],
+  },
 
-export function importModule(url) {
-  return new Promise((resolve, reject) => {
-    const vector = "$importModule$" + Math.random().toString(32).slice(2);
-    const script = document.createElement("script");
-    const destructor = () => {
-      delete window[vector];
-      script.onerror = null;
-      script.onload = null;
-      script.remove();
-      URL.revokeObjectURL(script.src);
-      script.src = "";
-    };
-    script.defer = "defer";
-    script.type = "module";
-    script.onerror = () => {
-      reject(new Error(`Failed to import: ${url}`));
-      destructor();
-    };
-    script.onload = () => {
-      resolve(window[vector]);
-      destructor();
-    };
-    const absURL = toAbsoluteURL(url);
-    const loader = `import * as m from "${absURL}"; window.${vector} = m;`; // export Module
-    const blob = new Blob([loader], {
-      type: "text/javascript"
-    });
-    script.src = URL.createObjectURL(blob);
+  'lz-string': {
+    js: [
+    'https://unpkg.zhimg.com/lz-string@1.4.4/libs/lz-string.min.js',
+    ],
+  },
 
-    document.head.appendChild(script);
-  });
-}
+  'chart.js': {
+    js: [
+      'https://unpkg.zhimg.com/chart.js@2.8.0/dist/Chart.min.js',
+    ],
+  },
 
-function using(arr, callback) {
-  $('.c-loading').attr('class', 'c-loading c-loading--step-3');
-  let gkey = `/${config.get( 'gameKey')}/`;
-  let url = arr.map(x => x.replace('./', gkey));
-  debug(url);
-  if (url.length == 1) {
-    importModule(url[0]).then(a => {
-      callback([a.default]);
-    });
-  } else if (url.length == 2) {
-    importModule(url[0]).then(a => {
-      importModule(url[1]).then(b => {
-        callback([a.default, b.default]);
-      });
-    });
-  }
-}
+  'debug': {
+    js: [
+      'http://127.0.0.1:4000/akdata/assets/js/debug.js',
+    ],
+  },
 
-function load(...args) {
-  $('.c-loading').attr('class', 'c-loading c-loading--step-3');
-  let url = args.map(x => `/assets/js/modules/${x}.js`);
+};
 
-  if (url.length == 1) {
-    importModule(url[0]).then(() => {
-      hook.keepAlive('load');
-    });
-  } else if (url.length == 2) {
-    importModule(url[0]).then(() => {
-      importModule(url[1]).then(() => {
-        hook.keepAlive('load');
-      });
+function loadItem ( item ) {
+  let queue = [];
+
+  if ( item.js ) {
+    if ( typeof item.js == 'string' ) item.js = [item.js];
+    item.js.map( url=> {
+      let request = $.getScript(url);
+      queue.push(request);
     });
   }
 
+  if ( item.css ) {
+    if ( typeof item.css == 'string' ) item.css = [item.css];
+    item.css.map( url=> {
+      $('<link>')
+      .attr({
+          type: 'text/css', 
+          rel: 'stylesheet',
+          href: url
+      })
+      .appendTo('head');
+    });
+    queue.push(true);
+  }
+
+  if ( item.json ) {
+    if ( typeof item.json == 'string' ) item.css = [item.json];
+    item.json.map( url=> {
+      let request = $.getJSON(url);
+      queue.push(request);
+    });
+  }
+
+  if ( item.request ) {
+    queue.push(...request);
+  }
+
+  return queue;
 }
 
+function using( arr, callback) {
+  if ( typeof arr === 'string' || arr.constructor === Object ) arr = [arr];
 
-/*
-function using(arr,callback) {
-  $('.c-loading').attr('class', 'c-loading c-loading--step-3');
-  let gkey = `/${config.get( 'gameKey')}/`;
-  let url = arr.map( x=>x.replace('./',gkey));
-  requirejs(args, function(util) {
-    callback();
+  let queue = [];
+  arr.map( item => {
+    if ( typeof item.then === 'function' ){
+      queue.push(item);
+    }
+    else if ( typeof item === 'object' ) {
+      queue.push(...loadItem(item));
+    }
+    else if ( item in Libs ) {
+      queue.push(...loadItem(Libs[item]));
+    }
+    else {
+      queue.push(...loadItem({
+        js: item,
+      }));
+    }
   });
-}
 
-function load (...args){
-  $('.c-loading').attr('class', 'c-loading c-loading--step-3');
-  let url = args.map( x=>`/assets/js/modules/${x}.js`);
-  debug(url);
-  requirejs(url, function(util) {
-    hook.keepAlive('load');
-  });
+  if ( callback ) {
+    $.when(...queue).then(() => {
+      callback();
+    });
+  }
 }
-*/
-/*
-function using(arr,callback) {
-  $('.c-loading').attr('class', 'c-loading c-loading--step-3');
-  let gkey = `/${config.get( 'gameKey')}/`;
-  Promise
-    .all( arr.map( x=>import(x.replace('./',gkey)) ) )
-    .then(x=>callback(x.map(y=>y.default)));
-}
-function load (...args){
-  $('.c-loading').attr('class', 'c-loading c-loading--step-3');
-  Promise
-    .all(args.map(x=>import(`../modules/${x}.js`)))
-    .then(()=>hook.keepAlive('load'));
-}
-*/
 
 function getJSON(url, callback) {
   let xhr = new XMLHttpRequest();
@@ -128,6 +115,4 @@ hook.on('load', function () {
 
 export default {
   using,
-  load,
-  getJSON,
 }

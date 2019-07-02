@@ -112,7 +112,7 @@ let build = function (options) {
       </div>
     `;
   });
-  $('.l-page__body').html(html);
+  $('.l-dynamic').html(html);
 
   parseHash();
 

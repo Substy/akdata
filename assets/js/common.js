@@ -6,6 +6,7 @@ import content from './core/content.js';
 import config from './core/config.js';
 import loader from './core/loader.js';
 import component from './core/component.js';
+import './extensions/array.js';
 
 window.pmBase = {
   config,

@@ -100,3 +100,10 @@
 .p-map__tile--infection {
     box-shadow: inset 0 0 3px red;
 }
+.p-map__tile--gazebo  {
+    box-shadow: inset 0 0 3px purple;
+}
+.p-map__tile--telin,
+.p-map__tile--telout {
+    box-shadow: inset 0 0 3px orange;
+}

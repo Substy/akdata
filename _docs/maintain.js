@@ -1,5 +1,3 @@
-import AKDATA from './core.js';
-
 function init() {
   $('#p-recruit').click(()=>{
     AKDATA.loadData([

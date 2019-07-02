@@ -1,7 +1,5 @@
-import AKDATA from './core.js';
-
 function init() {
-  AKDATA.loadData(['excel/favor_table.json'], () => {
+  AKDATA.load(['excel/favor_table.json', 'chart.js'], () => {
 
     let head = ['信赖', '经验值', '百分比' ];
     
