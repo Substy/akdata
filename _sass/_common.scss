@@ -6,9 +6,11 @@
 @import "layout/sidebar";
 @import "layout/footer";
 @import "layout/main";
+@import "layout/typography";
 
 @import "components/tab";
-//@import "components/breadcrumb";
+
+@import "objects/badge";
 
 html {
   overflow-y: scroll;
@@ -19,10 +21,11 @@ table.table td {
 }
 
 .p-page__control {
-margin-bottom:1em;
+  margin-bottom:1em;
 }
 
-.p-infotable {
+.c-infotable {
+  /*
   & > tbody > tr > th,
   & > tbody > tr > td:first-child {
     width: 30%;
@@ -30,8 +33,18 @@ margin-bottom:1em;
     text-align: right;
     padding-right: 1em;
   }
-  & > tbody > tr > tr:first-child td {
+  & > tbody:first-child > tr:first-child td {
     border-top: none;
+  }
+*/
+  &__label {
+    font-weight: bold;
+    text-align: center;
+    padding-right: 1em;
+    vertical-align: top !important;
+  }
+  &__data {
+    vertical-align: top !important;
   }
 }
 

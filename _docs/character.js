@@ -14,6 +14,8 @@ function init() {
     'excel/character_table.json',
     'excel/skill_table.json',
     'excel/range_table.json',
+    'excel/gamedata_const.json',
+    'excel/item_table.json',
   ], load);
 }
 /*0.78 非常快
@@ -23,128 +25,306 @@ function init() {
 1.8 2.85 慢 */
 function load() {
   let selector = {};
-  let list = [];
-  let head = [ '干员', '编号', '星级', '职业', '特性' ];
+  let body = [];
+
   for (let char in AKDATA.Data.character_table) {
     let charData = AKDATA.Data.character_table[char];
     if (charData.profession == "TOKEN" || charData.profession == "TRAP") continue;
     let phaseData = charData.phases[0].attributesKeyFrames[0].data;
     selector[char] = charData.displayNumber + ' ' + charData.name;
-    list.push([
-      `<a href="#!/${char}">${charData.name}</a>`,
-      charData.rarity + 1,
+    body.push([
       charData.displayNumber,
+      `<a href="#!/${char}">${charData.name}</a>`,
       ProfessionNames[charData.profession],
-      AKDATA.formatString(charData.description),
+      charData.rarity + 1,
+      AKDATA.formatString(charData.itemUsage, true) + AKDATA.formatString(charData.itemDesc, true),
+      AKDATA.formatString(charData.description, true),
     ]);
   }
-  
-	pmBase.content.build({
-	  pages: [{
-      content: pmBase.content.create('sortlist', list, head),
-    },{
+
+  let list = pmBase.component.create({
+    type: 'list',
+    columns: ['编号', '干员', '职业', '星级', {
+      header: '说明',
+      width: '40%'
+    }, {
+      header: '特性',
+      width: '30%'
+    }],
+    list: body,
+    sortable: true,
+    card: true,
+  });
+
+  pmBase.content.build({
+    pages: [{
+      content: list,
+    }, {
       selector: selector,
       content: show,
     }]
-	});
+  });
+}
+
+function parseMinMax(min, max) {
+  if (min == 0 && max == 0) {
+    return '0';
+  } else if (min == max) {
+    return min;
+  } else {
+    return min + ' - ' + max;
+  }
+}
+
+function createPhaseTable(charData) {
+  let phaseCount = charData.phases.length;
+  let phaseTableHelper = [
+    ['生命上限', (n, m) => parseMinMax(n.maxHp, m.maxHp)],
+    ['攻击', (n, m) => parseMinMax(n.atk, m.atk)],
+    ['防御', (n, m) => parseMinMax(n.def, m.def)],
+    ['法术抗性', (n, m) => parseMinMax(n.magicResistance, m.magicResistance) + '%'],
+    ['再部署', (n, m) => parseMinMax(n.respawnTime, m.respawnTime) + '秒'],
+    ['部署费用', (n, m) => parseMinMax(n.cost, m.cost)],
+    ['阻挡数', (n, m) => parseMinMax(n.blockCnt, m.blockCnt)],
+    ['基础攻击间隔', (n, m) => parseMinMax(n.baseAttackTime, m.baseAttackTime) + '秒'],
+  ];
+  let phaseTableList = phaseTableHelper.map(x => [
+    x[0],
+    x[1](charData.phases[0].attributesKeyFrames[0].data, charData.phases[0].attributesKeyFrames[1].data),
+    charData.phases[1] ? x[1](charData.phases[1].attributesKeyFrames[0].data, charData.phases[1].attributesKeyFrames[1].data) : '',
+    charData.phases[2] ? x[1](charData.phases[2].attributesKeyFrames[0].data, charData.phases[2].attributesKeyFrames[1].data) : '',
+    charData.favorKeyFrames ? x[1](charData.favorKeyFrames[0].data, charData.favorKeyFrames[1].data) : '',
+  ]);
+
+  let rangeRow = [];
+  for (let i = 0; i < phaseCount; i++) {
+    rangeRow[i] = createRangeTable(charData.phases[i].rangeId);
+  }
+  phaseTableList.push(['攻击范围', ...rangeRow, '']);
+
+  return pmBase.component.create({
+    type: 'info',
+    card: true,
+    header: [
+      '',
+      `LV.1-${charData.phases[0].maxLevel}`,
+      phaseCount >= 2 ? `精英1 LV.1-${charData.phases[1].maxLevel}` : '-',
+      phaseCount >= 3 ? `精英2 LV.1-${charData.phases[2].maxLevel}` : '-',
+      '信赖'
+    ],
+    list: phaseTableList,
+  });
 }
 
 function show(hash) {
   var charId = hash.value;
   var charData = AKDATA.Data.character_table[charId];
 
+  console.log(charData);
   let dataInfo = [
-    [ 'name', charData.name ],
-    [ 'description', AKDATA.formatString(charData.description) ],
-    [ 'displayNumber', charData.displayNumber ],
-    [ 'position', charData.position ],
-    [ 'rarity', charData.rarity ],
-    [ 'profession', charData.profession ],
-    [ 'tagList', charData.tagList ],
+    ['name', charData.name],
+    ['description', AKDATA.formatString(charData.description)],
+    ['displayNumber', charData.displayNumber],
+    ['position', charData.position],
+    ['rarity', charData.rarity],
+    ['profession', ProfessionNames[charData.profession]],
+    ['tagList', charData.tagList],
   ];
-
-  let phaseCount = charData.phases.length;
-  
-  let phaseTable = [];
-
-  let attributeKeys = Object.keys(charData.phases[0].attributesKeyFrames[0].data);
-  attributeKeys.forEach( (key) => {
-    let row = [ key, '', '', '', '' ];
-    for(let i = 0; i <= phaseCount; i++ ){
-      if ( i == phaseCount ) {
-        var min = charData.favorKeyFrames[0].data[key];
-        var max = charData.favorKeyFrames[1].data[key];
-      } else {
-        var min = charData.phases[i].attributesKeyFrames[0].data[key];
-        var max = charData.phases[i].attributesKeyFrames[1].data[key];
-      }
-      if ( min == max ) {
-        row[i+1] = min;
-      } else {
-        row[i+1] = min + ' - ' + max;
-      }
-    }
-    phaseTable.push(row);
+  let dataHtml = pmBase.component.create({
+    type: 'info',
+    card: true,
+    list: dataInfo,
   });
-
-  let rangeRow = [];
-  for(let i = 0; i < phaseCount; i++ ){
-    rangeRow[i] = createRangeTable(charData.phases[i].rangeId);
-  }
-  phaseTable.push( ['range', ...rangeRow ]);
-
+  
+  let phaseTable = createPhaseTable(charData);
+  //////////////////////////////////////////
   let skillHtml = '';
-  for(let i=0; i< charData.skills.length; i++){
+  let variableRegex = /{(\-)*(.+?)(?:\:(.+?))?}/g;
+  for (let i = 0; i < charData.skills.length; i++) {
     let skillInfo = charData.skills[i];
     let skillId = skillInfo.skillId;
     let skillData = AKDATA.Data.skill_table[skillId];
+    console.log(skillData.levels[0]);
+    let spType = [
+      '',
+      '<span class="o-badge" style="font-size:xx-small;width:60px;color:white;background-color:#F2763F;">自动回复</span>',
+      '<span class="o-badge" style="font-size:xx-small;width:60px;color:white;background-color:#88BA20;">攻击回复</span>',
+      '', '', '', '', '',
+      '<span class="o-badge" style="font-size:xx-small;width:60px;color:white;background-color:#6F6F6F;">被动</span>',
+    ][skillData.levels[0].spData.spType];
+    let skillType = [
+      '',
+      '<span class="o-badge" style="font-size:xx-small;width:60px;color:white;background-color:#6F6F6F;">手动触发</span>',
+      '<span class="o-badge" style="font-size:xx-small;width:60px;color:white;background-color:#6F6F6F;">自动触发</span>',
+    ][skillData.levels[0].skillType];
+    /*
+        skillHtml += `<div class="row">
+        <div class="col-4">${skillData.levels[0].name}</div>
+        <div class="col-4">${spType}${skillType}</div>
+        <div class="col-4">${skillData.levels[0].rangeId ? createRangeTable(skillData.levels[0].rangeId) : ''}</div>
+        </div>
+        `;
+    */
 
-    let spNames = ['spType', 'maxChargeTime', 'spCost', 'initSp', 'increment'];
-    let blackboardNames = skillData.levels[0].blackboard.map((x)=>x.key);
+    skillHtml += pmBase.component.create({
+      type: 'list',
+      card: true,
+      title: ['初始：', '精英1：', '精英2：'][i] + skillData.levels[0].name + `<div class="float-right">${spType}${skillType}</div>`,
 
-    let tableHead = [ '' ].concat(spNames).concat(blackboardNames);
-    let tableList = [];
-    
-    for( let l =0;l<skillData.levels.length;l++){
-      let row = [
-        l + 1,
-        skillData.levels[l].spData.spType,
-        skillData.levels[l].spData.maxChargeTime,
-        skillData.levels[l].spData.spCost,
-        skillData.levels[l].spData.initSp,
-        skillData.levels[l].spData.increment,
-      ];
-      for(let j=0;j<blackboardNames.length;j++){
-        row.push(skillData.levels[l].blackboard.filter((x)=>x.key==blackboardNames[j])[0].value);
-      }
-      tableList.push(row);
+      columns: [{
+          header: '等级',
+          width: '10%'
+        },
+        {
+          header: '说明'
+        },
+        {
+          header: '需要技力',
+          width: '10%'
+        },
+        {
+          header: '初始技力',
+          width: '10%'
+        },
+        {
+          header: '持续时间',
+          width: '10%'
+        },
+        {
+          header: '其他参数',
+          width: '20%'
+        },
+      ],
+
+      list: skillData.levels.map((levelData, l) => {
+        let spData = levelData.spData;
+        let blackboard = Object.fromEntries(levelData.blackboard.map(x => [x.key.toLowerCase(), x.value]));
+        let desc = AKDATA.formatString(levelData.description, true);
+        desc = desc.replace(variableRegex, (match, minus, key, format) => {
+          key = key.toLowerCase();
+          let value = blackboard[key];
+          delete blackboard[key];
+          if (minus) value = value * -1;
+          if (format === '0%') value = Math.round(value * 100) + '%';
+          else if (format === '0.0%') value = Math.round(value * 1000) / 10 + '%';
+          return value;
+        });
+        if ( levelData.rangeId && (l == 0 || levelData.rangeId != skillData.levels[l-1].rangeId ) ) desc += '<hr>' + createRangeTable(levelData.rangeId);
+        let bbtext = `<ul class="small text-left mb-0 muted">${Object.entries(blackboard).map(k=>`<li>${k[0]}: ${k[1]}</li>`).join('')}</ul>`;
+
+        return [
+          l + 1,
+          desc,
+          spData.spCost,
+          spData.initSp,
+          levelData.duration > 0 ? `${levelData.duration}秒` : '-',
+          bbtext,
+        ];
+      })
+    });
+  }
+  ///////////////////////////////////////////////
+  let skillLvlupHtml = '';
+  if (charData.allSkillLvlup.length > 0) {
+    skillLvlupHtml = pmBase.component.create({
+      type: 'list',
+      card: true,
+      title: '通用技能',
+      header: ['等级', '素材', '-'],
+      list: charData.allSkillLvlup.map((x, i) => [
+        `${i + 1} <i class="fas fa-angle-right"></i> ${i+2}`,
+        x.lvlUpCost.map(y => AKDATA.getItemBadge(y.type, y.id, y.count))
+      ]),
+    });
+    if (charData.skills[0].levelUpCostCond.length > 0) {
+      charData.skills.forEach((skillInfo, i) => {
+        let skillName = AKDATA.Data.skill_table[skillInfo.skillId].levels[0].name;
+        skillLvlupHtml += pmBase.component.create({
+          type: 'list',
+          card: true,
+          title: `技能${i+1}：${skillName}`,
+          header: ['等级', '素材', '升级时间'],
+          list: skillInfo.levelUpCostCond.map((x, i) => [
+            `${i + 7} <i class="fas fa-angle-right"></i> ${i+8}`,
+            x.levelUpCost.map(y => AKDATA.getItemBadge(y.type, y.id, y.count)),
+            x.lvlUpTime / 60 / 60 + ':00'
+          ]),
+        });
+      });
     }
-
-    skillHtml += `<h4>${skillData.levels[0].name}</h4>` + pmBase.content.create('list', tableList, tableHead);
-
-    let rangeId = skillData.levels[0].rangeId;
-    if ( rangeId ) {
-      skillHtml += createRangeTable(rangeId);
-    }
-
   }
 
+
+  /////////////////////////////////////////////
+  let potentialHtml = '';
+
+  potentialHtml += pmBase.component.create({
+    type: 'list',
+    card: true,
+    title: '潜能',
+    header: ['等级', '效果'],
+    list: charData.potentialRanks.map((x, i) => [
+      i + 2,
+      x.description,
+    ]),
+  });
+
+  /////////////////////////////////////////////
+  let talentHtml = '';
+  charData.talents.forEach((talentInfo, i) => {
+    let talentName = talentInfo.candidates[0].name;
+    talentHtml += pmBase.component.create({
+      type: 'list',
+      card: true,
+      title: `天赋${i+1}：${talentInfo.candidates[0].name}`,
+      columns: [{
+          header: '解锁条件',
+          span: 3,
+          width: '20%'
+        },
+        '说明'
+      ],
+      list: talentInfo.candidates.map((x, i) => [
+        x.unlockCondition.phase ? `精英${x.unlockCondition.phase}` : '',
+        `Lv.${x.unlockCondition.level}`,
+        x.requiredPotentialRank ? `潜能${x.requiredPotentialRank}` : '',
+        AKDATA.formatString(x.description),
+      ]),
+    });
+  });
+
+  ////////////////////////////////////////////////
+  let tokenHtml = '';
+  if (charData.tokenKey) {
+    tokenHtml = createPhaseTable(AKDATA.Data.character_table[charData.tokenKey]);
+  }
+
+  ////////////////////////////////////////////////
+
   let html = `
-    <h3>属性</h3>
-    ${pmBase.content.create('info', dataInfo)}
-    <h3>Phases</h3>
-    ${pmBase.content.create('info', phaseTable)}
-    <h3>Skills</h3>
-    ${skillHtml}
+    <h2>属性</h2>
+    ${dataHtml}
+    <h2>精英化</h2>
+    ${phaseTable}
+    ${tokenHtml ? '<h2>召唤物</h2>' + tokenHtml : ''}
+    <h2>潜能</h2>
+    ${potentialHtml}
+    ${skillHtml ? '<h2>技能</h2>' + skillHtml : ''}
+    <h2>天赋</h2>
+    ${talentHtml}
+    ${skillLvlupHtml ? '<h2>技能强化</h2>' + skillLvlupHtml : ''}
   `;
 
-  return html;
+  return {
+    content: html,
+    title: charData.name
+  };
 }
 
 function createRangeTable(rangeId) {
   let grids = AKDATA.Data.range_table[rangeId].grids;
-  let xs = grids.map(x=>x.row);
-  let ys = grids.map(x=>x.col);
+  let xs = grids.map(x => x.row);
+  let ys = grids.map(x => x.col);
   let xm = Math.abs(Math.max(...xs));
   let xn = Math.abs(Math.min(...xs));
   let ym = Math.abs(Math.max(...ys));
@@ -154,21 +334,22 @@ function createRangeTable(rangeId) {
   let table = Array.from(Array(colCount), () => Array(rowCount).fill('null'));
   let xo = xn;
   let yo = yn;
-  console.log(table);
-  grids.forEach(item=>{
+  grids.forEach(item => {
     table[yo + item.col][xo + item.row] = 'true';
   });
   table[yo][xo] = 'origin';
-  //table = table.map((col, i) => table.map(row => row[i]));
-  let html = '<table class="p-range"><tbody>'
-    + table.map(row => {
-      return '<tr>'
-        + row.map(cell=> `<td class="p-range__cell p-range__cell--${cell}"></td>`).join('')
-        + '</tr>';
-    }).join('')
-    + '</tbody></table>';
+
+  let html = '<table class="p-range"><tbody>';
+  for (let r = rowCount - 1; r >= 0; r--) {
+    html += '<tr>';
+    for (let c = 0; c < colCount; c++) {
+      html += `<td class="p-range__cell p-range__cell--${table[c][r]}"></td>`;
+    }
+    html += '</tr>';
+  }
+  html += '</tbody></table>';
 
   return html;
 }
 
-pmBase.hook.on( 'init', init );
+pmBase.hook.on('init', init);

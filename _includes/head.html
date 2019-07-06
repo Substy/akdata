@@ -72,7 +72,7 @@
   <script src="{{site.baseurl}}/{{pageName}}.js" type="module" ></script>
 {% elsif page.withjs %}
   <script src="{{site.baseurl}}/{{page.withjs}}" type="module" ></script>
-{%- endif -%}
+{%- endif %}
 
   <script type="text/javascript" >
     const siteInfo = {
@@ -84,7 +84,14 @@
     const pageInfo = {
       title : "{{page.title}}",
       layout: "{{page.layout}}",
+      url: "{{page.url}}",
+      date: "{{page.date}}",
+      id: "{{page.id}}",
+      name: "{{page.name}}",
+      collection: "{{page.collection}}",
+      category: "{{page.category}}",
+      dir: "{{page.dir}}",
     };
   </script>
-
+{{site.tags.TAG}}
 </head>

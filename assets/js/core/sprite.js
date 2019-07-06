@@ -28,7 +28,7 @@ function get(key, value, displayWidth) {
   let y = height * Math.floor(index / opt.col);
   let bgWidth = opt.width * scale * opt.col;
 
-  let html = `<div class="p-sprite" style="display:inline-block;vertical-align:bottom;
+  let html = `<div class="c-sprite" style="display:inline-block;vertical-align:bottom;
     background:url(${opt.url}) no-repeat -${x}px -${y}px;
     background-size: ${bgWidth}px auto;
     height: ${height}px;

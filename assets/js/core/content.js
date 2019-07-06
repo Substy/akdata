@@ -83,6 +83,7 @@ const BuildOptions = {
   defaultPageIndex: 0,
   currentPageIndex: 0,
   hashDetecter: detectHash,
+  tempTabIndex: 0,
   pages: [],
 };
 
@@ -207,12 +208,18 @@ function show(obj) {
     let pageIndex = 'index' in obj
       ? obj.index
       : BuildOptions.currentPageIndex;
+    
+    let $tab = $('.nav-tabs .nav-link.show');
+    if ($tab.length>0) BuildOptions.tempTabIndex = $tab.closest('.nav-item').index();
+
     changeTab(obj.index);
     let $page = getPageElement(pageIndex);
     $page.find('.p-page__content').html(obj.content);
     if (obj.hash) $page.find('.p-selector').val(obj.hash);
     $('.c-listtable.sortable').removeClass('sortable').tablesorter();
     setTitle(obj.title);
+
+    if($tab.length>0) $('.nav-tabs .nav-link:nth(' + BuildOptions.tempTabIndex + ')').trigger('click');
   }
 }
 

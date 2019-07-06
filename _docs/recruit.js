@@ -10,11 +10,6 @@ function init() {
     };
   });
   load();
-  /*
-  AKDATA.loadData([
-    '../excel/character_table.json'
-  ], load);
-  */
 }
 
 function load() {
@@ -27,7 +22,7 @@ function load() {
       <!--<label class="col-1 col-form-label">${name}</label>-->
       <div class="col-12">
         <div class="btn-groupx btn-group-toggle" data-toggle="buttons">
-          ${list.map(i=>`<label class="btn btn-outline-primary btn-sm mr-2 mb-2"><input class="p-tag" type="checkbox" name="options" value="${i}"> ${recruitData.tagNames[i]}</label>`).join('')}
+          ${list.map(i=>`<label class="btn btn-outline-primary btn-sm mr-2 mb-2" style="width:100px;background:white;"><input class="p-tag" type="checkbox" name="options" value="${i}"> ${recruitData.tagNames[i]}</label>`).join('')}
         </div>
       </div>
     </div>
@@ -48,66 +43,14 @@ function load() {
 </div>
 `;
 
-  let combo = '';
-
-  let html = pmBase.component.create('tabs', {
-    tabs: [{
-      text: '模拟器',
-      content: calc,
-    }, {
-      text: '组合',
-      content: analyse(),
-    }],
-    active: 1
-
-  });
-
   pmBase.content.build({
     pages: [{
-      content: html,
+      content: calc,
     }]
   });
 
   $('.p-tag').change(change);
   $('.p-reset').change(reset);
-}
-
-function getCombinations(arr) {
-  let results = [];
-  let get = function (cache, arr2) {
-    for (var i = 0; i < arr2.length; i++) {
-      let arr3 = [...cache, arr2[i]];
-      results.push(arr3);
-      get(arr3, arr2.slice(i + 1));
-    }
-  };
-  get([], arr);
-  return results;
-}
-
-function containsArray(arr1, arr2) {
-  return arr2.every(x => arr1.indexOf(x) !== -1);
-}
-
-function analyse() {
-  let results = [];
-  for (let char of recruitData.charTagData) {
-    let otherChars = recruitData.charTagData.filter(x => x.id != char.id);
-    let combinations = getCombinations(char.tags).orderby(x => x.length);
-    let success = [];
-    for (let combo of combinations) {
-      if ( success.every(x=>!containsArray(combo, x) ) ) {
-        if (otherChars.every(x=>!containsArray(x.tags, combo))) {
-          results.push([char.name, getTagHtml(combo)]);
-          success.push(combo);
-        }
-      }
-    }
-  }
-
-  return pmBase.component.create('list', {
-    list: results
-  });
 }
 
 function getTagHtml(tags) {
@@ -131,7 +74,7 @@ function change() {
     .slice(1)
     .map(tags => {
       let isSpecialTag = tags.indexOf(11) >= 0;
-      let chars = charTagData
+      let chars = recruitData.charTagData
         .filter(data => tags.every(x => data.tags.indexOf(x) >= 0))
         .filter(data => !(!isSpecialTag && data.rarity == 5))
         .sort((a, b) => b.rarity - a.rarity);
@@ -152,7 +95,7 @@ function change() {
 
   html += '<table class="table table-sm">';
   query.forEach((value, index) => {
-    let htmlTag = value.tags.map(x => `<span class="badge badge-${value.isGoodResult?'danger':'primary'} mr-2">${tagNames[x]}</span>`).join('');
+    let htmlTag = value.tags.map(x => `<span class="badge badge-${value.isGoodResult?'danger':'primary'} mr-2">${recruitData.tagNames[x]}</span>`).join('');
     let htmlList = '';
 
     for (let char of value.chars) {

@@ -11,49 +11,80 @@ const ProfessionNames = {
 
 function init() {
   AKDATA.loadData([
-    'excel/character_table.json',
+    'excel/handbook_info_table.json',
   ], load);
 }
 
+const BasicInfo = {};
+
 function load() {
+  let listData1 = [];
+  let listData2 = [];
+  let keys = {};
 
-  let list = [];
-  for (let charId in AKDATA.Data.character_table) {
-    let charData = AKDATA.Data.character_table[charId];
-    if (charData.profession == "TOKEN" || charData.profession == "TRAP") continue;
-    let perfectAttr = getPerfectAttribute(charId);
-    list.push([
-      `<a href="../character/#!/${charId}">${charData.name}</a>`,
-      charData.displayNumber,
-      ProfessionNames[charData.profession],
-      charData.rarity + 1,
-      Math.floor(perfectAttr.respawnTime),
-      perfectAttr.cost,
-      perfectAttr.blockCnt,
-      (perfectAttr.baseAttackTime / perfectAttr.attackSpeed * 100).toPrecision(2),
-      Math.floor(perfectAttr.maxHp),
-      Math.floor(perfectAttr.atk),
-      Math.floor(perfectAttr.def),
-      perfectAttr.magicResistance + '%',
-
+  Object.values(AKDATA.Data.handbook_info_table.handbookDict).forEach( data => {
+    let basic = data.storyTextAudio[0].stories[0].storyText;
+    if(data.storyTextAudio[1]) basic += data.storyTextAudio[1].stories[0].storyText;
+    let info = {};
+    for(let m of basic.matchAll(/【(.+?)】(.+)/g)) {
+      info[m[1]] = info[m[1]] || m[2];
+      keys[m[1]] = true;
+    }
+    BasicInfo[data.charID] = info;
+    if (!info['代号'] && !info['型号']) return;
+    listData1.push([
+      info['代号'] || info['型号'] || '',
+      info['出身地'] || info['产地'] || '',
+      info['性别'] || info['设定性别'] || '',
+      info['战斗经验'] || '',
+      info['生日'] || info['出厂日'] || '',
+      info['种族'] || '',
+      info['身高'] || info['高度'] || '',
+      info['体重'] || info['重量'] || '',
     ]);
-  }
+    listData2.push([
+      info['代号'] || info['型号'] || '',
+      info['物理强度'] || '',
+      info['战场机动'] || '',
+      info['生理耐受'] || '',
+      info['战术规划'] || '',
+      info['战斗技巧'] || '',
+      info['源石技艺适应性'] || '',
+    ]);
+  });
 
-  let item = {
+  let list1 = pmBase.component.create({
     type: 'list',
-
-    header: ['干员', '编号', '职业', '星级', '再部署', '部署费用', '阻挡数', '攻击速度', '生命上限', '攻击', '防御', '法术抗性'],
-
-    list: list,
-
+    columns: [{header:'代号',width:'20%'}, '出身地', '性别', '战斗经验', '生日', '种族', '身高', '体重'],
+    list: listData1,
     sortable: true,
-  };
+  });
+  let list2 = pmBase.component.create({
+    type: 'list',
+    columns: [{header:'代号',width:'20%'}, '物理强度', '战场机动', '生理耐受', '战术规划', '战斗技巧', '源石技艺适应性'],
+    list: listData2,
+    sortable: true,
+  });
+  let tab = pmBase.component.create({
+    type: 'tabs',
+    tabs: [{
+      text: '基础档案',
+      content: list1,
+    },{
+      text: '综合体检测试',
+      content: list2,
+    }],
+  });
 
+  console.log(keys);
   pmBase.content.build({
     pages: [{
-      content: pmBase.component.create(item),
+      content: tab,
     }]
   });
+
+
+/**/
 }
 
 let attrList;

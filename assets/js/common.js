@@ -27,7 +27,7 @@ pmBase.init = function (func) {
 
 window.onload = function () {
   document.documentElement.className = document.documentElement.className.replace('js-loading', 'js-loaded');
-  $('.c-loading').attr('class', 'c-loading c-loading--step-3');
+  //$('.c-loading').attr('class', 'c-loading c-loading--step-3');
   hook.keepAlive('init');
 };
 

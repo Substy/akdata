@@ -2,10 +2,10 @@ function init() {
   AKDATA.loadData([
     'excel/zone_table.json',
     'excel/stage_table.json',
-  ], load);
+  ], show);
 }
 
-function load() {
+function show() {
   let selector = {};
   let list = [];
 
@@ -23,13 +23,13 @@ function load() {
     pages: [{
       content: pmBase.content.create('list', list),
     }, {
-      content: show,
+      content: parse,
       control: selector,
     }]
   });
 }
 
-function show(hash) {
+function parse(hash) {
   let zoneID = hash.value;
 
   let list = {
@@ -39,10 +39,10 @@ function show(hash) {
       .filter(([key, value]) => value.zoneId == zoneID)
       .map(([key, value]) => [
         value.code,
-        `<a href="${pmBase.url.getHref( 'levels', value.levelId)}">${value.name}</a>` + (value.stageId.includes('#f#') ? '<br><small>（突袭）</small>' : ''),
+        `<a href="${pmBase.url.getHref( 'levels', value.levelId)}">${value.name}</a>` + (value.stageId.includes('#f#') ? '<small>（突袭）</small>' : ''),
         value.dangerLevel,
         value.apCost,
-        AKDATA.formatString(value.description).replace('附加条件：<br>', ''),
+        AKDATA.formatString(value.description, true).replace('附加条件：<br>', ''),
         value.stageType,
       ]),
 
@@ -61,7 +61,6 @@ function show(hash) {
       {
         header: '说明',
         width: '50%',
-        class: 'text-left small ',
       },
       {
         header: '',
@@ -69,12 +68,9 @@ function show(hash) {
     ],
   };
 
-  let content = pmBase.component.create(list);
-  return content;
-}
-
-function formatString(string) {
-  return string;
+  return {
+    content: pmBase.component.create(list),
+  };
 }
 
 pmBase.hook.on('init', init);

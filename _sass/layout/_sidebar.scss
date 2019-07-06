@@ -1,6 +1,6 @@
 ﻿.l-layout__sidebar {
   flex: 0 0 300px;
-  background: #fafafa;
+  background: $side-background-color;
   box-shadow: inset -1px 0 0 $layout-border-color;
 }
 
@@ -20,7 +20,7 @@
       color: #008cff;
       border-top-color: $layout-border-color;
       border-bottom-color: $layout-border-color;
-      background-color: #fff;
+      background-color: $main-background-color;
     }
     
     &:hover:not(.l-sidebar__item--active):not(.l-sidebar__item--level-0) {

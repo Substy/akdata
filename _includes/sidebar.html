@@ -3,23 +3,25 @@
 <div class="l-layout__sidebar">
   <ul class="l-sidebar">
 {%- for category in categories -%}
-  {%- if categories.size > 1 -%}
+
+  {%- if category.size > 0 -%}
     <li class="l-sidebar__item l-sidebar__item--level-0">
-      {{ category | default: 'Uncategorized'}}
+      {{ category | default: ''}}
     </li>
   {%- endif -%}
-  {%- assign pages = site[page.collection]| sort: 'url' | sort: 'order' -%}
+  {%- assign pages = site[page.collection] | sort: 'url' | sort: 'order' -%}
   {%- for item in pages -%}
     {%- if item.category == category and item.parent == nil and item.hide == nil -%}
       {%- assign level = item.order | default: 0 | split: '.' | size -%}
     <li class="l-sidebar__item l-sidebar__item--level-{{level}} {% if page.url == item.url or item.url == page.parent %}l-sidebar__item--active{% endif %}">
       <a class="l-sidebar__link" href="{{ item.url | relative_url }}">
-        <i class="l-sidebar__icon fa fa-{{ item.icon | default: item.icon | default: "file" }}"></i>
+        <i class="l-sidebar__icon fas fa-{{ item.icon | default: item.icon | default: "file" }} fa-fw"></i>
         {{ item.title }}
       </a>
     </li>
     {%- endif -%}
   {%- endfor -%}
+
 {%- endfor -%}
   </ul>
 </div>

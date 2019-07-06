@@ -1,0 +1,47 @@
+﻿
+.l-page {
+  a {
+    color: #007bff;
+    &:hover {
+      color: #007bff;
+      text-decoration: underline;
+    }
+  }
+  
+
+  h2 {
+    padding: 2px 15px;
+    font-weight: bold;
+    color: #333;
+    position: relative;
+    font-size: 1.2em;
+    line-height: 1.2em;
+    margin-top: 1.5em;
+    margin-bottom: 1em;
+
+    &::before {
+      position: absolute;
+      content: "";
+      left: 0;
+      top: 0;
+      bottom: 0;
+      width: 5px;
+      border-radius: 3px;
+      background: #007bff;
+    }
+  }
+/*
+  h3{
+    font-size: 1.4em;
+    margin-top:1em;
+
+
+    &:after {
+      content: "";
+      display: block;
+      height: 2px;
+      margin-top:4px;
+      background: linear-gradient(to right, rgb(120, 120, 240), transparent);
+    }
+  }*/
+}

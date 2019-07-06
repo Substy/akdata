@@ -1,5 +1,4 @@
 const stringRegex = /<@(.+?)>(.+?)<\/>/g;
-
 window.AKDATA = {
   Data: {},
 
@@ -30,6 +29,15 @@ window.AKDATA = {
       let result = callback(...args);
       if (result !== undefined) pmBase.content.show(result);
     });
+  },
+
+
+  getLevel: function (phase, level) {
+    // {phase: 1, level: 1}
+    let s = '';
+    if( phase > 1 ) s += `精英${phase} `;
+    s += `Lv.${level}`;
+    return s;
   },
 
   getItem: function (type, id, count = 0) {
@@ -65,6 +73,11 @@ window.AKDATA = {
     return s;
   },
 
+  getBadge: function (type, text, rarity, style) {
+    let s = createBadge(type, text, rarity, style);
+    return s;
+  },
+
   getChar: function ( charId, phase = 0, level = 0) {
     let s = AKDATA.Data.character_table[charId].name;
     if (phase > 0) {
@@ -76,8 +89,12 @@ window.AKDATA = {
     return s;
   },
 
-  formatString: function (string) {
-    return string.replace(stringRegex, formatStringCallback).replace(/\\n/g, '<br>');
+  formatString: function (string, small = false) {
+    string = string || '';
+    string = string.replace(stringRegex, formatStringCallback);
+    string = string.replace(/\\n/g, '<br>');
+    string = `<div class="${small?'small':''} text-left">${string}</div>`;
+    return string;
   },
 };
 
@@ -89,8 +106,8 @@ function formatStringCallback(match, name, value) {
   }
 }
 
-function createBadge( type, text, rarity ) {
-  return `<span class="o-badge o-badge--${type} o-badge--rarity-${rarity}">${text}</span>`;
+function createBadge( type, text, rarity, style ) {
+  return `<span class="o-badge o-badge--${type} o-badge--rarity-${rarity}" style="${style}">${text}</span>`;
 }
 
 export default AKDATA;

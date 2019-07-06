@@ -1,0 +1,29 @@
+﻿.o-badge {
+  background-color: var(--badge-light, transparent);
+  border: 1px solid var(--badge-dark, transparent);
+  color: var(--badge-color, black);
+  display: inline-block;
+  margin: 0 2px 2px;
+  text-align: center;
+  font-size:small;
+  border-radius: 3px;
+  font-weight:normal;
+
+  a:only-child {
+    display: block;
+    color: inherit;
+    text-decoration: none;
+    &:hover{
+      background-image: url(data:image/png;base64,iVBORw0KGgoAAAANSUhEUgAAAAEAAAABCAQAAAC1HAwCAAAAC0lEQVR42mP8bwwAAjcBNBRvLA0AAAAASUVORK5CYII=);
+    }
+  }
+
+
+  &--placeholder {
+      font-size: xx-small;
+      padding:0;
+      margin:0;
+      user-select: none;
+
+  }
+}

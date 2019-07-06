@@ -1,6 +1,7 @@
 ---
 title: 招募寻访
 withjs: true
-order: 2
-category: 资料
+order: 3
+category: 关卡
+icon: handshake
 ---

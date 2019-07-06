@@ -1,11 +1,3 @@
-Array.prototype.sum = function (selector) {
-  if (selector) {
-    return this.map(selector).reduce((acc, cur) => acc + cur, 0);
-  } else {
-    return this.reduce((acc, cur) => acc + cur);
-  }
-}
-
 Array.prototype.count = function (selector) {
   if (selector) {
     return this.reduce((acc, cur) => acc + selector(cur), 0);
@@ -14,23 +6,11 @@ Array.prototype.count = function (selector) {
   }
 }
 
-Array.prototype.orderby = function (selector, comparer) {
-  if (!selector) {
-    return this.concat().sort();
-  } else if (!comparer) {
-    return this.sort((a, b) => selector(a) - selector(b));
+Array.prototype.sum = function (selector) {
+  if (selector) {
+    return this.map(selector).reduce((acc, cur) => acc + cur, 0);
   } else {
-    return this.sort(comparer);
-  }
-}
-
-Array.prototype.orderbyDescending = function (selector, comparer) {
-  if (!selector) {
-    return [...this].sort();
-  } else if (!comparer) {
-    return this.sort((a, b) => selector(b) - selector(a));
-  } else {
-    return this.map(selector).sort(comparer);
+    return this.reduce((acc, cur) => acc + cur);
   }
 }
 
@@ -48,4 +28,31 @@ Array.prototype.min = function (selector) {
   } else {
     return Math.min(...this);
   }
+}
+
+Array.prototype.orderby = function (selector, comparer, descending = false) {
+  let array = [...this].map(x => {
+    return {
+      sort: selector(x),
+      value: x
+    };
+  });
+
+  let result;
+  if (comparer) {
+    result = array.sort(comparer);
+  } else {
+    result = array.sort((a, b) => a.sort - b.sort);
+  }
+  if (descending) result.reverse();
+  return result.map(x => x.value);
+}
+
+Array.prototype.includesArray = function (array) {
+  return array.every(x => this.indexOf(x) !== -1);
+}
+
+Array.prototype.distinct = function () {
+  let t={};
+  return this.filter(e=>!(t[e]=e in t));
 }

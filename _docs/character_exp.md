@@ -1,7 +1,7 @@
 ---
-title: 信赖
+title: 经验值
 withjs: true
-order: 1.4
+order: 1.9
 category: 资料
 icon: chart-bar
 ---

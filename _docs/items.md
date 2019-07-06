@@ -1,6 +1,7 @@
 ---
-title: 干员排行榜
+title: 道具
 withjs: true
-order: 1.1
+order: 2
 category: 资料
+icon: box
 ---

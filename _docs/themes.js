@@ -19,7 +19,7 @@ function load() {
 
     let row = [
       `<a href="#!/${value.id}">${value.name}</a>`,
-      value.desc,
+      AKDATA.formatString(value.desc),
       totalComfort,
     ];
     list.push(row);
@@ -46,6 +46,7 @@ function show(hash) {
   let html = `<table class="table table-sm">`;
   html += `<tbody><tr>
     <th>家具</th>
+    <th>说明</th>
     <th>氛围</th>
     <th>数量</th>
   </tr></tbody>`;
@@ -56,6 +57,7 @@ function show(hash) {
       totalComfort += value.comfort;
       html += `<tbody><tr>
         <th>${value.name}</th>
+        <th></th>
         <th>${value.comfort}</th>
         <th></th>
       </tr>`;
@@ -65,7 +67,7 @@ function show(hash) {
           let data = AKDATA.Data.building_data.customData.furnitures[x];
           let count = setupList.filter(y => y == x).length;
           totalComfort += data.comfort * count;
-          html += `<tr><td class="pl-4">${data.name}</td><td>${data.comfort}</td><td>${count}</td></tr>`;
+          html += `<tr><td class="pl-4">${data.name}</td><td>${AKDATA.formatString(data.description,true)}</td><td>${data.comfort}</td><td>${count}</td></tr>`;
         });
 
       html += `</tbody>`;
@@ -74,6 +76,7 @@ function show(hash) {
 
   html += `<tbody><tr>
     <th>总计</th>
+    <th></th>
     <th>${totalComfort}</th>
     <th></th>
   </tr></tbody>`;

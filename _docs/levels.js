@@ -23,6 +23,7 @@ function extractEnemyData(source, target) {
   for (let key in target.attributes) {
     if (target.attributes[key] && target.attributes[key].m_defined) source[key] = target.attributes[key].m_value;
   }
+  if ( target.talentBlackboard ) source.talentBlackboard = target.talentBlackboard;
 }
 
 function createMap(map, tiles, texts, rates, size, r, g, b) {
@@ -67,14 +68,16 @@ function showCallback(levelId) {
   // Enemy
   let finalEnemyData = {};
   levelData.enemyDbRefs.forEach(item => {
-    let query = AKDATA.Data.enemy_database.enemies
-      .find(x => x.Key == item.id)
-      .Value;
     let data = {
       count: 0,
     };
-    extractEnemyData(data, query[0].enemyData);
-    if (item.level > 0) extractEnemyData(data, query[item.level].enemyData);
+    if ( item.useDb ) {
+      let query = AKDATA.Data.enemy_database.enemies
+        .find(x => x.Key == item.id)
+        .Value;
+      extractEnemyData(data, query[0].enemyData);
+      if (item.level > 0) extractEnemyData(data, query[item.level].enemyData);
+    }
     if (!!item.overwrittenData) extractEnemyData(data, item.overwrittenData);
 
     finalEnemyData[item.id] = data;
@@ -253,17 +256,19 @@ function showCallback(levelId) {
   let timeHeatmapTable = createMap(levelData.mapData.map, levelData.mapData.tiles, timeHeatmapText, timeHeatmapRates, '32px', 255, 255, 0);
 
 
-  let enemyHead = ['敌人', '数量', 'HP', '攻击', '防御', '魔抗', '移速', '攻击距离', 'BAT', '体重'];
+
+  let enemyHead = ['敌人', '数量', '说明', '耐久', '攻击力', '防御力', '法术抗性', '移动速度', '射程', '攻击频率', '体重'];
   let enemyTable = Object.values(finalEnemyData).map( enemyData => [
     enemyData.name,
     enemyData.count,
+    AKDATA.formatString(enemyData.description,true) + (enemyData.talentBlackboard ? '<ul class="small text-left m-0">' + enemyData.talentBlackboard.map(x=>`<li>${x.key} = ${x.value}</li>`).join('') + '</ul>' :''),
     enemyData.maxHp,
     enemyData.atk,
     enemyData.def,
     enemyData.magicResistance + '%',
     (enemyData.moveSpeed * 100).toFixed(0) + '%',
     enemyData.rangeRadius ? enemyData.rangeRadius : '-',
-    enemyData.baseAttackTime,
+    enemyData.baseAttackTime + 's',
     enemyData.massLevel,
   ]);
 
@@ -287,53 +292,68 @@ function showCallback(levelId) {
     ['关卡', ''],
     ['配置上限', levelData.options.characterLimit],
     ['初始部署费用', levelData.options.initialCost],
-    ['部署费用回复', levelData.options.costIncreaseTime == 999999 ? '0' : levelData.options.costIncreaseTime + '秒/点'],
+    ['部署费用回复', levelData.options.costIncreaseTime == 999999 ? '0' : `${levelData.options.costIncreaseTime}秒/1点`],
     ['部署费用上限', levelData.options.maxCost],
     ['生命值', levelData.options.maxLifePoint],
     ['敌人数量', totalEnemyCount],
-    ['最短耗时', Math.floor(totalDelay / 60) + ':' + Math.ceil(totalDelay % 60).toString().padStart(2, '0')],
+    ['最短出兵耗时', Math.floor(totalDelay / 60) + ':' + Math.ceil(totalDelay % 60).toString().padStart(2, '0')],
   ];
 
   let title = stageData.name;
   if (stageData.code) title = stageData.code + ' ' + title;
   let hardAttrLabel = {
-    'atk': '敌方攻击力',
-    'def': '敌方防御力',
-    'max_hp': '敌方HP',
-    'attack_speed': '敌方攻击速度',
+    'atk': '攻击力',
+    'def': '防御力',
+    'max_hp': 'HP',
+    'attack_speed': '攻击速度',
+    'move_speed': '移动速度',
   };
-  
-  let hardAttr = '';
-  if (hasHard ) {
-    hardAttr = levelData.runes
-    .find(x => x.key === 'ebuff_attribute')
-    .blackboard
-    .filter(x=>x.value!==1)
-    .map(x=>`<li>${hardAttrLabel[x.key]||x.key}: ${(x.value*100).toFixed()}%</li>`)
-    .join('');
+
+  let tileAttr = '', hardAttr = '';
+  if (hasHard) {
+    hardAttr += levelData.runes
+      .find(x => x.key === 'ebuff_attribute')
+      .blackboard
+      .filter(x=>x.value!==1)
+      .map(x=>`<li>${hardAttrLabel[x.key]||x.key}: ${(x.value*100).toFixed()}%</li>`)
+      .join('');
+    hardAttr += levelData.runes.filter(x => x.key === 'ebuff_talent_blackb_mul')
+      .map(x=>`<li>${finalEnemyData[x.blackboard[0].valueStr].name}: ${x.blackboard[1].key}=${x.blackboard[1].value}</li>`)
+      .join('');
     hardStageData.isHard = true;
   }
+
+  tileAttr += levelData.mapData.tiles
+    .filter(x=>x.blackboard)
+    .flatMap(x=>x.blackboard)
+    .map(x=>`<li>${x.key}: ${x.value}</li>`)
+    .distinct()
+    .join('')
+    ;
 
   let stageTableHelper = [
     ['编号', x => x.code],
     ['名字', x => x.name],
     ['难度', x => x.dangerLevel],
-    ['描述', x => AKDATA.formatString(x.description) + (x.isHard ? '<ul class="mb-0 pb-0">' + hardAttr + '</ul>': '')],
-    ['理智消耗', x => x.apCost + '失败返还' + x.apFailReturn],
+    ['描述', x => AKDATA.formatString(x.description, true) + (x.isHard ? `<ul class="mb-0 pb-0 small">${hardAttr}</ul>` : `<ul class="mb-0 pb-0 small">${tileAttr}</ul>` )],
+    ['理智消耗', x => x.apCost + ( x.apCost ? `<small>（失败返还${x.apFailReturn}）</small>` : '' )],
     ['演习', x => x.canPractice ? '演习券×' + x.practiceTicketCost : '不可'],
 
-    ['经验值', x => x.expGain],
-    ['金币', x => `完成：${x.goldGain}，三星：${Math.round(x.goldGain * 1.2*100)/100}`],
-    ['信赖', x => `完成：${x.passFavor}，三星：${x.completeFavor}`],
-
-    //['slProgress', x => x.slProgress ],
+    ['经验值', x => x.isHard ? Math.round(x.expGain * 1.2*100)/100 : `${x.expGain}<small>（完成）</small> / ${Math.round(x.expGain * 1.2*100)/100}<small>（三星）</small>`],
+    ['金币', x => x.isHard ? Math.round(x.goldGain * 1.2*100)/100 : `${x.goldGain}<small>（完成）</small> / ${Math.round(x.goldGain * 1.2*100)/100}<small>（三星）</small>`],
+    ['信赖', x => x.isHard ? x.completeFavor : `${x.passFavor}<small>（完成）</small> / ${x.completeFavor}<small>（三星）</small>`],
   ];
 
-  let stageTable = stageTableHelper.map(x => [
-    x[0],
-    x[1](stageData),
-    hasHard ? x[1](hardStageData) : '',
-  ]);
+  let stageInfo = {
+    header: [ '', '普通', '突袭' ],
+    card: true,
+    list: stageTableHelper.map(x => [
+      x[0],
+      x[1](stageData),
+      hasHard ? x[1](hardStageData) : '',
+    ]),
+  };
+
   /*
     appearanceStyle: 0
     bossMark: true
@@ -358,30 +378,37 @@ function showCallback(levelId) {
     type: 'tabs',
     tabs: [{
       text: '基础信息',
-      content: pmBase.content.create('info', stageTable),
+      content: pmBase.component.create('info', stageInfo),
     }, {
       text: '掉落道具',
       content: htmlDrop,
     }, {
       text: '敌人',
-      content: pmBase.content.create('list', enemyTable, enemyHead),
+      content: pmBase.component.create({
+        type:'list', 
+        list: enemyTable, 
+        header: enemyHead, 
+        card: true
+      }),
     }, {
       text: '时间线',
       content: htmlWave,
     }, {
-      text: '热度<small>（测试）</small>',
+      text: '热度 <small>(dev)</small>',
       content: `<div class="row">
-        <div class="col-12 col-lg-6">按HP：${hpHeatmapTable}</div>
-        <div class="col-12 col-lg-6">按数量：${countHeatmapTable}</div>
-        <div class="col-12 col-lg-6">按攻击力：${atkHeatmapTable}</div>
-        <div class="col-12 col-lg-6">按时间线：${timeHeatmapTable}</div>
+      <div class="col-12 col-lg-6"><div class="card mb-3"><div class="card-header">按数量：</div><div class="card-body">${countHeatmapTable}</div></div></div>
+        <div class="col-12 col-lg-6"><div class="card mb-3"><div class="card-header">按HP：</div><div class="card-body">${hpHeatmapTable}</div></div></div>
+        <div class="col-12 col-lg-6"><div class="card mb-3"><div class="card-header">按攻击力：</div><div class="card-body">${atkHeatmapTable}</div></div></div>
+        <div class="col-12 col-lg-6"><div class="card mb-3"><div class="card-header">按时间线：</div><div class="card-body">${timeHeatmapTable}</div></div></div>
+        <div class="col-12 col-lg-6"><div class="card mb-3"><div class="card-header">按防御力：</div><div class="card-body">${timeHeatmapTable}</div></div></div>
+        <div class="col-12 col-lg-6"><div class="card mb-3"><div class="card-header">按法术抗性：</div><div class="card-body">${timeHeatmapTable}</div></div></div>
       </div>`,
     }]
   });
 
   html += `
   <div class="row">
-    <div class="col-12 col-lg-7">${pmBase.content.create('info', infoTable)}</div>
+    <div class="col-12 col-lg-7">${pmBase.component.create({ type: 'info', list: infoTable, card: true})}</div>
     <div class="col-12 col-lg-5">${mapTable}</div>
   </div>
   ${tabs}
