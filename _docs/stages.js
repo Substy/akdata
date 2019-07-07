@@ -1,5 +1,5 @@
 function init() {
-  AKDATA.loadData([
+  AKDATA.load([
     'excel/zone_table.json',
     'excel/stage_table.json',
   ], show);

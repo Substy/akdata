@@ -1,5 +1,5 @@
 function init() {
-  AKDATA.loadData([
+  AKDATA.load([
     'excel/character_table.json',
     'excel/building_data.json',
     'excel/gamedata_const.json',
@@ -35,6 +35,7 @@ function load() {
       ];
     }),
     sortable: true,
+    card:true,
   };
 console.log(list);
 	pmBase.content.build({

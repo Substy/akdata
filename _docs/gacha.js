@@ -1,5 +1,5 @@
 function init() {
-  AKDATA.loadData([
+  AKDATA.load([
     'excel/gacha_table.json',
   ], load);
 }
@@ -25,6 +25,7 @@ function load() {
         m3 ? m3[1] : '',
       ];
     }),
+    card:true,
   };
 
   pmBase.content.build({

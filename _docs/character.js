@@ -10,7 +10,7 @@ const ProfessionNames = {
 };
 
 function init() {
-  AKDATA.loadData([
+  AKDATA.load([
     'excel/character_table.json',
     'excel/skill_table.json',
     'excel/range_table.json',
@@ -287,7 +287,7 @@ function show(hash) {
       list: talentInfo.candidates.map((x, i) => [
         x.unlockCondition.phase ? `精英${x.unlockCondition.phase}` : '',
         `Lv.${x.unlockCondition.level}`,
-        x.requiredPotentialRank ? `潜能${x.requiredPotentialRank}` : '',
+        x.requiredPotentialRank ? `潜能${x.requiredPotentialRank+1}` : '',
         AKDATA.formatString(x.description),
       ]),
     });
@@ -307,11 +307,11 @@ function show(hash) {
     <h2>精英化</h2>
     ${phaseTable}
     ${tokenHtml ? '<h2>召唤物</h2>' + tokenHtml : ''}
-    <h2>潜能</h2>
-    ${potentialHtml}
     ${skillHtml ? '<h2>技能</h2>' + skillHtml : ''}
     <h2>天赋</h2>
     ${talentHtml}
+    <h2>潜能</h2>
+    ${potentialHtml}
     ${skillLvlupHtml ? '<h2>技能强化</h2>' + skillLvlupHtml : ''}
   `;
 

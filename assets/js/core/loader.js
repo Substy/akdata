@@ -82,6 +82,9 @@ function using( arr, callback) {
     else if ( typeof item === 'object' ) {
       queue.push(...loadItem(item));
     }
+    else if ( typeof item === 'boolean' ) {
+      queue.push(true);
+    }
     else if ( item in Libs ) {
       queue.push(...loadItem(Libs[item]));
     }

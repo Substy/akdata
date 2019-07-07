@@ -1,6 +1,6 @@
 function init() {
   $('#p-recruit').click(()=>{
-    AKDATA.loadData([
+    AKDATA.load([
       'excel/character_table.json',
       'excel/handbook_info_table.json',
       'excel/gacha_table.json',

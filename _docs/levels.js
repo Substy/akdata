@@ -46,7 +46,7 @@ function createMap(map, tiles, texts, rates, size, r, g, b) {
 function show(hash) {
   if (hash.isEmpty) return;
   let levelId = hash.value;
-  AKDATA.loadData([
+  AKDATA.load([
     `excel/item_table.json`,
     `excel/building_data.json`,
     `excel/stage_table.json`,
@@ -273,7 +273,7 @@ function showCallback(levelId) {
   ]);
 
   let htmlDrop;
-  /*
+  
   if (!!stageData.stageDropInfo.displayDetailRewards) {
     let dropTypes = ['', '首次掉落', '常规掉落', '特殊掉落', '额外物资', '', '', '幸运掉落'];
     let dropList = {
@@ -284,12 +284,12 @@ function showCallback(levelId) {
         dropTypes[x.dropType],
         x.occPercent,
       ]),
+      card:true,
     };
     htmlDrop = pmBase.component.create(dropList);
   }
-*/
+
   let infoTable = [
-    ['关卡', ''],
     ['配置上限', levelData.options.characterLimit],
     ['初始部署费用', levelData.options.initialCost],
     ['部署费用回复', levelData.options.costIncreaseTime == 999999 ? '0' : `${levelData.options.costIncreaseTime}秒/1点`],
@@ -385,9 +385,9 @@ function showCallback(levelId) {
     }, {
       text: '敌人',
       content: pmBase.component.create({
-        type:'list', 
-        list: enemyTable, 
-        header: enemyHead, 
+        type:'list',
+        list: enemyTable,
+        header: enemyHead,
         card: true
       }),
     }, {

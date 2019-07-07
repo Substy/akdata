@@ -11,7 +11,7 @@ const ProfessionNames = {
 
 
 function init() {
-  AKDATA.loadData([
+  AKDATA.load([
     'excel/character_table.json',
     'excel/gacha_table.json',
   ], load);

@@ -22,7 +22,7 @@ function load() {
       <!--<label class="col-1 col-form-label">${name}</label>-->
       <div class="col-12">
         <div class="btn-groupx btn-group-toggle" data-toggle="buttons">
-          ${list.map(i=>`<label class="btn btn-outline-primary btn-sm mr-2 mb-2" style="width:100px;background:white;"><input class="p-tag" type="checkbox" name="options" value="${i}"> ${recruitData.tagNames[i]}</label>`).join('')}
+          ${list.map(i=>`<label class="btn btn-outline-primary btn-sm mr-2 mb-2" style="width:100px;"><input class="p-tag" type="checkbox" name="options" value="${i}"> ${recruitData.tagNames[i]}</label>`).join('')}
         </div>
       </div>
     </div>

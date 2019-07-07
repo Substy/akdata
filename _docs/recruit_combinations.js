@@ -31,6 +31,7 @@ function load() {
         char.name,
         char.results.filter(y=>char.rarity<5||y.includes(11)).map(y=>getTagHtml(y)).join('<br>'),
     ]),
+    card:true,
   });
 
   pmBase.content.build({

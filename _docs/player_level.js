@@ -1,7 +1,7 @@
 const apPerDay = 240;
 
 function init() {
-  AKDATA.loadData(['excel/gamedata_const.json'], () => {
+  AKDATA.load(['excel/gamedata_const.json'], () => {
 
     let header = ['等级', '理智', '升级所需经验', '升级需要理智', '需要天数', '总累计天数' ];
     let list = [];

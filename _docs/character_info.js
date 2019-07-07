@@ -10,7 +10,7 @@ const ProfessionNames = {
 };
 
 function init() {
-  AKDATA.loadData([
+  AKDATA.load([
     'excel/handbook_info_table.json',
   ], load);
 }
@@ -58,12 +58,14 @@ function load() {
     columns: [{header:'代号',width:'20%'}, '出身地', '性别', '战斗经验', '生日', '种族', '身高', '体重'],
     list: listData1,
     sortable: true,
+    card:true,
   });
   let list2 = pmBase.component.create({
     type: 'list',
     columns: [{header:'代号',width:'20%'}, '物理强度', '战场机动', '生理耐受', '战术规划', '战斗技巧', '源石技艺适应性'],
     list: listData2,
     sortable: true,
+    card:true,
   });
   let tab = pmBase.component.create({
     type: 'tabs',

@@ -1,4 +1,9 @@
 const stringRegex = /<@(.+?)>(.+?)<\/>/g;
+let CacheList = null;
+
+const useCache = true;
+const cacheBeginTime = new Date(2019, 7, 7).getTime();
+
 window.AKDATA = {
   Data: {},
 
@@ -7,18 +12,24 @@ window.AKDATA = {
       if ( paths[i].endsWith('.json') ){
         let name = paths[i].split('/').pop().replace('.json', '');
         let path = `${siteInfo.baseurl}/resources/gamedata/${paths[i].toLowerCase()}`;
-        paths[i] =  $.getJSON(path, data => AKDATA.Data[name] = data);
+        //paths[i] =  $.getJSON(path, data => AKDATA.Data[name] = data);
+        paths[i] = loadJSON(path, data => AKDATA.Data[name] = data);
       }
     }
-    pmBase.loader.using( paths, () => {
-      if (callback){
 
+    pmBase.loader.using( paths, () => {
+      if ( useCache ) {
+        let string = JSON.stringify( CacheList );
+        localStorage.setItem( 'CacheList', string);
+      }
+
+      if (callback){
         let result = callback(...args);
         if (result !== undefined) pmBase.content.show(result);
       }
     });
   },
-
+/*
   loadData: function (paths, callback, ...args) {
     let requests = paths.map(path => {
       let name = path.split('/').pop().replace('.json', '');
@@ -30,7 +41,7 @@ window.AKDATA = {
       if (result !== undefined) pmBase.content.show(result);
     });
   },
-
+*/
 
   getLevel: function (phase, level) {
     // {phase: 1, level: 1}
@@ -97,6 +108,61 @@ window.AKDATA = {
     return string;
   },
 };
+
+function getLocaStorageObject(key, compressed, def) {
+  var raw = localStorage.getItem( key );
+  if ( raw !== null ) {
+    try {
+      if (compressed) raw = LZString.decompress(raw);
+      var obj = JSON.parse(raw);
+      return obj;
+    } catch (e) {
+      return def;
+    }
+  } else {
+    return def;
+  }
+}
+
+function setLocaStorageObject(key, obj) {
+  CacheList[key] = {
+    time: cacheBeginTime,
+    compressed: true,
+    type: 'object',
+  };
+
+  let string = JSON.stringify( obj );
+  string = LZString.compress(string);
+  localStorage.setItem( key, string);
+}
+
+function loadJSON( url, callback ){
+  let hasCache = false;
+  let beginTime = performance.now();
+
+  if (useCache){
+    if ( CacheList === null ) {
+      CacheList = getLocaStorageObject('CacheList', false, {});
+    }
+    hasCache = url in CacheList && CacheList[url].time >= cacheBeginTime;
+  }
+
+  if ( hasCache ) {
+    let obj = getLocaStorageObject(url, CacheList[url].compressed);
+    callback(obj);
+    //console.log(`load json '${url} from localStorage in ${performance.now() - beginTime}ms.`);
+    return true;
+  }
+  else {
+    return $.getJSON(url, data => {
+      callback(data);
+      if (useCache) {
+        setLocaStorageObject( url, data );
+      }
+      //console.log(`load json '${url} from server in ${performance.now() - beginTime}ms.`);
+    });
+  }
+}
 
 function formatStringCallback(match, name, value) {
   if (!!AKDATA.Data.gamedata_const) {

@@ -1,5 +1,5 @@
 function init() {
-  AKDATA.loadData([
+  AKDATA.load([
     'excel/activity_table.json',
     'excel/item_table.json',
     'excel/building_data.json',
@@ -20,11 +20,12 @@ function load() {
         new Date(data.endTime*1000).toLocaleString("default",{ hour12: false }),
       ];
     }),
+    card:true,
   };
 
   pmBase.content.build({
     pages: [{
-      content: pmBase.component.create('list', list),
+      content: pmBase.component.create('list',list),
     }, {
       content: show
     }]
@@ -42,6 +43,7 @@ function show(hash) {
       x.description,
       x.rewards.map( y=> AKDATA.getItemBadge(y.type, y.id, y.count) ).join('<br>'),
     ]),
+    card:true,
   };
 
   return pmBase.component.create('list', list);

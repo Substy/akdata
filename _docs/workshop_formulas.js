@@ -1,5 +1,5 @@
 function init() {
-  AKDATA.loadData([
+  AKDATA.load([
     'excel/item_table.json',
     'excel/building_data.json',
   ], load);
@@ -24,6 +24,7 @@ function load() {
       createOutcomeTable(formula.extraOutcomeGroup),
     ]),
     sortable: true,
+    card:true,
   });
 
 	pmBase.content.build({

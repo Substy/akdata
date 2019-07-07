@@ -1,5 +1,5 @@
 function init() {
-  AKDATA.loadData([
+  AKDATA.load([
     'excel/building_data.json',
   ], load);
 }
@@ -31,6 +31,7 @@ function load() {
       content: pmBase.component.create('list', {
         header: [ '家具', '说明', '舒适度总和' ],
         list,
+        card:true,
         sortable: true
       }),
     }, {

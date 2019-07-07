@@ -1,5 +1,5 @@
 function init() {
-  AKDATA.loadData(['excel/building_data.json'],load);
+  AKDATA.load(['excel/building_data.json'],load);
 }
 /*
 "furni_warehouse_storageshelf_01": {
@@ -47,7 +47,8 @@ function load() {
   
 	pmBase.content.build({
 	  pages: [{
-      content: pmBase.component.create('list', {list, header, sortable:true}),
+      content: pmBase.component.create('list', {list, header,
+        card:true, sortable:true}),
     }]
 	});
 }

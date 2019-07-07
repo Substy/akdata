@@ -1,5 +1,5 @@
 function init() {
-  AKDATA.loadData([
+  AKDATA.load([
     'excel/item_table.json',
   ], load);
 }
@@ -51,6 +51,7 @@ function load() {
       itemData.iconId,
     ]),
     sortable: true,
+    card:true,
   });
 
 	pmBase.content.build({

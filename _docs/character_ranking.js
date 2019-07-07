@@ -10,14 +10,17 @@ const ProfessionNames = {
 };
 
 function init() {
-  AKDATA.loadData([
+  AKDATA.load([
     'excel/character_table.json',
+    'excel/skill_table.json',
   ], load);
 }
 
 function load() {
 
   let rankingList = [];
+  let charFinalData = [];
+
   for (let charId in AKDATA.Data.character_table) {
     let charData = AKDATA.Data.character_table[charId];
     if (charData.profession == "TOKEN" || charData.profession == "TRAP") continue;
@@ -36,9 +39,13 @@ function load() {
       perfectAttr.magicResistance + '%',
       Math.round(1 / ( perfectAttr.baseAttackTime / perfectAttr.attackSpeed * 100 ) * perfectAttr.atk),
     ]);
+    charData.skills.forEach(skillData=>{
+      let data = parseSkillEffect(charId, charData, perfectAttr, skillData.skillId);
+      if(data) charFinalData.push(data);
+    });
   }
 
-  let item = {
+  let item = pmBase.component.create({
     type: 'list',
 
     header: ['干员', '职业', '星级', '再部署', '部署费用', '阻挡数', '攻击速度', '生命上限', '攻击', '防御', '法术抗性', 'DPS'],
@@ -46,11 +53,35 @@ function load() {
     list: rankingList,
 
     sortable: true,
-  };
+    card: true,
+  });
+
+  let item2 = pmBase.component.create({
+    type: 'list',
+
+    header: ['干员', '职业', '星级', '再部署', '部署费用', '阻挡数', '攻击速度', '生命上限', '攻击', '防御', '法术抗性', 'DPS'],
+
+    list: charFinalData,
+
+    sortable: true,
+    card: true,
+  });
+
+  let tabs = pmBase.component.create({
+    type: 'tabs',
+
+    tabs: [{
+      text: 1,
+      content: item,
+    },{
+      text: 2,
+      content: item2,
+    }],
+  });
 
   pmBase.content.build({
     pages: [{
-      content: pmBase.component.create(item),
+      content: tabs,
     }]
   });
 }
@@ -136,4 +167,79 @@ function applyTalent(charId, frame, talent) {
     if ( talent.cost ) frame.cost += talent.cost;
   }
 }
+
+
+function parseSkillEffect (charId, charData, perfectAttr, skillId) {
+  let skillData = AKDATA.Data.skill_table[skillId];
+  let levelData = skillData.levels[skillData.levels.length-1];
+  let prefabId = levelData.prefabId;
+  let bb = {};
+  let dps = 0;
+  let atk = perfectAttr.atk;
+  let bas = perfectAttr.attackSpeed;
+  let bat = perfectAttr.baseAttackTime;
+
+  let talentKeyFrame = {};
+  levelData.blackboard.forEach(kv => bb[kv.key] = kv.value);
+
+  if (prefabId == "skchr_wyvern_1") { atk += atk * bb.atk; }
+  else if (prefabId == "skcom_quickattack") { atk += atk * bb.atk; bas += bb.attack_speed; }
+  else if (prefabId == "skcom_atk_up") { atk += atk * bb.atk; }
+  else if (prefabId == "skcom_atk_speed_up") { bas += bb.attack_speed; }
+  else if (
+    prefabId == "skchr_kroos_1"
+    || prefabId == "skchr_stward_1"
+    || prefabId == "skchr_angel_1"
+    || prefabId == "skchr_svrash_1"
+    || prefabId == "skchr_savage_1"
+    ) { dps = parseA(atk,bas,bat,levelData.spData,bb); }
+  else if (prefabId == "skchr_brownb_2") { bat += bb.base_attack_time; }
+  else if (prefabId == "skchr_angel_2") { dps += parseB(atk,bas,bat,levelData,bb); }
+
+  if(dps==0) dps = 1 / ( bat / bas * 100 ) * atk;
+  console.log(levelData);
+  return [
+    charId,
+    atk,
+    bas,
+    bat,
+    levelData.name,
+    levelData.prefabId,
+    Math.round(dps),
+  ];
+
+}
+
+function parseA (atk,bas,bat,spData,blackboard){
+  let seconds = 0;
+  let damage = 0;
+  let attackTimes = 0;
+  let attackSpeed = 1 / ( bat / bas * 100 );
+
+  if(spData.spType==1) {
+    attackTimes = Math.ceil(spData.spCost / attackSpeed);
+  }
+  else if (spData.spType ==2 ){
+    attackTimes = spData.spCost;
+  }
+
+  seconds += attackTimes * attackSpeed;
+  damage += attackTimes * atk;
+
+  seconds += attackSpeed;
+  damage += atk * (blackboard.atk_scale||1) * (blackboard.times||1);
+
+  return damage/seconds;
+}
+
+function parseB (atk,bas,bat,skillData,blackboard){
+  let seconds = skillData.duration;
+  let damage = 0;
+  let attackSpeed = 1 / ( bat / bas * 100 );
+  let attackTimes = Math.floor(seconds / attackSpeed);
+  damage += attackTimes * atk * (blackboard['attack@times']||1) * (blackboard['attack@atk_scale']||1);
+
+  return damage/seconds;
+}
+
 pmBase.hook.on('init', init);
