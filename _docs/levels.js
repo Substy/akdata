@@ -161,12 +161,15 @@ function showCallback(levelId) {
   let totalEnemyCount = 0;
   let totalEnemyHP = 0;
   let totalEnemyAtk = 0;
+  let totalEnemyDef = 0;
+  let totalEnemyMr = 0;
 
   let atkHeatmap = new Array(levelData.mapData.tiles.length).fill(0);
   let hpHeatmap = new Array(levelData.mapData.tiles.length).fill(0);
   let numberHeatmap = new Array(levelData.mapData.tiles.length).fill(0);
   let timeHeatmap = new Array(levelData.mapData.tiles.length).fill(0);
-  let totalTimeV = Object.keys(timeHeatmap).sum(x=>~~x+1);
+  let defHeatmap = new Array(levelData.mapData.tiles.length).fill(0);
+  let mrHeatmap = new Array(levelData.mapData.tiles.length).fill(0);
 
   levelData.waves.forEach((waveData, waveIndex) => {
     let waveDelay = 0;
@@ -201,10 +204,14 @@ function showCallback(levelId) {
         if (!enemyData) return true;
         totalEnemyHP += enemyData.maxHp;
         totalEnemyAtk += enemyData.atk;
+        totalEnemyDef += enemyData.def;
+        totalEnemyMr += enemyData.magicResistance;
         let routeData = routeList[actionData.routeIndex];
         routeData.tiles.forEach(i => {
           hpHeatmap[i] += enemyData.maxHp;
           atkHeatmap[i] += enemyData.atk;
+          defHeatmap[i] += enemyData.def;
+          mrHeatmap[i] += enemyData.magicResistance;
           numberHeatmap[i]++;
           timeHeatmap[i] += actionData.preDelay;
         });
@@ -250,12 +257,18 @@ function showCallback(levelId) {
   let atkHeatmapRates = atkHeatmap.map(x => (x / totalEnemyAtk).toFixed(2));
   let atkHeatmapText = atkHeatmapRates.map(x => x > 0 ? (x * 100).toFixed(0) + '%' : '');
   let atkHeatmapTable = createMap(levelData.mapData.map, levelData.mapData.tiles, atkHeatmapText, atkHeatmapRates, '32px', 255, 0, 0);
-
+/*
   let timeHeatmapRates = timeHeatmap.map((x,i) => (x / totalDelay / numberHeatmap[i]).toFixed(2));
   let timeHeatmapText = timeHeatmapRates.map(x => x > 0 ? Math.ceil(x * 100) + '%' : '');
   let timeHeatmapTable = createMap(levelData.mapData.map, levelData.mapData.tiles, timeHeatmapText, timeHeatmapRates, '32px', 255, 255, 0);
+*/
+  let defHeatmapRates = defHeatmap.map(x => (x / totalEnemyDef).toFixed(2));
+  let defHeatmapText = defHeatmapRates.map(x => x > 0 ? (x * 100).toFixed(0) + '%' : '');
+  let defHeatmapTable = createMap(levelData.mapData.map, levelData.mapData.tiles, defHeatmapText, defHeatmapRates, '32px', 128, 0, 0);
 
-
+  let mrHeatmapRates = mrHeatmap.map(x => (x / totalEnemyMr).toFixed(2));
+  let mrHeatmapText = mrHeatmapRates.map(x => x > 0 ? (x * 100).toFixed(0) + '%' : '');
+  let mrHeatmapTable = createMap(levelData.mapData.map, levelData.mapData.tiles, mrHeatmapText, mrHeatmapRates, '32px', 255, 0, 255);
 
   let enemyHead = ['敌人', '数量', '说明', '耐久', '攻击力', '防御力', '法术抗性', '移动速度', '射程', '攻击频率', '体重'];
   let enemyTable = Object.values(finalEnemyData).map( enemyData => [
@@ -399,9 +412,8 @@ function showCallback(levelId) {
       <div class="col-12 col-lg-6"><div class="card mb-3"><div class="card-header">按数量：</div><div class="card-body">${countHeatmapTable}</div></div></div>
         <div class="col-12 col-lg-6"><div class="card mb-3"><div class="card-header">按HP：</div><div class="card-body">${hpHeatmapTable}</div></div></div>
         <div class="col-12 col-lg-6"><div class="card mb-3"><div class="card-header">按攻击力：</div><div class="card-body">${atkHeatmapTable}</div></div></div>
-        <div class="col-12 col-lg-6"><div class="card mb-3"><div class="card-header">按时间线：</div><div class="card-body">${timeHeatmapTable}</div></div></div>
-        <div class="col-12 col-lg-6"><div class="card mb-3"><div class="card-header">按防御力：</div><div class="card-body">${timeHeatmapTable}</div></div></div>
-        <div class="col-12 col-lg-6"><div class="card mb-3"><div class="card-header">按法术抗性：</div><div class="card-body">${timeHeatmapTable}</div></div></div>
+        <div class="col-12 col-lg-6"><div class="card mb-3"><div class="card-header">按防御力：</div><div class="card-body">${defHeatmapTable}</div></div></div>
+        <div class="col-12 col-lg-6"><div class="card mb-3"><div class="card-header">按法术抗性：</div><div class="card-body">${mrHeatmapTable}</div></div></div>
       </div>`,
     }]
   });

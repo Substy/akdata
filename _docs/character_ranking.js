@@ -37,9 +37,10 @@ function load() {
       Math.floor(perfectAttr.atk),
       Math.floor(perfectAttr.def),
       perfectAttr.magicResistance + '%',
-      Math.round(1 / ( perfectAttr.baseAttackTime / perfectAttr.attackSpeed * 100 ) * perfectAttr.atk),
+     // Math.round(1 / ( perfectAttr.baseAttackTime / perfectAttr.attackSpeed * 100 ) * perfectAttr.atk),
     ]);
     charData.skills.forEach(skillData=>{
+      if ( charData.profession == 'MEDIC' ) return;
       let data = parseSkillEffect(charId, charData, perfectAttr, skillData.skillId);
       if(data) charFinalData.push(data);
     });
@@ -48,7 +49,8 @@ function load() {
   let item = pmBase.component.create({
     type: 'list',
 
-    header: ['干员', '职业', '星级', '再部署', '部署费用', '阻挡数', '攻击速度', '生命上限', '攻击', '防御', '法术抗性', 'DPS'],
+    header: ['干员', '职业', '星级', '再部署', '部署费用', '阻挡数', '攻击速度', '生命上限', '攻击', '防御', '法术抗性'],
+
 
     list: rankingList,
 
@@ -59,22 +61,34 @@ function load() {
   let item2 = pmBase.component.create({
     type: 'list',
 
-    header: ['干员', '职业', '星级', '再部署', '部署费用', '阻挡数', '攻击速度', '生命上限', '攻击', '防御', '法术抗性', 'DPS'],
-
+    columns: ['干员', '职业', 'ATK', 'AS', 'BAT', '技能', {header:'说明',width:'40%'}, '攻击DPS', '技能DPS', '平均DPS'],
     list: charFinalData,
 
     sortable: true,
     card: true,
   });
 
+  item2 +=`
+<div class="alert alert-primary small">
+  <ul class="m-0">
+    <li>这个表格仅收录干员的攻击技能，干员属性取自第一页的极限值。</li>
+    <li>这个表格不考虑敌人的防御力，实际战斗中根据敌人防御的不同，攻击力越低的干员与表中的出入越大。</li>
+    <li>“强力击”类的技能以充能+攻击为一个周期计算技能DPS。</li>
+    <li>平均DPS由充能时间+技能持续时间+硬直时间为一个周期计算，暂不考虑初始技力因素。</li>
+    <li>艾雅法拉的“二重咏唱”、塞雷娅的“莱茵充能护服”等根据条件增长的技能或天赋，取最大值计算。</li>
+    <li>阿米娅的“奇美拉”、斯卡蒂的“跃浪击”等限定发动条件技能，不计算平均DPS。</li>
+  </ul>
+</div>
+`;
+
   let tabs = pmBase.component.create({
     type: 'tabs',
 
     tabs: [{
-      text: 1,
+      text: '极限属性',
       content: item,
     },{
-      text: 2,
+      text: '单体DPS',
       content: item2,
     }],
   });
@@ -133,7 +147,7 @@ function applyTalent(charId, frame, talent) {
   else if ( charId == "char_208_melan" ) frame.atk *= 1 + talent.atk;
   else if ( charId == "char_209_ardign" ) frame.maxHp *= 1 + talent.max_hp;
   else if ( charId == "char_122_beagle" ) frame.def *= 1 + talent.def;
-  else if ( charId == "char_211_adnach" ) frame.attackSpeed += talent.attack_speed;
+  else if ( charId == "char_211_adnach" ) frame.attackSpeed += talent.attack_speed * 100;
   else if ( charId == "char_120_hibisc" ) frame.atk *= 1 + talent.atk;
   else if ( charId == "char_210_stward" ) frame.atk *= 1 + talent.atk;
   else if ( charId == "char_278_orchid" ) frame.attackSpeed += talent.attack_speed;
@@ -172,74 +186,98 @@ function applyTalent(charId, frame, talent) {
 function parseSkillEffect (charId, charData, perfectAttr, skillId) {
   let skillData = AKDATA.Data.skill_table[skillId];
   let levelData = skillData.levels[skillData.levels.length-1];
-  let prefabId = levelData.prefabId;
-  let bb = {};
-  let dps = 0;
-  let atk = perfectAttr.atk;
-  let bas = perfectAttr.attackSpeed;
-  let bat = perfectAttr.baseAttackTime;
 
-  let talentKeyFrame = {};
+  if (levelData.prefabId == "skchr_sunbr_2"
+   || levelData.prefabId == "skchr_deepcl_1"
+   || levelData.prefabId == "skchr_nearl_2"
+   || levelData.prefabId == "skchr_red_1"
+   || levelData.prefabId == "skchr_red_2"
+   || levelData.prefabId == "skchr_sora_2"
+  ) return;
+
+  let bb = {};
   levelData.blackboard.forEach(kv => bb[kv.key] = kv.value);
 
-  if (prefabId == "skchr_wyvern_1") { atk += atk * bb.atk; }
-  else if (prefabId == "skcom_quickattack") { atk += atk * bb.atk; bas += bb.attack_speed; }
-  else if (prefabId == "skcom_atk_up") { atk += atk * bb.atk; }
-  else if (prefabId == "skcom_atk_speed_up") { bas += bb.attack_speed; }
-  else if (
-    prefabId == "skchr_kroos_1"
-    || prefabId == "skchr_stward_1"
-    || prefabId == "skchr_angel_1"
-    || prefabId == "skchr_svrash_1"
-    || prefabId == "skchr_savage_1"
-    ) { dps = parseA(atk,bas,bat,levelData.spData,bb); }
-  else if (prefabId == "skchr_brownb_2") { bat += bb.base_attack_time; }
-  else if (prefabId == "skchr_angel_2") { dps += parseB(atk,bas,bat,levelData,bb); }
-
-  if(dps==0) dps = 1 / ( bat / bas * 100 ) * atk;
-  console.log(levelData);
+  let dps = checkSkillEffect(perfectAttr, skillData,levelData,bb);
+  if (!dps) return;
   return [
-    charId,
-    atk,
-    bas,
-    bat,
-    levelData.name,
-    levelData.prefabId,
-    Math.round(dps),
+    `<a href="../character/#!/${charId}">${charData.name}</a>`,
+    ProfessionNames[charData.profession],
+    Math.round(perfectAttr.atk),
+    Math.round(perfectAttr.attackSpeed*100)/100 + '%',
+    Math.round(perfectAttr.baseAttackTime*100)/100,
+    levelData.name,// + '<br>' + levelData.prefabId,
+    AKDATA.formatString(levelData.description, true, bb),// + `<ul class="small text-left mb-0 muted">${Object.entries(bb).map(k=>`<li>${k[0]}: ${k[1]}</li>`).join('')}</ul>`,
+    ...dps,
   ];
-
 }
 
-function parseA (atk,bas,bat,spData,blackboard){
-  let seconds = 0;
-  let damage = 0;
-  let attackTimes = 0;
-  let attackSpeed = 1 / ( bat / bas * 100 );
+function checkSkillEffect(perfectAttr,skillData,levelData,blackboard){
+  let normalDps = Math.round(1 / ( perfectAttr.baseAttackTime / perfectAttr.attackSpeed * 100 ) * perfectAttr.atk);
 
-  if(spData.spType==1) {
-    attackTimes = Math.ceil(spData.spCost / attackSpeed);
+  let peakResult = Object.assign({}, perfectAttr);
+  if ( blackboard['atk'] ) peakResult.atk *= 1 + blackboard['atk'];
+  if ( blackboard['attack_speed'] ) peakResult.attackSpeed += blackboard['attack_speed'];
+  if ( blackboard['base_attack_time'] ) peakResult.baseAttackTime += blackboard['base_attack_time'];
+  if (levelData.prefabId == "skchr_texas_2") { blackboard.times = 2; }
+  else if (levelData.prefabId == "skchr_slbell_1") { delete blackboard.attack_speed; }
+  else if (levelData.prefabId == "skchr_amgoat_1") { peakResult.atk *= 1 + blackboard['amgoat_s_1[b].atk']; peakResult.attack_speed += blackboard['amgoat_s_1[b].attack_speed']; }
+  else if (levelData.prefabId == "skchr_amgoat_2") { blackboard['atk_scale'] += blackboard['atk_scale_2']; }
+  else if (levelData.prefabId == "skchr_aglina_2") { peakResult.baseAttackTime = blackboard['base_attack_time']; }
+  if (levelData.prefabId == "skchr_aglina_2" || levelData.prefabId == "skchr_aglina_3") { normalDps = '0'; }
+
+  let peakDps = 0;
+  let peakDamage = 0;
+  let peakDuration = 0;
+  let peakAttackTimes = 0;
+  if ( levelData.duration <= 0 ) {
+    peakDuration = peakResult.baseAttackTime / peakResult.attackSpeed * 100;
+    peakAttackTimes = 1;
   }
-  else if (spData.spType ==2 ){
-    attackTimes = spData.spCost;
+  else
+  {
+    let attackSpeed = peakResult.baseAttackTime / peakResult.attackSpeed * 100;
+    peakAttackTimes = Math.floor(levelData.duration / attackSpeed);
+    peakDuration = peakAttackTimes * attackSpeed;
   }
+  peakDamage = peakResult.atk * peakAttackTimes;
+  if ( blackboard['attack@times'] ) peakDamage *= blackboard['attack@times'];
+  if ( blackboard['attack@atk_scale'] ) peakDamage *= blackboard['attack@atk_scale'];
+  if ( blackboard['atk_scale'] ) peakDamage *= blackboard['atk_scale'];
+  if ( blackboard['times'] ) peakDamage *= blackboard['times'];
+  if ( blackboard['damage_scale'] ) peakDamage *= blackboard['damage_scale'];
+  peakDps = Math.round(peakDamage / peakDuration);
 
-  seconds += attackTimes * attackSpeed;
-  damage += attackTimes * atk;
+  let globalDps = 0;
+  let footDps = 0;
+  let footDuration = 0;
+  let footAttackTimes = 0;
+  let footDamage = 0;
+  let footAttackSpeed = perfectAttr.baseAttackTime / perfectAttr.attackSpeed * 100;
+  if(levelData.spData.spType==1) {
+    footAttackTimes = Math.ceil(levelData.spData.spCost / footAttackSpeed);
+  }
+  else if (levelData.spData.spType ==2 ){
+    footAttackTimes = levelData.spData.spCost;
+  }
+  footDuration = footAttackTimes * footAttackSpeed;
+  footDamage += footAttackTimes * perfectAttr.atk;
 
-  seconds += attackSpeed;
-  damage += atk * (blackboard.atk_scale||1) * (blackboard.times||1);
+  let waitDuration = 0;
 
-  return damage/seconds;
-}
+  if (levelData.prefabId == "skchr_fmout_2") { waitDuration += blackboard.time; }
+  else if (levelData.prefabId == "skchr_amiya_2") { waitDuration += blackboard.stun; }
+  else if (levelData.prefabId == "skchr_liskam_2") { waitDuration += blackboard.stun; }
+  else if (levelData.prefabId == "skchr_aglina_2" || levelData.prefabId == "skchr_aglina_3") { footDamage = 0; }
 
-function parseB (atk,bas,bat,skillData,blackboard){
-  let seconds = skillData.duration;
-  let damage = 0;
-  let attackSpeed = 1 / ( bat / bas * 100 );
-  let attackTimes = Math.floor(seconds / attackSpeed);
-  damage += attackTimes * atk * (blackboard['attack@times']||1) * (blackboard['attack@atk_scale']||1);
+  globalDps = Math.round((peakDamage+footDamage) / (peakDuration+footDuration+waitDuration));
 
-  return damage/seconds;
+  if ( normalDps == peakDps ) return;
+
+  if (levelData.prefabId == "skchr_skadi_2" || levelData.prefabId == "skchr_amiya_3") { globalDps = '0'; }
+  else if ( levelData.duration <= 0 ) peakDps = globalDps;
+
+  return [normalDps, peakDps, globalDps,];
 }
 
 pmBase.hook.on('init', init);

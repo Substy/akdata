@@ -1,4 +1,6 @@
 const stringRegex = /<@(.+?)>(.+?)<\/>/g;
+const variableRegex = /{(\-)*(.+?)(?:\:(.+?))?}/g;
+
 let CacheList = null;
 
 const useCache = true;
@@ -100,11 +102,22 @@ window.AKDATA = {
     return s;
   },
 
-  formatString: function (string, small = false) {
+  formatString: function (string, small = false, params = null, deleteItem = false) {
     string = string || '';
     string = string.replace(stringRegex, formatStringCallback);
     string = string.replace(/\\n/g, '<br>');
     string = `<div class="${small?'small':''} text-left">${string}</div>`;
+    if ( params ) {
+      string = string.replace(variableRegex, (match, minus, key, format) => {
+        key = key.toLowerCase();
+        let value = params[key];
+        if ( deleteItem ) delete params[key];
+        if (minus) value = value * -1;
+        if (format === '0%') value = Math.round(value * 100) + '%';
+        else if (format === '0.0%') value = Math.round(value * 1000) / 10 + '%';
+        return value;
+      });
+    }
     return string;
   },
 };

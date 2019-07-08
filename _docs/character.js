@@ -157,15 +157,6 @@ function show(hash) {
       '<span class="o-badge" style="font-size:xx-small;width:60px;color:white;background-color:#6F6F6F;">手动触发</span>',
       '<span class="o-badge" style="font-size:xx-small;width:60px;color:white;background-color:#6F6F6F;">自动触发</span>',
     ][skillData.levels[0].skillType];
-    /*
-        skillHtml += `<div class="row">
-        <div class="col-4">${skillData.levels[0].name}</div>
-        <div class="col-4">${spType}${skillType}</div>
-        <div class="col-4">${skillData.levels[0].rangeId ? createRangeTable(skillData.levels[0].rangeId) : ''}</div>
-        </div>
-        `;
-    */
-
     skillHtml += pmBase.component.create({
       type: 'list',
       card: true,
@@ -199,7 +190,8 @@ function show(hash) {
       list: skillData.levels.map((levelData, l) => {
         let spData = levelData.spData;
         let blackboard = Object.fromEntries(levelData.blackboard.map(x => [x.key.toLowerCase(), x.value]));
-        let desc = AKDATA.formatString(levelData.description, true);
+        let desc = AKDATA.formatString(levelData.description, true, blackboard, true);
+        /*
         desc = desc.replace(variableRegex, (match, minus, key, format) => {
           key = key.toLowerCase();
           let value = blackboard[key];
@@ -208,7 +200,7 @@ function show(hash) {
           if (format === '0%') value = Math.round(value * 100) + '%';
           else if (format === '0.0%') value = Math.round(value * 1000) / 10 + '%';
           return value;
-        });
+        });*/
         if ( levelData.rangeId && (l == 0 || levelData.rangeId != skillData.levels[l-1].rangeId ) ) desc += '<hr>' + createRangeTable(levelData.rangeId);
         let bbtext = `<ul class="small text-left mb-0 muted">${Object.entries(blackboard).map(k=>`<li>${k[0]}: ${k[1]}</li>`).join('')}</ul>`;
 

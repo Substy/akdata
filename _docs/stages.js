@@ -8,6 +8,7 @@ function init() {
 function show() {
   let selector = {};
   let list = [];
+  let html = '<div class="row">';
 
   Object.entries(AKDATA.Data.zone_table.zones).forEach(([key, value]) => {
     let zoneName = value.zoneNameFirst ?
@@ -17,7 +18,16 @@ function show() {
       `<a href="#!/${value.zoneID}">${zoneName}</a>`,
     ]);
     selector[value.zoneID] = zoneName;
+    html += `<div class="col-6 col-sm-3"><div class="card m-3">
+    <a class="card-block stretched-link text-decoration-none" href>
+      <div class="card-header">
+      <div class="card-title">${zoneName}</div>
+      </div>
+        ...
+    </a>
+</div></div>`;
   });
+  html += '</div>';
 
   pmBase.content.build({
     pages: [{
