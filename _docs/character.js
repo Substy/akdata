@@ -149,7 +149,9 @@ function show(hash) {
       '',
       '<span class="o-badge" style="font-size:xx-small;width:60px;color:white;background-color:#F2763F;">自动回复</span>',
       '<span class="o-badge" style="font-size:xx-small;width:60px;color:white;background-color:#88BA20;">攻击回复</span>',
-      '', '', '', '', '',
+      '', 
+      '<span class="o-badge" style="font-size:xx-small;width:60px;color:white;background-color:#FFB400;">受击回复</span>',
+      '', '', '',
       '<span class="o-badge" style="font-size:xx-small;width:60px;color:white;background-color:#6F6F6F;">被动</span>',
     ][skillData.levels[0].spData.spType];
     let skillType = [

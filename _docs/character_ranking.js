@@ -61,7 +61,7 @@ function load() {
   let item2 = pmBase.component.create({
     type: 'list',
 
-    columns: ['干员', '职业', 'ATK', 'AS', 'BAT', '技能', {header:'说明',width:'40%'}, '攻击DPS', '技能DPS', '平均DPS'],
+    columns: ['干员', '职业', '伤害', 'S_ATK', 'S_BAT', '技能', {header:'说明',width:'40%'}, '攻击DPS', '技能DPS', '平均DPS'],
     list: charFinalData,
 
     sortable: true,
@@ -197,18 +197,24 @@ function parseSkillEffect (charId, charData, perfectAttr, skillId) {
 
   let bb = {};
   levelData.blackboard.forEach(kv => bb[kv.key] = kv.value);
+  let desc = AKDATA.formatString(levelData.description, true, bb);
 
   let dps = checkSkillEffect(perfectAttr, skillData,levelData,bb);
   if (!dps) return;
   return [
     `<a href="../character/#!/${charId}">${charData.name}</a>`,
     ProfessionNames[charData.profession],
-    Math.round(perfectAttr.atk),
-    Math.round(perfectAttr.attackSpeed*100)/100 + '%',
-    Math.round(perfectAttr.baseAttackTime*100)/100,
+    (charData.description.includes('法术伤害') || levelData.description.includes('伤害类型变为<@ba.vup>法术</>') ) ? '法术' : '物理',
+    //Math.round(perfectAttr.atk),
+    //Math.round(perfectAttr.attackSpeed*100)/100 + '%',
+    //Math.round(perfectAttr.baseAttackTime*100)/100,
+    Math.round(dps[3]),
+    Math.round(dps[4]*100)/100,
     levelData.name,// + '<br>' + levelData.prefabId,
-    AKDATA.formatString(levelData.description, true, bb),// + `<ul class="small text-left mb-0 muted">${Object.entries(bb).map(k=>`<li>${k[0]}: ${k[1]}</li>`).join('')}</ul>`,
-    ...dps,
+    desc,// + `<ul class="small text-left mb-0 muted">${Object.entries(bb).map(k=>`<li>${k[0]}: ${k[1]}</li>`).join('')}</ul>`,
+    dps[0],
+    dps[1],
+    dps[2],
   ];
 }
 
@@ -216,37 +222,48 @@ function checkSkillEffect(perfectAttr,skillData,levelData,blackboard){
   let normalDps = Math.round(1 / ( perfectAttr.baseAttackTime / perfectAttr.attackSpeed * 100 ) * perfectAttr.atk);
 
   let peakResult = Object.assign({}, perfectAttr);
-  if ( blackboard['atk'] ) peakResult.atk *= 1 + blackboard['atk'];
-  if ( blackboard['attack_speed'] ) peakResult.attackSpeed += blackboard['attack_speed'];
   if ( blackboard['base_attack_time'] ) peakResult.baseAttackTime += blackboard['base_attack_time'];
   if (levelData.prefabId == "skchr_texas_2") { blackboard.times = 2; }
   else if (levelData.prefabId == "skchr_slbell_1") { delete blackboard.attack_speed; }
   else if (levelData.prefabId == "skchr_amgoat_1") { peakResult.atk *= 1 + blackboard['amgoat_s_1[b].atk']; peakResult.attack_speed += blackboard['amgoat_s_1[b].attack_speed']; }
   else if (levelData.prefabId == "skchr_amgoat_2") { blackboard['atk_scale'] += blackboard['atk_scale_2']; }
-  else if (levelData.prefabId == "skchr_aglina_2") { peakResult.baseAttackTime = blackboard['base_attack_time']; }
+  else if (levelData.prefabId == "skchr_aglina_2") { peakResult.baseAttackTime *= blackboard['base_attack_time']; }
+  if ( blackboard['atk'] ) peakResult.atk *= 1 + blackboard['atk'];
+  if ( blackboard['attack_speed'] ) peakResult.attackSpeed += blackboard['attack_speed'];
   if (levelData.prefabId == "skchr_aglina_2" || levelData.prefabId == "skchr_aglina_3") { normalDps = '0'; }
 
+  
   let peakDps = 0;
+  let peakAtk = peakResult.atk;
   let peakDamage = 0;
   let peakDuration = 0;
-  let peakAttackTimes = 0;
+  let peakAttackCount = 0;
+  let peakBAT = peakResult.baseAttackTime / peakResult.attackSpeed * 100;
   if ( levelData.duration <= 0 ) {
-    peakDuration = peakResult.baseAttackTime / peakResult.attackSpeed * 100;
-    peakAttackTimes = 1;
+    peakDuration = peakBAT;
+    peakAttackCount = 1;
   }
   else
   {
-    let attackSpeed = peakResult.baseAttackTime / peakResult.attackSpeed * 100;
-    peakAttackTimes = Math.floor(levelData.duration / attackSpeed);
-    peakDuration = peakAttackTimes * attackSpeed;
+    if (levelData.prefabId == "skchr_ifrit_3") { peakBAT = 1; }
+    peakAttackCount = Math.floor(levelData.duration / peakBAT);
+    peakDuration = peakAttackCount * peakBAT;
   }
-  peakDamage = peakResult.atk * peakAttackTimes;
-  if ( blackboard['attack@times'] ) peakDamage *= blackboard['attack@times'];
-  if ( blackboard['attack@atk_scale'] ) peakDamage *= blackboard['attack@atk_scale'];
-  if ( blackboard['atk_scale'] ) peakDamage *= blackboard['atk_scale'];
-  if ( blackboard['times'] ) peakDamage *= blackboard['times'];
-  if ( blackboard['damage_scale'] ) peakDamage *= blackboard['damage_scale'];
+  if ( blackboard['attack@atk_scale'] ) peakAtk *= blackboard['attack@atk_scale'];
+  if ( blackboard['atk_scale'] ) peakAtk *= blackboard['atk_scale'];
+  if ( blackboard['attack@times'] ) peakAtk *= blackboard['attack@times'];
+  if ( blackboard['times'] ) peakAtk *= blackboard['times'];
+  if ( blackboard['damage_scale'] ) peakAtk *= blackboard['damage_scale'];
+  peakDamage = peakAtk * peakAttackCount;
+
+  if (levelData.prefabId == "skchr_ifrit_2" ) { peakDamage += peakAtk * blackboard['burn.atk_scale'] * Math.ceil(peakDuration); }
+  else if (levelData.prefabId == "skchr_ifrit_3") { peakDamage *= 1 - blackboard['magic_resistance']/100; }
+  else if (levelData.prefabId == "skchr_amgoat_2") { peakDamage *= 1 - blackboard['magic_resistance']; }
+  else if (levelData.prefabId == "skchr_yuki_2") { peakDamage += peakAtk * Math.ceil(peakDuration); }
   peakDps = Math.round(peakDamage / peakDuration);
+
+  if (levelData.prefabId == "skchr_aglina_2" ) { 
+    let a = 0; }
 
   let globalDps = 0;
   let footDps = 0;
@@ -259,6 +276,12 @@ function checkSkillEffect(perfectAttr,skillData,levelData,blackboard){
   }
   else if (levelData.spData.spType ==2 ){
     footAttackTimes = levelData.spData.spCost;
+  }
+  else if (levelData.spData.spType ==4 ){
+    return;
+  }
+  else {
+    console.log(levelData.prefabId  + ',' + levelData.spData.spType);
   }
   footDuration = footAttackTimes * footAttackSpeed;
   footDamage += footAttackTimes * perfectAttr.atk;
@@ -277,7 +300,7 @@ function checkSkillEffect(perfectAttr,skillData,levelData,blackboard){
   if (levelData.prefabId == "skchr_skadi_2" || levelData.prefabId == "skchr_amiya_3") { globalDps = '0'; }
   else if ( levelData.duration <= 0 ) peakDps = globalDps;
 
-  return [normalDps, peakDps, globalDps,];
+  return [normalDps, peakDps, globalDps,peakAtk,peakBAT];
 }
 
 pmBase.hook.on('init', init);
