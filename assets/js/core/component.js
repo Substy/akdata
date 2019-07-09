@@ -56,7 +56,7 @@ let createFunctions = {
     }
 
     if (config.ignoreNull) {
-      config.list = config.list.filter(x => (x !== null) && (x[1] !== false));
+      config.list = config.list.filter(x => (x !== null) && (!!x[1] !== false) );
     }
 
     let labelWidth = 100 * 0.6 / (0.6 + config.list[0].length - 1);
@@ -83,6 +83,7 @@ let createFunctions = {
       html = create({
         type: 'card',
         table: html,
+        title: config.title,
       });
     }
 

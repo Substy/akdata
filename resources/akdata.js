@@ -108,9 +108,10 @@ window.AKDATA = {
     string = string.replace(/\\n/g, '<br>');
     string = `<div class="${small?'small':''} text-left">${string}</div>`;
     if ( params ) {
+      let params2 = deleteItem ? Object.assign({},params) : params;
       string = string.replace(variableRegex, (match, minus, key, format) => {
         key = key.toLowerCase();
-        let value = params[key];
+        let value = params2[key];
         if ( deleteItem ) delete params[key];
         if (minus) value = value * -1;
         if (format === '0%') value = Math.round(value * 100) + '%';

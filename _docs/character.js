@@ -122,18 +122,19 @@ function show(hash) {
 
   console.log(charData);
   let dataInfo = [
-    ['name', charData.name],
-    ['description', AKDATA.formatString(charData.description)],
-    ['displayNumber', charData.displayNumber],
-    ['position', charData.position],
-    ['rarity', charData.rarity],
-    ['profession', ProfessionNames[charData.profession]],
-    ['tagList', charData.tagList],
+    ['特性', AKDATA.formatString(charData.description)],
+    ['编号', charData.displayNumber],
+    ['位置', charData.position],
+    ['星级', '<i class="fas fa-star"></i>'.repeat(charData.rarity+1)],
+    ['职业', ProfessionNames[charData.profession]],
+    ['标签', charData.tagList],
   ];
   let dataHtml = pmBase.component.create({
     type: 'info',
-    card: true,
     list: dataInfo,
+    card: true,
+    title: charData.name,
+    ignoreNull: true,
   });
   
   let phaseTable = createPhaseTable(charData);
