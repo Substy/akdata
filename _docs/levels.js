@@ -26,10 +26,6 @@ function extractEnemyData(source, target) {
   if ( target.talentBlackboard ) source.talentBlackboard = target.talentBlackboard;
 }
 
-function getTileName(col,row) {
-  let alphabets = 'ABCDEFGHIJKLMNOPQRSTUVWXYZ';
-  return `${alphabets[col]}${row+1}`;
-}
 
 function getAttr(frames, level, attr) {
   return Math.round( ( level - 1 ) / ( frames[1].level - frames[0].level) * (frames[1].data[attr] - frames[0].data[attr]) + frames[0].data[attr] );
@@ -76,22 +72,32 @@ function showCallback(levelId) {
   console.log(stageData);
   console.log(hardStageData);
 
+  let mapWidth = levelData.mapData.width;
+  let mapHeight = levelData.mapData.height;
+  function getTileName(col,row = -1) {
+    let alphabets = 'ABCDEFGHIJKLMNOPQRSTUVWXYZ';
+    if ( row === -1 ) {
+      row = Math.floor(col/mapWidth);
+      col = col % mapWidth;
+    }
+    return `${alphabets[col]}${mapHeight-row}`;
+  }
 
   // Token
   let tokenHtml = '';
   if (levelData.predefines && levelData.predefines.tokenInsts && levelData.predefines.tokenInsts.length > 0){
     tokenHtml += pmBase.component.create({
       type:'list',
-      header: ['单位', '位置', '方向', '攻击力'],
+      header: ['单位', '位置', '方向', '初始状态', '攻击力'],
       list: levelData.predefines.tokenInsts.map( tokenData => {
         let charData = AKDATA.Data.character_table[tokenData.inst.characterKey];
         let atk = getAttr(charData.phases[tokenData.inst.phase].attributesKeyFrames, tokenData.inst.level, 'atk');
         let direction = ['上','右','下','左'][tokenData.direction];
-        console.log(charData);
         return [
           `<a href="../character/#!/${tokenData.inst.characterKey}">${charData.name}</a>`,
           getTileName(tokenData.position.col,tokenData.position.row),
           direction,
+          tokenData.hidden ? '隐藏' : '可用',
           atk,
           //tokenData.skillIndex,
           //tokenData.inst.level,
@@ -121,15 +127,16 @@ function showCallback(levelId) {
   });
 
   // Map
-  let mapWidth = levelData.mapData.width;
-  let mapHeight = levelData.mapData.height;
   let mapReindex = new Array(mapWidth * mapHeight).fill("");
   let startIndex = 0,
     endIndex = 0;
   let alphabets = 'ABCDEFGHIJKLMNOPQRSTUVWXYZ';
   levelData.mapData.tiles.forEach((tile, index) => {
+    /*
     if (tile.tileKey == 'tile_start' || tile.tileKey == 'tile_flystart') mapReindex[index] = alphabets[startIndex++];
     else if (tile.tileKey == 'tile_end') mapReindex[index] = alphabets[alphabets.length - 1 - (endIndex++)];
+*/
+    mapReindex[index] = getTileName(index);
   });
   if (levelData.predefines && levelData.predefines.tokenInsts && levelData.predefines.tokenInsts.length > 0){
     levelData.predefines.tokenInsts.map( tokenData => {
@@ -147,13 +154,27 @@ function showCallback(levelId) {
   let c = 0;
   let routeList = levelData.routes.map(data => {
     if (!data) return null;
-
     let checkpoints = [];
+    let path = '';
+    let arrow = '>';//'<i class="fa fa-chevron-right"></i>';
     checkpoints.push([data.startPosition.col, data.startPosition.row, data.startPosition.col + 0.5, data.startPosition.row + 0.5]);
     data.checkpoints.forEach(x => {
-      if (x.type == 0)
+      if (x.type == 0) {
         checkpoints.push([x.position.col, x.position.row, x.position.col + 0.5 + x.reachOffset.x, x.position.row + 0.5 + x.reachOffset.y]);
+        path += arrow + getTileName(x.position.col, x.position.row);
+      } else if (x.type ==1 ){
+        path += `<small>(${x.time}s)</small>`;
+      } else if (x.type ==3 ){
+        path += `<small>(${x.time}s)</small>`;
+      } else if (x.type ==5 ){
+        path += arrow + `消失`;
+      } else if (x.type ==6 ){
+        path += arrow + `出现<small>(` + getTileName(x.position.col, x.position.row) + ')</small>';
+      } else{
+        path += `${getTileName(x.position.col, x.position.row)}[${x.type}]`;
+      }
     });
+    if (path) path+=arrow;
     checkpoints.push([data.endPosition.col, data.endPosition.row, data.endPosition.col + 0.5, data.endPosition.row + 0.5]);
 
     let tiles = [];
@@ -184,7 +205,7 @@ function showCallback(levelId) {
 
       if (data.motionMode == 0) {
         let wrong = subTiles.some(x => levelData.mapData.tiles[x].passableMask !== 3);
-        if (wrong) console.log(`begin: ${checkpoints[i]}, end:${checkpoints[i + 1]}, tiles:${subTiles}`);
+        //if (wrong) console.log(`begin: ${checkpoints[i]}, end:${checkpoints[i + 1]}, tiles:${subTiles}`);
       }
 
       tiles.push(...subTiles);
@@ -193,6 +214,7 @@ function showCallback(levelId) {
     return {
       start: data.startPosition.col + data.startPosition.row * mapWidth,
       end: data.endPosition.col + data.endPosition.row * mapWidth,
+      path: path,
       tiles
     };
   });
@@ -241,7 +263,7 @@ function showCallback(levelId) {
       extendActions.sort((a, b) => a.preDelay - b.preDelay);
       waveDelay = lastDelay;
 
-      htmlBody += '<thead><tr><th>序号</th><th style="width:20%;">敌人</th><th>时间</th><th>出口</th><th>入口</th><th>HP</th><th>攻击</th><th>防御</th><th>魔抗</th></tr></thead>';
+      htmlBody += '<thead><tr><th>序号</th><th style="width:20%;">敌人</th><th>时间</th><th>出口</th><th style="width:30%;">路径</th><th>入口</th><th>HP</th><th>攻击</th><th>防御</th><th>魔抗</th></tr></thead>';
       htmlBody += '<tbody>';
       extendActions.forEach((actionData, j) => {
         let number = ++enemyIndex;
@@ -264,8 +286,9 @@ function showCallback(levelId) {
         htmlBody += `<tr>
         <td>${number}</td>
         <td>${enemyData.name}</td>
-        <td>${actionData.preDelay.toPrecision()}</td>
+        <td>${Math.round(actionData.preDelay*100)/100}</td>
         <td>${mapReindex[routeData.start] || routeData.start}</td>
+        <td>${routeData.path}</td>
         <td>${mapReindex[routeData.end] || routeData.end}</td>
         <td>${enemyData.maxHp}</td>
         <td>${enemyData.atk}</td>
@@ -283,7 +306,7 @@ function showCallback(levelId) {
       阶段${waveIndex+1}：${waveData.name || enemyIndexBegin + '-' + enemyIndex}
     </div>
     <div id="collapse${waveIndex}" class="collapse ${levelData.waves.length == 1?'show':''}">
-      <table class="table table-sm card-body p-0 m-0 text-center">
+      <table class="table table-sm card-body p-0 m-0 text-center table-hover">
         ${htmlBody}
       </table>
     </div>
@@ -317,7 +340,7 @@ function showCallback(levelId) {
 
   let enemyHtml = pmBase.component.create({
     type:'list',
-    columns: ['敌人', '数量', {header:'说明',width:'40%'}, '耐久', '攻击力', '防御力', '法术抗性', '移动速度', '射程', '攻击频率', '体重'],
+    columns: ['敌人', '数量', {header:'说明',width:'35%'}, '<small>耐久', '<small>攻击力', '<small>防御力', '<small>法术抗性', '<small>移动速度', '<small>射程', '<small>攻击间隔', '<small>生命回复', '<small>体重'],
     list: Object.values(finalEnemyData).map( enemyData => [
       enemyData.name,
       enemyData.count,
@@ -329,6 +352,7 @@ function showCallback(levelId) {
       (enemyData.moveSpeed * 100).toFixed(0) + '%',
       enemyData.rangeRadius ? enemyData.rangeRadius : '-',
       enemyData.baseAttackTime + 's',
+      enemyData.hpRecoveryPerSec ? enemyData.hpRecoveryPerSec + '/s' : '-',
       enemyData.massLevel,
     ]),
     card: true,
@@ -382,7 +406,10 @@ function showCallback(levelId) {
       .map(x=>`<li>${hardAttrLabel[x.key]||x.key}: ${(x.value*100).toFixed()}%</li>`)
       .join('');
     hardAttr += levelData.runes.filter(x => x.key === 'ebuff_talent_blackb_mul')
-      .map(x=>`<li>${finalEnemyData[x.blackboard[0].valueStr].name}: ${x.blackboard[1].key}=${x.blackboard[1].value}</li>`)
+      .map(x=>`<li>${finalEnemyData[x.blackboard[0].valueStr].name}: ${x.blackboard[1].key}: ${x.blackboard[1].value}</li>`)
+      .join('');
+    hardAttr += levelData.runes.filter(x => x.key === 'ebuff_attribute' && x.blackboard[0].key === 'enemy' )
+      .flatMap(x=> x.blackboard.filter(x=>x.key!=='enemy').map(y=>`<li>${finalEnemyData[x.blackboard[0].valueStr].name}: ${hardAttrLabel[y.key]||y.key}: ${(y.value*100).toFixed()}%</li>`))
       .join('');
     hardStageData.isHard = true;
   }
