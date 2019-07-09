@@ -26,6 +26,15 @@ function extractEnemyData(source, target) {
   if ( target.talentBlackboard ) source.talentBlackboard = target.talentBlackboard;
 }
 
+function getTileName(col,row) {
+  let alphabets = 'ABCDEFGHIJKLMNOPQRSTUVWXYZ';
+  return `${alphabets[col]}${row+1}`;
+}
+
+function getAttr(frames, level, attr) {
+  return Math.round( ( level - 1 ) / ( frames[1].level - frames[0].level) * (frames[1].data[attr] - frames[0].data[attr]) + frames[0].data[attr] );
+}
+
 function createMap(map, tiles, texts, rates, size, r, g, b) {
   let html = '<table class="p-map"><tbody>';
   map.forEach(row => {
@@ -50,6 +59,7 @@ function show(hash) {
     `excel/item_table.json`,
     `excel/building_data.json`,
     `excel/stage_table.json`,
+    `excel/character_table.json`,
     `levels/enemydata/enemy_database.json`,
     `levels/${levelId}.json`,
   ], showCallback, levelId);
@@ -65,6 +75,33 @@ function showCallback(levelId) {
   console.log(levelData);
   console.log(stageData);
   console.log(hardStageData);
+
+
+  // Token
+  let tokenHtml = '';
+  if (levelData.predefines.tokenInsts && levelData.predefines.tokenInsts.length > 0){
+    tokenHtml += pmBase.component.create({
+      type:'list',
+      header: ['单位', '位置', '方向', '攻击力'],
+      list: levelData.predefines.tokenInsts.map( tokenData => {
+        let charData = AKDATA.Data.character_table[tokenData.inst.characterKey];
+        let atk = getAttr(charData.phases[tokenData.inst.phase].attributesKeyFrames, tokenData.inst.level, 'atk');
+        let direction = ['上','右','下','左'][tokenData.direction];
+        console.log(charData);
+        return [
+          `<a href="../character/#!/${tokenData.inst.characterKey}">${charData.name}</a>`,
+          getTileName(tokenData.position.col,tokenData.position.row),
+          direction,
+          atk,
+          //tokenData.skillIndex,
+          //tokenData.inst.level,
+        ];
+      }),
+      card: true,
+      title: '机关',
+    });
+  }
+
   // Enemy
   let finalEnemyData = {};
   levelData.enemyDbRefs.forEach(item => {
@@ -94,6 +131,14 @@ function showCallback(levelId) {
     if (tile.tileKey == 'tile_start' || tile.tileKey == 'tile_flystart') mapReindex[index] = alphabets[startIndex++];
     else if (tile.tileKey == 'tile_end') mapReindex[index] = alphabets[alphabets.length - 1 - (endIndex++)];
   });
+  if (levelData.predefines.tokenInsts && levelData.predefines.tokenInsts.length > 0){
+    levelData.predefines.tokenInsts.map( tokenData => {
+      let index = tokenData.position.row * levelData.mapData.width + tokenData.position.col;
+      let direction = ['up','right','down','left'][tokenData.direction];
+      mapReindex[index] = `<i class="fas fa-arrow-circle-${direction}" style="color: red;"></i>`;
+    });
+  }
+
   console.log(finalEnemyData);
 
   let mapTable = createMap(levelData.mapData.map, levelData.mapData.tiles, mapReindex);
@@ -270,20 +315,26 @@ function showCallback(levelId) {
   let mrHeatmapText = mrHeatmapRates.map(x => x > 0 ? (x * 100).toFixed(0) + '%' : '');
   let mrHeatmapTable = createMap(levelData.mapData.map, levelData.mapData.tiles, mrHeatmapText, mrHeatmapRates, '32px', 255, 0, 255);
 
-  let enemyHead = ['敌人', '数量', '说明', '耐久', '攻击力', '防御力', '法术抗性', '移动速度', '射程', '攻击频率', '体重'];
-  let enemyTable = Object.values(finalEnemyData).map( enemyData => [
-    enemyData.name,
-    enemyData.count,
-    AKDATA.formatString(enemyData.description,true) + (enemyData.talentBlackboard ? '<ul class="small text-left m-0">' + enemyData.talentBlackboard.map(x=>`<li>${x.key} = ${x.value}</li>`).join('') + '</ul>' :''),
-    enemyData.maxHp,
-    enemyData.atk,
-    enemyData.def,
-    enemyData.magicResistance + '%',
-    (enemyData.moveSpeed * 100).toFixed(0) + '%',
-    enemyData.rangeRadius ? enemyData.rangeRadius : '-',
-    enemyData.baseAttackTime + 's',
-    enemyData.massLevel,
-  ]);
+  let enemyHtml = pmBase.component.create({
+    type:'list',
+    columns: ['敌人', '数量', {header:'说明',width:'40%'}, '耐久', '攻击力', '防御力', '法术抗性', '移动速度', '射程', '攻击频率', '体重'],
+    list: Object.values(finalEnemyData).map( enemyData => [
+      enemyData.name,
+      enemyData.count,
+      AKDATA.formatString(enemyData.description,true) + (enemyData.talentBlackboard ? '<ul class="small text-left m-0">' + enemyData.talentBlackboard.map(x=>`<li>${x.key} = ${x.value}</li>`).join('') + '</ul>' :''),
+      enemyData.maxHp,
+      enemyData.atk,
+      enemyData.def,
+      enemyData.magicResistance + '%',
+      (enemyData.moveSpeed * 100).toFixed(0) + '%',
+      enemyData.rangeRadius ? enemyData.rangeRadius : '-',
+      enemyData.baseAttackTime + 's',
+      enemyData.massLevel,
+    ]),
+    card: true,
+    title: '敌方单位',
+  });
+  enemyHtml += tokenHtml;
 
   let htmlDrop;
   
@@ -397,12 +448,7 @@ function showCallback(levelId) {
       content: htmlDrop,
     }, {
       text: '敌人',
-      content: pmBase.component.create({
-        type:'list',
-        list: enemyTable,
-        header: enemyHead,
-        card: true
-      }),
+      content: enemyHtml,
     }, {
       text: '时间线',
       content: htmlWave,

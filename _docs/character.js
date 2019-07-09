@@ -98,7 +98,7 @@ function createPhaseTable(charData) {
 
   let rangeRow = [];
   for (let i = 0; i < phaseCount; i++) {
-    rangeRow[i] = createRangeTable(charData.phases[i].rangeId);
+    rangeRow[i] = charData.phases[i].rangeId ? createRangeTable(charData.phases[i].rangeId) : '';
   }
   phaseTableList.push(['攻击范围', ...rangeRow, '']);
 
@@ -265,6 +265,7 @@ function show(hash) {
 
   /////////////////////////////////////////////
   let talentHtml = '';
+  if (charData.talents) {
   charData.talents.forEach((talentInfo, i) => {
     let talentName = talentInfo.candidates[0].name;
     talentHtml += pmBase.component.create({
@@ -290,6 +291,8 @@ function show(hash) {
       }),
     });
   });
+    
+}
 
   ////////////////////////////////////////////////
   let tokenHtml = '';
