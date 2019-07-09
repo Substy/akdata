@@ -79,7 +79,7 @@ function showCallback(levelId) {
 
   // Token
   let tokenHtml = '';
-  if (levelData.predefines.tokenInsts && levelData.predefines.tokenInsts.length > 0){
+  if (levelData.predefines && levelData.predefines.tokenInsts && levelData.predefines.tokenInsts.length > 0){
     tokenHtml += pmBase.component.create({
       type:'list',
       header: ['单位', '位置', '方向', '攻击力'],
@@ -131,7 +131,7 @@ function showCallback(levelId) {
     if (tile.tileKey == 'tile_start' || tile.tileKey == 'tile_flystart') mapReindex[index] = alphabets[startIndex++];
     else if (tile.tileKey == 'tile_end') mapReindex[index] = alphabets[alphabets.length - 1 - (endIndex++)];
   });
-  if (levelData.predefines.tokenInsts && levelData.predefines.tokenInsts.length > 0){
+  if (levelData.predefines && levelData.predefines.tokenInsts && levelData.predefines.tokenInsts.length > 0){
     levelData.predefines.tokenInsts.map( tokenData => {
       let index = tokenData.position.row * levelData.mapData.width + tokenData.position.col;
       let direction = ['up','right','down','left'][tokenData.direction];
