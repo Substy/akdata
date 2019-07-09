@@ -594,7 +594,7 @@
         "effects": null
       },
       {
-        "tileKey": "tile_end",
+        "tileKey": "tile_start",
         "heightType": 0,
         "buildableType": 0,
         "passableMask": 3,
@@ -690,7 +690,7 @@
         "effects": null
       },
       {
-        "tileKey": "tile_start",
+        "tileKey": "tile_end",
         "heightType": 0,
         "buildableType": 0,
         "passableMask": 3,

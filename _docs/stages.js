@@ -46,10 +46,10 @@ function parse(hash) {
     type: 'list',
 
     list: Object.entries(AKDATA.Data.stage_table.stages)
-      .filter(([key, value]) => value.zoneId == zoneID)
+      .filter(([key, value]) => value.zoneId == zoneID && value != null)
       .map(([key, value]) => [
         value.code,
-        `<a href="${pmBase.url.getHref( 'levels', value.levelId)}">${value.name}</a>` + (value.stageId.includes('#f#') ? '<small>（突袭）</small>' : ''),
+        `<a href="${pmBase.url.getHref( 'levels', value.levelId||'')}">${value.name}</a>` + (value.stageId.includes('#f#') ? '<small>（突袭）</small>' : ''),
         value.dangerLevel,
         value.apCost,
         AKDATA.formatString(value.description, true).replace('附加条件：<br>', ''),

@@ -278,12 +278,16 @@ function show(hash) {
         },
         '说明'
       ],
-      list: talentInfo.candidates.map((x, i) => [
-        x.unlockCondition.phase ? `精英${x.unlockCondition.phase}` : '',
-        `Lv.${x.unlockCondition.level}`,
-        x.requiredPotentialRank ? `潜能${x.requiredPotentialRank+1}` : '',
-        AKDATA.formatString(x.description),
-      ]),
+      list: talentInfo.candidates.map((x, i) => {
+        let desc = AKDATA.formatString(x.description);
+        if ( x.rangeId && (i == 0 || x.rangeId != talentInfo.candidates[i-1].rangeId ) ) desc += '<hr>' + createRangeTable(x.rangeId);
+        return [
+          x.unlockCondition.phase ? `精英${x.unlockCondition.phase}` : '',
+          `Lv.${x.unlockCondition.level}`,
+          x.requiredPotentialRank ? `潜能${x.requiredPotentialRank+1}` : '',
+          desc,
+        ];
+      }),
     });
   });
 
