@@ -17,7 +17,7 @@ function init() {
   ], load);
 }
 
-const charColumnCount = 3;
+const charColumnCount = 4;
 const Characters = new Array(charColumnCount);
 
 function getElement(classPart, index) {
@@ -55,7 +55,7 @@ function load() {
   let html = `
 <table class="table dps" style="table-layout:fixed;">
 <tbody>
-<tr class="dps__row-select" style="width:30%;"> <th>干员</th> </tr>
+<tr class="dps__row-select" style="width:20%;"> <th>干员</th> </tr>
 <tr class="dps__row-level"> <th>等级</th> </tr>
 </tbody>
 <tbody>
@@ -108,14 +108,21 @@ function load() {
   $('.dps__phase').change(choosePhase);
   $('.dps__level').change(chooseLevel);
   $('.dps__skill').change(chooseSkill);
+  $('.dps__skilllevel').change(changeThis);
+}
+
+function changeThis() {
+  let $this = $(this);
+  let index = ~~$this.data('index');
+  calculate(index);
 }
 
 function setSelectValue(name, index, value) {
   let $e = getElement(name, index);
-  if (index > 0) {
-    let $prev = getElement(name, index - 1);
-    value = Math.min( $e[0].length, $prev.val() );
-  }
+  //if (index > 0) {
+  //  let $prev = getElement(name, index - 1);
+  //  value = Math.min( $e[0].length, $prev.val() );
+  //}
   $e.val(value);
 }
 
@@ -163,11 +170,7 @@ function choosePhase() {
   let html = [...Array(maxLevel).keys()].map(x => `<option value="${x+1}">${x+1}</option>`).join('');
   let $level = getElement('level', i);
   $level.html(html);
-  if (i == 0) {
-    $level.val(maxLevel);
-  } else {
-    $level.val(Math.min(getElement('level', i - 1).val(), $level[0].length));
-  }
+  setSelectValue('level', i, maxLevel);
   Characters[i].phase = phase;
 
   $level.change();
@@ -184,7 +187,7 @@ function chooseLevel() {
   calculate(i);
 }
 
-function calculate(index){
+function calculate(index) {
   let char = Characters[index];
   let charId = getElement('char', index).val();
   let phase = ~~getElement('phase', index).val();
