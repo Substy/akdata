@@ -56,3 +56,7 @@ Array.prototype.distinct = function () {
   let t={};
   return this.filter(e=>!(t[e]=e in t));
 }
+
+Array.prototype.last = function () {
+  return this[this.length-1];
+}

@@ -152,6 +152,9 @@ const initPage = function (pageIndex) {
   if (typeof page.content === 'string') {
     getPageElement(pageIndex).find('.p-page__content').html(page.content);
     delete page.content;
+  } else if ( page.content instanceof jQuery ) {
+    getPageElement(pageIndex).find('.p-page__content').html(page.content);
+    delete page.content;
   }
 
   page.isInited = true;
