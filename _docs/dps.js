@@ -53,24 +53,47 @@ function load() {
   // copy(toCopy);
 
   let html = `
-<table class="table dps" style="table-layout:fixed;">
-<tbody>
-<tr class="dps__row-select" style="width:20%;"> <th>干员</th> </tr>
-<tr class="dps__row-level"> <th>等级</th> </tr>
-</tbody>
-<tbody>
-<tr class="dps__row-atk"> <th>攻击力</th> </tr>
-<tr class="dps__row-attackSpeed"> <th>攻击速度</th> </tr>
-<tr class="dps__row-baseAttackTime"> <th>基础攻击间隔</th> </tr>
-<tr class="dps__row-dps"> <th>DPS</th> </tr>
-</tbody>
-<tbody>
-<tr class="dps__row-skill"> <th>技能</th> </tr>
-<tr class="dps__row-s_damage"> <th>技能伤害总量</th> </tr>
-<tr class="dps__row-s_dps"> <th>技能DPS</th> </tr>
-<tr class="dps__row-g_dps"> <th>周期DPS</th> </tr>
-</tbody>
-</table>
+<div class="card mb-2">
+  <div class="card-header">
+    <div class="card-title mb-0">干员</div>
+  </div>
+  <table class="table dps" style="table-layout:fixed;">
+  <tbody>
+  <tr class="dps__row-select" style="width:20%;"> <th>干员</th> </tr>
+  <tr class="dps__row-level"> <th>等级</th> </tr>
+  </tbody>
+  <tbody>
+  <tr class="dps__row-atk"> <th>攻击力</th> </tr>
+  <tr class="dps__row-attackSpeed"> <th>攻击速度</th> </tr>
+  <tr class="dps__row-baseAttackTime"> <th>基础攻击间隔</th> </tr>
+  <tr class="dps__row-dps"> <th>DPS</th> </tr>
+  </tbody>
+  <tbody>
+  <tr class="dps__row-skill"> <th>技能</th> </tr>
+  <tr class="dps__row-s_dps"> <th>技能DPS</th> </tr>
+  <tr class="dps__row-g_dps"> <th>周期DPS</th> </tr>
+  </tbody>
+  </table>
+</div>
+<div class="card">
+  <div class="card-header">
+    <div class="card-title mb-0">敌人</div>
+  </div>
+  <table class="table dps" style="table-layout:fixed;">
+    <tbody>
+      <tr>
+        <th>防御力</th>
+        <th>法术抗性</th>
+        <th>数量</th>
+      </tr>
+      <tr>
+      <td><input type="text" class="dps__enemy-def" value="0"></td>
+      <td><input type="text" class="dps__enemy-mr" value="0"></td>
+      <td><input type="text" class="dps__enemy-count" value="1"></td>
+      </tr>
+    </tbody>
+  </table>
+</div>
 <!--
 <tr class="dps__row-phase"> <th>精英化</th> </tr>
 <tr class="dps__row-s_atk"> <th>技能攻击力</th> </tr>
@@ -93,7 +116,6 @@ function load() {
     $dps.find('.dps__row-s_atk').append(`<td><div class="dps__s_atk" data-index="${i}"></div></td>`);
     $dps.find('.dps__row-s_attackSpeed').append(`<td><div class="dps__s_attackSpeed" data-index="${i}"></div></td>`);
     $dps.find('.dps__row-s_baseAttackTime').append(`<td><div class="dps__s_baseAttackTime" data-index="${i}"></div></td>`);
-    $dps.find('.dps__row-s_damage').append(`<td><div class="dps__s_damage" data-index="${i}"></div></td>`);
     $dps.find('.dps__row-s_dps').append(`<td><div class="dps__s_dps" data-index="${i}"></div></td>`);
     $dps.find('.dps__row-g_dps').append(`<td><div class="dps__g_dps" data-index="${i}"></div></td>`);
   }
@@ -107,95 +129,106 @@ function load() {
   $('.dps__char').change(chooseChar);
   $('.dps__phase').change(choosePhase);
   $('.dps__level').change(chooseLevel);
-  $('.dps__skill').change(chooseSkill);
-  $('.dps__skilllevel').change(changeThis);
+  $('.dps__skill, .dps__skilllevel').change(chooseSkill);
+  $('.dps__enemy-def, .dps__enemy-mr, .dps__enemy-count').change(calculateAll);
 }
 
-function changeThis() {
-  let $this = $(this);
-  let index = ~~$this.data('index');
-  calculate(index);
-}
 
 function setSelectValue(name, index, value) {
   let $e = getElement(name, index);
+  $e.val(value);
+  //if ( $e.val() === null ) {
+  //  let last = $e.find('option:last-child').val();
+  //  $e.val( last );
+  //}
   //if (index > 0) {
   //  let $prev = getElement(name, index - 1);
   //  value = Math.min( $e[0].length, $prev.val() );
   //}
-  $e.val(value);
 }
 
 function chooseChar() {
   let $this = $(this);
-  let i = ~~$this.data('index');
+  let index = ~~$this.data('index');
   let charId = $this.val();
-  Characters[i] = {
-    charId,
-  };
+
   let charData = AKDATA.Data.character_table[charId];
   let phaseCount = charData.phases.length;
   let html = [...Array(phaseCount).keys()].map(x => `<option value="${x}">精英${x}</option>`).join('');
-  let $phase = getElement('phase', i);
+  let $phase = getElement('phase', index);
   $phase.html(html);
-  setSelectValue('phase', i, phaseCount - 1);
+  setSelectValue('phase', index, phaseCount - 1);
 
-  let skillHtml = '', skillLevelHtml = '', skillData;
+  let skillHtml = '', skillLevelHtml = '', skillId, skillData;
   charData.skills.forEach((skill,skillIndex) => {
     if (phaseCount - 1 >= skill.unlockCond.phase) {
+      skillId = skill.skillId;
       skillData = AKDATA.Data.skill_table[skill.skillId];
       skillHtml += `<option value="${skill.skillId}">${skillData.levels[0].name}</option>`;
     }
   });
+  let $skill = getElement('skill', index);
+  $skill.html(skillHtml);
+  setSelectValue('skill', index, skillId);
   for(let j=0;j< skillData.levels.length; j++){
     skillLevelHtml += `<option value="${j}">${j+1}</option>`;
   }
-  let $skillLevel = getElement('skilllevel', i);
+  let $skillLevel = getElement('skilllevel', index);
+  let skillLevel = skillData.levels.length - 1;
   $skillLevel.html(skillLevelHtml);
-  setSelectValue('skilllevel', i, skillData.levels.length - 1);
-  let $skill = getElement('skill', i);
-  $skill.html(skillHtml);
-  $skill.val(charData.skills.last().skillId);
+  setSelectValue('skilllevel', index, skillLevel);
 
+  Characters[index] = {
+    charId,
+    skillId,
+    skillLevel,
+  };
   $phase.change();
+}
+
+function setCharValue(e, key) {
+  let $e = $(e);
+  let val = ~~$this.val();
+  let index = ~~$e.data('index');
+  Characters[index][key] = val;
 }
 
 function choosePhase() {
   let $this = $(this);
-  let i = ~~$this.data('index');
-  let charId = Characters[i].charId;
-  let charData = AKDATA.Data.character_table[charId];
+  let index = ~~$this.data('index');
   let phase = ~~$this.val();
+
+  let charId = Characters[index].charId;
+  let charData = AKDATA.Data.character_table[charId];
   let maxLevel = charData.phases[phase].maxLevel;
   let html = [...Array(maxLevel).keys()].map(x => `<option value="${x+1}">${x+1}</option>`).join('');
-  let $level = getElement('level', i);
+  let $level = getElement('level', index);
   $level.html(html);
-  setSelectValue('level', i, maxLevel);
-  Characters[i].phase = phase;
+  setSelectValue('level', index, maxLevel);
 
+  Characters[index].phase = phase;
   $level.change();
 }
 
 function chooseLevel() {
   let $this = $(this);
-  let i = ~~$this.data('index');
-  let phase = ~~getElement('phase', i).val();
+  let index = ~~$this.data('index');
   let level = ~~$this.val();
-  let char = Characters[i];
-  char.level = level;
 
-  calculate(i);
+  Characters[index].level = level;
+
+  calculate(index);
 }
 
 function calculate(index) {
   let char = Characters[index];
-  let charId = getElement('char', index).val();
-  let phase = ~~getElement('phase', index).val();
-  let level = ~~getElement('level', index).val();
-  let skillId = getElement('skill', index).val();
-  let skillLevel = ~~getElement('skilllevel', index).val();
+  let enemy = {
+    def: ~~$('.dps__enemy-def').val(),
+    magicResistance: ~~$('.dps__enemy-mr').val(),
+    count: ~~$('.dps__enemy-count').val(),
+  };
 
-  let dps = AKDATA.attributes.calculateDps(charId, skillId, phase, level, skillLevel);
+  let dps = AKDATA.attributes.calculateDps(char, enemy);
 
   getElement('atk', index).html(dps.normalAtk);
   getElement('attackSpeed', index).html(dps.normalAttackSpeed);
@@ -206,22 +239,19 @@ function calculate(index) {
   getElement('s_attackSpeed', index).html(dps.skillAttackSpeed);
   getElement('s_baseAttackTime', index).html(dps.skillAttackTime);
   getElement('s_damage', index).html(dps.skillDamage);
-  getElement('s_dps', index).html(dps.skillDps);
+  getElement('s_dps', index).html(dps.skillDps || '-');
   getElement('g_dps', index).html(dps.globalDps);
 }
 
-
-function chooseSkill() {
-  let $this = $(this);
-  let i = ~~$this.data('index');
-  let skillId = $this.val();
-
-  let char = Characters[i];
-  char.skillId = skillId;
-  console.log(char);
-  calculate(i);
+function calculateAll() {
+  Characters.forEach( (x,i)=>calculate(i) );
 }
 
-
+function chooseSkill() {
+  let index = ~~$(this).data('index');
+  Characters[index].skillId = getElement('skill', index).val();
+  Characters[index].skillLevel = ~~(getElement('skilllevel', index).val());
+  calculate(index);
+}
 
 pmBase.hook.on('init', init);

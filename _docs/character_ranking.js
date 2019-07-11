@@ -25,7 +25,7 @@ function load() {
   for (let charId in AKDATA.Data.character_table) {
     let charData = AKDATA.Data.character_table[charId];
     if (charData.profession == "TOKEN" || charData.profession == "TRAP") continue;
-    let perfectAttr = AKDATA.attributes.getCharAttributes(charId);
+    let perfectAttr = AKDATA.attributes.getCharAttributes({charId});
     rankingList.push([
       `<a href="../character/#!/${charId}">${charData.name}</a>`,
       ProfessionNames[charData.profession],
@@ -38,12 +38,12 @@ function load() {
       Math.floor(perfectAttr.atk),
       Math.floor(perfectAttr.def),
       perfectAttr.magicResistance + '%',
-     // Math.round(1 / ( perfectAttr.baseAttackTime / perfectAttr.attackSpeed * 100 ) * perfectAttr.atk),
     ]);
+/*
     charData.skills.forEach(skill=>{
       if ( charData.profession == 'MEDIC' ) return;
       let dps = AKDATA.attributes.calculateDps(charId, skill.skillId);
-      
+
       if (!dps) return;
       if (dps.normalDps == dps.skillDps) return;
 
@@ -69,6 +69,7 @@ function load() {
         Math.round(dps.globalDps),
       ]);
     });
+*/
   }
 
   let item = pmBase.component.create({
@@ -87,6 +88,7 @@ function load() {
     type: 'list',
 
     columns: ['干员', '职业', '伤害', 'S_ATK', 'S_BAT', '技能', {header:'说明',width:'40%'}, '攻击DPS', '技能DPS', '平均DPS'],
+    "class":  "dps-result",
     list: charFinalData,
 
     sortable: true,
@@ -94,6 +96,25 @@ function load() {
   });
 
   item2 +=`
+  <div class="card mb-2">
+    <div class="card-header">
+      <div class="card-title mb-0">敌人</div>
+    </div>
+    <table class="table dps" style="table-layout:fixed;">
+      <tbody>
+        <tr>
+          <th>防御力</th>
+          <th>法术抗性</th>
+          <th>数量</th>
+        </tr>
+        <tr>
+        <td><input type="text" class="dps__enemy-def" value="0"></td>
+        <td><input type="text" class="dps__enemy-mr" value="0"></td>
+        <td><input type="text" class="dps__enemy-count" value="1"></td>
+        </tr>
+      </tbody>
+    </table>
+  </div>
 <div class="alert alert-primary small">
   <ul class="m-0">
     <li>这个表格仅收录干员的攻击技能，干员属性取自第一页的极限值。</li>
@@ -123,7 +144,55 @@ function load() {
       content: tabs,
     }]
   });
+
+  calculate();
+  $('.dps__enemy-def, .dps__enemy-mr, .dps__enemy-count').change(calculate);
 }
 
+function calculate() {
+  let enemy = {
+    def: ~~$('.dps__enemy-def').val(),
+    magicResistance: ~~$('.dps__enemy-mr').val(),
+    count: ~~$('.dps__enemy-count').val(),
+  };
+
+  let html = '';
+  for (let charId in AKDATA.Data.character_table) {
+    let charData = AKDATA.Data.character_table[charId];
+    if (charData.profession == "TOKEN" || charData.profession == "TRAP" || charData.profession == "MEDIC") continue;
+
+    charData.skills.forEach(skill=>{
+      let char = {
+        charId,
+        skillId: skill.skillId,
+        skillLevel: -1,
+      };
+      let dps = AKDATA.attributes.calculateDps(char, enemy);
+      if ( !dps ) return;
+      if (dps.normalDps == dps.skillDps) return;
+
+      let skillData = AKDATA.Data.skill_table[skill.skillId];
+      let levelData = skillData.levels[skillData.levels.length-1];
+      let bb = {};
+      levelData.blackboard.forEach(kv => bb[kv.key] = kv.value);
+      let desc = AKDATA.formatString(levelData.description, true, bb);
+
+      html += '<tr><td>' + [
+        `<a href="../character/#!/${charId}">${charData.name}</a>`,
+        ProfessionNames[charData.profession],
+        (charData.description.includes('法术伤害') || levelData.description.includes('伤害类型变为<@ba.vup>法术</>') ) ? '法术' : '物理',
+        Math.round(dps.skillAtk),
+        Math.round(dps.skillAttackTime*100)/100,
+        levelData.name,
+        desc,
+        Math.round(dps.normalDps),
+        Math.round(dps.skillDps),
+        Math.round(dps.globalDps),
+      ].join('</td><td>') + '</td></tr>';
+    });
+  }
+  $('.dps-result tbody').html(html).trigger("updateAll", [ true ]);
+
+}
 
 pmBase.hook.on('init', init);
