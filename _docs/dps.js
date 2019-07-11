@@ -29,13 +29,13 @@ function load() {
   let charFinalData = [];
 
   let toCopy = '';
+  selectOptions += `<option value="">-</option>`;
 
+  /*
   for (let charId in AKDATA.Data.character_table) {
     let charData = AKDATA.Data.character_table[charId];
     if (charData.profession == "TOKEN" || charData.profession == "TRAP") continue;
-
-    selectOptions += `<option value="${charId}">${charData.name}</option>`;
-    /*
+    if (charData.skills.length ==0 )continue;
     charData.talents.forEach(talentData => {
       let obj = talentData.candidates.last();
       obj.blackboard = getBlackboard(obj.blackboard);
@@ -46,8 +46,21 @@ function load() {
       toCopy += `else if ( prefabKey == "${obj.prefabKey}") { } // ${obj.name}, ${obj.description}, ${JSON.stringify(obj.blackboard)}\n`;
       console.log(obj);
     });
-    */
   }
+    */
+  Object.keys(ProfessionNames).forEach(key => {
+    selectOptions += `<optgroup label="${ProfessionNames[key]}">`;
+    for (let charId in AKDATA.Data.character_table) {
+      let charData = AKDATA.Data.character_table[charId];
+      if (charData.profession != key) continue;
+      if (charData.skills.length == 0) continue;
+
+      selectOptions += `<option value="${charId}">${charData.name}</option>`;
+    }
+    selectOptions += `</optgroup">`;
+  });
+
+
 
   if (toCopy) window.toCopy = toCopy;
   // copy(toCopy);
@@ -61,15 +74,17 @@ function load() {
   <tbody>
   <tr class="dps__row-select" style="width:20%;"> <th>干员</th> </tr>
   <tr class="dps__row-level"> <th>等级</th> </tr>
-  </tbody>
-  <tbody>
-  <tr class="dps__row-atk"> <th>攻击力</th> </tr>
-  <tr class="dps__row-attackSpeed"> <th>攻击速度</th> </tr>
-  <tr class="dps__row-baseAttackTime"> <th>基础攻击间隔</th> </tr>
-  <tr class="dps__row-dps"> <th>DPS</th> </tr>
-  </tbody>
-  <tbody>
+  <tr class="dps__row-potentialrank"> <th>潜能</th> </tr>
+  <tr class="dps__row-favor"> <th>信赖</th> </tr>
   <tr class="dps__row-skill"> <th>技能</th> </tr>
+  </tbody>
+  <tbody>
+  <tr class="dps__row-atk"> <th>普通/技能攻击力</th> </tr>
+  <tr class="dps__row-attackSpeed"> <th>普通/技能攻击速度</th> </tr>
+  <tr class="dps__row-baseAttackTime"> <th>普通/技能攻击间隔</th> </tr>
+  </tbody>
+  <tbody>
+  <tr class="dps__row-dps"> <th>普通DPS</th> </tr>
   <tr class="dps__row-s_dps"> <th>技能DPS</th> </tr>
   <tr class="dps__row-g_dps"> <th>周期DPS</th> </tr>
   </tbody>
@@ -95,7 +110,6 @@ function load() {
   </table>
 </div>
 <!--
-<tr class="dps__row-phase"> <th>精英化</th> </tr>
 <tr class="dps__row-s_atk"> <th>技能攻击力</th> </tr>
 <tr class="dps__row-s_attackSpeed"> <th>技能攻击速度</th> </tr>
 <tr class="dps__row-s_baseAttackTime"> <th>技能基础攻击间隔</th> </tr>
@@ -107,17 +121,20 @@ function load() {
     $dps.find('.dps__row-select').append(`<td><select class="form-control dps__char" data-index="${i}">${selectOptions}</select></td>`);
     //$dps.find('.dps__row-phase').append(`<td><select class="form-control dps__phase" data-index="${i}"></select></td>`);
     //$dps.find('.dps__row-level').append(`<td><select class="form-control dps__level" data-index="${i}"></select></td>`);
-    $dps.find('.dps__row-level').append(`<td><div class="container"><div class="form-group row mb-0"><select class="form-control col-7 dps__phase" data-index="${i}"></select><select class="form-control col-5 dps__level" data-index="${i}"></select></div></div></td>`);
+    $dps.find('.dps__row-level').append(`<td><div class="container"><div class="form-group row mb-0"><select class="form-control form-control-sm col-7 dps__phase" data-index="${i}"></select><select class="form-control form-control-sm col-5 dps__level" data-index="${i}"></select></div></div></td>`);
     $dps.find('.dps__row-atk').append(`<td><div class="dps__atk" data-index="${i}"></div></td>`);
     $dps.find('.dps__row-attackSpeed').append(`<td><div class="dps__attackSpeed" data-index="${i}"></div></td>`);
     $dps.find('.dps__row-baseAttackTime').append(`<td><div class="dps__baseAttackTime" data-index="${i}"></div></td>`);
     $dps.find('.dps__row-dps').append(`<td><div class="dps__dps" data-index="${i}"></div></td>`);
-    $dps.find('.dps__row-skill').append(`<td><div class="container"><div class="form-group row mb-0"><select class="form-control col-7 dps__skill" data-index="${i}"></select><select class="form-control col-5 dps__skilllevel" data-index="${i}"></select></div></div></td>`);
+    $dps.find('.dps__row-skill').append(`<td><div class="container"><div class="form-group row mb-0"><select class="form-control form-control-sm col-7 dps__skill" data-index="${i}"></select><select class="form-control form-control-sm col-5 dps__skilllevel" data-index="${i}"></select></div></div></td>`);
     $dps.find('.dps__row-s_atk').append(`<td><div class="dps__s_atk" data-index="${i}"></div></td>`);
     $dps.find('.dps__row-s_attackSpeed').append(`<td><div class="dps__s_attackSpeed" data-index="${i}"></div></td>`);
     $dps.find('.dps__row-s_baseAttackTime').append(`<td><div class="dps__s_baseAttackTime" data-index="${i}"></div></td>`);
     $dps.find('.dps__row-s_dps').append(`<td><div class="dps__s_dps" data-index="${i}"></div></td>`);
     $dps.find('.dps__row-g_dps').append(`<td><div class="dps__g_dps" data-index="${i}"></div></td>`);
+
+    $dps.find('.dps__row-potentialrank').append(`<td><select class="form-control form-control-sm dps__potentialrank" data-index="${i}">${[0,1,2,3,4,5].map(x=>`<option value="${x}">${x+1}</option>`).join('')}</select></td>`);
+    $dps.find('.dps__row-favor').append(`<td><select class="form-control form-control-sm dps__favor" data-index="${i}">${Object.keys(new Array(101).fill(0)).map(x=>`<option value="${x*2}">${x*2}</option>`).join('')}</select></td>`);
   }
 
   pmBase.content.build({
@@ -126,13 +143,15 @@ function load() {
     }]
   });
 
+  $('.dps__potentialrank').val(5);
+  $('.dps__favor').val(200);
+
   $('.dps__char').change(chooseChar);
   $('.dps__phase').change(choosePhase);
   $('.dps__level').change(chooseLevel);
-  $('.dps__skill, .dps__skilllevel').change(chooseSkill);
+  $('.dps__skill, .dps__skilllevel, .dps__row-potentialrank, .dps__row-favor').change(chooseSkill);
   $('.dps__enemy-def, .dps__enemy-mr, .dps__enemy-count').change(calculateAll);
 }
-
 
 function setSelectValue(name, index, value) {
   let $e = getElement(name, index);
@@ -151,6 +170,7 @@ function chooseChar() {
   let $this = $(this);
   let index = ~~$this.data('index');
   let charId = $this.val();
+  if (!charId) return;
 
   let charData = AKDATA.Data.character_table[charId];
   let phaseCount = charData.phases.length;
@@ -159,8 +179,10 @@ function chooseChar() {
   $phase.html(html);
   setSelectValue('phase', index, phaseCount - 1);
 
-  let skillHtml = '', skillLevelHtml = '', skillId, skillData;
-  charData.skills.forEach((skill,skillIndex) => {
+  let skillHtml = '',
+    skillLevelHtml = '',
+    skillId, skillData;
+  charData.skills.forEach((skill, skillIndex) => {
     if (phaseCount - 1 >= skill.unlockCond.phase) {
       skillId = skill.skillId;
       skillData = AKDATA.Data.skill_table[skill.skillId];
@@ -170,7 +192,7 @@ function chooseChar() {
   let $skill = getElement('skill', index);
   $skill.html(skillHtml);
   setSelectValue('skill', index, skillId);
-  for(let j=0;j< skillData.levels.length; j++){
+  for (let j = 0; j < skillData.levels.length; j++) {
     skillLevelHtml += `<option value="${j}">${j+1}</option>`;
   }
   let $skillLevel = getElement('skilllevel', index);
@@ -216,6 +238,8 @@ function chooseLevel() {
   let level = ~~$this.val();
 
   Characters[index].level = level;
+  Characters[index].potentialRank = ~~(getElement('potentialrank', index).val());
+  Characters[index].favor = ~~(getElement('favor', index).val());
 
   calculate(index);
 }
@@ -230,27 +254,27 @@ function calculate(index) {
 
   let dps = AKDATA.attributes.calculateDps(char, enemy);
 
-  getElement('atk', index).html(dps.normalAtk);
-  getElement('attackSpeed', index).html(dps.normalAttackSpeed);
-  getElement('baseAttackTime', index).html(dps.normalAttackTime);
+  getElement('atk', index).html(Math.round(dps.normalAtk) + ' / ' + Math.round(dps.skillAtk));
+  getElement('attackSpeed', index).html(dps.normalAttackSpeed + '% / ' + Math.round(dps.skillAttackSpeed) + '%');
+  getElement('baseAttackTime', index).html(dps.normalAttackTime + ' / ' + dps.skillAttackTime);
+
 
   getElement('dps', index).html(dps.normalDps);
-  getElement('s_atk', index).html(dps.skillAtk);
-  getElement('s_attackSpeed', index).html(dps.skillAttackSpeed);
-  getElement('s_baseAttackTime', index).html(dps.skillAttackTime);
   getElement('s_damage', index).html(dps.skillDamage);
   getElement('s_dps', index).html(dps.skillDps || '-');
   getElement('g_dps', index).html(dps.globalDps);
 }
 
 function calculateAll() {
-  Characters.forEach( (x,i)=>calculate(i) );
+  Characters.forEach((x, i) => calculate(i));
 }
 
 function chooseSkill() {
   let index = ~~$(this).data('index');
   Characters[index].skillId = getElement('skill', index).val();
   Characters[index].skillLevel = ~~(getElement('skilllevel', index).val());
+  Characters[index].potentialRank = ~~(getElement('potentialrank', index).val());
+  Characters[index].favor = ~~(getElement('favor', index).val());
   calculate(index);
 }
 

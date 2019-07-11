@@ -118,6 +118,7 @@ function calculateDps(char, enemy) {
   let skillDuration = 0;
   let skillAttackCount = 0;
   let skillAttackTime = skillFrame.baseAttackTime / skillFrame.attackSpeed * 100;
+
   if (levelData.duration <= 0) {
     skillDuration = skillAttackTime;
     skillAttackCount = 1;
@@ -162,7 +163,6 @@ function calculateDps(char, enemy) {
 
 
   skillDps = (skillDamage[0] + skillDamage[1]) / skillDuration;
-  if ( skillDuration <= 0 ) skillDps = 0;
 
   let globalDps = 0;
   let chargeDps = 0;
@@ -202,6 +202,7 @@ function calculateDps(char, enemy) {
   globalDps = Math.round((skillDamage[0] + skillDamage[1] + chargeDamage) / (skillDuration + chargeDuration + waitDuration));
 
   if (levelData.duration <= 0) skillDps = globalDps;
+  if ( levelData.duration <= 0 ) skillDps = 0;
 
   return {
     normalDps: Math.round(normalDps * 10) / 10,
@@ -210,6 +211,7 @@ function calculateDps(char, enemy) {
     normalAttackTime: Math.round(normalFrame.baseAttackTime * 100) / 100,
     skillAtk: Math.round(skillAtk * 10) / 10,
     skillAttackTime: Math.round(skillAttackTime * 100) / 100,
+    skillAttackSpeed: Math.round(skillFrame.attackSpeed * 100) / 100,
     skillDps: Math.round(skillDps * 10) / 10,
     globalDps: Math.round(globalDps * 10) / 10,
   };
