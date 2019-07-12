@@ -71,12 +71,16 @@ function calculateDps(char, enemy) {
 
 
   // Normal
+  /*
   let normalFrame = getBuffedAttributes(basicFrame, buffFrame);
   let normalDps = normalFrame.atk / normalFrame.baseAttackTime * normalFrame.attackSpeed / 100;
   let normalDamageType = charData.description.includes('法术伤害') ? 1 : 0;
   if (charId == 'char_010_chen') normalDps *= 2;
+  */
+  let chargeFrame = getBuffedAttributes(basicFrame, buffFrame);
 
   // Skill
+  let normalDamageType = charData.description.includes('法术伤害') ? 1 : 0;
   let skillDamageType = levelData.description.includes('法术伤害') || levelData.description.includes('伤害类型变为<@ba.vup>法术</>') ? 1 : normalDamageType;
 
   if (levelData.prefabId == "skchr_texas_2") {
@@ -118,6 +122,7 @@ function calculateDps(char, enemy) {
   let skillDuration = 0;
   let skillAttackCount = 0;
   let skillAttackTime = skillFrame.baseAttackTime / skillFrame.attackSpeed * 100;
+  let killTime = 0;
 
   if (levelData.duration <= 0) {
     skillDuration = skillAttackTime;
@@ -127,7 +132,7 @@ function calculateDps(char, enemy) {
     skillAttackCount = Math.floor(levelData.duration / skillAttackTime);
     skillDuration = skillAttackCount * skillAttackTime;
   }
-  
+
   if (skillDamageType == 0 && enemy.def != 0 ) {
     let minRate = 0.05;
     if (buffFrame["tachr_144_red_1"]) minRate = buffFrame["tachr_144_red_1"].atk_scale; // 刺骨, 每次攻击至少造成33%<@ba.talpu>（+3%）</>攻击力的伤害, {"atk_scale":0.33}
@@ -163,13 +168,19 @@ function calculateDps(char, enemy) {
 
 
   skillDps = (skillDamage[0] + skillDamage[1]) / skillDuration;
+  if ( enemy.hp > 0 ) killTime = enemy.hp / skillDps;
+
+
+  //let normalDps = normalFrame.atk / normalFrame.baseAttackTime * normalFrame.attackSpeed / 100;
+  if (charId == 'char_010_chen') normalDps *= 2;
 
   let globalDps = 0;
   let chargeDps = 0;
   let chargeDuration = 0;
   let chargeAttackCount = 0;
-  let chargeDamage = 0;
-  let chargeAttackTimes = normalFrame.baseAttackTime / normalFrame.attackSpeed * 100;
+  let chargeDamage = [0, 0];
+  let chargeAtk = chargeFrame.atk;
+  let chargeAttackTimes = chargeFrame.baseAttackTime / chargeFrame.attackSpeed * 100;
   if (levelData.spData.spType == 1) {
     let sp = 1;
     if (buffFrame["tachr_002_amiya_1"]) sp += buffFrame["tachr_002_amiya_1"]["amiya_t_1[atk].sp"];// 情绪吸收, 攻击敌人时额外回复3<@ba.talpu>（+1）</>点技力，消灭敌人后额外获得10<@ba.talpu>（+2）</>点技力, {"amiya_t_1[atk].sp":3,"amiya_t_1[kill].sp":10}
@@ -185,8 +196,23 @@ function calculateDps(char, enemy) {
     console.log(levelData.prefabId + ',' + levelData.spData.spType);
   }
   chargeDuration = chargeAttackCount * chargeAttackTimes;
-  chargeDamage += chargeAttackCount * normalFrame.atk;
+
+  if (normalDamageType == 0 && enemy.def != 0 ) {
+    let minRate = 0.05;
+    if (buffFrame["tachr_144_red_1"]) minRate = buffFrame["tachr_144_red_1"].atk_scale; // 刺骨, 每次攻击至少造成33%<@ba.talpu>（+3%）</>攻击力的伤害, {"atk_scale":0.33}
+    chargeAtk = Math.max( chargeAtk - enemy.def, chargeAtk * minRate );
+  }
+
+  chargeDamage[normalDamageType] += chargeAttackCount * chargeAtk;
   if (charId == 'char_010_chen') chargeDamage *= 2;
+  if (normalDamageType == 1 && enemy.magicResistance != 0 ) {
+    chargeDamage[1] *= 1 - enemy.magicResistance / 100;
+  }
+  if (buffFrame["tachr_129_bluep_1"]) {
+    chargeDamage[1] += buffFrame["tachr_129_bluep_1"].poison_damage * chargeDuration;
+  } // 神经毒素, 攻击使目标中毒，在3秒内每秒受到85<@ba.talpu>（+10）</>点法术伤害, {"duration":3.1,"poison_damage":85}
+
+  chargeDps = (chargeDamage[0] + chargeDamage[1]) / chargeDuration;
 
   let waitDuration = 0;
   if (levelData.prefabId == "skchr_fmout_2") {
@@ -199,21 +225,23 @@ function calculateDps(char, enemy) {
     chargeDamage = 0;
   }
 
-  globalDps = Math.round((skillDamage[0] + skillDamage[1] + chargeDamage) / (skillDuration + chargeDuration + waitDuration));
+  globalDps = Math.round((skillDamage[0] + skillDamage[1] + chargeDamage[0] + chargeDamage[1]) / (skillDuration + chargeDuration + waitDuration));
 
   if (levelData.duration <= 0) skillDps = globalDps;
   if ( levelData.duration <= 0 ) skillDps = 0;
 
   return {
-    normalDps: Math.round(normalDps * 10) / 10,
-    normalAtk: Math.round(normalFrame.atk * 10) / 10,
-    normalAttackSpeed: Math.round(normalFrame.attackSpeed * 10) / 10,
-    normalAttackTime: Math.round(normalFrame.baseAttackTime * 100) / 100,
+    normalDps: Math.round(chargeDps * 10) / 10,
+    normalAtk: Math.round(chargeAtk * 10) / 10,
+    normalAttackSpeed: Math.round(chargeFrame.attackSpeed * 10) / 10,
+    normalAttackTime: Math.round(chargeAttackTimes * 100) / 100,
+
     skillAtk: Math.round(skillAtk * 10) / 10,
     skillAttackTime: Math.round(skillAttackTime * 100) / 100,
     skillAttackSpeed: Math.round(skillFrame.attackSpeed * 100) / 100,
     skillDps: Math.round(skillDps * 10) / 10,
     globalDps: Math.round(globalDps * 10) / 10,
+    killTime: Math.round(killTime * 10) / 10,
   };
 }
 
