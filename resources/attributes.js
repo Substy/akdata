@@ -92,8 +92,6 @@ function calculateDps(char, enemy) {
     buffFrame.attackSpeed += blackboard['amgoat_s_1[b].attack_speed'];
   } else if (levelData.prefabId == "skchr_amgoat_2") {
     buffFrame.atk_scale *= blackboard['atk_scale_2'];
-  } else if (levelData.prefabId == "skchr_aglina_2" || levelData.prefabId == "skchr_aglina_3") {
-    normalDps = '0';
   } else if (levelData.prefabId == "skchr_ifrit_3") {
     buffFrame.enemyMagicResistance -= blackboard['magic_resistance'];
   } else if (levelData.prefabId == "skchr_amgoat_2") {
@@ -172,12 +170,11 @@ function calculateDps(char, enemy) {
 
 
   //let normalDps = normalFrame.atk / normalFrame.baseAttackTime * normalFrame.attackSpeed / 100;
-  if (charId == 'char_010_chen') normalDps *= 2;
 
   let globalDps = 0;
   let chargeDps = 0;
   let chargeDuration = 0;
-  let chargeAttackCount = 0;
+  let chargeAttackCount = 1;
   let chargeDamage = [0, 0];
   let chargeAtk = chargeFrame.atk;
   let chargeAttackTimes = chargeFrame.baseAttackTime / chargeFrame.attackSpeed * 100;
@@ -202,9 +199,9 @@ function calculateDps(char, enemy) {
     if (buffFrame["tachr_144_red_1"]) minRate = buffFrame["tachr_144_red_1"].atk_scale; // 刺骨, 每次攻击至少造成33%<@ba.talpu>（+3%）</>攻击力的伤害, {"atk_scale":0.33}
     chargeAtk = Math.max( chargeAtk - enemy.def, chargeAtk * minRate );
   }
+  if (charId == 'char_010_chen') chargeAttackCount *= 2;
 
-  chargeDamage[normalDamageType] += chargeAttackCount * chargeAtk;
-  if (charId == 'char_010_chen') chargeDamage *= 2;
+  chargeDamage[normalDamageType] += chargeAtk * chargeAttackCount;
   if (normalDamageType == 1 && enemy.magicResistance != 0 ) {
     chargeDamage[1] *= 1 - enemy.magicResistance / 100;
   }
@@ -213,6 +210,9 @@ function calculateDps(char, enemy) {
   } // 神经毒素, 攻击使目标中毒，在3秒内每秒受到85<@ba.talpu>（+10）</>点法术伤害, {"duration":3.1,"poison_damage":85}
 
   chargeDps = (chargeDamage[0] + chargeDamage[1]) / chargeDuration;
+  if (levelData.prefabId == "skchr_aglina_2" || levelData.prefabId == "skchr_aglina_3") {
+    chargeDps = '0';
+  }
 
   let waitDuration = 0;
   if (levelData.prefabId == "skchr_fmout_2") {
@@ -222,13 +222,12 @@ function calculateDps(char, enemy) {
   } else if (levelData.prefabId == "skchr_liskam_2") {
     waitDuration += blackboard.stun;
   } else if (levelData.prefabId == "skchr_aglina_2" || levelData.prefabId == "skchr_aglina_3") {
-    chargeDamage = 0;
+    chargeDamage = [0,0];
   }
 
   globalDps = Math.round((skillDamage[0] + skillDamage[1] + chargeDamage[0] + chargeDamage[1]) / (skillDuration + chargeDuration + waitDuration));
 
-  if (levelData.duration <= 0) skillDps = globalDps;
-  if ( levelData.duration <= 0 ) skillDps = 0;
+  //if ( levelData.duration <= 0 ) skillDps = 0;
 
   return {
     normalDps: Math.round(chargeDps * 10) / 10,
@@ -242,7 +241,13 @@ function calculateDps(char, enemy) {
     skillDps: Math.round(skillDps * 10) / 10,
     globalDps: Math.round(globalDps * 10) / 10,
     killTime: Math.round(killTime * 10) / 10,
+
+    instant: levelData.duration <= 0,
   };
+}
+
+function calculateAttack(charId, charData, damageType, basicFrame, buffFrame, skillData, skill) {
+  let isSkill = !!skillData;
 }
 
 let AttributeKeys = [

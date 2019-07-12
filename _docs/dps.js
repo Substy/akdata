@@ -261,6 +261,8 @@ function calculate(index) {
 
   let dps = AKDATA.attributes.calculateDps(char, enemy);
 
+  if ( dps.instant ) dps.skillDps = 0;
+
   getElement('atk', index).html(Math.round(dps.normalAtk) + ' / ' + Math.round(dps.skillAtk));
   getElement('attackSpeed', index).html(dps.normalAttackSpeed + '% / ' + Math.round(dps.skillAttackSpeed) + '%');
   getElement('baseAttackTime', index).html(dps.normalAttackTime + ' / ' + dps.skillAttackTime);
