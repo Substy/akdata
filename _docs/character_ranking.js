@@ -166,6 +166,7 @@ function calculate() {
         charId,
         skillId: skill.skillId,
         skillLevel: -1,
+        cond: true,
       };
       let dps = AKDATA.attributes.calculateDps(char, enemy);
       if ( !dps ) return;
@@ -177,7 +178,7 @@ function calculate() {
       levelData.blackboard.forEach(kv => bb[kv.key] = kv.value);
       let desc = AKDATA.formatString(levelData.description, true, bb);
 
-      if ( dps.instant ) dps.skillDps = dps.globalDps;
+      if ( dps.isInstant ) dps.skillDps = dps.globalDps;
 
       html += '<tr><td>' + [
         `<a href="../character/#!/${charId}">${charData.name}</a>`,

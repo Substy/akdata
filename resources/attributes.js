@@ -16,7 +16,23 @@ function checkChar(char) {
   if (!('potentialRank' in char)) char.potentialRank = 5;
 }
 
+class Log {
+  constructor(){
+    this.log = '';
+  }
+
+  write(line){
+    this.log += line + "\n";
+  }
+
+  toString(){
+    return this.log;
+  }
+}
+
 function calculateDps(char, enemy) {
+  let log = new Log();
+
   checkChar(char);
   enemy = enemy || {
     def: 0,
@@ -32,7 +48,7 @@ function calculateDps(char, enemy) {
   let charData = AKDATA.Data.character_table[charId];
   let skillData = AKDATA.Data.skill_table[char.skillId];
   if (char.skillLevel == -1) char.skillLevel = skillData.levels.length - 1;
-  
+
   let levelData = skillData.levels[char.skillLevel];
   let blackboard = getBlackboard(levelData.blackboard);
 
@@ -43,211 +59,230 @@ function calculateDps(char, enemy) {
     buffFrame.target = 999;
   }
 
-  if (false) {}
-  else if (buffFrame["tachr_290_vigna_1"]) {
-    buffFrame.atk += buffFrame["tachr_290_vigna_1"].atk * buffFrame["tachr_290_vigna_1"].prob2;
-  } // 蛮力穿刺, 攻击时，10%几率当次攻击的攻击力+110%<@ba.talpu>（+10%）</>。技能中这个几率提高到30%, {"atk":1.1,"prob1":0.1,"prob2":0.3}
-  else if (buffFrame["tachr_196_sunbr_1"]) {
-    buffFrame.atk_scale *= 1 + buffFrame["tachr_196_sunbr_1"].prob *  (buffFrame["tachr_196_sunbr_1"].atk_scale-1);
-  } // 平底锅专精, 攻击时，18%<@ba.talpu>（+3%）</>几率当次攻击的攻击力提升至200%，并眩晕敌人1秒, {"prob":0.18,"atk_scale":2,"stun":1}
-  else if (buffFrame["tachr_219_meteo_1"]) {
-    buffFrame.atk += buffFrame["tachr_219_meteo_1"].atk * buffFrame["tachr_219_meteo_1"].prob;
-  } // 爆破附着改装, 普通攻击和技能释放时，30%几率当次攻击的攻击力+60%, {"atk":0.6,"prob":0.3}
-  else if (buffFrame["tachr_166_skfire_1"]) {
-    buffFrame.damage_scale *= buffFrame["tachr_166_skfire_1"].damage_scale;
+  log.write(`Char: ${charId}(${charData.name})`);
+  log.write(`Level: Phase ${char.phase}, Level ${char.level}`);
+  log.write(`Skill: ${char.skillId}(${levelData.name}), Level ${char.skillLevel}`);
+  log.write(`Cond: ${char.cond}`);
+
+  log.write(`NormalAttack:`);
+  let normalAttack = calculateAttack(charId, charData, basicFrame, buffFrame, enemy, false, skillData, levelData, Object.assign({}, blackboard), log);
+  if (!normalAttack) return;
+  log.write(`  - DPS: ${normalAttack.dps}`);
+  log.write(`  - Basic attack: ${normalAttack.frame.atk}`);
+  log.write(`  - Attack scale: ${normalAttack.buff.atk_scale}`);
+  log.write(`  - Dist damage: ${normalAttack.hitDamage}`);
+  log.write(`  - Attack speed: ${normalAttack.attackSpeed}`);
+  log.write(`  - Attack time: ${normalAttack.attackTime}`);
+  log.write(`  - Duration: ${normalAttack.duration}`);
+  log.write(`  - Total damage: ${normalAttack.damagePool}(${normalAttack.totalDamage})`);
+
+  log.write(`SkillAttack:`);
+  let skillAttack = calculateAttack(charId, charData, basicFrame, buffFrame, enemy, true, skillData, levelData, Object.assign({}, blackboard), log);
+  if (!skillAttack) return;
+  log.write(`  - DPS: ${skillAttack.dps}`);
+  log.write(`  - Basic attack: ${skillAttack.frame.atk}`);
+  log.write(`  - Attack scale: ${skillAttack.buff.atk_scale}`);
+  log.write(`  - Dist damage: ${skillAttack.hitDamage}`);
+  log.write(`  - Attack speed: ${skillAttack.attackSpeed}`);
+  log.write(`  - Attack time: ${skillAttack.attackTime}`);
+  log.write(`  - Duration: ${skillAttack.duration}`);
+  log.write(`  - Total damage: ${skillAttack.damagePool}(${skillAttack.totalDamage})`);
+  log.write(`  - Enemy magic resistance: ${skillAttack.emr}`);
+
+  let stunDuration = 0;
+  if (levelData.prefabId == "skchr_fmout_2") {
+    stunDuration += blackboard.time;
+  } else if (levelData.prefabId == "skchr_amiya_2") {
+    stunDuration += blackboard.stun;
+  } else if (levelData.prefabId == "skchr_liskam_2") {
+    stunDuration += blackboard.stun;
   }
-  else if (buffFrame["tachr_145_prove_1"]) {
-    buffFrame.atk_scale *= 1 + buffFrame["tachr_145_prove_1"].prob2 *  (buffFrame["tachr_145_prove_1"].atk_scale-1);
-  } // 狩猎箭头, 攻击时，20%几率当次攻击的攻击力提升至190%<@ba.talpu>（+10%）</>。当敌人在正前方一格时，该几率提升到50%, {"prob":0.2,"prob2":0.5,"atk_scale":1.9}
-  else if (buffFrame["tachr_174_slbell_1"]) {
+
+  globalDps = Math.round((normalAttack.totalDamage + skillAttack.totalDamage) / (normalAttack.duration + skillAttack.duration + stunDuration));
+
+  let killTime = 0;
+  if (enemy.hp > 0) killTime = enemy.hp / dps;
+
+  return {
+    normalDps: Math.round(normalAttack.dps * 10) / 10,
+    normalAtk: Math.round(normalAttack.hitDamage * 10) / 10,
+    normalAttackSpeed: Math.round(normalAttack.attackSpeed * 10) / 10,
+    normalAttackTime: Math.round(normalAttack.attackTime * 100) / 100,
+
+    skillAtk: Math.round(skillAttack.hitDamage * 10) / 10,
+    skillAttackTime: Math.round(skillAttack.attackTime * 100) / 100,
+    skillAttackSpeed: Math.round(skillAttack.attackSpeed * 100) / 100,
+    skillDps: Math.round(skillAttack.dps * 10) / 10,
+    globalDps: Math.round(globalDps * 10) / 10,
+    killTime: Math.round(killTime * 10) / 10,
+
+    log: log.toString(),
+
+    isInstant: levelData.duration <= 0,
+  };
+}
+
+function calculateAttack(charId, charData, basicFrame, buffFrame, enemy, isSkill, skillData, levelData, blackboard, log) {
+  let enemyMagicResistance = enemy.magicResistance;
+
+  let damageType = 0;
+  if (charData.profession == "MEDIC") {
+    damageType = 2;
+  } else if (charData.description.includes('法术伤害')) {
+    damageType = 1;
+  }
+
+  // Hardcode talents
+  if (false) { //
+  } else if (buffFrame["tachr_290_vigna_1"]) {
+    log.write('蛮力穿刺, 攻击时，10%几率当次攻击的攻击力+110%<@ba.talpu>（+10%）</>。技能中这个几率提高到30%, {"atk":1.1,"prob1":0.1,"prob2":0.3}');
+    buffFrame.atk += buffFrame["tachr_290_vigna_1"].atk * buffFrame["tachr_290_vigna_1"][isSkill ? 'prob2' : 'prob1'];
+  } else if (buffFrame["tachr_196_sunbr_1"]) { // 
+    log.write('平底锅专精, 攻击时，18%<@ba.talpu>（+3%）</>几率当次攻击的攻击力提升至200%，并眩晕敌人1秒, {"prob":0.18,"atk_scale":2,"stun":1}');
+    buffFrame.atk_scale *= 1 + buffFrame["tachr_196_sunbr_1"].prob * (buffFrame["tachr_196_sunbr_1"].atk_scale - 1);
+  } else if (buffFrame["tachr_219_meteo_1"]) { // 爆破附着改装, 普通攻击和技能释放时，30%几率当次攻击的攻击力+60%, {"atk":0.6,"prob":0.3}
+    buffFrame.atk += buffFrame["tachr_219_meteo_1"].atk * buffFrame["tachr_219_meteo_1"].prob;
+  } else if (buffFrame["tachr_166_skfire_1"]) { //
+    buffFrame.damage_scale *= buffFrame["tachr_166_skfire_1"].damage_scale;
+  } else if (buffFrame["tachr_145_prove_1"]) { // 狩猎箭头, 攻击时，20%几率当次攻击的攻击力提升至190%<@ba.talpu>（+10%）</>。当敌人在正前方一格时，该几率提升到50%, {"prob":0.2,"prob2":0.5,"atk_scale":1.9}
+    buffFrame.atk_scale *= 1 + buffFrame["tachr_145_prove_1"].prob2 * (buffFrame["tachr_145_prove_1"].atk_scale - 1);
+  } else if (buffFrame["tachr_174_slbell_1"]) { // 虚弱化, 攻击范围内的敌人生命少于40%时，其受到的伤害提升至133%<@ba.talpu>（+3%）</>, {"hp_ratio":0.4,"damage_scale":1.33}
     buffFrame.damage_scale *= buffFrame["tachr_174_slbell_1"].damage_scale;
-  } // 虚弱化, 攻击范围内的敌人生命少于40%时，其受到的伤害提升至133%<@ba.talpu>（+3%）</>, {"hp_ratio":0.4,"damage_scale":1.33}
-  else if (buffFrame["tachr_283_midn_1"]) {
-    buffFrame.atk_scale *= 1 + buffFrame["tachr_283_midn_1"].prob *  (buffFrame["tachr_283_midn_1"].atk_scale-1);
-  } // 要害瞄准·初级, 攻击时，20%几率当次攻击的攻击力提升至160%<@ba.talpu>（+10%）</>, {"prob":0.2,"atk_scale":1.6}
-  else if (buffFrame["tachr_124_kroos_1"]) {
-    buffFrame.atk_scale *= 1 + buffFrame["tachr_124_kroos_1"].prob * (buffFrame["tachr_124_kroos_1"].atk_scale-1);
-  } // 要害瞄准·初级, 攻击时，20%几率当次攻击的攻击力提升至160%<@ba.talpu>（+10%）</>, {"prob":0.2,"atk_scale":1.6}
+  } else if (buffFrame["tachr_283_midn_1"]) { // 要害瞄准·初级, 攻击时，20%几率当次攻击的攻击力提升至160%<@ba.talpu>（+10%）</>, {"prob":0.2,"atk_scale":1.6}
+    buffFrame.atk_scale *= 1 + buffFrame["tachr_283_midn_1"].prob * (buffFrame["tachr_283_midn_1"].atk_scale - 1);
+  } else if (buffFrame["tachr_124_kroos_1"]) { // 要害瞄准·初级, 攻击时，20%几率当次攻击的攻击力提升至160%<@ba.talpu>（+10%）</>, {"prob":0.2,"atk_scale":1.6}
+    buffFrame.atk_scale *= 1 + buffFrame["tachr_124_kroos_1"].prob * (buffFrame["tachr_124_kroos_1"].atk_scale - 1);
+  } else if (buffFrame["tachr_185_frncat_1"]) { // 连击, 攻击时有23%<@ba.talpu>（+3%）</>的几率连续攻击两次, {"prob":0.23}
+    buffFrame.times += buffFrame["tachr_185_frncat_1"].prob;
+  }
 
-
-  // Normal
-  /*
-  let normalFrame = getBuffedAttributes(basicFrame, buffFrame);
-  let normalDps = normalFrame.atk / normalFrame.baseAttackTime * normalFrame.attackSpeed / 100;
-  let normalDamageType = charData.description.includes('法术伤害') ? 1 : 0;
-  if (charId == 'char_010_chen') normalDps *= 2;
-  */
-  let chargeFrame = getBuffedAttributes(basicFrame, buffFrame);
+  if (!isSkill && charId == 'char_010_chen') {
+    buffFrame.times += 1;
+  }
 
   // Skill
-  let normalDamageType = charData.description.includes('法术伤害') ? 1 : 0;
-  let skillDamageType = levelData.description.includes('法术伤害') || levelData.description.includes('伤害类型变为<@ba.vup>法术</>') ? 1 : normalDamageType;
+  if (isSkill) {
+    if (levelData.description.includes('法术伤害') || levelData.description.includes('伤害类型变为<@ba.vup>法术</>')) {
+      damageType = 1;
+    } else if (levelData.description.includes('进行治疗')) {
+      damageType = 2;
+    }
 
-  if (levelData.prefabId == "skchr_texas_2") {
-    buffFrame.times = 2;
-  } else if (levelData.prefabId == "skchr_slbell_1") {
-    delete blackboard.attack_speed;
-  } else if (levelData.prefabId == "skchr_amgoat_1") {
-    buffFrame.atk += basicFrame.atk * blackboard['amgoat_s_1[b].atk'];
-    buffFrame.attackSpeed += blackboard['amgoat_s_1[b].attack_speed'];
-  } else if (levelData.prefabId == "skchr_amgoat_2") {
-    buffFrame.atk_scale *= blackboard['atk_scale_2'];
-  } else if (levelData.prefabId == "skchr_ifrit_3") {
-    buffFrame.enemyMagicResistance -= blackboard['magic_resistance'];
-  } else if (levelData.prefabId == "skchr_amgoat_2") {
-    buffFrame.enemyMagicResistance -= blackboard['magic_resistance'];
+    if (false) { //
+    } else if (levelData.prefabId == "skchr_texas_2") {
+      buffFrame.times = 2;
+    } else if (levelData.prefabId == "skchr_slbell_1") {
+      delete blackboard.attack_speed;
+    } else if (levelData.prefabId == "skchr_amgoat_1") {
+      buffFrame.atk += basicFrame.atk * blackboard['amgoat_s_1[b].atk'];
+      buffFrame.attackSpeed += blackboard['amgoat_s_1[b].attack_speed'];
+    } else if (levelData.prefabId == "skchr_amgoat_2") {
+      buffFrame.atk_scale *= blackboard['atk_scale_2'];
+    } else if (levelData.prefabId == "skchr_ifrit_3") {
+      buffFrame.enemyMagicResistance += blackboard['magic_resistance'];
+    } else if (levelData.prefabId == "skchr_amgoat_2") {
+      buffFrame.enemyMagicResistance += blackboard['magic_resistance'];
+    }
+
+    if (blackboard['atk']) buffFrame.atk += basicFrame.atk * blackboard['atk'];
+    if (blackboard['attack_speed']) buffFrame.attackSpeed += blackboard['attack_speed'];
+    if (blackboard['base_attack_time']) buffFrame.baseAttackTime += blackboard['base_attack_time'];
+    if (blackboard['attack@atk_scale']) buffFrame.atk_scale *= blackboard['attack@atk_scale'];
+    if (blackboard['atk_scale']) buffFrame.atk_scale *= blackboard['atk_scale'];
+    if (blackboard['attack@times']) buffFrame.times = blackboard['attack@times'];
+    if (blackboard['times']) buffFrame.times = blackboard['times'];
+    if (blackboard['damage_scale']) buffFrame.damage_scale *= blackboard['damage_scale'];
+
+    enemyMagicResistance += buffFrame.enemyMagicResistance || 0;
   }
-  enemy.magicResistance -= enemy.enemyMagicResistance || 0;
-
-  if (blackboard['atk']) buffFrame.atk += basicFrame.atk * blackboard['atk'];
-  if (blackboard['attack_speed']) buffFrame.attackSpeed += blackboard['attack_speed'];
-  if (blackboard['base_attack_time']) buffFrame.baseAttackTime += blackboard['base_attack_time'];
-  if (blackboard['attack@atk_scale']) buffFrame.atk_scale *= blackboard['attack@atk_scale'];
-  if (blackboard['atk_scale']) buffFrame.atk_scale *= blackboard['atk_scale'];
-  if (blackboard['attack@times']) buffFrame.times = blackboard['attack@times'];
-  if (blackboard['times']) buffFrame.times = blackboard['times'];
-  if (blackboard['damage_scale']) buffFrame.damage_scale *= blackboard['damage_scale'];
-
-
-  let skillFrame = getBuffedAttributes(basicFrame, buffFrame);
-  if (false) {} else if (levelData.prefabId == "skchr_aglina_2") {
-    skillFrame.baseAttackTime *= blackboard['base_attack_time'];
+  let finalFrame = getBuffedAttributes(basicFrame, buffFrame);
+  let attackTime = finalFrame.baseAttackTime / finalFrame.attackSpeed * 100;
+  if (isSkill && levelData.prefabId == "skchr_aglina_2") {
+    attackTime *= blackboard['base_attack_time'];
+  } else if (isSkill && levelData.prefabId == "skchr_ifrit_3") {
+    attackTime = 1;
+  } else if (isSkill && levelData.prefabId == "skchr_yuki_2") {
+    attackTime = 1;
   }
 
-  let skillDps = 0;
-  let skillAtk = skillFrame.atk;
-  let skillDamage = [0, 0];
-  let skillDuration = 0;
-  let skillAttackCount = 0;
-  let skillAttackTime = skillFrame.baseAttackTime / skillFrame.attackSpeed * 100;
-  let killTime = 0;
+  let attackCount = 0;
+  let duration = 0;
 
-  if (levelData.duration <= 0) {
-    skillDuration = skillAttackTime;
-    skillAttackCount = 1;
+  if (isSkill) {
+    if (levelData.duration <= 0) {
+      attackCount = 1;
+      duration = attackTime;
+    } else {
+      attackCount = Math.floor(levelData.duration / attackTime);
+      duration = attackCount * attackTime;
+    }
   } else {
-    if (levelData.prefabId == "skchr_ifrit_3") skillAttackTime = 1;
-    skillAttackCount = Math.floor(levelData.duration / skillAttackTime);
-    skillDuration = skillAttackCount * skillAttackTime;
+    switch (levelData.spData.spType) {
+      case 1:
+        //let sp1 = 1;
+        //if (buffFrame["tachr_002_amiya_1"]) sp1 += buffFrame["tachr_002_amiya_1"]["amiya_t_1[atk].sp"]; // 情绪吸收, 攻击敌人时额外回复3<@ba.talpu>（+1）</>点技力，消灭敌人后额外获得10<@ba.talpu>（+2）</>点技力, {"amiya_t_1[atk].sp":3,"amiya_t_1[kill].sp":10}
+        attackCount = Math.ceil(levelData.spData.spCost / attackTime);
+        break;
+      case 2:
+        //let sp2 = 1;
+        // "tachr_134_ifrit_2" 莱茵回路, 每5.5<@ba.talpu>（-0.5）</>秒额外回复2点技力, {"sp":2,"interval":5.5}
+        // "tachr_010_chen_1", 呵斥, 在场时每4秒回复全场友方角色1点攻击/受击技力, {"interval":4,"sp":1}
+
+        attackCount = levelData.spData.spCost;
+        break;
+      case 4:
+        return;
+      default:
+        console.log(levelData.prefabId + ',' + levelData.spData.spType);
+        return;
+    }
+    duration = attackCount * attackTime;
   }
 
-  if (skillDamageType == 0 && enemy.def != 0 ) {
-    let minRate = 0.05;
-    if (buffFrame["tachr_144_red_1"]) minRate = buffFrame["tachr_144_red_1"].atk_scale; // 刺骨, 每次攻击至少造成33%<@ba.talpu>（+3%）</>攻击力的伤害, {"atk_scale":0.33}
-    skillAtk = Math.max( skillAtk - enemy.def, skillAtk * minRate );
+  let hitDamage = finalFrame.atk;
+  let emr = 1 - enemyMagicResistance / 100;
+  if (damageType == 0 && enemy.def != 0) {
+    let floorRate = 0.05;
+    if (buffFrame["tachr_144_red_1"]) floorRate = buffFrame["tachr_144_red_1"].atk_scale; // 刺骨, 每次攻击至少造成33%<@ba.talpu>（+3%）</>攻击力的伤害, {"atk_scale":0.33}
+    let def = enemy.def;
+    if (buffFrame["tachr_106_franka_1"]) def *= buffFrame["tachr_106_franka_1"].prob; // 铝热剑, 攻击时有20%的几率无视目标的防御, {"prob":0.2}
+    hitDamage = Math.max(finalFrame.atk - def, finalFrame.atk * floorRate);
+  } else if (damageType == 1 && enemyMagicResistance != 0) {
+    hitDamage *= emr;
   }
-  skillAtk *= buffFrame.times;
 
-  if (false) {}
-  else if (buffFrame["tachr_185_frncat_1"]) {
-    skillAtk *= 1 + buffFrame["tachr_185_frncat_1"].prob;
-  } // 连击, 攻击时有23%<@ba.talpu>（+3%）</>的几率连续攻击两次, {"prob":0.23}
+  let damagePool = [0, 0, 0];
+  damagePool[damageType] += hitDamage * buffFrame.times * attackCount;
 
-  skillDamage[skillDamageType] = skillAtk * skillAttackCount;
-
-  if (levelData.prefabId == "skchr_ifrit_2") {
-    skillDamage[1] += skillAtk * blackboard['burn.atk_scale'] * Math.ceil(skillDuration);
-  } else if (levelData.prefabId == "skchr_yuki_2") {
-    skillDamage[0] = 0;
-    skillDamage[skillDamageType] += skillAtk * Math.ceil(skillDuration);
-  } else if (buffFrame["tachr_129_bluep_1"]) {
-    skillDamage[1] += buffFrame["tachr_129_bluep_1"].poison_damage * skillDuration;
-  } // 神经毒素, 攻击使目标中毒，在3秒内每秒受到85<@ba.talpu>（+10）</>点法术伤害, {"duration":3.1,"poison_damage":85}
-
-  if (skillDamageType == 1 && enemy.magicResistance != 0 ) {
-    skillDamage[1] *= 1 - enemy.magicResistance / 100;
+  if (isSkill && levelData.prefabId == "skchr_ifrit_2") {
+    damagePool[1] += (basicFrame.atk+buffFrame.atk) * blackboard['burn.atk_scale'] * duration * emr;
+  } else if (isSkill && buffFrame["tachr_129_bluep_1"]) { // 神经毒素, 攻击使目标中毒，在3秒内每秒受到85<@ba.talpu>（+10）</>点法术伤害, {"duration":3.1,"poison_damage":85}
+    damagePool[1] += buffFrame["tachr_129_bluep_1"].poison_damage * duration * emr;
+  } else if (!isSkill && (levelData.prefabId == "skchr_aglina_2" || levelData.prefabId == "skchr_aglina_3")) {
+    damagePool = [0, 0, 0];
   }
+
   /*
-  "tachr_106_franka_1", // 铝热剑, 攻击时有20%的几率无视目标的防御, {"prob":0.2}
   "tachr_215_mantic_1", // 隐匿的杀手·精英, 平时处于隐匿状态（不会被远程攻击选为目标），攻击时会解除隐匿状态，且当次攻击的攻击力+54%<@ba.talpu>（+4%）</>。停止攻击5秒后，重新进入隐匿状态, {"delay":5,"atk":0.54}
   "tachr_164_nightm_1", // 表里人格, 装备技能1时获得45%<@ba.talpu>（+5%）</>的物理和法术闪避，装备技能2时获得+18%<@ba.talpu>（+3%）</>攻击力, {"prob":0.45,"atk":0.18}
 */
 
-
-
-  skillDps = (skillDamage[0] + skillDamage[1]) / skillDuration;
-  if ( enemy.hp > 0 ) killTime = enemy.hp / skillDps;
-
-
-  //let normalDps = normalFrame.atk / normalFrame.baseAttackTime * normalFrame.attackSpeed / 100;
-
-  let globalDps = 0;
-  let chargeDps = 0;
-  let chargeDuration = 0;
-  let chargeAttackCount = 1;
-  let chargeDamage = [0, 0];
-  let chargeAtk = chargeFrame.atk;
-  let chargeAttackTimes = chargeFrame.baseAttackTime / chargeFrame.attackSpeed * 100;
-  if (levelData.spData.spType == 1) {
-    let sp = 1;
-    if (buffFrame["tachr_002_amiya_1"]) sp += buffFrame["tachr_002_amiya_1"]["amiya_t_1[atk].sp"];// 情绪吸收, 攻击敌人时额外回复3<@ba.talpu>（+1）</>点技力，消灭敌人后额外获得10<@ba.talpu>（+2）</>点技力, {"amiya_t_1[atk].sp":3,"amiya_t_1[kill].sp":10}
-    chargeAttackCount = Math.ceil(levelData.spData.spCost / sp / chargeAttackTimes);
-  } else if (levelData.spData.spType == 2) {
-    let sp = 1;
-    //"tachr_134_ifrit_2" 莱茵回路, 每5.5<@ba.talpu>（-0.5）</>秒额外回复2点技力, {"":2,"interval":5.5}
-    // "tachr_010_chen_1", 呵斥, 在场时每4秒回复全场友方角色1点攻击/受击技力, {"interval":4,"sp":1}
-    chargeAttackCount = levelData.spData.spCost / sp;
-  } else if (levelData.spData.spType == 4) {
-    return;
-  } else {
-    console.log(levelData.prefabId + ',' + levelData.spData.spType);
-  }
-  chargeDuration = chargeAttackCount * chargeAttackTimes;
-
-  if (normalDamageType == 0 && enemy.def != 0 ) {
-    let minRate = 0.05;
-    if (buffFrame["tachr_144_red_1"]) minRate = buffFrame["tachr_144_red_1"].atk_scale; // 刺骨, 每次攻击至少造成33%<@ba.talpu>（+3%）</>攻击力的伤害, {"atk_scale":0.33}
-    chargeAtk = Math.max( chargeAtk - enemy.def, chargeAtk * minRate );
-  }
-  if (charId == 'char_010_chen') chargeAttackCount *= 2;
-
-  chargeDamage[normalDamageType] += chargeAtk * chargeAttackCount;
-  if (normalDamageType == 1 && enemy.magicResistance != 0 ) {
-    chargeDamage[1] *= 1 - enemy.magicResistance / 100;
-  }
-  if (buffFrame["tachr_129_bluep_1"]) {
-    chargeDamage[1] += buffFrame["tachr_129_bluep_1"].poison_damage * chargeDuration;
-  } // 神经毒素, 攻击使目标中毒，在3秒内每秒受到85<@ba.talpu>（+10）</>点法术伤害, {"duration":3.1,"poison_damage":85}
-
-  chargeDps = (chargeDamage[0] + chargeDamage[1]) / chargeDuration;
-  if (levelData.prefabId == "skchr_aglina_2" || levelData.prefabId == "skchr_aglina_3") {
-    chargeDps = '0';
-  }
-
-  let waitDuration = 0;
-  if (levelData.prefabId == "skchr_fmout_2") {
-    waitDuration += blackboard.time;
-  } else if (levelData.prefabId == "skchr_amiya_2") {
-    waitDuration += blackboard.stun;
-  } else if (levelData.prefabId == "skchr_liskam_2") {
-    waitDuration += blackboard.stun;
-  } else if (levelData.prefabId == "skchr_aglina_2" || levelData.prefabId == "skchr_aglina_3") {
-    chargeDamage = [0,0];
-  }
-
-  globalDps = Math.round((skillDamage[0] + skillDamage[1] + chargeDamage[0] + chargeDamage[1]) / (skillDuration + chargeDuration + waitDuration));
-
-  //if ( levelData.duration <= 0 ) skillDps = 0;
+  let totalDamage = damagePool[0] + damagePool[1] + damagePool[2];
+  let dps = totalDamage / duration;
 
   return {
-    normalDps: Math.round(chargeDps * 10) / 10,
-    normalAtk: Math.round(chargeAtk * 10) / 10,
-    normalAttackSpeed: Math.round(chargeFrame.attackSpeed * 10) / 10,
-    normalAttackTime: Math.round(chargeAttackTimes * 100) / 100,
-
-    skillAtk: Math.round(skillAtk * 10) / 10,
-    skillAttackTime: Math.round(skillAttackTime * 100) / 100,
-    skillAttackSpeed: Math.round(skillFrame.attackSpeed * 100) / 100,
-    skillDps: Math.round(skillDps * 10) / 10,
-    globalDps: Math.round(globalDps * 10) / 10,
-    killTime: Math.round(killTime * 10) / 10,
-
-    instant: levelData.duration <= 0,
+    dps,
+    duration,
+    hitDamage,
+    totalDamage,
+    damagePool,
+    basicAtk: finalFrame.atk,
+    attackSpeed: finalFrame.attackSpeed,
+    attackTime,
+    buff: buffFrame,
+    frame: finalFrame,
+    emr,
   };
-}
-
-function calculateAttack(charId, charData, damageType, basicFrame, buffFrame, skillData, skill) {
-  let isSkill = !!skillData;
 }
 
 let AttributeKeys = [
@@ -270,7 +305,7 @@ let AttributeKeys = [
   'tauntLevel',
 ];
 
-function getAttributes(char) { //charId, phase = -1, level = -1
+function getAttributes(char, log) { //charId, phase = -1, level = -1
   let charData = AKDATA.Data.character_table[char.charId];
   let phaseData = charData.phases[char.phase];
   let attributesKeyFrames = {};
@@ -303,6 +338,7 @@ function getAttributes(char) { //charId, phase = -1, level = -1
       if (char.phase >= talentData.candidates[i].unlockCondition.phase && char.level >= talentData.candidates[i].unlockCondition.level) {
         let blackboard = getBlackboard(talentData.candidates[i].blackboard);
         let prefabKey = 'tachr_' + char.charId.slice(5) + '_' + talentData.candidates[i].prefabKey;
+        if ( !char.cond && CondList.includes(prefabKey) ) break;
         applyTalent(prefabKey, blackboard, attributesKeyFrames, buffs);
         break;
       }
@@ -429,7 +465,7 @@ const HardcodeList = [
 function applyTalent(prefabKey, blackboard, basic, buffs) {
   if (false) {} // skip
   else if (prefabKey == "tachr_141_nights_1" || prefabKey == "tachr_134_ifrit_1") {
-    buffs.enemyMagicResistance = blackboard.magic_resistance;
+    buffs.enemyMagicResistance = blackboard.magic_resistance * 100;
     blackboard = {};
   } // 黑色迷雾, 攻击使目标法术抗性-23%<@ba.talpu>（+3%）</>，持续1秒, {"duration":1,"magic_resistance":-0.23}
   else if (prefabKey == "tachr_109_fmout_1") {

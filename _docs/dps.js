@@ -77,6 +77,7 @@ function load() {
   <tr class="dps__row-potentialrank"> <th>潜能</th> </tr>
   <tr class="dps__row-favor"> <th>信赖</th> </tr>
   <tr class="dps__row-skill"> <th>技能</th> </tr>
+  <tr class="dps__row-option"> <th>设置</th> </tr>
   </tbody>
   <tbody>
   <tr class="dps__row-atk"> <th>普通/技能攻击力</th> </tr>
@@ -138,6 +139,20 @@ function load() {
     $dps.find('.dps__row-s_dps').append(`<td><div class="dps__s_dps" data-index="${i}"></div></td>`);
     $dps.find('.dps__row-g_dps').append(`<td><div class="dps__g_dps" data-index="${i}"></div></td>`);
     $dps.find('.dps__row-e_time').append(`<td><div class="dps__e_time" data-index="${i}"></div></td>`);
+    $dps.find('.dps__row-option').append(`<td>
+    <div class="form-check">
+    <label class="form-check-label">
+    <input class="form-check-input dps__cond" type="checkbox" value="" data-index="${i}" checked>
+      条件
+    </label>
+    </div>
+    <div class="form-check">
+    <label class="form-check-label">
+    <input class="form-check-input dps__buff" type="checkbox" value="" data-index="${i}">
+      Buff
+    </label>
+    </div>
+    </td>`);
 
     $dps.find('.dps__row-potentialrank').append(`<td><select class="form-control form-control-sm dps__potentialrank" data-index="${i}">${[0,1,2,3,4,5].map(x=>`<option value="${x}">${x+1}</option>`).join('')}</select></td>`);
     $dps.find('.dps__row-favor').append(`<td><select class="form-control form-control-sm dps__favor" data-index="${i}">${Object.keys(new Array(101).fill(0)).map(x=>`<option value="${x*2}">${x*2}</option>`).join('')}</select></td>`);
@@ -156,7 +171,7 @@ function load() {
   $('.dps__phase').change(choosePhase);
   $('.dps__level').change(chooseLevel);
   $('.dps__skill, .dps__skilllevel, .dps__row-potentialrank, .dps__row-favor').change(chooseSkill);
-  $('.dps__enemy-def, .dps__enemy-mr, .dps__enemy-count, .dps__enemy-hp').change(calculateAll);
+  $('.dps__enemy-def, .dps__enemy-mr, .dps__enemy-count, .dps__enemy-hp, .dps__cond, .dps__buff').change(calculateAll);
 }
 
 function setSelectValue(name, index, value) {
@@ -258,22 +273,25 @@ function calculate(index) {
     count: ~~$('.dps__enemy-count').val(),
     hp: ~~$('.dps__enemy-hp').val(),
   };
+  char.buff = getElement('buff', index).is(':checked');
+  char.cond = getElement('cond', index).is(':checked');
 
   let dps = AKDATA.attributes.calculateDps(char, enemy);
 
-  if ( dps.instant ) dps.skillDps = 0;
+  if ( dps.isInstant ) dps.skillDps = 0;
 
   getElement('atk', index).html(Math.round(dps.normalAtk) + ' / ' + Math.round(dps.skillAtk));
   getElement('attackSpeed', index).html(dps.normalAttackSpeed + '% / ' + Math.round(dps.skillAttackSpeed) + '%');
   getElement('baseAttackTime', index).html(dps.normalAttackTime + ' / ' + dps.skillAttackTime);
   //getElement('damage', index).html(Math.round(dps.normalAtk) + ' / ' + Math.round(dps.skillAtk));
 
-
   getElement('dps', index).html(dps.normalDps);
   getElement('s_damage', index).html(dps.skillDamage);
   getElement('s_dps', index).html(dps.skillDps || '-');
   getElement('g_dps', index).html(dps.globalDps);
   getElement('e_time', index).html(dps.killTime ?  `${dps.killTime}秒` : '-');
+
+  console.log(dps.log);
 }
 
 function calculateAll() {
