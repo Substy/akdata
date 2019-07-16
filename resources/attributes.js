@@ -427,9 +427,9 @@ const BuffList = [
 ];
 
 const CondList = [
-  "tachr_286_cast3_1",
-  "tachr_503_rang_1",
-  "tachr_126_shotst_1",
+  "tachr_286_cast3_1", // 战术整理·VI, 部署后20秒内所有友方【近战位】单位的攻击力和防御力+20%, {"duration":20,"atk":0.2,"def":0.2}
+  "tachr_503_rang_1", // 空射大师, 攻击飞行目标时，攻击力+50%, {"atk_scale":1.5}
+  "tachr_126_shotst_1", // 空射专精, 攻击飞行目标时，攻击力+40%<@ba.talpu>（+5%）</>, {"atk_scale":1.4}
   "tachr_198_blackd_1",
   "tachr_149_scave_1",
   "tachr_187_ccheal_1",
@@ -437,8 +437,6 @@ const CondList = [
   "tachr_158_milu_1",
   "tachr_173_slchan_1",
   "tachr_230_savage_1",
-
-
 ];
 
 const HardcodeList = [

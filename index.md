@@ -5,3 +5,8 @@
 layout: home
 collection: docs
 ---
+
+无法刷新请点击以下按钮：
+<div>
+    <button type="button" class="btn btn-primary" onclick="localStorage.clear();">清除缓存</button>
+</div>
