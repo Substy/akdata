@@ -16,43 +16,50 @@
   		  <img src="{{ site.logo | relative_url }}" alt="Logo">
   		</a>
     </div>
+    <div class="l-header__left">
+      <ul class="l-navbar">
+        <li class="l-navbar__item">
+          <a class="l-navbar__button l-navbar__sidebar-trigger" href="#" onclick="$('.l-layout__sidebar').toggle();return false;"><i class="fas fa-bars"></i></a>
+        </li>
+      </ul>
+    </div>
     <nav class="l-header__navbar">
       <ul class="l-navbar">
       </ul>
     </nav>
     <div class="l-header__right">
-        <ul class="l-navbar">
-          <li class="l-navbar__item">
-            <div class="l-navbar__button"><i class="far fa-edit"></i></div>
-            <div class="c-navmenu c-navmenu--right">
-              <div class="c-navmenu__item">
-                <a href="{{ site.github.repository_url }}/tree/master/{{ page.relative_path }}" target="_BLANK">
-                  <i class="fas fa-edit"></i> {{ page.path | split: '/' | last }} <small>({{page.date | date: "%Y-%m-%d %H:%M"}})</small>
-                </a>
-              </div>
+      <ul class="l-navbar">
+        <li class="l-navbar__item">
+          <div class="l-navbar__button"><i class="fas fa-edit"></i></div>
+          <div class="c-navmenu c-navmenu--right">
+            <div class="c-navmenu__item">
+              <a href="{{ site.github.repository_url }}/tree/master/{{ page.relative_path }}" target="_BLANK">
+                <i class="fas fa-edit"></i> {{ page.path | split: '/' | last }} <small>({{page.date | date: "%Y-%m-%d %H:%M"}})</small>
+              </a>
+            </div>
 {%- if jsname -%}
-  {%- assign filename = jsname | prepend: '/' | prepend: page.collection | prepend: '_' -%}
-  {%- assign collection = site.collections | where:'label', page.collection | first -%}
-  {%- assign file = collection.files | where:'path', filename | first -%}
-              <div class="c-navmenu__item">
-                <a href="{{ site.github.repository_url }}/tree/master/{{ page.relative_path | split: '/' | reverse | slice: -1, 100 | reverse | join: '/' }}/{{jsname}}" target="_BLANK">
-                  <i class="fas fa-edit"></i> {{jsname}} <small>({{file.modified_time | date: "%Y-%m-%d %H:%M"}})</small>
-                </a>
-              </div>
+{%- assign filename = jsname | prepend: '/' | prepend: page.collection | prepend: '_' -%}
+{%- assign collection = site.collections | where:'label', page.collection | first -%}
+{%- assign file = collection.files | where:'path', filename | first -%}
+            <div class="c-navmenu__item">
+              <a href="{{ site.github.repository_url }}/tree/master/{{ page.relative_path | split: '/' | reverse | slice: -1, 100 | reverse | join: '/' }}/{{jsname}}" target="_BLANK">
+                <i class="fas fa-edit"></i> {{jsname}} <small>({{file.modified_time | date: "%Y-%m-%d %H:%M"}})</small>
+              </a>
+            </div>
 {%- endif -%}
 {%- if cssname -%}
-  {%- assign filename = cssname | prepend: '/' | prepend: page.collection | prepend: '_' -%}
-  {%- assign collection = site.collections | where:'label', page.collection | first -%}
-  {%- assign file = collection.files | where:'path', filename | first -%}
-              <div class="c-navmenu__item">
-                <a href="{{ site.github.repository_url }}/tree/master/{{ page.relative_path | split: '/' | reverse | slice: -1, 100 | reverse | join: '/' }}/{{cssname}}" target="_BLANK">
-                  <i class="fas fa-edit"></i> {{cssname}} <small>({{file.modified_time | date: "%Y-%m-%d %H:%M"}})</small>
-                </a>
-              </div>
-{%- endif -%}
+{%- assign filename = cssname | prepend: '/' | prepend: page.collection | prepend: '_' -%}
+{%- assign collection = site.collections | where:'label', page.collection | first -%}
+{%- assign file = collection.files | where:'path', filename | first -%}
+            <div class="c-navmenu__item">
+              <a href="{{ site.github.repository_url }}/tree/master/{{ page.relative_path | split: '/' | reverse | slice: -1, 100 | reverse | join: '/' }}/{{cssname}}" target="_BLANK">
+                <i class="fas fa-edit"></i> {{cssname}} <small>({{file.modified_time | date: "%Y-%m-%d %H:%M"}})</small>
+              </a>
             </div>
-          </li>
-        </ul>
+{%- endif -%}
+          </div>
+        </li>
+      </ul>
     </div>
   </div>
 </header>

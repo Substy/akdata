@@ -1,3 +1,4 @@
+
 const ProfessionNames = {
   "PIONEER": "先锋",
   "WARRIOR": "近卫",
@@ -17,7 +18,7 @@ function init() {
   ], load);
 }
 
-const charColumnCount = 4;
+const charColumnCount = window.screen.width <= 1280 ? 2 : 4;
 const Characters = new Array(charColumnCount);
 
 function getElement(classPart, index) {
@@ -72,23 +73,24 @@ function load() {
   </div>
   <table class="table dps" style="table-layout:fixed;">
   <tbody>
-  <tr class="dps__row-select" style="width:20%;"> <th>干员</th> </tr>
-  <tr class="dps__row-level"> <th>等级</th> </tr>
-  <tr class="dps__row-potentialrank"> <th>潜能</th> </tr>
-  <tr class="dps__row-favor"> <th>信赖</th> </tr>
-  <tr class="dps__row-skill"> <th>技能</th> </tr>
-  <tr class="dps__row-option"> <th>设置</th> </tr>
+    <tr class="dps__row-select" style="width:20%;"> <th>干员</th> </tr>
+    <tr class="dps__row-level"> <th>等级</th> </tr>
+    <tr class="dps__row-potentialrank"> <th>潜能</th> </tr>
+    <tr class="dps__row-favor"> <th>信赖</th> </tr>
+    <tr class="dps__row-skill"> <th>技能</th> </tr>
+    <tr class="dps__row-option"> <th>设置</th> </tr>
   </tbody>
   <tbody>
-  <tr class="dps__row-atk"> <th>普通/技能攻击力</th> </tr>
-  <tr class="dps__row-attackSpeed"> <th>普通/技能攻击速度</th> </tr>
-  <tr class="dps__row-baseAttackTime"> <th>普通/技能攻击间隔</th> </tr>
+    <tr class="dps__row-period"> <th>技能周期 <i class="fas fa-info-circle pull-right" data-toggle="tooltip" title="技力回复时间+技能持续时间[+眩晕时间]"></i></th> </tr>
+    <tr class="dps__row-s_atk"> <th>技能攻击力 <i class="fas fa-info-circle pull-right" data-toggle="tooltip" title="角色攻击力（计算技能加成）×单次攻击次数"></i></th> </tr>
+    <tr class="dps__row-s_damage"> <th>技能伤害总量 <i class="fas fa-info-circle pull-right" data-toggle="tooltip" title="单次攻击总伤害（计算防御力）×技能持续时间内攻击次数"></i></th> </tr>
+    <tr class="dps__row-s_dps"> <th>技能每秒伤害</th> </tr>
+    <tr class="dps__row-n_dps"> <th>普通攻击每秒伤害</th> </tr>
+    <tr class="dps__row-g_dps"> <th>周期每秒伤害</th> </tr>
   </tbody>
-  <tbody>
-  <tr class="dps__row-dps"> <th>普通DPS</th> </tr>
-  <tr class="dps__row-s_dps"> <th>技能DPS</th> </tr>
-  <tr class="dps__row-g_dps"> <th>周期DPS</th> </tr>
+  <tbody class="">
   <tr class="dps__row-e_time"> <th>技能击杀时间</th> </tr>
+  <tr class="dps__row-results"> <th>计算过程(dev)</th> </tr>
   </tbody>
   </table>
 </div>
@@ -108,7 +110,7 @@ function load() {
       <td><input type="text" class="dps__enemy-def" value="0"></td>
       <td><input type="text" class="dps__enemy-mr" value="0"></td>
       <td><input type="text" class="dps__enemy-hp" value="0"></td>
-      <td><input type="text" class="dps__enemy-count" value="1" disabled></td>
+      <td><input type="text" class="dps__enemy-count" value="1"></td>
       </tr>
     </tbody>
   </table>
@@ -118,27 +120,43 @@ function load() {
 <tr class="dps__row-s_atk"> <th>技能攻击力</th> </tr>
 <tr class="dps__row-s_attackSpeed"> <th>技能攻击速度</th> </tr>
 <tr class="dps__row-s_baseAttackTime"> <th>技能基础攻击间隔</th> </tr>
+<tbody>
+  <tr class="dps__row-atk"> <th>普通/技能攻击力 <i class="fas fa-info-circle pull-right" data-toggle="tooltip" title="计算攻击次数与敌人防御力"></i></th> </tr>
+  <tr class="dps__row-attackSpeed"> <th>普通/技能攻击速度</th> </tr>
+  <tr class="dps__row-baseAttackTime"> <th>普通/技能攻击间隔</th> </tr>
+  <tr class="dps__row-damage"> <th>技能伤害总量</th> </tr>
+</tbody>
 -->
   `;
   let $dps = $(html);
 
   for (let i = 0; i < charColumnCount; i++) {
-    $dps.find('.dps__row-select').append(`<td><select class="form-control dps__char" data-index="${i}">${selectOptions}</select></td>`);
+    $dps.find('.dps__row-select').append(`<td>
+    <div class="input-group">
+      <select class="form-control dps__char" data-index="${i}">${selectOptions}</select>
+      <div class="input-group-append">
+        <button class="btn btn-outline-secondary dps__goto" type="button"><i class="fas fa-search"></i></button>
+      </div>
+    </div>
+    </td>`);
     //$dps.find('.dps__row-phase').append(`<td><select class="form-control dps__phase" data-index="${i}"></select></td>`);
     //$dps.find('.dps__row-level').append(`<td><select class="form-control dps__level" data-index="${i}"></select></td>`);
     $dps.find('.dps__row-level').append(`<td><div class="container"><div class="form-group row mb-0"><select class="form-control form-control-sm col-7 dps__phase" data-index="${i}"></select><select class="form-control form-control-sm col-5 dps__level" data-index="${i}"></select></div></div></td>`);
     $dps.find('.dps__row-atk').append(`<td><div class="dps__atk" data-index="${i}"></div></td>`);
-    $dps.find('.dps__row-damage').append(`<td><div class="dps__damage" data-index="${i}"></div></td>`);
     $dps.find('.dps__row-attackSpeed').append(`<td><div class="dps__attackSpeed" data-index="${i}"></div></td>`);
     $dps.find('.dps__row-baseAttackTime').append(`<td><div class="dps__baseAttackTime" data-index="${i}"></div></td>`);
     $dps.find('.dps__row-dps').append(`<td><div class="dps__dps" data-index="${i}"></div></td>`);
     $dps.find('.dps__row-skill').append(`<td><div class="container"><div class="form-group row mb-0"><select class="form-control form-control-sm col-7 dps__skill" data-index="${i}"></select><select class="form-control form-control-sm col-5 dps__skilllevel" data-index="${i}"></select></div></div></td>`);
-    //$dps.find('.dps__row-s_atk').append(`<td><div class="dps__s_atk" data-index="${i}"></div></td>`);
+    $dps.find('.dps__row-s_atk').append(`<td><div class="dps__s_atk" data-index="${i}"></div></td>`);
     //$dps.find('.dps__row-s_attackSpeed').append(`<td><div class="dps__s_attackSpeed" data-index="${i}"></div></td>`);
     //$dps.find('.dps__row-s_baseAttackTime').append(`<td><div class="dps__s_baseAttackTime" data-index="${i}"></div></td>`);
-    $dps.find('.dps__row-s_dps').append(`<td><div class="dps__s_dps" data-index="${i}"></div></td>`);
-    $dps.find('.dps__row-g_dps').append(`<td><div class="dps__g_dps" data-index="${i}"></div></td>`);
+    $dps.find('.dps__row-s_dps').append(`<td><div class="dps__s_dps font-weight-bold" data-index="${i}"></div></td>`);
+    $dps.find('.dps__row-n_dps').append(`<td><div class="dps__n_dps" data-index="${i}"></div></td>`);
+    $dps.find('.dps__row-g_dps').append(`<td><div class="dps__g_dps font-weight-bold" data-index="${i}"></div></td>`);
     $dps.find('.dps__row-e_time').append(`<td><div class="dps__e_time" data-index="${i}"></div></td>`);
+    $dps.find('.dps__row-s_damage').append(`<td><div class="dps__s_damage" data-index="${i}"></div></td>`);
+    $dps.find('.dps__row-period').append(`<td><div class="dps__period" data-index="${i}"></div></td>`);
+    $dps.find('.dps__row-results').append(`<td><a class="dps__results" data-index="${i}" href="#">[显示]</a></td>`);
     $dps.find('.dps__row-option').append(`<td>
     <div class="form-check">
     <label class="form-check-label">
@@ -155,7 +173,7 @@ function load() {
     </td>`);
 
     $dps.find('.dps__row-potentialrank').append(`<td><select class="form-control form-control-sm dps__potentialrank" data-index="${i}">${[0,1,2,3,4,5].map(x=>`<option value="${x}">${x+1}</option>`).join('')}</select></td>`);
-    $dps.find('.dps__row-favor').append(`<td><select class="form-control form-control-sm dps__favor" data-index="${i}">${Object.keys(new Array(101).fill(0)).map(x=>`<option value="${x*2}">${x*2}</option>`).join('')}</select></td>`);
+    $dps.find('.dps__row-favor').append(`<td><select class="form-control form-control-sm dps__favor" data-index="${i}">${Object.keys(new Array(51).fill(0)).map(x=>`<option value="${x*2}">${x*2}</option>`).join('')}</select></td>`);
   }
 
   pmBase.content.build({
@@ -165,13 +183,36 @@ function load() {
   });
 
   $('.dps__potentialrank').val(5);
-  $('.dps__favor').val(200);
+  $('.dps__favor').val(100);
 
   $('.dps__char').change(chooseChar);
   $('.dps__phase').change(choosePhase);
   $('.dps__level').change(chooseLevel);
   $('.dps__skill, .dps__skilllevel, .dps__row-potentialrank, .dps__row-favor').change(chooseSkill);
   $('.dps__enemy-def, .dps__enemy-mr, .dps__enemy-count, .dps__enemy-hp, .dps__cond, .dps__buff').change(calculateAll);
+  $('.dps__results').click(showDetail);
+  $('.dps__goto').click(goto);
+}
+
+function goto() {
+  let $this = $(this);
+  let index = ~~$this.data('index');
+  if ( Characters[index].charId ) {
+    window.open(`../character/#!/${Characters[index].charId}`, '_blank'); 
+  }
+}
+
+function showDetail() {
+  let $this = $(this);
+  let index = ~~$this.data('index');
+  pmBase.component.create({
+    type: 'modal',
+    id: 'details',
+    content: Characters[index].log.replace(/\n/g,'<br>').replace(/ /g,'&nbsp;'),
+    title: Characters[index].charId,
+    show: true,
+  });
+  return false;
 }
 
 function setSelectValue(name, index, value) {
@@ -278,20 +319,24 @@ function calculate(index) {
 
   let dps = AKDATA.attributes.calculateDps(char, enemy);
 
+/*
   if ( dps.isInstant ) dps.skillDps = 0;
-
   getElement('atk', index).html(Math.round(dps.normalAtk) + ' / ' + Math.round(dps.skillAtk));
   getElement('attackSpeed', index).html(dps.normalAttackSpeed + '% / ' + Math.round(dps.skillAttackSpeed) + '%');
   getElement('baseAttackTime', index).html(dps.normalAttackTime + ' / ' + dps.skillAttackTime);
-  //getElement('damage', index).html(Math.round(dps.normalAtk) + ' / ' + Math.round(dps.skillAtk));
 
   getElement('dps', index).html(dps.normalDps);
-  getElement('s_damage', index).html(dps.skillDamage);
-  getElement('s_dps', index).html(dps.skillDps || '-');
+  getElement('damage', index).html(dps.skillAttackDamage + ' × ' + dps.skillAttackCount);
+*/
+  getElement('s_atk', index).html(`<b style="color:${['brown','blue','green'][dps.skill.damageType-100]};">${Math.round(dps.skill.atk)}</b> × ${dps.skill.hitNumber}`);
+  getElement('s_damage', index).html(Math.round(dps.skill.hitDamage * dps.skill.hitNumber) + ' × ' + dps.skill.attackCount + ' = ' + Math.round(dps.skill.hitDamage * dps.skill.hitNumber * dps.skill.attackCount));
+  getElement('s_dps', index).html(dps.skill.isInstant ? '-' : Math.round(dps.skill.dps));
+  getElement('period', index).html(`${Math.round(dps.normal.duration*100)/100}s + ${Math.round(dps.skill.duration*100)/100}s`);
+  getElement('n_dps', index).html(Math.round(dps.normal.dps));
   getElement('g_dps', index).html(dps.globalDps);
-  getElement('e_time', index).html(dps.killTime ?  `${dps.killTime}秒` : '-');
 
-  console.log(dps.log);
+  getElement('e_time', index).html(dps.killTime ?  `${Math.ceil(dps.killTime)}秒` : '-');
+  char.log = dps.log;
 }
 
 function calculateAll() {

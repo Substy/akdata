@@ -95,7 +95,7 @@ function load() {
     card: true,
   });
 
-  item2 +=`
+  item2 =`
   <div class="card mb-2">
     <div class="card-header">
       <div class="card-title mb-0">敌人</div>
@@ -114,7 +114,7 @@ function load() {
         </tr>
       </tbody>
     </table>
-  </div>
+  </div>${item2}
 <div class="alert alert-primary small">
   <ul class="m-0">
     <li>这个表格仅收录干员的攻击技能，干员属性取自第一页的极限值。</li>
@@ -170,7 +170,7 @@ function calculate() {
       };
       let dps = AKDATA.attributes.calculateDps(char, enemy);
       if ( !dps ) return;
-      if (dps.normalDps == dps.skillDps) return;
+      if (dps.normal.dps == dps.skill.dps) return;
 
       let skillData = AKDATA.Data.skill_table[skill.skillId];
       let levelData = skillData.levels[skillData.levels.length-1];
@@ -178,18 +178,16 @@ function calculate() {
       levelData.blackboard.forEach(kv => bb[kv.key] = kv.value);
       let desc = AKDATA.formatString(levelData.description, true, bb);
 
-      if ( dps.isInstant ) dps.skillDps = dps.globalDps;
-
       html += '<tr><td>' + [
         `<a href="../character/#!/${charId}">${charData.name}</a>`,
         ProfessionNames[charData.profession],
         (charData.description.includes('法术伤害') || levelData.description.includes('伤害类型变为<@ba.vup>法术</>') ) ? '法术' : '物理',
-        Math.round(dps.skillAtk),
-        Math.round(dps.skillAttackTime*100)/100,
+        Math.round(dps.skill.atk),
+        Math.round(dps.skill.attackTime*100)/100,
         levelData.name,
         desc,
-        Math.round(dps.normalDps),
-        Math.round(dps.skillDps),
+        Math.round(dps.normal.dps),
+        Math.round(dps.skill.isInstant ? dps.globalDps : dps.skill.dps),
         Math.round(dps.globalDps),
       ].join('</td><td>') + '</td></tr>';
     });
