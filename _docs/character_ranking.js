@@ -134,7 +134,7 @@ function load() {
       text: '极限属性',
       content: item,
     },{
-      text: '单体DPS',
+      text: 'DPS',
       content: item2,
     }],
   });
@@ -177,6 +177,7 @@ function calculate() {
       let bb = {};
       levelData.blackboard.forEach(kv => bb[kv.key] = kv.value);
       let desc = AKDATA.formatString(levelData.description, true, bb);
+      //desc += `<ul class="small text-left mb-0 muted">${Object.entries(bb).map(k=>`<li>${k[0]}: ${k[1]}</li>`).join('')}</ul>`;
 
       html += '<tr><td>' + [
         `<a href="../character/#!/${charId}">${charData.name}</a>`,

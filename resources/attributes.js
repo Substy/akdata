@@ -167,9 +167,6 @@ function calculateAttack(charId, charData, basicFrame, buffFrame, enemy, isSkill
       write('skchr_texas_2', 'times = 2');
     } else if (levelData.prefabId == "skchr_slbell_1") {
       delete blackboard.attack_speed;
-    } else if (levelData.prefabId == "skchr_aglina_2") {
-      buffFrame['skchr_aglina_2'] = blackboard['base_attack_time'];
-      delete blackboard.base_attack_time;
     } else if (levelData.prefabId == "skchr_amgoat_1") {
       buffFrame.atk += basicFrame.atk * blackboard['amgoat_s_1[b].atk'];
       buffFrame.attackSpeed += blackboard['amgoat_s_1[b].attack_speed'];
@@ -199,8 +196,21 @@ function calculateAttack(charId, charData, basicFrame, buffFrame, enemy, isSkill
       write('attack_speed', `+${blackboard['attack_speed']}`);
     }
     if (blackboard['base_attack_time']) {
-      buffFrame.baseAttackTime += blackboard['base_attack_time'];
-      write('baseAttackTime', `+${blackboard['base_attack_time']}`);
+      let bat = basicFrame.baseAttackTime;
+      if (levelData.prefabId == "skchr_aglina_2") {
+        bat *= blackboard['base_attack_time'];
+        write('baseAttackTime(skchr_aglina_2)', `*${blackboard['base_attack_time']}`);
+      } else if (levelData.prefabId == "base_attack_time") {
+        bat += blackboard['base_attack_time'];
+        write('baseAttackTime(base_attack_time)', `+${blackboard['base_attack_time']}`);
+      } else if ( blackboard['base_attack_time'] < 0) {
+        bat += blackboard['base_attack_time'];
+        write('baseAttackTime(<0)', `+${blackboard['base_attack_time']}`);
+      } else {
+        bat += basicFrame.baseAttackTime * blackboard['base_attack_time'];
+        write('baseAttackTime(>0)', `+${blackboard['base_attack_time']}x`);
+      }
+      buffFrame.baseAttackTime = 0 - basicFrame.baseAttackTime + bat;
     }
     if (blackboard['attack@atk_scale']) {
       buffFrame.atk_scale *= blackboard['attack@atk_scale'];
@@ -239,10 +249,11 @@ function calculateAttack(charId, charData, basicFrame, buffFrame, enemy, isSkill
   }
   let finalFrame = getBuffedAttributes(basicFrame, buffFrame);
   let attackTime = finalFrame.baseAttackTime / finalFrame.attackSpeed * 100;
-  if (isSkill && levelData.prefabId == "skchr_aglina_2") {
-    attackTime *= buffFrame['skchr_aglina_2'];
-    log.write(`  - skchr_aglina_2: base_attack_time *= ${buffFrame['skchr_aglina_2']}`);
-  } else if (isSkill && levelData.prefabId == "skchr_ifrit_3") {
+  //if (isSkill && levelData.prefabId == "skchr_aglina_2") {
+  //  attackTime *= buffFrame['skchr_aglina_2'];
+  //  log.write(`  - skchr_aglina_2: base_attack_time *= ${buffFrame['skchr_aglina_2']}`);
+  //} else 
+  if (isSkill && levelData.prefabId == "skchr_ifrit_3") {
     attackTime = 1;
     log.write(`  - skchr_ifrit_3: attackTime = 1`);
   } else if (isSkill && levelData.prefabId == "skchr_yuki_2") {
@@ -586,7 +597,7 @@ function applyTalent(prefabKey, blackboard, basic, buffs, name) {
   if (blackboard.respawn_time) basic.respawnTime += blackboard.respawn_time;
   if (blackboard.cost) buffs.cost += blackboard.cost;
   if (blackboard.attack_speed) buffs.attackSpeed += blackboard.attack_speed;
-  if (blackboard.base_attack_time) buffs.baseAttackTime += blackboard.base_attack_time;
+  if (blackboard.base_attack_time) buffs.baseAttackTime += basic.baseAttackTime * blackboard.base_attack_time;
   if (blackboard.sp_recovery_per_sec) buffs.spRecoveryPerSec += blackboard.sp_recovery_per_sec;
 
   if (blackboard.atk_scale) buffs.atk_scale *= blackboard.atk_scale;

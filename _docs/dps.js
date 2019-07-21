@@ -89,7 +89,7 @@ function load() {
     <tr class="dps__row-g_dps"> <th>周期每秒伤害</th> </tr>
   </tbody>
   <tbody class="">
-  <tr class="dps__row-e_time"> <th>技能击杀时间</th> </tr>
+  <tr class="dps__row-e_time"> <th>技能击杀时间 <i class="fas fa-info-circle pull-right" data-toggle="tooltip" title="敌人HP/技能DPS（存在较大问题）"></i></th> </tr>
   <tr class="dps__row-results"> <th>计算过程(dev)</th> </tr>
   </tbody>
   </table>
@@ -164,7 +164,7 @@ function load() {
       条件
     </label>
     </div>
-    <div class="form-check">
+    <div class="form-check d-none">
     <label class="form-check-label">
     <input class="form-check-input dps__buff" type="checkbox" value="" data-index="${i}">
       Buff
