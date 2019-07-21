@@ -97,15 +97,15 @@ function load() {
 
   item2 =`
   <div class="card mb-2">
-    <div class="card-header">
-      <div class="card-title mb-0">敌人</div>
+    <div class="card-header" data-toggle="collapse" data-target="#collapse">
+      <div class="card-title mb-0">设置</div>
     </div>
-    <table class="table dps" style="table-layout:fixed;">
+    <table class="table dps collapse" id="collapse" style="table-layout:fixed;">
       <tbody>
         <tr>
-          <th>防御力</th>
-          <th>法术抗性</th>
-          <th>数量</th>
+          <th>敌人防御力</th>
+          <th>敌人法术抗性</th>
+          <th>敌人数量</th>
         </tr>
         <tr>
         <td><input type="text" class="dps__enemy-def" value="0"></td>

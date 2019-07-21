@@ -87,7 +87,7 @@ function calculateDps(char, enemy) {
   globalDps = Math.round((normalAttack.totalDamage + skillAttack.totalDamage) / (normalAttack.duration + skillAttack.duration + stunDuration));
 
   let killTime = 0;
-  if (enemy.hp > 0) killTime = enemy.hp / skillAttack.dps;
+  if (enemy.hp > 0) killTime = Math.ceil( enemy.count / skillAttack.maxTarget ) * enemy.hp * skillAttack.maxTarget / skillAttack.dps ;
 
   return {
     normal: normalAttack,
@@ -105,7 +105,7 @@ function calculateAttack(charId, charData, basicFrame, buffFrame, enemy, isSkill
     log.write(`  - ${text}: ${params.join(', ')}`);
   }
 
-  let enemyMagicResistance = enemy.magicResistance;
+  buffFrame.emr = enemy.magicResistance;
 
   let damageType = 0;
   if (charData.profession == "MEDIC") {
@@ -176,10 +176,10 @@ function calculateAttack(charId, charData, basicFrame, buffFrame, enemy, isSkill
       write('skchr_amgoat_1', `atk = ${blackboard['amgoat_s_1[b].atk']}, attackSpeed = ${blackboard['amgoat_s_1[b].attack_speed']}`);
     } else if (levelData.prefabId == "skchr_amgoat_2") {
       buffFrame.atk_scale *= blackboard['atk_scale_2'];
-      buffFrame.enemyMagicResistance += blackboard['magic_resistance'];
-      write('skchr_amgoat_2', `atk_scale = ${blackboard['atk_scale_2']}`, `enemyMagicResistance = ${blackboard['magic_resistance']}`);
+      buffFrame.emr_scale += blackboard['magic_resistance'];
+      write('skchr_amgoat_2', `atk_scale = ${blackboard['atk_scale_2']}`, `emr_scale = ${blackboard['magic_resistance']}`);
     } else if (levelData.prefabId == "skchr_ifrit_3") {
-      buffFrame.enemyMagicResistance += blackboard['magic_resistance'];
+      buffFrame.emr += blackboard['magic_resistance'];
       write('skchr_ifrit_3', `enemyMagicResistance = ${blackboard['magic_resistance']}`);
     } else if (levelData.prefabId == "skchr_bluep_2") {
       //delete blackboard['attack@times'];
@@ -230,11 +230,12 @@ function calculateAttack(charId, charData, basicFrame, buffFrame, enemy, isSkill
       buffFrame.damage_scale *= blackboard['damage_scale'];
       write('damage_scale', `+${blackboard['damage_scale']}`);
     }
-
+/*
     if (buffFrame.enemyMagicResistance) {
       enemyMagicResistance += buffFrame.enemyMagicResistance;
       write('enemyMagicResistance', `+${buffFrame.enemyMagicResistance}`);
     }
+*/
   }
   let finalFrame = getBuffedAttributes(basicFrame, buffFrame);
   let attackTime = finalFrame.baseAttackTime / finalFrame.attackSpeed * 100;
@@ -298,7 +299,7 @@ function calculateAttack(charId, charData, basicFrame, buffFrame, enemy, isSkill
   log.write(`  - Final attack time: ${attackTime}`);
 
   let hitDamage = finalFrame.atk;
-  let emr = 1 - enemyMagicResistance / 100;
+  let emr = 1 - buffFrame.emr * buffFrame.emr_scale / 100;
   if (damageType == 0 && enemy.def != 0) {
     let minDamage = finalFrame.atk * 0.05;
     if (buffFrame["tachr_144_red_1"]) { // 刺骨, 每次攻击至少造成33%<@ba.talpu>（+3%）</>攻击力的伤害, {"atk_scale":0.33}
@@ -311,10 +312,11 @@ function calculateAttack(charId, charData, basicFrame, buffFrame, enemy, isSkill
       log.write(`  - tachr_106_franka_1: prob = ${buffFrame["tachr_106_franka_1"].prob})`);
     }
     hitDamage = Math.max(finalFrame.atk - def, minDamage);
-  } else if (damageType == 1 && enemyMagicResistance != 0) {
+  } else if (damageType == 1 && emr != 0) {
     hitDamage *= emr;
   }
 
+  log.write(`  - Enemy magic resistance: ${emr}`);
   log.write(`  - Final hit damage: ${hitDamage}`);
 
   let damagePool = [0, 0, 0];
@@ -345,7 +347,7 @@ function calculateAttack(charId, charData, basicFrame, buffFrame, enemy, isSkill
   "tachr_164_nightm_1", // 表里人格, 装备技能1时获得45%<@ba.talpu>（+5%）</>的物理和法术闪避，装备技能2时获得+18%<@ba.talpu>（+3%）</>攻击力, {"prob":0.45,"atk":0.18}
 */
 
-  let totalDamage = damagePool[0] + damagePool[1] + damagePool[2];
+  let totalDamage = damagePool.sum();
   let dps = totalDamage / duration;
 
   log.write(`  - Total damage: ${damagePool} (${totalDamage})`);
@@ -357,6 +359,7 @@ function calculateAttack(charId, charData, basicFrame, buffFrame, enemy, isSkill
     isInstant,
     hitDamage,
     totalDamage,
+    maxTarget,
     damagePool,
     damageType,
     attackSpeed: finalFrame.attackSpeed,
@@ -399,6 +402,8 @@ function getAttributes(char, log) { //charId, phase = -1, level = -1
     damage_scale: 1,
     maxTarget: 1,
     times: 1,
+    emr:0,
+    emr_scale:1,
   };
 
   if (char.level == charData.phases[char.phase].maxLevel) {
@@ -547,7 +552,7 @@ const HardcodeList = [
 function applyTalent(prefabKey, blackboard, basic, buffs, name) {
   if (false) {} // skip
   else if (prefabKey == "tachr_141_nights_1" || prefabKey == "tachr_134_ifrit_1") {
-    buffs.enemyMagicResistance = blackboard.magic_resistance * 100;
+    buffs.emr_scale += blackboard.magic_resistance;
     blackboard = {};
   } // 黑色迷雾, 攻击使目标法术抗性-23%<@ba.talpu>（+3%）</>，持续1秒, {"duration":1,"magic_resistance":-0.23}
   else if (prefabKey == "tachr_109_fmout_1") {
