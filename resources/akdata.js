@@ -4,12 +4,13 @@ const variableRegex = /{(\-)*(.+?)(?:\:(.+?))?}/g;
 let CacheList = null;
 
 const useCache = true;
-const cacheBeginTime = new Date(2019, 7, 30).getTime();
+const cacheBeginTime = new Date(2019, 8, 27).getTime();
 
 window.AKDATA = {
   Data: {},
 
   load: function (paths, callback, ...args) {
+
     for( let i=0;i<paths.length;i++) {
       if ( paths[i].endsWith('.json') ){
         let name = paths[i].split('/').pop().replace('.json', '');
@@ -168,7 +169,7 @@ function loadJSON( url, callback ){
     return true;
   }
   else {
-    return $.getJSON(url, data => {
+    return $.getJSON(url, null, data => {
       callback(data);
       if (useCache) {
         setLocaStorageObject( url, data );
