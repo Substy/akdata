@@ -188,7 +188,7 @@ function load() {
   $('.dps__char').change(chooseChar);
   $('.dps__phase').change(choosePhase);
   $('.dps__level').change(chooseLevel);
-  $('.dps__skill, .dps__skilllevel, .dps__row-potentialrank, .dps__row-favor').change(chooseSkill);
+  $('.dps__skill, .dps__skilllevel, .dps__potentialrank, .dps__favor').change(chooseSkill);
   $('.dps__enemy-def, .dps__enemy-mr, .dps__enemy-count, .dps__enemy-hp, .dps__cond, .dps__buff').change(calculateAll);
   $('.dps__results').click(showDetail);
   $('.dps__goto').click(goto);
