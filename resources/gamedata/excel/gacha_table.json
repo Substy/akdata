@@ -302,6 +302,28 @@
       "gachaPoolDetail": "-",
       "guarantee5Avail": 1,
       "guarantee5Count": 10
+    },
+    {
+      "gachaPoolId": "NORM_3_0_2",
+      "gachaIndex": 3,
+      "openTime": 1567627200,
+      "endTime": 1568836799,
+      "gachaPoolName": "适合多种场合的强力干员",
+      "gachaPoolSummary": "结束于9月19日 03:59",
+      "gachaPoolDetail": "-",
+      "guarantee5Avail": 1,
+      "guarantee5Count": 10
+    },
+    {
+      "gachaPoolId": "NORM_3_0_3",
+      "gachaIndex": 1,
+      "openTime": 1568102400,
+      "endTime": 1569268799,
+      "gachaPoolName": "久铸尘铁",
+      "gachaPoolSummary": "结束于9月24日 03:59",
+      "gachaPoolDetail": "-",
+      "guarantee5Avail": 1,
+      "guarantee5Count": 10
     }
   ],
   "newbeeGachaPoolClient": [
