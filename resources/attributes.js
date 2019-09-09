@@ -146,6 +146,14 @@ function calculateAttack(charId, charData, basicFrame, buffFrame, enemy, isSkill
   } else if (buffFrame["tachr_185_frncat_1"]) { // 连击, 攻击时有23%<@ba.talpu>（+3%）</>的几率连续攻击两次, {"prob":0.23}
     buffFrame.times += buffFrame["tachr_185_frncat_1"].prob;
     writeTalent("tachr_185_frncat_1", 'prob');
+  } else if (buffFrame["tachr_340_shwaz_1"]) { // 尖锐箭头, 攻击时，20%几率当次攻击的攻击力提升至130%, {"prob":0.2,"atk_scale":1.3}
+    let prob = buffFrame["tachr_340_shwaz_1"].prob;
+    if (isSkill && (levelData.prefabId == "skchr_shwaz_1" || levelData.prefabId == "skchr_shwaz_2" || levelData.prefabId == "skchr_shwaz_3" )) {
+      prob += prob * blackboard["talent@prob"];
+      buffFrame["tachr_340_shwaz_1"].prob = prob;
+    }
+    buffFrame.atk_scale *= 1 + prob * (buffFrame["tachr_340_shwaz_1"].atk_scale - 1);
+    writeTalent("tachr_340_shwaz_1", 'prob', 'atk_scale');
   }
 
   if (!isSkill && charId == 'char_010_chen') {
@@ -178,6 +186,8 @@ function calculateAttack(charId, charData, basicFrame, buffFrame, enemy, isSkill
     } else if (levelData.prefabId == "skchr_ifrit_3") {
       buffFrame.emr += blackboard['magic_resistance'];
       write('skchr_ifrit_3', `enemyMagicResistance = ${blackboard['magic_resistance']}`);
+    } else if (levelData.prefabId == "skchr_helage_1" || levelData.prefabId == "skchr_helage_2") {
+      buffFrame.times = 2;
     } else if (levelData.prefabId == "skchr_bluep_2") {
       //delete blackboard['attack@times'];
       buffFrame.maxTarget += 2;
@@ -537,6 +547,7 @@ const CondList = [
   "tachr_158_milu_1",
   "tachr_173_slchan_1",
   "tachr_230_savage_1",
+  "tachr_188_helage_1",
 ];
 
 const HardcodeList = [
@@ -558,6 +569,9 @@ const HardcodeList = [
   "tachr_283_midn_1", // 要害瞄准·初级, 攻击时，20%几率当次攻击的攻击力提升至160%<@ba.talpu>（+10%）</>, {"prob":0.2,"atk_scale":1.6}
   "tachr_124_kroos_1",
   "tachr_164_nightm_1", // 表里人格, 装备技能1时获得45%<@ba.talpu>（+5%）</>的物理和法术闪避，装备技能2时获得+18%<@ba.talpu>（+3%）</>攻击力, {"prob":0.45,"atk":0.18}
+  "tachr_340_shwaz_1", 
+  "tachr_188_helage_1",
+  "tachr_274_astesi_1",
 ];
 
 function applyTalent(prefabKey, blackboard, basic, buffs, name) {
@@ -583,9 +597,16 @@ function applyTalent(prefabKey, blackboard, basic, buffs, name) {
     blackboard = {};
   } // 莱茵充能护服, 每在场上停留20秒，攻击力+6%<@ba.talpu>（+1%）</>，防御力+5%<@ba.talpu>（+1%）</>，最多叠加5层, {"max_stack_cnt":5,"interval":20,"atk":0.06,"def":0.05}
   else if (prefabKey == "tachr_137_brownb_1") {
-    buffs.atk += basic.atk * blackboard.atk * blackboard.max_stack_cnt;
+    buffs.def += basic.def * blackboard.def * blackboard.max_stack_cnt;
     blackboard = {};
   } // 竞技专注, 攻击相同目标时每次攻击可提高自身攻击力6%<@ba.talpu>（+1%）</>，最多可叠加5层。更换目标会失去之前叠加的效果, {"max_stack_cnt":5,"atk":0.06}
+  else if (prefabKey == "tachr_188_helage_1") {
+    buffs.attackSpeed += blackboard.min_attack_speed;
+  }
+  else if (prefabKey == "tachr_274_astesi_1") {
+    buffs.attackSpeed += blackboard.attack_speed * blackboard.max_stack_cnt;
+    blackboard = {};
+  }
   else if (HardcodeList.includes(prefabKey)) {
     buffs[prefabKey] = blackboard;
     buffs[prefabKey].name = name;
