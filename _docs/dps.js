@@ -135,7 +135,7 @@ function load() {
     <div class="input-group">
       <select class="form-control dps__char" data-index="${i}">${selectOptions}</select>
       <div class="input-group-append">
-        <button class="btn btn-outline-secondary dps__goto" type="button"><i class="fas fa-search"></i></button>
+        <button class="btn btn-outline-secondary dps__goto" data-index="${i}" type="button"><i class="fas fa-search"></i></button>
       </div>
     </div>
     </td>`);
@@ -328,6 +328,7 @@ function calculate(index) {
   getElement('dps', index).html(dps.normalDps);
   getElement('damage', index).html(dps.skillAttackDamage + ' × ' + dps.skillAttackCount);
 */
+
   getElement('s_atk', index).html(`<b style="color:${['brown','blue','green'][dps.skill.damageType-100]};">${Math.round(dps.skill.atk)}</b> × ${dps.skill.hitNumber}`);
   getElement('s_damage', index).html(Math.round(dps.skill.hitDamage * dps.skill.hitNumber) + ' × ' + dps.skill.attackCount + ' = ' + Math.round(dps.skill.hitDamage * dps.skill.hitNumber * dps.skill.attackCount));
   getElement('s_dps', index).html(dps.skill.isInstant ? '-' : Math.round(dps.skill.dps));

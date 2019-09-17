@@ -84,6 +84,7 @@ function calculateDps(char, enemy) {
     log.write(`Stun: ${blackboard.stun}`);
   }
 
+
   globalDps = Math.round((normalAttack.totalDamage + skillAttack.totalDamage) / (normalAttack.duration + skillAttack.duration + stunDuration));
 
   let killTime = 0;
@@ -94,7 +95,7 @@ function calculateDps(char, enemy) {
     skill: skillAttack,
 
     killTime: killTime,
-    globalDps: Math.round(globalDps),
+    globalDps: skillAttack.isSp8 ? '-' : Math.round(globalDps),
 
     log: log.toString(),
   };
@@ -274,6 +275,7 @@ function calculateAttack(charId, charData, basicFrame, buffFrame, enemy, isSkill
   let attackCount = 0;
   let duration = 0;
   let isInstant = levelData.duration <= 0;
+  let isSp8 = levelData.spData.spType == 8;
 
   log.write(`  - Damage type: ${['physical','magic','heal'][damageType]}`);
 
@@ -283,6 +285,10 @@ function calculateAttack(charId, charData, basicFrame, buffFrame, enemy, isSkill
       duration = attackCount * attackTime;
       isInstant = false;
       log.write(`  - Infinity duration`);
+    } else if (isSp8) {
+      attackCount = Math.ceil((blackboard.duration || levelData.duration) / attackTime);
+      duration = attackCount * attackTime;
+      isInstant = false;
     } else if (isInstant) {
       attackCount = 1;
       duration = attackTime;
@@ -307,11 +313,15 @@ function calculateAttack(charId, charData, basicFrame, buffFrame, enemy, isSkill
         break;
       case 4:
         return;
+      case 8:
+        attackCount = 1;
+        break;
       default:
         console.log(levelData.prefabId + ',' + levelData.spData.spType);
         return;
     }
     duration = attackCount * attackTime;
+    console.log(duration);
   }
   log.write(`  - Duration: ${duration} sec.`);
   log.write(`  - Attack count: ${attackCount}`);
@@ -378,6 +388,7 @@ function calculateAttack(charId, charData, basicFrame, buffFrame, enemy, isSkill
     dps,
     duration,
     isInstant,
+    isSp8,
     hitDamage,
     totalDamage,
     maxTarget,

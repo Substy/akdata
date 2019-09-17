@@ -20,8 +20,8 @@ function init() {
 function load() {
 
   let rankingList = [];
-  let charFinalData = [];
-
+  let costList = [];
+  let hpsList = [];
   for (let charId in AKDATA.Data.character_table) {
     let charData = AKDATA.Data.character_table[charId];
     if (charData.profession == "TOKEN" || charData.profession == "TRAP") continue;
@@ -39,38 +39,112 @@ function load() {
       Math.floor(perfectAttr.def),
       perfectAttr.magicResistance + '%',
     ]);
-/*
+
     charData.skills.forEach(skill=>{
-      if ( charData.profession == 'MEDIC' ) return;
-      let dps = AKDATA.attributes.calculateDps(charId, skill.skillId);
-
-      if (!dps) return;
-      if (dps.normalDps == dps.skillDps) return;
-
       let skillData = AKDATA.Data.skill_table[skill.skillId];
-      let levelData = skillData.levels[skillData.levels.length-1];
-      let bb = {};
-      levelData.blackboard.forEach(kv => bb[kv.key] = kv.value);
-      let desc = AKDATA.formatString(levelData.description, true, bb);
 
-      charFinalData.push( [
-        `<a href="../character/#!/${charId}">${charData.name}</a>`,
-        ProfessionNames[charData.profession],
-        (charData.description.includes('法术伤害') || levelData.description.includes('伤害类型变为<@ba.vup>法术</>') ) ? '法术' : '物理',
-        //Math.round(perfectAttr.atk),
-        //Math.round(perfectAttr.attackSpeed*100)/100 + '%',
-        //Math.round(perfectAttr.baseAttackTime*100)/100,
-        Math.round(dps.skillAtk),
-        Math.round(dps.skillAttackTime*100)/100,
-        levelData.name,// + '<br>' + levelData.prefabId,
-        desc,// + `<ul class="small text-left mb-0 muted">${Object.entries(bb).map(k=>`<li>${k[0]}: ${k[1]}</li>`).join('')}</ul>`,
-        Math.round(dps.normalDps),
-        Math.round(dps.skillDps),
-        Math.round(dps.globalDps),
-      ]);
+      [10].forEach( skillLevel => {
+        if ( skillData.levels.length < skillLevel ) return;
+        let levelData = skillData.levels[skillLevel-1];
+        if ( !levelData.description.includes("费用") ) return;
+        let bb = {};
+        levelData.blackboard.forEach(kv => bb[kv.key] = kv.value);
+        let desc = AKDATA.formatString(levelData.description, true, bb);
+        let cost = bb.value || bb.cost || 0;
+        if( skill.skillId == "skchr_blackd_2") {
+          cost = bb["blackd_s_2[once].cost"] + bb["blackd_s_2[period].cost"] * bb["blackd_s_2[period].trig_cnt"];
+        }
+        let count = 0;
+        let totalTime = 100;
+        totalTime -= levelData.spData.spCost - levelData.spData.initSp + levelData.duration;
+        count ++;
+        if (totalTime >= levelData.spData.spCost) {
+          totalTime -= levelData.spData.spCost;
+          count ++;
+        }
+        if (totalTime > 0) {
+          count += Math.floor( totalTime / (levelData.spData.spCost + levelData.duration) );
+        }
+
+        let reqCost = 60;
+        let reqTime = 0;
+        reqCost += Math.ceil(perfectAttr.cost / 2);
+        reqTime += levelData.spData.spCost - levelData.spData.initSp + levelData.duration;
+        reqCost -= cost;
+        reqTime += levelData.spData.spCost;
+        reqCost -= cost;
+        reqTime += Math.ceil( reqCost / cost ) * ( levelData.spData.spCost + levelData.duration );
+
+        costList.push([
+          `<a href="../character/#!/${charId}">${charData.name}</a>`,
+          charData.rarity + 1,
+          levelData.name,
+          skillLevel,
+          desc,
+          cost,
+          (levelData.spData.spCost + levelData.duration) + 's',
+          cost * count,
+          reqTime + 's',
+        ]);
+      });
+
+
+      if(true) {
+        let skillLevel = skillData.levels.length;
+        let char = {
+          charId,
+          skillId: skill.skillId,
+          skillLevel: skillLevel-1,
+          cond: true,
+        };
+        let dps = AKDATA.attributes.calculateDps(char);
+        if ( !dps ) return;
+        if ( !dps.skill.damagePool[2] ) return;
+        console.log(charData.name);
+        let levelData = skillData.levels[skillLevel-1];
+        let bb = {};
+        levelData.blackboard.forEach(kv => bb[kv.key] = kv.value);
+        let desc = AKDATA.formatString(levelData.description, true, bb);
+        let hps = 0;
+        let duration = 0;
+        if(dps.skill.isInstant)
+        {
+          duration = dps.normal.duration + dps.skill.duration;
+          hps = Math.round((dps.normal.damagePool[2] + dps.skill.damagePool[2]) / duration);
+        }
+        else
+        {
+          duration = dps.skill.duration;
+          hps = Math.round(dps.skill.damagePool[2] / duration);
+        }
+
+        hpsList.push([
+          `<a href="../character/#!/${charId}">${charData.name}</a>`,
+          charData.rarity + 1,
+          levelData.name,
+          skillLevel,
+          desc,
+          hps,
+          Math.round(duration*100)/100,
+          bb.heal_scale,
+        ]);
+      }
+
     });
-*/
+
+
+
+
   }
+
+
+
+
+
+
+
+
+
 
   let item = pmBase.component.create({
     type: 'list',
@@ -89,7 +163,7 @@ function load() {
 
     columns: ['干员', '职业', '伤害', 'S_ATK', 'S_BAT', '技能', {header:'说明',width:'40%'}, '攻击DPS', '技能DPS', '平均DPS'],
     "class":  "dps-result",
-    list: charFinalData,
+    list: [],
 
     sortable: true,
     card: true,
@@ -127,6 +201,28 @@ function load() {
 </div>
 `;
 
+let item3 = pmBase.component.create({
+  type: 'list',
+
+  columns: ['干员', '星级', '技能', '技能等级', {header:'说明',width:'40%'}, '技能费用回复', '技能周期', '100秒费用回复', '60费用需要时间'],
+  "class":  "cost-result",
+  list: costList,
+
+  sortable: true,
+  card: true,
+});
+
+let item4 = pmBase.component.create({
+  type: 'list',
+
+  columns: ['干员', '星级', '技能', '技能等级', {header:'说明',width:'40%'}, 'HPS'],
+  "class":  "hps-result",
+  list: hpsList,
+
+  sortable: true,
+  card: true,
+});
+
   let tabs = pmBase.component.create({
     type: 'tabs',
 
@@ -136,6 +232,12 @@ function load() {
     },{
       text: 'DPS',
       content: item2,
+    },{
+      text: 'HPS',
+      content: item4,
+    },{
+      text: '费用回复',
+      content: item3,
     }],
   });
 
