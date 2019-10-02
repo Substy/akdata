@@ -220,8 +220,21 @@ function show(hash) {
   }
   ///////////////////////////////////////////////
   let skillLvlupHtml = '';
+  if (charData.phases.length > 1) {
+    skillLvlupHtml += pmBase.component.create({
+      type: 'list',
+      card: true,
+      title: '精英化',
+      header: ['阶段', '素材', '-'],
+      list: [1,2].filter(x=>charData.phases[x]).map((x) => [
+        `${x - 1} <i class="fas fa-angle-right"></i> ${x}`,
+        charData.phases[x].evolveCost.map(y => AKDATA.getItemBadge(y.type, y.id, y.count))
+      ]),
+    });
+  }
+
   if (charData.allSkillLvlup.length > 0) {
-    skillLvlupHtml = pmBase.component.create({
+    skillLvlupHtml += pmBase.component.create({
       type: 'list',
       card: true,
       title: '通用技能',
@@ -314,7 +327,7 @@ function show(hash) {
     ${talentHtml}
     <h2>潜能</h2>
     ${potentialHtml}
-    ${skillLvlupHtml ? '<h2>技能强化</h2>' + skillLvlupHtml : ''}
+    ${skillLvlupHtml ? '<h2>强化</h2>' + skillLvlupHtml : ''}
   `;
 
   return {
