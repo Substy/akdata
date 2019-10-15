@@ -310,9 +310,20 @@ function show(hash) {
 
   ////////////////////////////////////////////////
   let tokenHtml = '';
+  let tokenKeys = [];
   if (charData.tokenKey) {
-    tokenHtml = createPhaseTable(AKDATA.Data.character_table[charData.tokenKey]);
+    tokenKeys.push(charData.tokenKey);
   }
+  charData.skills.forEach((skillInfo, i) => {
+    if ( skillInfo.overrideTokenKey && !tokenKeys.includes(skillInfo.overrideTokenKey) ) {
+      tokenKeys.push(skillInfo.overrideTokenKey);
+    }
+  });
+  tokenKeys.forEach((key, i) => {
+    tokenHtml += createPhaseTable(AKDATA.Data.character_table[key]);
+  });
+
+
 
   ////////////////////////////////////////////////
 
