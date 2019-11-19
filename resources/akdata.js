@@ -4,7 +4,7 @@ const variableRegex = /{(\-)*(.+?)(?:\:(.+?))?}/g;
 let CacheList = null;
 
 const useCache = true;
-const cacheBeginTime = new Date(2019, 10, 30).getTime();
+const cacheBeginTime = new Date(2019, 11, 19).getTime();
 
 window.AKDATA = {
   Data: {},
