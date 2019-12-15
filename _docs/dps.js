@@ -161,7 +161,13 @@ function load() {
     <div class="form-check">
     <label class="form-check-label">
     <input class="form-check-input dps__cond" type="checkbox" value="" data-index="${i}" checked>
-      触发天赋
+      满足增伤条件
+    </label>
+    </div>
+    <div class="form-check">
+    <label class="form-check-label">
+    <input class="form-check-input dps__crit" type="checkbox" value="" data-index="${i}" checked>
+      计算暴击
     </label>
     </div>
     <div class="form-check d-none">
@@ -189,7 +195,7 @@ function load() {
   $('.dps__phase').change(choosePhase);
   $('.dps__level').change(chooseLevel);
   $('.dps__skill, .dps__skilllevel, .dps__potentialrank, .dps__favor').change(chooseSkill);
-  $('.dps__enemy-def, .dps__enemy-mr, .dps__enemy-count, .dps__enemy-hp, .dps__cond, .dps__buff').change(calculateAll);
+  $('.dps__enemy-def, .dps__enemy-mr, .dps__enemy-count, .dps__enemy-hp, .dps__cond, .dps__crit, .dps__buff').change(calculateAll);
   $('.dps__results').click(showDetail);
   $('.dps__goto').click(goto);
 }
@@ -209,7 +215,7 @@ function showDetail() {
     type: 'modal',
     id: 'details',
     content: Characters[index].log.replace(/\n/g,'<br>').replace(/ /g,'&nbsp;'),
-    title: Characters[index].charId,
+    title: 'Details',
     show: true,
   });
   return false;
@@ -316,7 +322,7 @@ function calculate(index) {
   };
   char.buff = getElement('buff', index).is(':checked');
   char.cond = getElement('cond', index).is(':checked');
-
+  char.crit = getElement('crit', index).is(':checked');
   let dps = AKDATA.attributes.calculateDps(char, enemy);
 
 /*
@@ -330,11 +336,11 @@ function calculate(index) {
 */
 
   getElement('s_atk', index).html(`<b style="color:${['brown','blue','green'][dps.skill.damageType-100]};">${Math.round(dps.skill.atk)}</b> × ${dps.skill.hitNumber}`);
-  if (dps.skill.extraAttackCount > 0) {
+  if (dps.skill.critCount > 0) {
     getElement('s_damage', index).html(
       Math.round(dps.skill.hitDamage * dps.skill.hitNumber) + ' × ' + dps.skill.attackCount + 
-      ' + ' + Math.round(dps.skill.extraDamage * dps.skill.hitNumber) + ' × ' + dps.skill.extraAttackCount +
-      ' = ' + Math.round(dps.skill.hitDamage * dps.skill.hitNumber * dps.skill.attackCount + dps.skill.extraDamage * dps.skill.extraAttackCount * dps.skill.hitNumber));
+      ' + ' + Math.round(dps.skill.critDamage * dps.skill.hitNumber) + ' × ' + dps.skill.critCount +
+      ' = ' + Math.round(dps.skill.hitDamage * dps.skill.hitNumber * dps.skill.attackCount + dps.skill.critDamage * dps.skill.critCount * dps.skill.hitNumber));
   } else { 
     getElement('s_damage', index).html(Math.round(dps.skill.hitDamage * dps.skill.hitNumber) + ' × ' + dps.skill.attackCount + ' = ' + Math.round(dps.skill.hitDamage * dps.skill.hitNumber * dps.skill.attackCount));
   }

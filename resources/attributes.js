@@ -4,7 +4,7 @@ function getCharAttributes(char) {
     basic,
     buffs
   } = getAttributes(char);
-  let normalFrame = getBuffedAttributes(basic, buffs);
+  let normalFrame = getBuffedAttributes(basic, buffs, false);
   return normalFrame;
 }
 
@@ -43,7 +43,7 @@ function calculateDps(char, enemy) {
   let {
     basic: basicFrame,
     buffs: buffFrame
-  } = getAttributes(char);
+  } = getAttributes(char, log);
   let charId = char.charId;
   let charData = AKDATA.Data.character_table[charId];
   let skillData = AKDATA.Data.skill_table[char.skillId];
@@ -62,7 +62,6 @@ function calculateDps(char, enemy) {
   log.write(`角色: ${charId}(${charData.name})`);
   log.write(`等级: 精英 ${char.phase}, 等级 ${char.level}`);
   log.write(`技能: ${char.skillId}(${levelData.name}), 等级 ${char.skillLevel+1}`);
-  log.write(`触发天赋: ${char.cond}`);
 
   log.write(`普攻:`);
   let normalAttack = calculateAttack(charId, charData, basicFrame, buffFrame, enemy, false, skillData, levelData, Object.assign({}, blackboard), log);
@@ -120,32 +119,14 @@ function calculateAttack(charId, charData, basicFrame, buffFrame, enemy, isSkill
     write(key, ...params.map(x => `${x}=${buffFrame[key][x]}`));
   }
   if (false) { //
-  } else if (buffFrame["tachr_290_vigna_1"]) { // 蛮力穿刺, 攻击时，10%几率当次攻击的攻击力+110%<@ba.talpu>（+10%）</>。技能中这个几率提高到30%, {"atk":1.1,"prob1":0.1,"prob2":0.3}
-    buffFrame.atk += buffFrame["tachr_290_vigna_1"].atk * buffFrame["tachr_290_vigna_1"][isSkill ? 'prob2' : 'prob1'];
-    writeTalent("tachr_290_vigna_1", isSkill ? 'prob2' : 'prob1');
-  } else if (buffFrame["tachr_196_sunbr_1"]) { // 平底锅专精, 攻击时，18%<@ba.talpu>（+3%）</>几率当次攻击的攻击力提升至200%，并眩晕敌人1秒, {"prob":0.18,"atk_scale":2,"stun":1}
-    buffFrame.atk_scale *= 1 + buffFrame["tachr_196_sunbr_1"].prob * (buffFrame["tachr_196_sunbr_1"].atk_scale - 1);
-    writeTalent("tachr_196_sunbr_1", 'prob', 'atk_scale');
-  } else if (buffFrame["tachr_219_meteo_1"]) { // 爆破附着改装, 普通攻击和技能释放时，30%几率当次攻击的攻击力+60%, {"atk":0.6,"prob":0.3}
-    buffFrame.atk += buffFrame["tachr_219_meteo_1"].atk * buffFrame["tachr_219_meteo_1"].prob;
-    writeTalent("tachr_219_meteo_1", 'prob');
-  } else if (buffFrame["tachr_166_skfire_1"]) { //
-    buffFrame.damage_scale *= buffFrame["tachr_166_skfire_1"].damage_scale;
-    writeTalent("tachr_166_skfire_1", 'damage_scale');
   } else if (buffFrame["tachr_145_prove_1"]) { // 狩猎箭头, 攻击时，20%几率当次攻击的攻击力提升至190%<@ba.talpu>（+10%）</>。当敌人在正前方一格时，该几率提升到50%, {"prob":0.2,"prob2":0.5,"atk_scale":1.9}
     buffFrame.atk_scale *= 1 + buffFrame["tachr_145_prove_1"].prob2 * (buffFrame["tachr_145_prove_1"].atk_scale - 1);
     writeTalent("tachr_145_prove_1", 'prob2', 'atk_scale');
   } else if (buffFrame["tachr_174_slbell_1"]) { // 虚弱化, 攻击范围内的敌人生命少于40%时，其受到的伤害提升至133%<@ba.talpu>（+3%）</>, {"hp_ratio":0.4,"damage_scale":1.33}
     buffFrame.damage_scale *= buffFrame["tachr_174_slbell_1"].damage_scale;
     writeTalent("tachr_174_slbell_1", 'damage_scale');
-  } else if (buffFrame["tachr_283_midn_1"]) { // 要害瞄准·初级, 攻击时，20%几率当次攻击的攻击力提升至160%<@ba.talpu>（+10%）</>, {"prob":0.2,"atk_scale":1.6}
-    buffFrame.atk_scale *= 1 + buffFrame["tachr_283_midn_1"].prob * (buffFrame["tachr_283_midn_1"].atk_scale - 1);
-    writeTalent("tachr_283_midn_1", 'prob', 'atk_scale');
-  } else if (buffFrame["tachr_124_kroos_1"]) { // 要害瞄准·初级, 攻击时，20%几率当次攻击的攻击力提升至160%<@ba.talpu>（+10%）</>, {"prob":0.2,"atk_scale":1.6}
-    buffFrame.atk_scale *= 1 + buffFrame["tachr_124_kroos_1"].prob * (buffFrame["tachr_124_kroos_1"].atk_scale - 1);
-    writeTalent("tachr_124_kroos_1", 'prob', 'atk_scale');
   } else if (buffFrame["tachr_185_frncat_1"]) { // 连击, 攻击时有23%<@ba.talpu>（+3%）</>的几率连续攻击两次, {"prob":0.23}
-    buffFrame.times += buffFrame["tachr_185_frncat_1"].prob;
+    buffFrame.times = 1 + buffFrame["tachr_185_frncat_1"].prob;
     writeTalent("tachr_185_frncat_1", 'prob');
   } else if (buffFrame["tachr_340_shwaz_1"]) { // 尖锐箭头, 攻击时，20%几率当次攻击的攻击力提升至130%, {"prob":0.2,"atk_scale":1.3}
     let prob = buffFrame["tachr_340_shwaz_1"].prob;
@@ -166,8 +147,10 @@ function calculateAttack(charId, charData, basicFrame, buffFrame, enemy, isSkill
   if (isSkill) {
     if (levelData.description.includes('法术伤害') || levelData.description.includes('伤害类型变为<@ba.vup>法术</>')) {
       damageType = 1;
-    } else if (levelData.description.includes('进行治疗')) {
+    } else if (levelData.description.includes('治疗') || levelData.description.includes("恢复")) {
       damageType = 2;
+      console.log(blackboard);
+      if (blackboard.heal_scale) blackboard.atk_scale = blackboard.heal_scale;
     }
 
     if (false) { //
@@ -258,7 +241,8 @@ function calculateAttack(charId, charData, basicFrame, buffFrame, enemy, isSkill
     }
 */
   }
-  let finalFrame = getBuffedAttributes(basicFrame, buffFrame);
+  let finalFrame = getBuffedAttributes(basicFrame, buffFrame, false);
+  //console.log(buffFrame, finalFrame);
   let attackTime = finalFrame.baseAttackTime / finalFrame.attackSpeed * 100;
   //if (isSkill && levelData.prefabId == "skchr_aglina_2") {
   //  attackTime *= buffFrame['skchr_aglina_2'];
@@ -276,8 +260,8 @@ function calculateAttack(charId, charData, basicFrame, buffFrame, enemy, isSkill
   let duration = 0;
   let isInstant = levelData.duration <= 0;
   let isSp8 = levelData.spData.spType == 8;
-  let extraDamage = 0;
-  let extraAttackCount = 0;
+  let critDamage = 0;
+  let critCount = 0;
 
   log.write(`  - 伤害类型: ${['physical','magic','heal'][damageType]}`);
 
@@ -325,9 +309,12 @@ function calculateAttack(charId, charData, basicFrame, buffFrame, enemy, isSkill
     duration = attackCount * attackTime;
     //console.log(duration);
   }
+  // 追加攻击次数
+  attackCount *= buffFrame.times;
+
   log.write(`  - 持续: ${duration} sec.`);
-  log.write(`  - 攻击次数: ${attackCount}`);
-  log.write(`  - 最终攻击力: ${finalFrame.atk}`);
+  log.write(`  - 攻击次数: ${attackCount} (x${buffFrame.times})`);
+  log.write(`  - 最终攻击力:  ${Math.round(finalFrame.atk)} = (${basicFrame.atk} + ${Math.round(buffFrame.atk)}) * ${buffFrame.atk_scale}`);
   log.write(`  - 最终攻速: ${finalFrame.attackSpeed}`);
   log.write(`  - 最终攻击间隔: ${attackTime}`);
 
@@ -347,29 +334,48 @@ function calculateAttack(charId, charData, basicFrame, buffFrame, enemy, isSkill
     }
     hitDamage = Math.max(finalFrame.atk - def, minDamage);
 
-    // -------------------------------------------------------------
-    if (buffFrame["tachr_290_vigna_1"]) {  // 蛮力穿刺, 攻击时，10%几率当次攻击的攻击力+110%<@ba.talpu>（+10%）</>。技能中这个几率提高到30%, {"atk":1.1,"prob1":0.1,"prob2":0.3}
-      extraDamage = basicFrame.atk * buffFrame["tachr_290_vigna_1"].atk;
-      let minExDamage = (finalFrame.atk + extraDamage) * 0.05;
-      extraDamage = Math.max(extraDamage - def, minExDamage - minDamage);
-      let probKey = (isSkill ? 'prob2' : 'prob1');
-      extraAttackCount = ~~(attackCount * buffFrame["tachr_290_vigna_1"][probKey]);
-      log.write(`  - tachr_290_vigna_1: 额外伤害 = ${extraDamage}, 次数 = ${extraAttackCount}`);
+    // 暴击处理 
+    if (buffFrame['_critdata']) { 
+      let critFrame = getBuffedAttributes(basicFrame, buffFrame, true);
+      let cd = buffFrame['_critdata'];
+      critDamage = Math.max(critFrame.atk - def, critFrame.atk * 0.05);
+      let prob = cd['prob'];
+      if (buffFrame['tachr_290_vigna_1'])
+      {
+        prob = (isSkill ? cd['prob2'] : cd['prob1']);
+      }
+      //console.log(buffFrame);
+      //console.log(prob);
+      critCount = attackCount * prob;
+      if (critCount > 1) critCount = Math.floor(critCount);
+      attackCount -= critCount;
+      log.write(`  - 暴击伤害 = ${critDamage}, 次数 = ${critCount}`);
     }
   } else if (damageType == 1 && emr != 0) {
     hitDamage *= emr;
+    
+    // 暴击处理 
+    if (buffFrame['_critdata']) { 
+      let critFrame = getBuffedAttributes(basicFrame, buffFrame, true);
+      let cd = buffFrame['_critdata'];
+      critDamage = critFrame.atk * emr;
+      let prob = cd['prob'];
+      critCount = attackCount * prob;
+      attackCount -= critCount;
+      if (critCount > 1) critCount = Math.floor(critCount);
+      log.write(`  - 暴击伤害 = ${critDamage}, 次数 = ${critCount}`);
+    }
   }
 
   log.write(`  - 敌人魔抗比率: ${emr}`);
   log.write(`  - 最终单次伤害: ${hitDamage}`);
 
   let damagePool = [0, 0, 0];
-  damagePool[damageType] += hitDamage * buffFrame.times * attackCount
-                          + extraDamage * extraAttackCount;
+  damagePool[damageType] += hitDamage * attackCount + critDamage * critCount;
   
   if (isSkill && levelData.prefabId == "skchr_ifrit_2") {
     let damage = (basicFrame.atk + buffFrame.atk) * blackboard['burn.atk_scale'] * duration * emr;
-    damagePool[1] += damage
+    damagePool[1] += damage;
     log.write(`  - skchr_ifrit_2: damage += ${damage}`);
   } else if (isSkill && buffFrame["tachr_129_bluep_1"]) { // 神经毒素, 攻击使目标中毒，在3秒内每秒受到85<@ba.talpu>（+10）</>点法术伤害, {"duration":3.1,"poison_damage":85}
     let damage = buffFrame["tachr_129_bluep_1"].poison_damage * duration * emr;
@@ -396,7 +402,11 @@ function calculateAttack(charId, charData, basicFrame, buffFrame, enemy, isSkill
   let dps = totalDamage / duration;
 
   log.write(`  - 总伤害: ${damagePool} (${totalDamage})`);
-  log.write(`  - DPS: ${dps}`);
+  if (damageType < 2) {
+    log.write(`  - DPS: ${dps}`);
+  } else {
+    log.write(`  - HPS: ${dps}`);
+  }
   return {
     atk: finalFrame.atk,
     dps,
@@ -404,8 +414,8 @@ function calculateAttack(charId, charData, basicFrame, buffFrame, enemy, isSkill
     isInstant,
     isSp8,
     hitDamage,
-    extraDamage,
-    extraAttackCount,
+    critDamage,
+    critCount,
     totalDamage,
     maxTarget,
     damagePool,
@@ -413,7 +423,7 @@ function calculateAttack(charId, charData, basicFrame, buffFrame, enemy, isSkill
     attackSpeed: finalFrame.attackSpeed,
     attackTime,
     attackCount,
-    hitNumber: buffFrame.times,
+    hitNumber: 1, //buffFrame.times,
     buff: buffFrame,
     frame: finalFrame,
     emr,
@@ -472,29 +482,53 @@ function getAttributes(char, log) { //charId, phase = -1, level = -1
   charData.talents.forEach(talentData => {
     for (let i = talentData.candidates.length - 1; i >= 0; i--) {
       if (char.phase >= talentData.candidates[i].unlockCondition.phase && char.level >= talentData.candidates[i].unlockCondition.level) {
+        // 找到了当前生效的天赋
         let blackboard = getBlackboard(talentData.candidates[i].blackboard);
         let prefabKey = 'tachr_' + char.charId.slice(5) + '_' + talentData.candidates[i].prefabKey;
-        if (!char.cond && CondList.includes(prefabKey)) break;
+        if (TodoList.includes(prefabKey)) {
+          if (log) log.write('TODO: 施工中');
+        }
+        if (CondList.includes(prefabKey)) {
+          if (log) log.write(`触发天赋增伤: ${char.cond}`);
+          if (!char.cond) break;
+        }
+        if (CritList.includes(prefabKey)) {
+          if (log) log.write(`计算暴击: ${char.crit}`);
+          if (!char.crit) break;
+        }
         applyTalent(prefabKey, blackboard, attributesKeyFrames, buffs, talentData.name);
         break;
       }
     }
   });
-  console.log(attributesKeyFrames);
+ // console.log(attributesKeyFrames);
   return {
     basic: attributesKeyFrames,
     buffs: buffs,
   };
 }
 
-function getBuffedAttributes(basic, buffs) {
+function getBuffedAttributes(basic, buffs, crit) {
   let final = {};
   AttributeKeys.forEach(key => {
     final[key] = basic[key] + buffs[key];
   });
-  final.atk *= buffs.atk_scale;
-  final.def *= buffs.def_scale;
-  final.atk *= buffs.damage_scale;
+  if (crit && buffs["_critdata"]) {
+    let cd = buffs["_critdata"];
+    let scale = buffs.atk_scale;
+   // console.log(cd, final);
+    if (cd.atk) final.atk += basic.atk * cd.atk;
+    if (cd.atk_scale) scale *= cd.atk_scale;
+
+    final.atk *= scale;
+    final.def *= buffs.def_scale;
+    final.atk *= buffs.damage_scale;
+  }
+  else {
+    final.atk *= buffs.atk_scale;
+    final.def *= buffs.def_scale;
+    final.atk *= buffs.damage_scale;
+  }
   return final;
 }
 
@@ -508,7 +542,6 @@ function getFinalAttributes(...frames) {
 }
 
 function getAttribute(frames, level, minLevel, attr) {
-  // console.log(frames, level, attr);
   return Math.ceil((level - minLevel) / (frames[1].level - frames[0].level) * (frames[1].data[attr] - frames[0].data[attr]) + frames[0].data[attr]);
 }
 
@@ -576,32 +609,40 @@ const CondList = [
   "tachr_173_slchan_1",
   "tachr_230_savage_1",
   "tachr_188_helage_1",
+  "tachr_166_skfire_1", // 法术狙击, 在场时，所有被阻挡的敌人受到法术伤害时伤害提升18%<@ba.talpu>（+3%）</>, {"damage_scale":1.18}
+];
+
+const CritList = [
   // 暴击类
   "tachr_290_vigna_1", // 蛮力穿刺, 攻击时，10%几率当次攻击的攻击力+110%<@ba.talpu>（+10%）</>。技能中这个几率提高到30%, {"atk":1.1,"prob1":0.1,"prob2":0.3}
+  "tachr_196_sunbr_1", // 平底锅专精, 攻击时，18%<@ba.talpu>（+3%）</>几率当次攻击的攻击力提升至200%，并眩晕敌人1秒, {"prob":0.18,"atk_scale":2,"stun":1}
+  "tachr_219_meteo_1", // 爆破附着改装, 普通攻击和技能释放时，30%几率当次攻击的攻击力+60%, {"atk":0.6,"prob":0.3}
+  "tachr_283_midn_1", // 要害瞄准·初级, 攻击时，20%几率当次攻击的攻击力提升至160%<@ba.talpu>（+10%）</>, {"prob":0.2,"atk_scale":1.6}
+  "tachr_124_kroos_1",
 ];
 
 const HardcodeList = [
-  "tachr_290_vigna_1", // 蛮力穿刺, 攻击时，10%几率当次攻击的攻击力+110%<@ba.talpu>（+10%）</>。技能中这个几率提高到30%, {"atk":1.1,"prob1":0.1,"prob2":0.3}
   "tachr_185_frncat_1", // 连击, 攻击时有23%<@ba.talpu>（+3%）</>的几率连续攻击两次, {"prob":0.23}
   "tachr_237_gravel_1+", // 小个子支援, 自身部署费用-1，所有部署费用不超过10的单位防御力提升8%<@ba.talpu>（+2%）</>, {"cost":-1,"def":0.08,"cond.cost":10}
-  "tachr_196_sunbr_1", // 平底锅专精, 攻击时，18%<@ba.talpu>（+3%）</>几率当次攻击的攻击力提升至200%，并眩晕敌人1秒, {"prob":0.18,"atk_scale":2,"stun":1}
   "tachr_106_franka_1", // 铝热剑, 攻击时有20%的几率无视目标的防御, {"prob":0.2}
   "tachr_129_bluep_1", // 神经毒素, 攻击使目标中毒，在3秒内每秒受到85<@ba.talpu>（+10）</>点法术伤害, {"duration":3.1,"poison_damage":85}
-  "tachr_219_meteo_1", // 爆破附着改装, 普通攻击和技能释放时，30%几率当次攻击的攻击力+60%, {"atk":0.6,"prob":0.3}
   "tachr_002_amiya_1", // 情绪吸收, 攻击敌人时额外回复3<@ba.talpu>（+1）</>点技力，消灭敌人后额外获得10<@ba.talpu>（+2）</>点技力, {"amiya_t_1[atk].sp":3,"amiya_t_1[kill].sp":10}
-  "tachr_166_skfire_1", // 法术狙击, 在场时，所有被阻挡的敌人受到法术伤害时伤害提升18%<@ba.talpu>（+3%）</>, {"damage_scale":1.18}
   "tachr_144_red_1", // 刺骨, 每次攻击至少造成33%<@ba.talpu>（+3%）</>攻击力的伤害, {"atk_scale":0.33}
   "tachr_145_prove_1", // 狩猎箭头, 攻击时，20%几率当次攻击的攻击力提升至190%<@ba.talpu>（+10%）</>。当敌人在正前方一格时，该几率提升到50%, {"prob":0.2,"prob2":0.5,"atk_scale":1.9}
   "tachr_174_slbell_1", // 虚弱化, 攻击范围内的敌人生命少于40%时，其受到的伤害提升至133%<@ba.talpu>（+3%）</>, {"hp_ratio":0.4,"damage_scale":1.33}
   "tachr_215_mantic_1", // 隐匿的杀手·精英, 平时处于隐匿状态（不会被远程攻击选为目标），攻击时会解除隐匿状态，且当次攻击的攻击力+54%<@ba.talpu>（+4%）</>。停止攻击5秒后，重新进入隐匿状态, {"delay":5,"atk":0.54}
   "tachr_134_ifrit_2", // 莱茵回路, 每5.5<@ba.talpu>（-0.5）</>秒额外回复2点技力, {"sp":2,"interval":5.5}
   "tachr_010_chen_1", // 呵斥, 在场时每4秒回复全场友方角色1点攻击/受击技力, {"interval":4,"sp":1}
-  "tachr_283_midn_1", // 要害瞄准·初级, 攻击时，20%几率当次攻击的攻击力提升至160%<@ba.talpu>（+10%）</>, {"prob":0.2,"atk_scale":1.6}
-  "tachr_124_kroos_1",
   "tachr_164_nightm_1", // 表里人格, 装备技能1时获得45%<@ba.talpu>（+5%）</>的物理和法术闪避，装备技能2时获得+18%<@ba.talpu>（+3%）</>攻击力, {"prob":0.45,"atk":0.18}
   "tachr_340_shwaz_1", 
   "tachr_188_helage_1",
   "tachr_274_astesi_1",
+];
+
+const TodoList = [
+  "tachr_106_franka_1", // 铝热剑, 攻击时有20%的几率无视目标的防御, {"prob":0.2}
+  "tachr_145_prove_1", // 狩猎箭头, 攻击时，20%几率当次攻击的攻击力提升至190%<@ba.talpu>（+10%）</>。当敌人在正前方一格时，该几率提升到50%, {"prob":0.2,"prob2":0.5,"atk_scale":1.9}
+  "tachr_340_shwaz_1", 
 ];
 
 function applyTalent(prefabKey, blackboard, basic, buffs, name) {
@@ -640,6 +681,12 @@ function applyTalent(prefabKey, blackboard, basic, buffs, name) {
   else if (HardcodeList.includes(prefabKey)) {
     buffs[prefabKey] = blackboard;
     buffs[prefabKey].name = name;
+    blackboard = {};
+  }
+  else if (CritList.includes(prefabKey)) {
+    buffs['_critdata'] = blackboard;
+    buffs[prefabKey] = prefabKey;
+    console.log(blackboard);
     blackboard = {};
   }
 
