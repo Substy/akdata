@@ -59,29 +59,29 @@ function calculateDps(char, enemy) {
     buffFrame.maxTarget = 999;
   }
 
-  log.write(`Char: ${charId}(${charData.name})`);
-  log.write(`Level: Phase ${char.phase}, Level ${char.level}`);
-  log.write(`Skill: ${char.skillId}(${levelData.name}), Level ${char.skillLevel+1}`);
-  log.write(`Cond: ${char.cond}`);
+  log.write(`角色: ${charId}(${charData.name})`);
+  log.write(`等级: 精英 ${char.phase}, 等级 ${char.level}`);
+  log.write(`技能: ${char.skillId}(${levelData.name}), 等级 ${char.skillLevel+1}`);
+  log.write(`触发天赋: ${char.cond}`);
 
-  log.write(`NormalAttack:`);
+  log.write(`普攻:`);
   let normalAttack = calculateAttack(charId, charData, basicFrame, buffFrame, enemy, false, skillData, levelData, Object.assign({}, blackboard), log);
   if (!normalAttack) return;
 
-  log.write(`SkillAttack:`);
+  log.write(`技能:`);
   let skillAttack = calculateAttack(charId, charData, basicFrame, buffFrame, enemy, true, skillData, levelData, Object.assign({}, blackboard), log);
   if (!skillAttack) return;
 
   let stunDuration = 0;
   if (levelData.prefabId == "skchr_fmout_2") {
     stunDuration += blackboard.time;
-    log.write(`Stun: ${blackboard.time}`);
+    log.write(`晕眩: ${blackboard.time}`);
   } else if (levelData.prefabId == "skchr_amiya_2") {
     stunDuration += blackboard.stun;
-    log.write(`Stun: ${blackboard.stun}`);
+    log.write(`晕眩: ${blackboard.stun}`);
   } else if (levelData.prefabId == "skchr_liskam_2") {
     stunDuration += blackboard.stun;
-    log.write(`Stun: ${blackboard.stun}`);
+    log.write(`晕眩: ${blackboard.stun}`);
   }
 
 
@@ -276,8 +276,10 @@ function calculateAttack(charId, charData, basicFrame, buffFrame, enemy, isSkill
   let duration = 0;
   let isInstant = levelData.duration <= 0;
   let isSp8 = levelData.spData.spType == 8;
+  let extraDamage = 0;
+  let extraAttackCount = 0;
 
-  log.write(`  - Damage type: ${['physical','magic','heal'][damageType]}`);
+  log.write(`  - 伤害类型: ${['physical','magic','heal'][damageType]}`);
 
   if (isSkill) {
     if (levelData.description.includes('持续时间无限')) {
@@ -321,17 +323,18 @@ function calculateAttack(charId, charData, basicFrame, buffFrame, enemy, isSkill
         return;
     }
     duration = attackCount * attackTime;
-    console.log(duration);
+    //console.log(duration);
   }
-  log.write(`  - Duration: ${duration} sec.`);
-  log.write(`  - Attack count: ${attackCount}`);
-  log.write(`  - Final atk: ${finalFrame.atk}`);
-  log.write(`  - Final attack speed: ${finalFrame.attackSpeed}`);
-  log.write(`  - Final attack time: ${attackTime}`);
+  log.write(`  - 持续: ${duration} sec.`);
+  log.write(`  - 攻击次数: ${attackCount}`);
+  log.write(`  - 最终攻击力: ${finalFrame.atk}`);
+  log.write(`  - 最终攻速: ${finalFrame.attackSpeed}`);
+  log.write(`  - 最终攻击间隔: ${attackTime}`);
 
   let hitDamage = finalFrame.atk;
+  
   let emr = 1 - buffFrame.emr * buffFrame.emr_scale / 100;
-  if (damageType == 0 && enemy.def != 0) {
+  if (damageType == 0) {
     let minDamage = finalFrame.atk * 0.05;
     if (buffFrame["tachr_144_red_1"]) { // 刺骨, 每次攻击至少造成33%<@ba.talpu>（+3%）</>攻击力的伤害, {"atk_scale":0.33}
       minDamage = finalFrame.atk * buffFrame["tachr_144_red_1"].atk_scale;
@@ -343,16 +346,27 @@ function calculateAttack(charId, charData, basicFrame, buffFrame, enemy, isSkill
       log.write(`  - tachr_106_franka_1: prob = ${buffFrame["tachr_106_franka_1"].prob})`);
     }
     hitDamage = Math.max(finalFrame.atk - def, minDamage);
+
+    // -------------------------------------------------------------
+    if (buffFrame["tachr_290_vigna_1"]) {  // 蛮力穿刺, 攻击时，10%几率当次攻击的攻击力+110%<@ba.talpu>（+10%）</>。技能中这个几率提高到30%, {"atk":1.1,"prob1":0.1,"prob2":0.3}
+      extraDamage = basicFrame.atk * buffFrame["tachr_290_vigna_1"].atk;
+      let minExDamage = (finalFrame.atk + extraDamage) * 0.05;
+      extraDamage = Math.max(extraDamage - def, minExDamage - minDamage);
+      let probKey = (isSkill ? 'prob2' : 'prob1');
+      extraAttackCount = ~~(attackCount * buffFrame["tachr_290_vigna_1"][probKey]);
+      log.write(`  - tachr_290_vigna_1: 额外伤害 = ${extraDamage}, 次数 = ${extraAttackCount}`);
+    }
   } else if (damageType == 1 && emr != 0) {
     hitDamage *= emr;
   }
 
-  log.write(`  - Enemy magic resistance: ${emr}`);
-  log.write(`  - Final hit damage: ${hitDamage}`);
+  log.write(`  - 敌人魔抗比率: ${emr}`);
+  log.write(`  - 最终单次伤害: ${hitDamage}`);
 
   let damagePool = [0, 0, 0];
-  damagePool[damageType] += hitDamage * buffFrame.times * attackCount;
-
+  damagePool[damageType] += hitDamage * buffFrame.times * attackCount
+                          + extraDamage * extraAttackCount;
+  
   if (isSkill && levelData.prefabId == "skchr_ifrit_2") {
     let damage = (basicFrame.atk + buffFrame.atk) * blackboard['burn.atk_scale'] * duration * emr;
     damagePool[1] += damage
@@ -381,7 +395,7 @@ function calculateAttack(charId, charData, basicFrame, buffFrame, enemy, isSkill
   let totalDamage = damagePool.sum();
   let dps = totalDamage / duration;
 
-  log.write(`  - Total damage: ${damagePool} (${totalDamage})`);
+  log.write(`  - 总伤害: ${damagePool} (${totalDamage})`);
   log.write(`  - DPS: ${dps}`);
   return {
     atk: finalFrame.atk,
@@ -390,6 +404,8 @@ function calculateAttack(charId, charData, basicFrame, buffFrame, enemy, isSkill
     isInstant,
     isSp8,
     hitDamage,
+    extraDamage,
+    extraAttackCount,
     totalDamage,
     maxTarget,
     damagePool,
@@ -442,13 +458,12 @@ function getAttributes(char, log) { //charId, phase = -1, level = -1
     attributesKeyFrames = Object.assign(attributesKeyFrames, phaseData.attributesKeyFrames[1].data);
   } else {
     AttributeKeys.forEach(key => {
-      attributesKeyFrames[key] = getAttribute(phaseData.attributesKeyFrames, char.level, key);
+      attributesKeyFrames[key] = getAttribute(phaseData.attributesKeyFrames, char.level, 1, key);
     });
   }
-
   let favorLevel = Math.floor(Math.min(char.favor, 100) / 2);
   AttributeKeys.forEach(key => {
-    attributesKeyFrames[key] += getAttribute(charData.favorKeyFrames, favorLevel, key);
+    attributesKeyFrames[key] += getAttribute(charData.favorKeyFrames, favorLevel, 0, key);
     buffs[key] = 0;
   });
 
@@ -465,7 +480,7 @@ function getAttributes(char, log) { //charId, phase = -1, level = -1
       }
     }
   });
-
+  console.log(attributesKeyFrames);
   return {
     basic: attributesKeyFrames,
     buffs: buffs,
@@ -492,8 +507,9 @@ function getFinalAttributes(...frames) {
   return final;
 }
 
-function getAttribute(frames, level, attr) {
-  return Math.ceil((level - 1) / (frames[1].level - frames[0].level) * (frames[1].data[attr] - frames[0].data[attr]) + frames[0].data[attr]);
+function getAttribute(frames, level, minLevel, attr) {
+  // console.log(frames, level, attr);
+  return Math.ceil((level - minLevel) / (frames[1].level - frames[0].level) * (frames[1].data[attr] - frames[0].data[attr]) + frames[0].data[attr]);
 }
 
 function getBlackboard(blackboardArray) {
@@ -548,6 +564,7 @@ const BuffList = [
 ];
 
 const CondList = [
+  // 条件触发类
   "tachr_286_cast3_1", // 战术整理·VI, 部署后20秒内所有友方【近战位】单位的攻击力和防御力+20%, {"duration":20,"atk":0.2,"def":0.2}
   "tachr_503_rang_1", // 空射大师, 攻击飞行目标时，攻击力+50%, {"atk_scale":1.5}
   "tachr_126_shotst_1", // 空射专精, 攻击飞行目标时，攻击力+40%<@ba.talpu>（+5%）</>, {"atk_scale":1.4}
@@ -559,6 +576,8 @@ const CondList = [
   "tachr_173_slchan_1",
   "tachr_230_savage_1",
   "tachr_188_helage_1",
+  // 暴击类
+  "tachr_290_vigna_1", // 蛮力穿刺, 攻击时，10%几率当次攻击的攻击力+110%<@ba.talpu>（+10%）</>。技能中这个几率提高到30%, {"atk":1.1,"prob1":0.1,"prob2":0.3}
 ];
 
 const HardcodeList = [

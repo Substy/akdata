@@ -161,7 +161,7 @@ function load() {
     <div class="form-check">
     <label class="form-check-label">
     <input class="form-check-input dps__cond" type="checkbox" value="" data-index="${i}" checked>
-      条件
+      触发天赋
     </label>
     </div>
     <div class="form-check d-none">
@@ -330,8 +330,15 @@ function calculate(index) {
 */
 
   getElement('s_atk', index).html(`<b style="color:${['brown','blue','green'][dps.skill.damageType-100]};">${Math.round(dps.skill.atk)}</b> × ${dps.skill.hitNumber}`);
-  getElement('s_damage', index).html(Math.round(dps.skill.hitDamage * dps.skill.hitNumber) + ' × ' + dps.skill.attackCount + ' = ' + Math.round(dps.skill.hitDamage * dps.skill.hitNumber * dps.skill.attackCount));
-  getElement('s_dps', index).html(dps.skill.isInstant ? '-' : Math.round(dps.skill.dps));
+  if (dps.skill.extraAttackCount > 0) {
+    getElement('s_damage', index).html(
+      Math.round(dps.skill.hitDamage * dps.skill.hitNumber) + ' × ' + dps.skill.attackCount + 
+      ' + ' + Math.round(dps.skill.extraDamage * dps.skill.hitNumber) + ' × ' + dps.skill.extraAttackCount +
+      ' = ' + Math.round(dps.skill.hitDamage * dps.skill.hitNumber * dps.skill.attackCount + dps.skill.extraDamage * dps.skill.extraAttackCount * dps.skill.hitNumber));
+  } else { 
+    getElement('s_damage', index).html(Math.round(dps.skill.hitDamage * dps.skill.hitNumber) + ' × ' + dps.skill.attackCount + ' = ' + Math.round(dps.skill.hitDamage * dps.skill.hitNumber * dps.skill.attackCount));
+  }
+    getElement('s_dps', index).html(dps.skill.isInstant ? '-' : Math.round(dps.skill.dps));
   getElement('period', index).html(`${Math.round(dps.normal.duration*100)/100}s + ${Math.round(dps.skill.duration*100)/100}s`);
   getElement('n_dps', index).html(Math.round(dps.normal.dps));
   getElement('g_dps', index).html(dps.globalDps);
