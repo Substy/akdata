@@ -83,7 +83,7 @@ function load() {
   <tbody>
     <tr class="dps__row-period"> <th>技能周期 <i class="fas fa-info-circle pull-right" data-toggle="tooltip" title="技力回复时间+技能持续时间[+眩晕时间]"></i></th> </tr>
     <tr class="dps__row-s_atk"> <th>技能攻击力 <i class="fas fa-info-circle pull-right" data-toggle="tooltip" title="角色攻击力（计算技能加成）×单次攻击次数"></i></th> </tr>
-    <tr class="dps__row-s_damage"> <th>技能伤害总量 <i class="fas fa-info-circle pull-right" data-toggle="tooltip" title="单次攻击总伤害（计算防御力）×技能持续时间内攻击次数"></i></th> </tr>
+    <tr class="dps__row-s_damage"> <th>技能伤害期望 <i class="fas fa-info-circle pull-right" data-toggle="tooltip" title="单次攻击总伤害（计算防御力）×技能持续时间内攻击次数"></i></th> </tr>
     <tr class="dps__row-s_dps"> <th>技能每秒伤害</th> </tr>
     <tr class="dps__row-n_dps"> <th>普通攻击每秒伤害</th> </tr>
     <tr class="dps__row-g_dps"> <th>周期每秒伤害</th> </tr>
@@ -124,7 +124,7 @@ function load() {
   <tr class="dps__row-atk"> <th>普通/技能攻击力 <i class="fas fa-info-circle pull-right" data-toggle="tooltip" title="计算攻击次数与敌人防御力"></i></th> </tr>
   <tr class="dps__row-attackSpeed"> <th>普通/技能攻击速度</th> </tr>
   <tr class="dps__row-baseAttackTime"> <th>普通/技能攻击间隔</th> </tr>
-  <tr class="dps__row-damage"> <th>技能伤害总量</th> </tr>
+  <tr class="dps__row-damage"> <th>技能伤害期望</th> </tr>
 </tbody>
 -->
   `;
@@ -213,9 +213,9 @@ function showDetail() {
   let index = ~~$this.data('index');
   pmBase.component.create({
     type: 'modal',
-    id: 'details',
+    id: Characters[index].charId,
     content: Characters[index].log.replace(/\n/g,'<br>').replace(/ /g,'&nbsp;'),
-    title: 'Details',
+    title: Characters[index].charId,
     show: true,
   });
   return false;

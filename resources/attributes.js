@@ -40,10 +40,6 @@ function calculateDps(char, enemy) {
     count: 1,
   };
 
-  let {
-    basic: basicFrame,
-    buffs: buffFrame
-  } = getAttributes(char, log);
   let charId = char.charId;
   let charData = AKDATA.Data.character_table[charId];
   let skillData = AKDATA.Data.skill_table[char.skillId];
@@ -52,23 +48,28 @@ function calculateDps(char, enemy) {
   let levelData = skillData.levels[char.skillLevel];
   let blackboard = getBlackboard(levelData.blackboard);
 
+  log.write(`角色: ${charId}(${charData.name})`);
+  log.write(`等级: 精英 ${char.phase}, 等级 ${char.level}`);
+
+  let {
+    basic: basicFrame,
+    buffs: buffFrame
+  } = getAttributes(char, log);
+
   if (charData.description.includes('所有敌人') ||
-    charData.description.includes('群体法术伤害') ||
-    charData.description.includes('群体物理伤害')
-  ) {
+  charData.description.includes('群体法术伤害') ||
+  charData.description.includes('群体物理伤害') ) {
     buffFrame.maxTarget = 999;
   }
 
-  log.write(`角色: ${charId}(${charData.name})`);
-  log.write(`等级: 精英 ${char.phase}, 等级 ${char.level}`);
-  log.write(`技能: ${char.skillId}(${levelData.name}), 等级 ${char.skillLevel+1}`);
+  log.write(`技能: ${levelData.name} (${char.skillId}), 等级 ${char.skillLevel+1}`);
 
   log.write(`普攻:`);
-  let normalAttack = calculateAttack(charId, charData, basicFrame, buffFrame, enemy, false, skillData, levelData, Object.assign({}, blackboard), log);
+  let normalAttack = calculateAttack(charId, charData, basicFrame, buffFrame, enemy, false, char.cond, char.crit, skillData, levelData, Object.assign({}, blackboard), log);
   if (!normalAttack) return;
 
   log.write(`技能:`);
-  let skillAttack = calculateAttack(charId, charData, basicFrame, buffFrame, enemy, true, skillData, levelData, Object.assign({}, blackboard), log);
+  let skillAttack = calculateAttack(charId, charData, basicFrame, buffFrame, enemy, true, char.cond, char.crit, skillData, levelData, Object.assign({}, blackboard), log);
   if (!skillAttack) return;
 
   let stunDuration = 0;
@@ -100,7 +101,7 @@ function calculateDps(char, enemy) {
   };
 }
 
-function calculateAttack(charId, charData, basicFrame, buffFrame, enemy, isSkill, skillData, levelData, blackboard, log) {
+function calculateAttack(charId, charData, basicFrame, buffFrame, enemy, isSkill, isCond, isCrit, skillData, levelData, blackboard, log) {
   function write(text, ...params) {
     log.write(`  - ${text}: ${params.join(', ')}`);
   }
@@ -119,23 +120,12 @@ function calculateAttack(charId, charData, basicFrame, buffFrame, enemy, isSkill
     write(key, ...params.map(x => `${x}=${buffFrame[key][x]}`));
   }
   if (false) { //
-  } else if (buffFrame["tachr_145_prove_1"]) { // 狩猎箭头, 攻击时，20%几率当次攻击的攻击力提升至190%<@ba.talpu>（+10%）</>。当敌人在正前方一格时，该几率提升到50%, {"prob":0.2,"prob2":0.5,"atk_scale":1.9}
-    buffFrame.atk_scale *= 1 + buffFrame["tachr_145_prove_1"].prob2 * (buffFrame["tachr_145_prove_1"].atk_scale - 1);
-    writeTalent("tachr_145_prove_1", 'prob2', 'atk_scale');
   } else if (buffFrame["tachr_174_slbell_1"]) { // 虚弱化, 攻击范围内的敌人生命少于40%时，其受到的伤害提升至133%<@ba.talpu>（+3%）</>, {"hp_ratio":0.4,"damage_scale":1.33}
     buffFrame.damage_scale *= buffFrame["tachr_174_slbell_1"].damage_scale;
     writeTalent("tachr_174_slbell_1", 'damage_scale');
   } else if (buffFrame["tachr_185_frncat_1"]) { // 连击, 攻击时有23%<@ba.talpu>（+3%）</>的几率连续攻击两次, {"prob":0.23}
     buffFrame.times = 1 + buffFrame["tachr_185_frncat_1"].prob;
     writeTalent("tachr_185_frncat_1", 'prob');
-  } else if (buffFrame["tachr_340_shwaz_1"]) { // 尖锐箭头, 攻击时，20%几率当次攻击的攻击力提升至130%, {"prob":0.2,"atk_scale":1.3}
-    let prob = buffFrame["tachr_340_shwaz_1"].prob;
-    if (isSkill && (levelData.prefabId == "skchr_shwaz_1" || levelData.prefabId == "skchr_shwaz_2" || levelData.prefabId == "skchr_shwaz_3" )) {
-      prob += prob * blackboard["talent@prob"];
-      buffFrame["tachr_340_shwaz_1"].prob = prob;
-    }
-    buffFrame.atk_scale *= 1 + prob * (buffFrame["tachr_340_shwaz_1"].atk_scale - 1);
-    writeTalent("tachr_340_shwaz_1", 'prob', 'atk_scale');
   }
 
   if (!isSkill && charId == 'char_010_chen') {
@@ -313,7 +303,7 @@ function calculateAttack(charId, charData, basicFrame, buffFrame, enemy, isSkill
   attackCount *= buffFrame.times;
 
   log.write(`  - 持续: ${duration} sec.`);
-  log.write(`  - 攻击次数: ${attackCount} (x${buffFrame.times})`);
+  log.write(`  - 攻击次数: ${attackCount} (${buffFrame.times} 连击)`);
   log.write(`  - 最终攻击力:  ${Math.round(finalFrame.atk)} = (${basicFrame.atk} + ${Math.round(buffFrame.atk)}) * ${buffFrame.atk_scale}`);
   log.write(`  - 最终攻速: ${finalFrame.attackSpeed}`);
   log.write(`  - 最终攻击间隔: ${attackTime}`);
@@ -328,34 +318,39 @@ function calculateAttack(charId, charData, basicFrame, buffFrame, enemy, isSkill
       log.write(`  - tachr_144_red_1: minimum damage = ${buffFrame["tachr_144_red_1"].atk_scale} (${minDamage})`);
     }
     let def = enemy.def;
-    if (buffFrame["tachr_106_franka_1"]) { // 铝热剑, 攻击时有20%的几率无视目标的防御, {"prob":0.2}
-      def *= 1 - buffFrame["tachr_106_franka_1"].prob;
-      log.write(`  - tachr_106_franka_1: prob = ${buffFrame["tachr_106_franka_1"].prob})`);
-    }
+    if (charId == "char_340_shwaz") def *= 0.8; // 假设黑减防常驻
+
     hitDamage = Math.max(finalFrame.atk - def, minDamage);
 
     // 暴击处理 
-    if (buffFrame['_critdata']) { 
+    if (buffFrame['_critdata'] && isCrit) { 
       let critFrame = getBuffedAttributes(basicFrame, buffFrame, true);
       let cd = buffFrame['_critdata'];
       critDamage = Math.max(critFrame.atk - def, critFrame.atk * 0.05);
       let prob = cd['prob'];
-      if (buffFrame['tachr_290_vigna_1'])
-      {
+      if (buffFrame['tachr_290_vigna_1']) {
         prob = (isSkill ? cd['prob2'] : cd['prob1']);
       }
-      //console.log(buffFrame);
-      //console.log(prob);
+      else if (buffFrame['tachr_145_prove_1'] && isCond) {
+        prob = cd['prob2'];
+      }
+      else if (buffFrame["tachr_106_franka_1"]) { // 铝热剑, 攻击时有20%的几率无视目标的防御, {"prob":0.2}
+        if (isSkill && skillData.skillId == "skchr_franka_2") prob = 0.5;
+        critDamage = critFrame.atk;
+      }
+      else if (buffFrame["tachr_340_shwaz_1"] && isSkill) {
+        prob = blackboard["talent@prob"];
+      }
       critCount = attackCount * prob;
       if (critCount > 1) critCount = Math.floor(critCount);
       attackCount -= critCount;
-      log.write(`  - 暴击伤害 = ${critDamage}, 次数 = ${critCount}`);
+      log.write(`  - 暴击伤害 = ${critDamage}, 暴击率: ${prob}, 次数 = ${critCount}`);
     }
   } else if (damageType == 1 && emr != 0) {
     hitDamage *= emr;
     
     // 暴击处理 
-    if (buffFrame['_critdata']) { 
+    if (buffFrame['_critdata'] && isCrit) { 
       let critFrame = getBuffedAttributes(basicFrame, buffFrame, true);
       let cd = buffFrame['_critdata'];
       critDamage = critFrame.atk * emr;
@@ -377,10 +372,15 @@ function calculateAttack(charId, charData, basicFrame, buffFrame, enemy, isSkill
     let damage = (basicFrame.atk + buffFrame.atk) * blackboard['burn.atk_scale'] * duration * emr;
     damagePool[1] += damage;
     log.write(`  - skchr_ifrit_2: damage += ${damage}`);
-  } else if (isSkill && buffFrame["tachr_129_bluep_1"]) { // 神经毒素, 攻击使目标中毒，在3秒内每秒受到85<@ba.talpu>（+10）</>点法术伤害, {"duration":3.1,"poison_damage":85}
+  } else if (buffFrame["tachr_129_bluep_1"]) { // 神经毒素, 攻击使目标中毒，在3秒内每秒受到85<@ba.talpu>（+10）</>点法术伤害, {"duration":3.1,"poison_damage":85}
     let damage = buffFrame["tachr_129_bluep_1"].poison_damage * duration * emr;
-    damagePool[1] += damage
-    log.write(`  - tachr_129_bluep_1: damage += ${damage}`);
+    if (isSkill && skillData.skillId == "skchr_bluep_1") {
+      damage *= blackboard.atk_scale; // 暴击毒!
+      log.write(`  - 神经毒素(暴击): ${damage}/s`);
+    }
+    else
+      log.write(`  - 神经毒素(魔法): ${damage} = ${buffFrame["tachr_129_bluep_1"].poison_damage * emr} x ${duration}s`);
+    damagePool[1] += damage;
   } else if (!isSkill && (levelData.prefabId == "skchr_aglina_2" || levelData.prefabId == "skchr_aglina_3")) {
     damagePool = [0, 0, 0];
     log.write(`  - ${levelData.prefabId}: damage = 0`);
@@ -481,21 +481,26 @@ function getAttributes(char, log) { //charId, phase = -1, level = -1
 
   charData.talents.forEach(talentData => {
     for (let i = talentData.candidates.length - 1; i >= 0; i--) {
-      if (char.phase >= talentData.candidates[i].unlockCondition.phase && char.level >= talentData.candidates[i].unlockCondition.level) {
+      let cd = talentData.candidates[i];
+      if (char.phase >= cd.unlockCondition.phase && char.level >= cd.unlockCondition.level && 
+          char.potentialRank >= cd.requiredPotentialRank) {
         // 找到了当前生效的天赋
-        let blackboard = getBlackboard(talentData.candidates[i].blackboard);
-        let prefabKey = 'tachr_' + char.charId.slice(5) + '_' + talentData.candidates[i].prefabKey;
-        if (TodoList.includes(prefabKey)) {
-          if (log) log.write('TODO: 施工中');
+        let blackboard = getBlackboard(cd.blackboard);
+        let prefabKey = 'tachr_' + char.charId.slice(5) + '_' + cd.prefabKey;
+        
+        if (log) {
+          st = cd.name + " { " + $.map(blackboard, (v, k) => `${k}:${v}`).join(", ") + " }";
+          log.write(`天赋: ${st}`);
+          if (CondList.includes(prefabKey)) log.write(`触发天赋增伤: ${char.cond}`);
+          if (CritList.includes(prefabKey)) log.write(`计算暴击: ${char.crit}`);
+          if (TodoList.includes(prefabKey)) log.write('TODO: 天赋效果调整中，结果可能不准确');
         }
-        if (CondList.includes(prefabKey)) {
-          if (log) log.write(`触发天赋增伤: ${char.cond}`);
-          if (!char.cond) break;
+        // 判断是否不应用天赋
+        if (CondList.includes(prefabKey) && !char.cond) {
+          if (!(CritList.includes(prefabKey) && char.crit))
+            break;
         }
-        if (CritList.includes(prefabKey)) {
-          if (log) log.write(`计算暴击: ${char.crit}`);
-          if (!char.crit) break;
-        }
+        // 使天赋生效
         applyTalent(prefabKey, blackboard, attributesKeyFrames, buffs, talentData.name);
         break;
       }
@@ -610,6 +615,8 @@ const CondList = [
   "tachr_230_savage_1",
   "tachr_188_helage_1",
   "tachr_166_skfire_1", // 法术狙击, 在场时，所有被阻挡的敌人受到法术伤害时伤害提升18%<@ba.talpu>（+3%）</>, {"damage_scale":1.18}
+  "tachr_145_prove_1", // 狩猎箭头, 攻击时，20%几率当次攻击的攻击力提升至190%<@ba.talpu>（+10%）</>。当敌人在正前方一格时，该几率提升到50%, {"prob":0.2,"prob2":0.5,"atk_scale":1.9}
+  "tachr_340_shwaz_2", 
 ];
 
 const CritList = [
@@ -619,30 +626,27 @@ const CritList = [
   "tachr_219_meteo_1", // 爆破附着改装, 普通攻击和技能释放时，30%几率当次攻击的攻击力+60%, {"atk":0.6,"prob":0.3}
   "tachr_283_midn_1", // 要害瞄准·初级, 攻击时，20%几率当次攻击的攻击力提升至160%<@ba.talpu>（+10%）</>, {"prob":0.2,"atk_scale":1.6}
   "tachr_124_kroos_1",
+  "tachr_145_prove_1", // 狩猎箭头, 攻击时，20%几率当次攻击的攻击力提升至190%<@ba.talpu>（+10%）</>。当敌人在正前方一格时，该几率提升到50%, {"prob":0.2,"prob2":0.5,"atk_scale":1.9}
+  "tachr_106_franka_1", // 铝热剑, 攻击时有20%的几率无视目标的防御, {"prob":0.2}
+  "tachr_340_shwaz_1", 
 ];
 
 const HardcodeList = [
   "tachr_185_frncat_1", // 连击, 攻击时有23%<@ba.talpu>（+3%）</>的几率连续攻击两次, {"prob":0.23}
   "tachr_237_gravel_1+", // 小个子支援, 自身部署费用-1，所有部署费用不超过10的单位防御力提升8%<@ba.talpu>（+2%）</>, {"cost":-1,"def":0.08,"cond.cost":10}
-  "tachr_106_franka_1", // 铝热剑, 攻击时有20%的几率无视目标的防御, {"prob":0.2}
   "tachr_129_bluep_1", // 神经毒素, 攻击使目标中毒，在3秒内每秒受到85<@ba.talpu>（+10）</>点法术伤害, {"duration":3.1,"poison_damage":85}
   "tachr_002_amiya_1", // 情绪吸收, 攻击敌人时额外回复3<@ba.talpu>（+1）</>点技力，消灭敌人后额外获得10<@ba.talpu>（+2）</>点技力, {"amiya_t_1[atk].sp":3,"amiya_t_1[kill].sp":10}
   "tachr_144_red_1", // 刺骨, 每次攻击至少造成33%<@ba.talpu>（+3%）</>攻击力的伤害, {"atk_scale":0.33}
-  "tachr_145_prove_1", // 狩猎箭头, 攻击时，20%几率当次攻击的攻击力提升至190%<@ba.talpu>（+10%）</>。当敌人在正前方一格时，该几率提升到50%, {"prob":0.2,"prob2":0.5,"atk_scale":1.9}
   "tachr_174_slbell_1", // 虚弱化, 攻击范围内的敌人生命少于40%时，其受到的伤害提升至133%<@ba.talpu>（+3%）</>, {"hp_ratio":0.4,"damage_scale":1.33}
   "tachr_215_mantic_1", // 隐匿的杀手·精英, 平时处于隐匿状态（不会被远程攻击选为目标），攻击时会解除隐匿状态，且当次攻击的攻击力+54%<@ba.talpu>（+4%）</>。停止攻击5秒后，重新进入隐匿状态, {"delay":5,"atk":0.54}
   "tachr_134_ifrit_2", // 莱茵回路, 每5.5<@ba.talpu>（-0.5）</>秒额外回复2点技力, {"sp":2,"interval":5.5}
   "tachr_010_chen_1", // 呵斥, 在场时每4秒回复全场友方角色1点攻击/受击技力, {"interval":4,"sp":1}
   "tachr_164_nightm_1", // 表里人格, 装备技能1时获得45%<@ba.talpu>（+5%）</>的物理和法术闪避，装备技能2时获得+18%<@ba.talpu>（+3%）</>攻击力, {"prob":0.45,"atk":0.18}
-  "tachr_340_shwaz_1", 
   "tachr_188_helage_1",
   "tachr_274_astesi_1",
 ];
 
 const TodoList = [
-  "tachr_106_franka_1", // 铝热剑, 攻击时有20%的几率无视目标的防御, {"prob":0.2}
-  "tachr_145_prove_1", // 狩猎箭头, 攻击时，20%几率当次攻击的攻击力提升至190%<@ba.talpu>（+10%）</>。当敌人在正前方一格时，该几率提升到50%, {"prob":0.2,"prob2":0.5,"atk_scale":1.9}
-  "tachr_340_shwaz_1", 
 ];
 
 function applyTalent(prefabKey, blackboard, basic, buffs, name) {
