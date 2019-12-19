@@ -84,9 +84,9 @@ function load() {
     <tr class="dps__row-period"> <th>技能周期 <i class="fas fa-info-circle pull-right" data-toggle="tooltip" title="技力回复时间+技能持续时间[+眩晕时间]"></i></th> </tr>
     <tr class="dps__row-s_atk"> <th>技能攻击力 <i class="fas fa-info-circle pull-right" data-toggle="tooltip" title="角色攻击力（计算技能加成）×单次攻击次数"></i></th> </tr>
     <tr class="dps__row-s_damage"> <th>技能伤害期望 <i class="fas fa-info-circle pull-right" data-toggle="tooltip" title="单次攻击总伤害（计算防御力）×技能持续时间内攻击次数"></i></th> </tr>
-    <tr class="dps__row-s_dps"> <th>技能每秒伤害</th> </tr>
-    <tr class="dps__row-n_dps"> <th>普通攻击每秒伤害</th> </tr>
-    <tr class="dps__row-g_dps"> <th>周期每秒伤害</th> </tr>
+    <tr class="dps__row-s_dps"> <th>技能</th> </tr>
+    <tr class="dps__row-n_dps"> <th>普通攻击</th> </tr>
+    <tr class="dps__row-g_dps"> <th>周期DPS</th> </tr>
   </tbody>
   <tbody class="">
   <tr class="dps__row-e_time"> <th>技能击杀时间 <i class="fas fa-info-circle pull-right" data-toggle="tooltip" title="敌人HP/技能DPS（存在较大问题）"></i></th> </tr>
@@ -324,7 +324,6 @@ function calculate(index) {
   char.cond = getElement('cond', index).is(':checked');
   char.crit = getElement('crit', index).is(':checked');
   let dps = AKDATA.attributes.calculateDps(char, enemy);
-
 /*
   if ( dps.isInstant ) dps.skillDps = 0;
   getElement('atk', index).html(Math.round(dps.normalAtk) + ' / ' + Math.round(dps.skillAtk));
@@ -344,11 +343,25 @@ function calculate(index) {
   } else { 
     getElement('s_damage', index).html(Math.round(dps.skill.hitDamage * dps.skill.hitNumber) + ' × ' + dps.skill.attackCount + ' = ' + Math.round(dps.skill.hitDamage * dps.skill.hitNumber * dps.skill.attackCount));
   }
+  if (dps.skill.damagePool[2] == 0) {
     getElement('s_dps', index).html(dps.skill.isInstant ? '-' : Math.round(dps.skill.dps));
-  getElement('period', index).html(`${Math.round(dps.normal.duration*100)/100}s + ${Math.round(dps.skill.duration*100)/100}s`);
-  getElement('n_dps', index).html(Math.round(dps.normal.dps));
+  } else {
+    getElement('s_dps', index).html(`DPS: ${Math.round(dps.skill.dps)}, HPS: ${Math.round(dps.skill.damagePool[2] / dps.skill.duration)}`);
+  }
+  if (dps.normal.damagePool[2] == 0) {
+    getElement('n_dps', index).html(Math.round(dps.normal.dps));
+  } else {
+    getElement('n_dps', index).html(`DPS: ${Math.round(dps.normal.dps)}, HPS: ${Math.round(dps.normal.damagePool[2] / dps.normal.duration)}`);
+  }
+  if (dps.skill.spType < 4) {
+    getElement('period', index).html(`${Math.round(dps.normal.duration*100)/100}s + ${Math.round(dps.skill.duration*100)/100}s`);
+  } else {
+    if (dps.skill.spType == 4)
+      getElement('period', index).html(`${dps.skill.duration.toFixed(1)}s, 受击回复`);
+    else 
+      getElement('period', index).html(`被动`);
+  }
   getElement('g_dps', index).html(dps.globalDps);
-
   getElement('e_time', index).html(dps.killTime ?  `${Math.ceil(dps.killTime)}秒` : '-');
   char.log = dps.log;
 }
