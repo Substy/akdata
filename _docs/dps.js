@@ -161,7 +161,7 @@ function load() {
     <div class="form-check">
     <label class="form-check-label">
     <input class="form-check-input dps__cond" type="checkbox" value="" data-index="${i}" checked>
-      满足增伤条件
+      天赋增伤(远卫减伤)
     </label>
     </div>
     <div class="form-check">
@@ -343,8 +343,10 @@ function calculate(index) {
   } else { 
     getElement('s_damage', index).html(Math.round(dps.skill.hitDamage * dps.skill.hitNumber) + ' × ' + dps.skill.attackCount + ' = ' + Math.round(dps.skill.hitDamage * dps.skill.hitNumber * dps.skill.attackCount));
   }
-  if (dps.skill.damagePool[2] == 0) {
-    getElement('s_dps', index).html(dps.skill.isInstant ? '-' : Math.round(dps.skill.dps));
+  if (dps.skill.isInstant){
+    getElement('s_dps', index).html("-");
+  } else if (dps.skill.damagePool[2] == 0) {
+    getElement('s_dps', index).html(Math.round(dps.skill.dps));
   } else {
     getElement('s_dps', index).html(`DPS: ${Math.round(dps.skill.dps)}, HPS: ${Math.round(dps.skill.damagePool[2] / dps.skill.duration)}`);
   }
@@ -364,6 +366,7 @@ function calculate(index) {
   getElement('g_dps', index).html(dps.globalDps);
   getElement('e_time', index).html(dps.killTime ?  `${Math.ceil(dps.killTime)}秒` : '-');
   char.log = dps.log;
+
 }
 
 function calculateAll() {
