@@ -7,7 +7,9 @@ const ProfessionNames = {
   "MEDIC": "医疗",
   "SUPPORT": "辅助",
   "CASTER": "术师",
-  "SPECIAL": "特种"
+  "SPECIAL": "特种",
+  "TOKEN": "召唤物",
+//  "TRAP": "装置",
 };
 
 function init() {
@@ -32,23 +34,6 @@ function load() {
   let toCopy = '';
   selectOptions += `<option value="">-</option>`;
 
-  /*
-  for (let charId in AKDATA.Data.character_table) {
-    let charData = AKDATA.Data.character_table[charId];
-    if (charData.profession == "TOKEN" || charData.profession == "TRAP") continue;
-    if (charData.skills.length ==0 )continue;
-    charData.talents.forEach(talentData => {
-      let obj = talentData.candidates.last();
-      obj.blackboard = getBlackboard(obj.blackboard);
-      obj.prefabKey = charId + '_' + obj.prefabKey;
-      delete obj.rangeId;
-      delete obj.requiredPotentialRank;
-      delete obj.unlockCondition;
-      toCopy += `else if ( prefabKey == "${obj.prefabKey}") { } // ${obj.name}, ${obj.description}, ${JSON.stringify(obj.blackboard)}\n`;
-      console.log(obj);
-    });
-  }
-    */
   Object.keys(ProfessionNames).forEach(key => {
     selectOptions += `<optgroup label="${ProfessionNames[key]}">`;
     for (let charId in AKDATA.Data.character_table) {
