@@ -8,7 +8,7 @@ const ProfessionNames = {
   "SUPPORT": "辅助",
   "CASTER": "术师",
   "SPECIAL": "特种",
-  "TOKEN": "召唤物",
+//  "TOKEN": "召唤物",
 //  "TRAP": "装置",
 };
 
@@ -320,14 +320,14 @@ function calculate(index) {
 */
 
   getElement('s_atk', index).html(`<b style="color:${['brown','blue','green'][dps.skill.damageType-100]};">${Math.round(dps.skill.atk)}</b> × ${dps.skill.hitNumber}`);
-  if (dps.skill.critCount > 0) {
-    getElement('s_damage', index).html(
-      Math.round(dps.skill.hitDamage * dps.skill.hitNumber) + ' × ' + dps.skill.attackCount + 
-      ' + ' + Math.round(dps.skill.critDamage * dps.skill.hitNumber) + ' × ' + dps.skill.critCount +
-      ' = ' + Math.round(dps.skill.hitDamage * dps.skill.hitNumber * dps.skill.attackCount + dps.skill.critDamage * dps.skill.critCount * dps.skill.hitNumber));
-  } else { 
-    getElement('s_damage', index).html(Math.round(dps.skill.hitDamage * dps.skill.hitNumber) + ' × ' + dps.skill.attackCount + ' = ' + Math.round(dps.skill.hitDamage * dps.skill.hitNumber * dps.skill.attackCount));
-  }
+  
+  let skillDamage = (dps.skill.hitDamage * dps.skill.attackCount + dps.skill.critDamage * dps.skill.critCount) * dps.skill.hitNumber;
+  let line = `${(dps.skill.hitDamage*dps.skill.hitNumber).toFixed(1)} * ${dps.skill.attackCount}`;
+  if (dps.skill.critCount > 0) line += ` + ${(dps.skill.critDamage*dps.skill.hitNumber).toFixed(1)} * ${dps.skill.critCount}`;
+  if (dps.skill.totalDamage > skillDamage+1) line += ` + ${(dps.skill.totalDamage - skillDamage).toFixed(1)}`;
+  line += ` = ${Math.round(dps.skill.totalDamage)}`;
+  getElement('s_damage', index).html(line);
+
   if (dps.skill.isInstant){
     getElement('s_dps', index).html("-");
   } else if (dps.skill.damagePool[2] == 0) {
