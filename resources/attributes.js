@@ -969,6 +969,7 @@ const SecSkillList = [
   "skchr_hsguma_3", 
   "skchr_demkni_3",
   "skchr_huang_3",
+  "skchr_mostma_2",
 ];
 
 const TodoList = [
