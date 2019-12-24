@@ -138,7 +138,11 @@ function calculateAttack(charId, charData, basicFrame, buffFrame, enemy, isSkill
   if (!isSkill && charId == 'char_010_chen') {
     buffFrame.times += 1;
     log.write(`  - [特殊] char_010_chen: times=2`);
-  }
+  } else if (isSkill && skillData.skillId == "skchr_swllow_1") { 
+    buffFrame.times = 2;
+  } else if (isSkill && skillData.skillId == "skchr_swllow_2") { 
+    buffFrame.times = 3;
+  } 
 
   // Skill
   // 攻击类型判定
@@ -200,6 +204,10 @@ function calculateAttack(charId, charData, basicFrame, buffFrame, enemy, isSkill
     } else if (isSkill && skillData.skillId == "skchr_glacus_2") {
       buffFrame.atk_scale = isCond ? blackboard['atk_scale[drone]'] : blackboard['atk_scale[normal]'];
       log.write(`  - [特殊] skchr_glacus_2: atk_scale = ${buffFrame.atk_scale}`);
+    } else if (isSkill && skillData.skillId == "skchr_huang_3") { // 煌3
+      blackboard.atk /= 2;
+      buffFrame.maxTarget = 999;
+      log.write(`  - [特殊] skchr_huang_3: avg atk = ${blackboard.atk}, maxTarget = 999`);
     } else if (levelData.description.includes('所有敌人')) {
       buffFrame.maxTarget = 999;
     }
@@ -217,7 +225,7 @@ function calculateAttack(charId, charData, basicFrame, buffFrame, enemy, isSkill
       if (["skchr_aglina_2"].includes(levelData.prefabId)) {
         bat *= blackboard['base_attack_time'];
         write(`baseAttackTime(${levelData.prefabId})`, `*${blackboard['base_attack_time']}`);
-      } else if (["base_attack_time", "skchr_mantic_2"].includes(levelData.prefabId)) {
+      } else if (["base_attack_time", "skchr_mantic_2", "skchr_glaze_2"].includes(levelData.prefabId)) {
         bat += blackboard['base_attack_time'];
         write(`baseAttackTime(${levelData.prefabId})`, `+${blackboard['base_attack_time']}`);
       } else if ( blackboard['base_attack_time'] < 0) {
@@ -301,7 +309,7 @@ function calculateAttack(charId, charData, basicFrame, buffFrame, enemy, isSkill
   // fps修正
   let fps = 30;
   let attackCalcTime = finalFrame.baseAttackTime / finalFrame.attackSpeed * 100;
-  if (isSkill && ["skchr_ifrit_3", "skchr_yuki_2", "skchr_myrtle_2", "skchr_demkni_3"].includes(skillData.skillId)) {
+  if (isSkill && SecSkillList.includes(skillData.skillId)) {
     attackCalcTime = 1;
     log.write(`  - [特殊] ${skillData.skillId}: 攻击间隔 = 1s`);
   }
@@ -568,6 +576,12 @@ function calculateAttack(charId, charData, basicFrame, buffFrame, enemy, isSkill
     let damage = blackboard.value * blackboard.duration / 3 * maxTarget;
     damagePool[3] += damage;
     log.write(`  - [特殊] skchr_nightm_2: 移动（估算） = ${(blackboard.duration / 3).toFixed(1)}, 真实伤害 = ${damage.toFixed(2)}`);
+  } else if (isSkill && skillData.skillId == "skchr_huang_3") { // 煌3
+    console.log(blackboard);
+    let extraAtk = basicFrame.atk * (1 + blackboard.atk*2) * blackboard.damage_by_atk_scale;
+    let extraHitDamage = Math.max(extraAtk - enemy.def, Math.round(extraAtk * 0.05));
+    damagePool[0] += extraHitDamage * maxTarget;
+    log.write(`  - [特殊] skchr_huang_3: 终结伤害 = ${extraHitDamage} * ${maxTarget}`);
   } else if (!isSkill && ["skchr_aglina_2", "skchr_aglina_3"].includes(skillData.skillId)) {
     damagePool[0]=0; damagePool[1]=0;
     log.write(`  - [特殊] ${skillData.skillId}: 伤害=0`);
@@ -743,7 +757,12 @@ function getAttributes(char, log) { //charId, phase = -1, level = -1
             log.write(`计算暴击: ${char.crit}`);
             buffs['_critdata'] = blackboard;
             buffs[prefabKey] = prefabKey;
-            blackboard = {};
+            if (prefabKey == "tachr_367_swllow_1") {
+              let spd = blackboard.attack_speed;
+              blackboard = {"attack_speed":spd};
+            } else { 
+              blackboard = {};
+            }
           }
           if (TodoList.includes(prefabKey)) log.write('[BUG] 天赋效果在调整中或有Bug，结果仅供参考');
         }
@@ -894,6 +913,7 @@ const CritList = [
   "tachr_340_shwaz_1", 
   "tachr_155_tiger_1", // 虎拳迅击
   "tachr_243_waaifu_1", // 红眉咏春
+  "tachr_367_swllow_1",
 ];
 
 // 特判天赋，不包含特殊技能
@@ -939,6 +959,16 @@ const ResetAttackList = [
   "skchr_yuki_2",
   "skchr_ifrit_3", 
   "skchr_mgllan_3",
+];
+
+// 每秒计算伤害的技能
+const SecSkillList = [
+  "skchr_ifrit_3",
+  "skchr_yuki_2", 
+  "skchr_myrtle_2", 
+  "skchr_hsguma_3", 
+  "skchr_demkni_3",
+  "skchr_huang_3",
 ];
 
 const TodoList = [

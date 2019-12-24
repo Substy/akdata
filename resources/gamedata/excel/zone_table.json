@@ -1,6 +1,4 @@
-{
-  "zones": {
-    "main_0": {
+Jx¢é_ÏÔ^›Èsekï?h(×cL¯•ïâ‰µßàqô]¸¦µş–_!!&Ó’5+3»»Ë1^„«	^ä¨wÛÿöÙ…r•YSÙV¶0%Â³;åÛ'æÁñ˜wçˆí-lÚW?¥äiôóŞZÿ„·Ö åZ*CgnwTX#7?eRY>q   "main_0": {
       "zoneID": "main_0",
       "zoneIndex": 0,
       "type": "MAINLINE",
@@ -75,6 +73,19 @@
       "zoneNameTitleUnCurrent": "05",
       "zoneNameTitleEx": "EPISODE",
       "zoneNameThird": "EPISODE 05",
+      "lockedText": "å®Œæˆä¸Šä¸€ç« ä»¥è§£é”",
+      "canPreview": true
+    },
+    "main_6": {
+      "zoneID": "main_6",
+      "zoneIndex": 6,
+      "type": "MAINLINE",
+      "zoneNameFirst": "ç¬¬å…­ç« ",
+      "zoneNameSecond": "å±€éƒ¨åæ­»",
+      "zoneNameTitleCurrent": "06",
+      "zoneNameTitleUnCurrent": "06",
+      "zoneNameTitleEx": "EPISODE",
+      "zoneNameThird": "EPISODE 06",
       "lockedText": "å®Œæˆä¸Šä¸€ç« ä»¥è§£é”",
       "canPreview": true
     },
