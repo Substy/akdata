@@ -1,4 +1,4 @@
-{   "medic2": {
+{ "char_285_medic2": {
     "name": "Lancet-2",
     "description": "恢复友方单位生命，且不受<@ba.kw>部署数量</>限制，但再部署时间极长",
     "canUseGeneralPotentialItem": false,

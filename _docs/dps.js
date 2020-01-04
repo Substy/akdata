@@ -12,10 +12,14 @@ const ProfessionNames = {
 //  "TRAP": "装置",
 };
 
+const currentVersion = "19-12-28-08-02-55-e463c0";
+
 function init() {
+  $('#update_prompt').text("正在载入角色数据，请耐心等待......");
   AKDATA.load([
     'excel/character_table.json',
     'excel/skill_table.json',
+    '../version.json',
     '../resources/attributes.js'
   ], load);
 }
@@ -28,6 +32,13 @@ function getElement(classPart, index) {
 }
 
 function load() {
+  let version = AKDATA.Data.version.perfare;
+  if (version != currentVersion) {
+    $('#update_prompt').text(`有新数据，请点击[清除缓存]更新`);
+  } else {
+    $('#update_prompt').text(`当前版本: ${version}`);
+  }
+
   let selectOptions = '';
   let charFinalData = [];
 
@@ -45,7 +56,6 @@ function load() {
     }
     selectOptions += `</optgroup">`;
   });
-
 
 
   if (toCopy) window.toCopy = toCopy;

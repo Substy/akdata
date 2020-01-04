@@ -1,5 +1,4 @@
-���ԟ5W�������{��ٗ�B��h��%�J��q}d�!�N���;���M�<�\A�b�/`�X�C��.�Ak�� ������8-�ϑ<��^���Vu�
-���iT4]����j᜿��ǟ�CgnwTX#&>(*)%Id": "slot_34",
+{ "controlSlotId": "slot_34",
   "meetingSlotId": "slot_36",
   "initMaxLabor": 0,
   "laborRecoverTime": 360,
@@ -14784,7 +14783,7 @@
         "height": 4,
         "comfort": 365,
         "usage": "能够用来装扮宿舍，提高宿舍的氛围",
-        "description": "工作间内配备的切割台。面对着火花煌能发上一整天的呆，只是现今已经没人在使用它了。",
+        "description": "工作间内配备的切割台。面对着火花，煌能发上一整天的呆，只是现今已经没人在使用它了。",
         "obtainApproach": "家具商店限时购买",
         "processedProductId": "3401",
         "processedProductCount": 248,
@@ -14960,7 +14959,7 @@
         "height": 9,
         "comfort": 360,
         "usage": "能够用来装扮宿舍，提高宿舍的氛围",
-        "description": "隔断高危工作区域的透明材质隔板。由Whitsmith设计的新材料制作而成，它见证了许多行业里渺小伟业的诞生。",
+        "description": "隔断高危工作区域的透明材质隔板。由Whitesmith设计的新材料制作而成，它见证了许多行业里渺小伟业的诞生。",
         "obtainApproach": "家具商店限时购买",
         "processedProductId": "3401",
         "processedProductCount": 270,

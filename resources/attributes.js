@@ -365,6 +365,9 @@ function calculateAttack(charId, charData, basicFrame, buffFrame, enemy, isSkill
       if (skillData.skillId == "skchr_yuki_2") {  // 白雪2
         attackCount = Math.ceil(attackCount / 3) * 3;
         log.write(`  - [特殊] skchr_yuki_2: 攻击时间 = ${attackCount * attackTime} s`);
+      } else if (skillData.skillId == "skchr_huang_3") { // 煌3
+        attackCount -= 2;
+        log.write(`  - [特殊] skchr_huang_3: 实际攻击 ${attackCount} 次`);
       }
       if (checkResetAttack(skillData.skillId)) {
         duration = levelData.duration;
@@ -412,6 +415,7 @@ function calculateAttack(charId, charData, basicFrame, buffFrame, enemy, isSkill
       case 2: // 攻回
         //let sp2 = 1;
         // "tachr_134_ifrit_2" 莱茵回路, 每5.5<@ba.talpu>（-0.5）</>秒额外回复2点技力, {"sp":2,"interval":5.5}
+        log.write("  - 攻击回复");
         attackCount = levelData.spData.spCost;
         if (buffFrame["tachr_010_chen_1"]) { // "tachr_010_chen_1", 呵斥, 在场时每4秒回复全场友方角色1点攻击/受击技力, {"interval":4,"sp":1}
           attackCount = Math.ceil(levelData.spData.spCost / (1 + attackTime / buffFrame["tachr_010_chen_1"].interval));
@@ -424,10 +428,11 @@ function calculateAttack(charId, charData, basicFrame, buffFrame, enemy, isSkill
         break;
       case 4: // 受击回复
         attackCount = Math.ceil((levelData.spData.spCost - stunDuration) / attackTime);
-        console.log("受击回复");
+        log.write("  - 受击回复");
         break;
       case 8: // 被动，或落地释放
         attackCount = 1;
+        log.write("  - 被动或部署时释放");
         break;
       default:
         console.log('bad sptype: ' + levelData.prefabId + ',' + levelData.spData.spType);
@@ -959,6 +964,7 @@ const ResetAttackList = [
   "skchr_yuki_2",
   "skchr_ifrit_3", 
   "skchr_mgllan_3",
+  "skchr_huang_3",
 ];
 
 // 每秒计算伤害的技能
