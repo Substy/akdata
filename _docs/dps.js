@@ -20,6 +20,7 @@ function init() {
     'excel/character_table.json',
     'excel/skill_table.json',
     '../version.json',
+    '../customdata/dps_options.json',
     '../resources/attributes.js'
   ], load);
 }
@@ -73,7 +74,7 @@ function load() {
     <tr class="dps__row-potentialrank"> <th>潜能</th> </tr>
     <tr class="dps__row-favor"> <th>信赖</th> </tr>
     <tr class="dps__row-skill"> <th>技能</th> </tr>
-    <tr class="dps__row-option"> <th>设置</th> </tr>
+    <tr class="dps__row-option"> <th>选项</th> </tr>
   </tbody>
   <tbody>
     <tr class="dps__row-period"> <th>技能周期 <i class="fas fa-info-circle pull-right" data-toggle="tooltip" title="技力回复时间+技能持续时间[+眩晕时间]"></i></th> </tr>
@@ -127,15 +128,15 @@ function load() {
 
   for (let i = 0; i < charColumnCount; i++) {
     $dps.find('.dps__row-select').append(`<td>
-    <div class="input-group">
-      <select class="form-control dps__char" data-index="${i}">${selectOptions}</select>
-      <div class="input-group-append">
-        <button class="btn btn-outline-secondary dps__goto" data-index="${i}" type="button"><i class="fas fa-search"></i></button>
+      <div class="input-group">
+        <select class="form-control dps__char" data-index="${i}">${selectOptions}</select>
+        <div class="input-group-append">
+          <button class="btn btn-outline-secondary dps__goto" data-index="${i}" type="button"><i class="fas fa-search"></i></button>
+        </div>
       </div>
-    </div>
+      <a class="dps__copy" data-index="${i}" href="#">[复制到右侧]</a>
     </td>`);
-    //$dps.find('.dps__row-phase').append(`<td><select class="form-control dps__phase" data-index="${i}"></select></td>`);
-    //$dps.find('.dps__row-level').append(`<td><select class="form-control dps__level" data-index="${i}"></select></td>`);
+
     $dps.find('.dps__row-level').append(`<td><div class="container"><div class="form-group row mb-0"><select class="form-control form-control-sm col-7 dps__phase" data-index="${i}"></select><select class="form-control form-control-sm col-5 dps__level" data-index="${i}"></select></div></div></td>`);
     $dps.find('.dps__row-atk').append(`<td><div class="dps__atk" data-index="${i}"></div></td>`);
     $dps.find('.dps__row-attackSpeed').append(`<td><div class="dps__attackSpeed" data-index="${i}"></div></td>`);
@@ -143,8 +144,7 @@ function load() {
     $dps.find('.dps__row-dps').append(`<td><div class="dps__dps" data-index="${i}"></div></td>`);
     $dps.find('.dps__row-skill').append(`<td><div class="container"><div class="form-group row mb-0"><select class="form-control form-control-sm col-7 dps__skill" data-index="${i}"></select><select class="form-control form-control-sm col-5 dps__skilllevel" data-index="${i}"></select></div></div></td>`);
     $dps.find('.dps__row-s_atk').append(`<td><div class="dps__s_atk" data-index="${i}"></div></td>`);
-    //$dps.find('.dps__row-s_attackSpeed').append(`<td><div class="dps__s_attackSpeed" data-index="${i}"></div></td>`);
-    //$dps.find('.dps__row-s_baseAttackTime').append(`<td><div class="dps__s_baseAttackTime" data-index="${i}"></div></td>`);
+
     $dps.find('.dps__row-s_dps').append(`<td><div class="dps__s_dps font-weight-bold" data-index="${i}"></div></td>`);
     $dps.find('.dps__row-n_dps').append(`<td><div class="dps__n_dps" data-index="${i}"></div></td>`);
     $dps.find('.dps__row-g_dps').append(`<td><div class="dps__g_dps font-weight-bold" data-index="${i}"></div></td>`);
@@ -152,26 +152,8 @@ function load() {
     $dps.find('.dps__row-s_damage').append(`<td><div class="dps__s_damage" data-index="${i}"></div></td>`);
     $dps.find('.dps__row-period').append(`<td><div class="dps__period" data-index="${i}"></div></td>`);
     $dps.find('.dps__row-results').append(`<td><a class="dps__results" data-index="${i}" href="#">[显示]</a></td>`);
-    $dps.find('.dps__row-option').append(`<td>
-    <div class="form-check">
-    <label class="form-check-label">
-    <input class="form-check-input dps__cond" type="checkbox" value="" data-index="${i}" checked>
-      天赋增伤(远卫减伤)
-    </label>
-    </div>
-    <div class="form-check">
-    <label class="form-check-label">
-    <input class="form-check-input dps__crit" type="checkbox" value="" data-index="${i}" checked>
-      计算暴击
-    </label>
-    </div>
-    <div class="form-check d-none">
-    <label class="form-check-label">
-    <input class="form-check-input dps__buff" type="checkbox" value="" data-index="${i}">
-      Buff
-    </label>
-    </div>
-    </td>`);
+    
+    $dps.find('.dps__row-option').append(`<td></td>`);
 
     $dps.find('.dps__row-potentialrank').append(`<td><select class="form-control form-control-sm dps__potentialrank" data-index="${i}">${[0,1,2,3,4,5].map(x=>`<option value="${x}">${x+1}</option>`).join('')}</select></td>`);
     $dps.find('.dps__row-favor').append(`<td><select class="form-control form-control-sm dps__favor" data-index="${i}">${Object.keys(new Array(51).fill(0)).map(x=>`<option value="${x*2}">${x*2}</option>`).join('')}</select></td>`);
@@ -190,9 +172,10 @@ function load() {
   $('.dps__phase').change(choosePhase);
   $('.dps__level').change(chooseLevel);
   $('.dps__skill, .dps__skilllevel, .dps__potentialrank, .dps__favor').change(chooseSkill);
-  $('.dps__enemy-def, .dps__enemy-mr, .dps__enemy-count, .dps__enemy-hp, .dps__cond, .dps__crit, .dps__buff').change(calculateAll);
+  $('.dps__enemy-def, .dps__enemy-mr, .dps__enemy-count, .dps__enemy-hp').change(calculateAll);
   $('.dps__results').click(showDetail);
   $('.dps__goto').click(goto);
+  $('.dps__copy').click(copyChar);
 }
 
 function goto() {
@@ -229,10 +212,7 @@ function setSelectValue(name, index, value) {
   //}
 }
 
-function chooseChar() {
-  let $this = $(this);
-  let index = ~~$this.data('index');
-  let charId = $this.val();
+function updateChar(charId, index) {
   if (!charId) return;
 
   let charData = AKDATA.Data.character_table[charId];
@@ -263,6 +243,8 @@ function chooseChar() {
   $skillLevel.html(skillLevelHtml);
   setSelectValue('skilllevel', index, skillLevel);
 
+  updateOptions(charId, index);
+
   Characters[index] = {
     charId,
     skillId,
@@ -271,11 +253,66 @@ function chooseChar() {
   $phase.change();
 }
 
-function setCharValue(e, key) {
-  let $e = $(e);
-  let val = ~~$this.val();
-  let index = ~~$e.data('index');
-  Characters[index][key] = val;
+function updateOptions(charId, index) {
+  let opts = AKDATA.Data.dps_options;
+  let html = "";
+  if (opts.char[charId]) {
+    for (var t of opts.char[charId]) {
+      let html_bool = `
+      <div class="form-check">
+        <label class="form-check-label">
+          <input class="form-check-input dps__${t}" type="checkbox" value="" data-index="${index}" checked>
+            ${opts.tags[t].displaytext}
+        </label> </div>`;
+      html += html_bool;
+    }
+    $(`.dps__row-option td:nth-child(${index+2})`).html(html);
+    for (var t of opts.char[charId]) {
+      getElement(t, index).change(calculateColumn);
+    }
+  }
+}
+
+function chooseChar() {
+  let $this = $(this);
+  let index = ~~$this.data('index');
+  let charId = $this.val();
+  if (!charId) return;
+
+  updateChar(charId, index);
+}
+
+function copyChar() {
+  let $this = $(this);
+  let index = ~~$this.data('index');
+  let charId = Characters[index].charId;
+  while (index < charColumnCount-1) {
+    ++index;
+    updateChar(charId, index);
+    setSelectValue("char", index, charId);
+  }
+    /*
+  // 因为没有绑定，只能通过反射来取当前的选择值
+  let phase = $(`.dps__phase:eq(${index})`).val();
+  let level = $(`.dps__level:eq(${index})`).val();
+  let pot = $(`.dps__potentialrank:eq(${index})`).val();
+  let favor = $(`.dps__favor:eq(${index})`).val();
+  let skill = $(`.dps__skill:eq(${index})`).val();
+  let skill_lv = $(`.dps__skilllevel:eq(${index})`).val();
+  // console.log(phase, level, pot, favor, skill, skill_lv);
+
+  if (index < charColumnCount-1) {
+    updateChar(charId, index + 1);
+    setSelectValue("char", index+1, charId);
+    setSelectValue("phase", index+1, phase);
+    setSelectValue("level", index+1, level);
+    setSelectValue("potentialrank", index+1, pot);
+    setSelectValue("favor", index+1, favor);
+    setSelectValue("skill", index+1, skill);
+    setSelectValue("skilllevel", index+1, skill_lv);
+    getElement("skilllevel", index+1).change();
+  }
+  */
 }
 
 function choosePhase() {
@@ -315,9 +352,18 @@ function calculate(index) {
     count: ~~$('.dps__enemy-count').val(),
     hp: ~~$('.dps__enemy-hp').val(),
   };
-  char.buff = getElement('buff', index).is(':checked');
-  char.cond = getElement('cond', index).is(':checked');
-  char.crit = getElement('crit', index).is(':checked');
+
+  // get option info
+  let opts = AKDATA.Data.dps_options;
+  char.options = {};
+  for (var t of opts.char[char.charId]) {
+    if (opts.tags[t].type == "bool") {
+      char.options[t] = getElement(t, index).is(':checked');
+    }
+  }
+  //console.log(char.options);
+
+  // calc dps
   let dps = AKDATA.attributes.calculateDps(char, enemy);
 /*
   if ( dps.isInstant ) dps.skillDps = 0;
@@ -366,6 +412,11 @@ function calculate(index) {
 
 function calculateAll() {
   Characters.forEach((x, i) => calculate(i));
+}
+
+function calculateColumn() {
+  let index = ~~($(this).data('index'));
+  calculate(index);
 }
 
 function chooseSkill() {

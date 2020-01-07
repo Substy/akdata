@@ -63,11 +63,11 @@ function calculateDps(char, enemy) {
   }
   log.write(`技能: ${char.skillId} ${levelData.name} @ 等级 ${char.skillLevel+1}`);
   log.write(`普攻:`);
-  let normalAttack = calculateAttack(charId, charData, basicFrame, buffFrame, enemy, false, char.cond, char.crit, skillData, levelData, Object.assign({}, blackboard), log);
+  let normalAttack = calculateAttack(char, charData, basicFrame, buffFrame, enemy, false, skillData, levelData, Object.assign({}, blackboard), log);
   if (!normalAttack) return;
 
   log.write(`技能:`);
-  let skillAttack = calculateAttack(charId, charData, basicFrame, buffFrame, enemy, true, char.cond, char.crit, skillData, levelData, Object.assign({}, blackboard), log);
+  let skillAttack = calculateAttack(char, charData, basicFrame, buffFrame, enemy, true, skillData, levelData, Object.assign({}, blackboard), log);
   if (!skillAttack) return;
 
   globalDps = Math.round((normalAttack.totalDamage + skillAttack.totalDamage) / (normalAttack.duration + skillAttack.duration + normalAttack.stunDuration));
@@ -86,7 +86,12 @@ function calculateDps(char, enemy) {
   };
 }
 
-function calculateAttack(charId, charData, basicFrame, buffFrame, enemy, isSkill, isCond, isCrit, skillData, levelData, blackboard, log) {
+function calculateAttack(charObj, charData, basicFrame, buffFrame, enemy, isSkill, skillData, levelData, blackboard, log) {
+  // temp solution
+  let charId = charObj.charId;
+  let isCrit = charObj.options.crit;
+  let isCond = charObj.options.cond || charObj.options.stack || charObj.options.ranged_guard;
+
   function write(text, ...params) {
     log.write(`  - ${text}: ${params.join(', ')}`);
   }

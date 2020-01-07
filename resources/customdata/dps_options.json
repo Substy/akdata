@@ -1,0 +1,42 @@
+﻿{
+    "tags" : {
+        "crit" : { "type" : "bool", "displaytext" : "计算暴击" },
+        "cond" : { "type" : "bool", "displaytext" : "触发天赋" },
+        "ranged_guard" : { "type" : "bool", "displaytext" : "远卫减攻" },
+        "stack" : { "type" : "bool", "displaytext" : "被动叠满" }
+    },
+    "char" : {
+        "char_503_rang" : [ "cond" ],
+        "char_126_shotst" : [ "cond" ],
+        "char_198_blackd" : [ "cond" ],
+        "char_149_scave" : [ "cond" ],
+        "char_187_ccheal" : [ "cond" ],
+        "char_158_milu" : [ "cond" ],
+        "char_173_slchan" : [ "cond" ],
+        "char_230_savage" : [ "cond" ],
+        "char_188_helage" : [ "stack" ],
+        "char_166_skfire" : [ "cond" ],
+        "char_145_prove" : [ "cond", "crit" ],
+        "char_340_shwaz" : [ "cond", "crit" ],
+        "char_356_broca" : [ "cond" ],
+        "char_274_astesi" : [ "stack" ],
+        "char_298_susuro" : [ "cond" ],
+        "char_348_ceylon" : [ "cond" ],
+        "char_174_slbell" : [ "cond" ],
+        "char_326_glacus" : [ "cond" ],
+        "char_279_excu" : [ "cond" ],
+        "char_193_frostl" : [ "ranged_guard" ],
+        "char_140_whitew" : [ "ranged_guard" ],
+        "char_172_svrash" : [ "ranged_guard" ],
+        "char_283_midn" : [ "ranged_guard", "crit" ],
+        "char_202_demkni" : [ "stack" ],
+        "char_290_vigna" : [ "crit" ],
+        "char_196_sunbr" : [ "crit" ],
+        "char_219_meteo" : [ "crit" ],
+        "char_124_kroos" : [ "crit" ],
+        "char_106_franka" : [ "crit" ],
+        "char_155_tiger" : [ "crit" ],
+        "char_243_waaifu" : [ "crit" ],
+        "char_367_swllow" : [ "crit" ]
+    }
+}
