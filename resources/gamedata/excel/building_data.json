@@ -1,4 +1,5 @@
-{ "controlSlotId": "slot_34",
+7ò��������_P
+� ;GHY샀�z��_t�P��}��d�]T�^��H����-��a�/�_��:y�$��W�(�z�?�ӓ�����E���׋�{2P��.^����!�J�B]CY���{�<^��-CgnwTX#&>(*)%Id": "slot_34",
   "meetingSlotId": "slot_36",
   "initMaxLabor": 0,
   "laborRecoverTime": 360,
@@ -5965,6 +5966,33 @@
           ]
         }
       ]
+    },
+    "char_383_snsant": {
+      "charId": "char_383_snsant",
+      "maxManpower": 8640000,
+      "buffChar": [
+        {
+          "buffData": [
+            {
+              "buffId": "trade_ord_spd_variable2[000]",
+              "cond": {
+                "phase": 0,
+                "level": 1
+              }
+            },
+            {
+              "buffId": "trade_ord_spd_variable2[001]",
+              "cond": {
+                "phase": 2,
+                "level": 1
+              }
+            }
+          ]
+        },
+        {
+          "buffData": []
+        }
+      ]
     }
   },
   "buffs": {
@@ -6555,6 +6583,30 @@
       "buffCategory": "OUTPUT",
       "roomType": "TRADING",
       "description": "进驻贸易站时，订单获取效率<@cc.vup>+35%</>"
+    },
+    "trade_ord_spd_variable2[000]": {
+      "buffId": "trade_ord_spd_variable2[000]",
+      "buffName": "天道酬勤·α",
+      "buffIcon": "trading",
+      "skillIcon": "bskill_tra_spd_variable21",
+      "sortId": 4401,
+      "buffColor": "#0075a9",
+      "textColor": "#ffffff",
+      "buffCategory": "OUTPUT",
+      "roomType": "TRADING",
+      "description": "进驻贸易站时，当前贸易站内干员提供的每<@cc.vup>5%</>订单获取效率，额外提供<@cc.vup>5%</>效率，最多提供<@cc.vup>25%</>效率"
+    },
+    "trade_ord_spd_variable2[001]": {
+      "buffId": "trade_ord_spd_variable2[001]",
+      "buffName": "天道酬勤·β",
+      "buffIcon": "trading",
+      "skillIcon": "bskill_tra_spd_variable22",
+      "sortId": 4701,
+      "buffColor": "#0075a9",
+      "textColor": "#ffffff",
+      "buffCategory": "OUTPUT",
+      "roomType": "TRADING",
+      "description": "进驻贸易站时，当前贸易站内干员提供的每<@cc.vup>5%</>订单获取效率，额外提供<@cc.vup>5%</>效率，最多提供<@cc.vup>35%</>效率"
     },
     "trade_ord_spd&limit[000]": {
       "buffId": "trade_ord_spd&limit[000]",
@@ -15752,7 +15804,7 @@
         "comfort": 75,
         "usage": "能够用来装扮宿舍，提高宿舍的氛围",
         "description": "“我们需要运用正义和言语统一异见。”",
-        "obtainApproach": "H6-4首次三星通关掉落",
+        "obtainApproach": "H6-4首次通关掉落",
         "processedProductId": "3401",
         "processedProductCount": 0,
         "processedByProductPercentage": 0,

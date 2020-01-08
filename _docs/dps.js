@@ -12,7 +12,7 @@ const ProfessionNames = {
 //  "TRAP": "装置",
 };
 
-const currentVersion = "19-12-28-08-02-55-e463c0";
+const currentVersion = "20-01-06-12-04-50-f8e058";
 
 function init() {
   $('#update_prompt').text("正在载入角色数据，请耐心等待......");
@@ -37,7 +37,7 @@ function load() {
   if (version != currentVersion) {
     $('#update_prompt').text(`有新数据，请点击[清除缓存]更新`);
   } else {
-    $('#update_prompt').text(`当前版本: ${version}`);
+    $('#update_prompt').text(`程序版本: ${AKDATA.Data.version.akdata}, 数据版本: ${version}`);
   }
 
   let selectOptions = '';
@@ -270,6 +270,8 @@ function updateOptions(charId, index) {
     for (var t of opts.char[charId]) {
       getElement(t, index).change(calculateColumn);
     }
+  } else {
+    $(`.dps__row-option td:nth-child(${index+2})`).html("");
   }
 }
 
@@ -356,9 +358,11 @@ function calculate(index) {
   // get option info
   let opts = AKDATA.Data.dps_options;
   char.options = {};
-  for (var t of opts.char[char.charId]) {
-    if (opts.tags[t].type == "bool") {
-      char.options[t] = getElement(t, index).is(':checked');
+  if (opts.char[char.charId]) {
+    for (var t of opts.char[char.charId]) {
+      if (opts.tags[t].type == "bool") {
+        char.options[t] = getElement(t, index).is(':checked');
+      }
     }
   }
   //console.log(char.options);
