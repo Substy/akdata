@@ -3,7 +3,8 @@
         "crit" : { "type" : "bool", "displaytext" : "计算暴击" },
         "cond" : { "type" : "bool", "displaytext" : "触发天赋" },
         "ranged_penalty" : { "type" : "bool", "displaytext" : "距离惩罚" },
-        "stack" : { "type" : "bool", "displaytext" : "被动叠满" }
+        "stack" : { "type" : "bool", "displaytext" : "被动叠满" },
+        "noblock" : { "type" : "bool", "displaytext" : "未阻挡" }
     },
     "char" : {
         "char_503_rang" : [ "cond" ],
@@ -14,7 +15,7 @@
         "char_158_milu" : [ "cond" ],
         "char_173_slchan" : [ "cond" ],
         "char_230_savage" : [ "cond" ],
-        "char_188_helage" : [ "stack" ],
+        "char_188_helage" : [ "noblock", "stack" ],
         "char_166_skfire" : [ "cond" ],
         "char_145_prove" : [ "cond", "crit" ],
         "char_340_shwaz" : [ "cond", "crit" ],
@@ -38,6 +39,7 @@
         "char_155_tiger" : [ "crit" ],
         "char_243_waaifu" : [ "crit" ],
         "char_367_swllow" : [ "crit" ],
-        "char_137_brownb" : [ "stack" ]
+        "char_137_brownb" : [ "stack" ],
+        "char_131_flameb" : [ "stack" ]
     }
 }

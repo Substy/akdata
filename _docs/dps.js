@@ -20,6 +20,7 @@ function init() {
     'excel/character_table.json',
     'excel/skill_table.json',
     '../version.json',
+    '../customdata/dps_lists.json',
     '../customdata/dps_options.json',
     '../resources/attributes.js'
   ], load);
