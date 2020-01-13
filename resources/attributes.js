@@ -1,7 +1,8 @@
-// 读取特殊技能列表
-for (var key in AKDATA.Data.dps_lists) {
-  window[key] = AKDATA.Data.dps_lists[key];
-  // console.log(`load ${key}`);
+// 获取技能特判标记，存放在dps_specialtags.json中
+function checkSpecs(tag, spec) {
+  let specs = AKDATA.Data.dps_specialtags;
+  if (!specs[tag]) return false;
+  else return specs[tag][spec];
 }
 
 function getCharAttributes(char) {
@@ -116,11 +117,11 @@ function applyBuff(charAttr, buffFrm, tag, blackbd, isSkill, log) {
   function writeBuff(text) {
     let line = ["  -"];
     if (tag == skillId) line.push("[技能]"); else line.push("[天赋]");
-    if (CondList.includes(tag)) 
+    if (checkSpecs(tag, "cond")) 
       if (options.cond) line.push("[触发]"); else line.push("[未触发]");
-    if (StackList.includes(tag) && options.stack) line.push("[满层数]"); 
-    if (CritList.includes(tag)) line.push("[暴击]");
-    if (RangedList.includes(tag)) line.push("[距离惩罚]");
+    if (checkSpecs(tag, "stack") && options.stack) line.push("[满层数]"); 
+    if (checkSpecs(tag, "crit")) line.push("[暴击]");
+    if (checkSpecs(tag, "ranged_penalty")) line.push("[距离惩罚]");
     
     line.push(displayNames[tag]);
     if (text) line.push("-> " + text);
@@ -226,7 +227,7 @@ function applyBuff(charAttr, buffFrm, tag, blackbd, isSkill, log) {
   }
 // 特判
 //----------------------------------------------------------------------------------------
-  if (CondList.includes(tag)) { // 触发天赋类
+  if (checkSpecs(tag, "cond")) { // 触发天赋类
     if (!options.cond) { // 未触发时依然生效的天赋
       if (tag == "tachr_348_ceylon_1") { // 锡兰
         buffFrame.atk += basic.atk * blackboard['ceylon_t_1[common].atk'];
@@ -258,9 +259,9 @@ function applyBuff(charAttr, buffFrm, tag, blackbd, isSkill, log) {
           break;
       }
     }
-  } else if (RangedList.includes(tag)) { // 距离惩罚类
+  } else if (checkSpecs(tag, "ranged_penalty")) { // 距离惩罚类
     if (!options.ranged_penalty) done = true;
-  } else if (StackList.includes(tag)) { // 叠层类
+  } else if (checkSpecs(tag, "stack")) { // 叠层类
     if (options.stack) { // 叠层天赋类
       if (blackboard.max_stack_cnt) {
         ["atk", "def", "attack_speed", "max_hp"].forEach(key => {
@@ -472,7 +473,7 @@ function applyBuff(charAttr, buffFrm, tag, blackbd, isSkill, log) {
     }
   }
   
-  if (SecSkillList.includes(tag)) {
+  if (checkSpecs(tag, "sec")) {
     blackboard.base_attack_time = 1 - (basic.baseAttackTime + buffFrame.baseAttackTime);
     buffFrame.attackSpeed = 0;
     blackboard.attack_speed = 0;
@@ -500,14 +501,14 @@ function extractDamageType(charData, charId, isSkill, skillDesc, skillBlackboard
       ret = 2;
     }
     // special character/skill overrides
-    ret = SkillDamageTypeList[charId] || SkillDamageTypeList[skillId] || ret;
+    ret = checkSpecs(charId, "damage_type") || checkSpecs(skillId, "damage_type") || ret;
   }  
   return ~~ret;
 }
 
 // 重置普攻判定
 function checkResetAttack(key, blackboard) {
-  return (ResetAttackList.includes(key) || 
+  return (checkSpecs(key, "reset_attack") || 
           blackboard['base_attack_time'] || blackboard['attack@max_target'] ||
           blackboard['max_target']);
 }
@@ -551,7 +552,7 @@ function calcDurations(isSkill, attackTime, levelData, buffList, buffFrame, enem
       }
       if (levelData.duration > 0) { // 自动点火
         tags.push("auto"); log.write('  - 落地点火');
-      } else if (PassiveSkillList.includes(skillId)) { // 被动
+      } else if (checkSpecs(skillId, "passive")) { // 被动
         attackCount = 0;
         duration = -1;
         tags.push("passive"); log.write("  - 被动");
@@ -604,7 +605,7 @@ function calcDurations(isSkill, attackTime, levelData, buffList, buffFrame, enem
           attackDuration = levelData.duration;
           attackCount = Math.ceil(attackDuration / attackTime);
           duration = attackCount * attackTime;
-        } else if (PassiveSkillList.includes(skillId)) { // 被动
+        } else if (checkSpecs(skillId, "passive")) { // 被动
           attackCount = 10;
           duration = attackCount * attackTime;
           tags.push("passive");
@@ -685,7 +686,7 @@ function calculateAttack(charAttr, enemy, isSkill, charData, levelData, log) {
   //log.write("---- Buff ----");
   let buffFrame = initBuffFrame();
   for (var b in buffList) {
-    if (!CritList.includes(b))
+    if (!checkSpecs(b, "crit"))
       buffFrame = applyBuff(charAttr, buffFrame, b, buffList[b], isSkill, log);
   }
 
@@ -710,7 +711,7 @@ function calculateAttack(charAttr, enemy, isSkill, charData, levelData, log) {
   // 暴击面板
   if (options.crit) {
     for (var b in buffList) {
-      if (CritList.includes(b))
+      if (checkSpecs(b, "crit"))
         critBuffFrame = applyBuff(charAttr, critBuffFrame, b, buffList[b], isSkill, log);
     }
     critFrame = getBuffedAttributes(basicFrame, critBuffFrame);
@@ -1089,7 +1090,7 @@ function getAttributes(char, log) { //charId, phase = -1, level = -1
         displayNames[prefabKey] = cd.name;  // add to name cache
         // bufflist处理
         buffList[prefabKey] = blackboard;
-        if (TodoList.includes(prefabKey)) log.write('[BUG] 天赋效果在调整中或有Bug，结果仅供参考');
+        if (checkSpecs(prefabKey, "todo")) log.write('[BUG] 天赋效果在调整中或有Bug，结果仅供参考');
         break;
       }
     };
@@ -1114,16 +1115,7 @@ function getBuffedAttributes(basic, buffs) {
   final.atk *= buffs.damage_scale;
   return final;
 }
-/*
-function getFinalAttributes(...frames) {
-  let final = {};
-  AttributeKeys.forEach(key => {
-    final[key] = 0;
-    frames.forEach(frame => final[key] += frame[key]);
-  });
-  return final;
-}
-*/
+
 function getAttribute(frames, level, minLevel, attr) {
   return Math.ceil((level - minLevel) / (frames[1].level - frames[0].level) * (frames[1].data[attr] - frames[0].data[attr]) + frames[0].data[attr]);
 }

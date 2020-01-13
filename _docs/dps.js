@@ -12,7 +12,7 @@ const ProfessionNames = {
 //  "TRAP": "装置",
 };
 
-const currentVersion = "20-01-06-12-04-50-f8e058";
+const currentVersion = "20-01-06-12-04-50-f8e058-v2";
 
 function init() {
   $('#update_prompt').text("正在载入角色数据，请耐心等待......");
@@ -20,7 +20,7 @@ function init() {
     'excel/character_table.json',
     'excel/skill_table.json',
     '../version.json',
-    '../customdata/dps_lists.json',
+    '../customdata/dps_specialtags.json',
     '../customdata/dps_options.json',
     '../resources/attributes.js'
   ], load);
