@@ -40,6 +40,8 @@
         "char_243_waaifu" : [ "crit" ],
         "char_367_swllow" : [ "crit" ],
         "char_137_brownb" : [ "stack" ],
-        "char_131_flameb" : [ "stack" ]
+        "char_131_flameb" : [ "stack" ],
+        "char_225_haak" : [ "crit" ],
+        "char_226_hmau" : [ "cond" ]
     }
 }

@@ -1,5 +1,5 @@
-pAyn1Pf}��^��
-���@V�k]RԚ&2���י�ap�w7��H�t�u�[f�*C<��H9�;��U�u#��1�ny��xW�}��,�A}���@�����Ͱ�I���CF�@������M"��d.CgnwT_, vXK4xas_CN_001": {
+{
+  "char_102_texas_CN_001": {
     "charWordId": "char_102_texas_CN_001",
     "charId": "char_102_texas",
     "voiceId": "CN_001",
@@ -61379,6 +61379,1629 @@ pAyn1Pf}��^��
     "lockDescription": "",
     "placeType": "GREETING",
     "voiceAsset": "char_302_glaze/CN_042"
+  },
+  "char_2014_nian_CN_001": {
+    "charWordId": "char_2014_nian_CN_001",
+    "charId": "char_2014_nian",
+    "voiceId": "CN_001",
+    "voiceText": "啊，好闲，我想去逛街......不管了，我要出门！......嗯？你怎么还不换鞋？你当然要跟我走啊，不然呢。",
+    "voiceTitle": "任命助理",
+    "voiceIndex": 1,
+    "voiceType": "ONLY_TEXT",
+    "unlockType": "DIRECT",
+    "unlockParam": [],
+    "lockDescription": "",
+    "placeType": "HOME_PLACE",
+    "voiceAsset": "char_2014_nian/CN_001"
+  },
+  "char_2014_nian_CN_002": {
+    "charWordId": "char_2014_nian_CN_002",
+    "charId": "char_2014_nian",
+    "voiceId": "CN_002",
+    "voiceText": "看你一副很无聊的样子......喏，这个玩具给你。在工作？工作不就是很无聊吗？你可要看紧了，这个小偶人，一不注意就会消失掉哦。",
+    "voiceTitle": "交谈1",
+    "voiceIndex": 2,
+    "voiceType": "ONLY_TEXT",
+    "unlockType": "DIRECT",
+    "unlockParam": [],
+    "lockDescription": "",
+    "placeType": "HOME_SHOW",
+    "voiceAsset": "char_2014_nian/CN_002"
+  },
+  "char_2014_nian_CN_003": {
+    "charWordId": "char_2014_nian_CN_003",
+    "charId": "char_2014_nian",
+    "voiceId": "CN_003",
+    "voiceText": "哎，好饿啊，自己做个菜比我打个锅还难......我有个弟弟很擅长这事儿，每次聚会的时候，你想吃什么他就做什么，那才叫厨师！罗德岛食堂做的是个锤子菜啊。",
+    "voiceTitle": "交谈2",
+    "voiceIndex": 3,
+    "voiceType": "ONLY_TEXT",
+    "unlockType": "DIRECT",
+    "unlockParam": [],
+    "lockDescription": "",
+    "placeType": "HOME_SHOW",
+    "voiceAsset": "char_2014_nian/CN_003"
+  },
+  "char_2014_nian_CN_004": {
+    "charWordId": "char_2014_nian_CN_004",
+    "charId": "char_2014_nian",
+    "voiceId": "CN_004",
+    "voiceText": "龙门是个不错的地方，但口味太淡了，一点都不辣，这怎么行！我和你说，辣，是种生活态度，当些微的刺痛感和浓烈的冲动在舌头上面爆开的时候，你会觉得，“啊，我的人生真有滋味。”",
+    "voiceTitle": "交谈3",
+    "voiceIndex": 4,
+    "voiceType": "ONLY_TEXT",
+    "unlockType": "DIRECT",
+    "unlockParam": [],
+    "lockDescription": "",
+    "placeType": "HOME_SHOW",
+    "voiceAsset": "char_2014_nian/CN_004"
+  },
+  "char_2014_nian_CN_005": {
+    "charWordId": "char_2014_nian_CN_005",
+    "charId": "char_2014_nian",
+    "voiceId": "CN_005",
+    "voiceText": "我擅长的，原先只是种非常生活化的技术，只是我实在太容易被现状影响了，现在的我可真是战火缠身哪。熟悉了一把把武器拿在手里的感觉，偶尔手头空空还会有那么点不适应，真难办。",
+    "voiceTitle": "晋升后交谈1",
+    "voiceIndex": 5,
+    "voiceType": "ONLY_TEXT",
+    "unlockType": "AWAKE",
+    "unlockParam": [
+      {
+        "valueStr": null,
+        "valueInt": 1
+      },
+      {
+        "valueStr": null,
+        "valueInt": 1
+      }
+    ],
+    "lockDescription": "提升至精英阶段1以查看更多信息",
+    "placeType": "HOME_SHOW",
+    "voiceAsset": "char_2014_nian/CN_005"
+  },
+  "char_2014_nian_CN_006": {
+    "charWordId": "char_2014_nian_CN_006",
+    "charId": "char_2014_nian",
+    "voiceId": "CN_006",
+    "voiceText": "仪式之所以能不断流传，不在于它本身有什么意义，而在于它为众人带来了什么意义。演出有收获，企盼有回报，这又是我喜欢的故事类型，何乐不为呢？",
+    "voiceTitle": "晋升后交谈2",
+    "voiceIndex": 6,
+    "voiceType": "ONLY_TEXT",
+    "unlockType": "AWAKE",
+    "unlockParam": [
+      {
+        "valueStr": null,
+        "valueInt": 2
+      },
+      {
+        "valueStr": null,
+        "valueInt": 1
+      }
+    ],
+    "lockDescription": "提升至精英阶段2以查看更多信息",
+    "placeType": "HOME_SHOW",
+    "voiceAsset": "char_2014_nian/CN_006"
+  },
+  "char_2014_nian_CN_007": {
+    "charWordId": "char_2014_nian_CN_007",
+    "charId": "char_2014_nian",
+    "voiceId": "CN_007",
+    "voiceText": "不适应现实的人会被现实淘汰，这算是很普通的常识吧？但我的兄弟姐妹里，还是有那么几个一直不肯放下架子呢。活的那么无趣，岁月会变成一种折磨啊。",
+    "voiceTitle": "信赖提升后交谈1",
+    "voiceIndex": 7,
+    "voiceType": "ONLY_TEXT",
+    "unlockType": "FAVOR",
+    "unlockParam": [
+      {
+        "valueStr": null,
+        "valueInt": 40
+      }
+    ],
+    "lockDescription": "提升信赖以查看更多信息",
+    "placeType": "HOME_SHOW",
+    "voiceAsset": "char_2014_nian/CN_007"
+  },
+  "char_2014_nian_CN_008": {
+    "charWordId": "char_2014_nian_CN_008",
+    "charId": "char_2014_nian",
+    "voiceId": "CN_008",
+    "voiceText": "这么多年过来，我的梦已经变得很模糊了。唉，比起做梦，还有更重要的事情等着我去做，也许这就是活着。活着真难啊，可别人努力活下去的样子，我真是喜欢得不得了。你，要不要试试做我的砧？",
+    "voiceTitle": "信赖提升后交谈2",
+    "voiceIndex": 8,
+    "voiceType": "ONLY_TEXT",
+    "unlockType": "FAVOR",
+    "unlockParam": [
+      {
+        "valueStr": null,
+        "valueInt": 100
+      }
+    ],
+    "lockDescription": "提升信赖以查看更多信息",
+    "placeType": "HOME_SHOW",
+    "voiceAsset": "char_2014_nian/CN_008"
+  },
+  "char_2014_nian_CN_009": {
+    "charWordId": "char_2014_nian_CN_009",
+    "charId": "char_2014_nian",
+    "voiceId": "CN_009",
+    "voiceText": "冶铸是种凡俗工艺，但它也曾是往日生活的某种起源。纵使其它的一切都磨灭了，我也会把它保存得好好的，这是我曾经的选择。你也作出过重要的选择吧？看到最后吧。看到最后，才算完满。",
+    "voiceTitle": "信赖提升后交谈3",
+    "voiceIndex": 9,
+    "voiceType": "ONLY_TEXT",
+    "unlockType": "FAVOR",
+    "unlockParam": [
+      {
+        "valueStr": null,
+        "valueInt": 200
+      }
+    ],
+    "lockDescription": "提升信赖以查看更多信息",
+    "placeType": "HOME_SHOW",
+    "voiceAsset": "char_2014_nian/CN_009"
+  },
+  "char_2014_nian_CN_010": {
+    "charWordId": "char_2014_nian_CN_010",
+    "charId": "char_2014_nian",
+    "voiceId": "CN_010",
+    "voiceText": "你怎么又睡着了？起来起来，陪我去买点东西，快点快点。",
+    "voiceTitle": "闲置",
+    "voiceIndex": 10,
+    "voiceType": "ONLY_TEXT",
+    "unlockType": "DIRECT",
+    "unlockParam": [],
+    "lockDescription": "",
+    "placeType": "HOME_WAIT",
+    "voiceAsset": "char_2014_nian/CN_010"
+  },
+  "char_2014_nian_CN_011": {
+    "charWordId": "char_2014_nian_CN_011",
+    "charId": "char_2014_nian",
+    "voiceId": "CN_011",
+    "voiceText": "有人吗？贵公司的员工和我说这里生活条件很好，免费食宿，还有多种多样的娱乐方式......闲杂人员不得入内？哎，别这样，给个面子嘛。",
+    "voiceTitle": "干员报到",
+    "voiceIndex": 11,
+    "voiceType": "ONLY_TEXT",
+    "unlockType": "DIRECT",
+    "unlockParam": [],
+    "lockDescription": "",
+    "placeType": "GACHA",
+    "voiceAsset": "char_2014_nian/CN_011"
+  },
+  "char_2014_nian_CN_012": {
+    "charWordId": "char_2014_nian_CN_012",
+    "charId": "char_2014_nian",
+    "voiceId": "CN_012",
+    "voiceText": "嗯？这些东西对我毫无帮助啊。技巧什么的，只对看重它的人有用吧。",
+    "voiceTitle": "观看作战记录",
+    "voiceIndex": 12,
+    "voiceType": "ONLY_TEXT",
+    "unlockType": "DIRECT",
+    "unlockParam": [],
+    "lockDescription": "",
+    "placeType": "LEVEL_UP",
+    "voiceAsset": "char_2014_nian/CN_012"
+  },
+  "char_2014_nian_CN_013": {
+    "charWordId": "char_2014_nian_CN_013",
+    "charId": "char_2014_nian",
+    "voiceId": "CN_013",
+    "voiceText": "晋升？我想想......是哦，过去好像也有这种事情来着。挺好的，谢谢你！",
+    "voiceTitle": "精英化晋升1",
+    "voiceIndex": 13,
+    "voiceType": "ONLY_TEXT",
+    "unlockType": "AWAKE",
+    "unlockParam": [
+      {
+        "valueStr": null,
+        "valueInt": 1
+      },
+      {
+        "valueStr": null,
+        "valueInt": 1
+      }
+    ],
+    "lockDescription": "提升至精英阶段1以查看更多信息",
+    "placeType": "EVOLVE_ONE",
+    "voiceAsset": "char_2014_nian/CN_013"
+  },
+  "char_2014_nian_CN_014": {
+    "charWordId": "char_2014_nian_CN_014",
+    "charId": "char_2014_nian",
+    "voiceId": "CN_014",
+    "voiceText": "人和器物一样，有着品格之分。你还算有点意思，或者说......你本就不太一样？你似乎值得我铸把兵器。哎，可你又打不了架，铸剑送你，很浪费啊。",
+    "voiceTitle": "精英化晋升2",
+    "voiceIndex": 14,
+    "voiceType": "ONLY_TEXT",
+    "unlockType": "AWAKE",
+    "unlockParam": [
+      {
+        "valueStr": null,
+        "valueInt": 2
+      },
+      {
+        "valueStr": null,
+        "valueInt": 1
+      }
+    ],
+    "lockDescription": "提升至精英阶段2以查看更多信息",
+    "placeType": "EVOLVE_TWO",
+    "voiceAsset": "char_2014_nian/CN_014"
+  },
+  "char_2014_nian_CN_017": {
+    "charWordId": "char_2014_nian_CN_017",
+    "charId": "char_2014_nian",
+    "voiceId": "CN_017",
+    "voiceText": "干戈之事，真是在哪个时代都避不过啊。",
+    "voiceTitle": "编入队伍",
+    "voiceIndex": 17,
+    "voiceType": "ONLY_TEXT",
+    "unlockType": "DIRECT",
+    "unlockParam": [],
+    "lockDescription": "",
+    "placeType": "SQUAD",
+    "voiceAsset": "char_2014_nian/CN_017"
+  },
+  "char_2014_nian_CN_018": {
+    "charWordId": "char_2014_nian_CN_018",
+    "charId": "char_2014_nian",
+    "voiceId": "CN_018",
+    "voiceText": "啊？指挥？我没做过欸，行不行啊我。",
+    "voiceTitle": "任命队长",
+    "voiceIndex": 18,
+    "voiceType": "ONLY_TEXT",
+    "unlockType": "DIRECT",
+    "unlockParam": [],
+    "lockDescription": "",
+    "placeType": "SQUAD_FIRST",
+    "voiceAsset": "char_2014_nian/CN_018"
+  },
+  "char_2014_nian_CN_019": {
+    "charWordId": "char_2014_nian_CN_019",
+    "charId": "char_2014_nian",
+    "voiceId": "CN_019",
+    "voiceText": "打造武器的工匠，必须承担它们带来的血腥。",
+    "voiceTitle": "行动出发",
+    "voiceIndex": 19,
+    "voiceType": "ONLY_TEXT",
+    "unlockType": "DIRECT",
+    "unlockParam": [],
+    "lockDescription": "",
+    "placeType": "BATTLE_START",
+    "voiceAsset": "char_2014_nian/CN_019"
+  },
+  "char_2014_nian_CN_020": {
+    "charWordId": "char_2014_nian_CN_020",
+    "charId": "char_2014_nian",
+    "voiceId": "CN_020",
+    "voiceText": "这把剑能把你们的存在价值连同肉体一起划开。",
+    "voiceTitle": "行动开始",
+    "voiceIndex": 20,
+    "voiceType": "ONLY_TEXT",
+    "unlockType": "DIRECT",
+    "unlockParam": [],
+    "lockDescription": "",
+    "placeType": "BATTLE_FACE_ENEMY",
+    "voiceAsset": "char_2014_nian/CN_020"
+  },
+  "char_2014_nian_CN_021": {
+    "charWordId": "char_2014_nian_CN_021",
+    "charId": "char_2014_nian",
+    "voiceId": "CN_021",
+    "voiceText": "哦？要我亲自动手吗？",
+    "voiceTitle": "选中干员1",
+    "voiceIndex": 21,
+    "voiceType": "ONLY_TEXT",
+    "unlockType": "DIRECT",
+    "unlockParam": [],
+    "lockDescription": "",
+    "placeType": "BATTLE_SELECT",
+    "voiceAsset": "char_2014_nian/CN_021"
+  },
+  "char_2014_nian_CN_022": {
+    "charWordId": "char_2014_nian_CN_022",
+    "charId": "char_2014_nian",
+    "voiceId": "CN_022",
+    "voiceText": "铸乃众相之柱。",
+    "voiceTitle": "选中干员2",
+    "voiceIndex": 22,
+    "voiceType": "ONLY_TEXT",
+    "unlockType": "DIRECT",
+    "unlockParam": [],
+    "lockDescription": "",
+    "placeType": "BATTLE_SELECT",
+    "voiceAsset": "char_2014_nian/CN_022"
+  },
+  "char_2014_nian_CN_023": {
+    "charWordId": "char_2014_nian_CN_023",
+    "charId": "char_2014_nian",
+    "voiceId": "CN_023",
+    "voiceText": "“生杀之机，焉能拱手相让？”",
+    "voiceTitle": "部署1",
+    "voiceIndex": 23,
+    "voiceType": "ONLY_TEXT",
+    "unlockType": "DIRECT",
+    "unlockParam": [],
+    "lockDescription": "",
+    "placeType": "BATTLE_PLACE",
+    "voiceAsset": "char_2014_nian/CN_023"
+  },
+  "char_2014_nian_CN_024": {
+    "charWordId": "char_2014_nian_CN_024",
+    "charId": "char_2014_nian",
+    "voiceId": "CN_024",
+    "voiceText": "哎，赶紧解决了事啦。",
+    "voiceTitle": "部署2",
+    "voiceIndex": 24,
+    "voiceType": "ONLY_TEXT",
+    "unlockType": "DIRECT",
+    "unlockParam": [],
+    "lockDescription": "",
+    "placeType": "BATTLE_PLACE",
+    "voiceAsset": "char_2014_nian/CN_024"
+  },
+  "char_2014_nian_CN_025": {
+    "charWordId": "char_2014_nian_CN_025",
+    "charId": "char_2014_nian",
+    "voiceId": "CN_025",
+    "voiceText": "以子之矛攻子之盾，就会产生大爆炸！",
+    "voiceTitle": "作战中1",
+    "voiceIndex": 25,
+    "voiceType": "ONLY_TEXT",
+    "unlockType": "DIRECT",
+    "unlockParam": [],
+    "lockDescription": "",
+    "placeType": "BATTLE_SKILL_1",
+    "voiceAsset": "char_2014_nian/CN_025"
+  },
+  "char_2014_nian_CN_026": {
+    "charWordId": "char_2014_nian_CN_026",
+    "charId": "char_2014_nian",
+    "voiceId": "CN_026",
+    "voiceText": "我的身体内部，可是一千四百度喔。",
+    "voiceTitle": "作战中2",
+    "voiceIndex": 26,
+    "voiceType": "ONLY_TEXT",
+    "unlockType": "DIRECT",
+    "unlockParam": [],
+    "lockDescription": "",
+    "placeType": "BATTLE_SKILL_2",
+    "voiceAsset": "char_2014_nian/CN_026"
+  },
+  "char_2014_nian_CN_027": {
+    "charWordId": "char_2014_nian_CN_027",
+    "charId": "char_2014_nian",
+    "voiceId": "CN_027",
+    "voiceText": "“明王圣帝，谁能去兵哉？”",
+    "voiceTitle": "作战中3",
+    "voiceIndex": 27,
+    "voiceType": "ONLY_TEXT",
+    "unlockType": "DIRECT",
+    "unlockParam": [],
+    "lockDescription": "",
+    "placeType": "BATTLE_SKILL_3",
+    "voiceAsset": "char_2014_nian/CN_027"
+  },
+  "char_2014_nian_CN_028": {
+    "charWordId": "char_2014_nian_CN_028",
+    "charId": "char_2014_nian",
+    "voiceId": "CN_028",
+    "voiceText": "我为什么要在你们这些低劣造物上浪费时间？",
+    "voiceTitle": "作战中4",
+    "voiceIndex": 28,
+    "voiceType": "ONLY_TEXT",
+    "unlockType": "DIRECT",
+    "unlockParam": [],
+    "lockDescription": "",
+    "placeType": "BATTLE_SKILL_4",
+    "voiceAsset": "char_2014_nian/CN_028"
+  },
+  "char_2014_nian_CN_029": {
+    "charWordId": "char_2014_nian_CN_029",
+    "charId": "char_2014_nian",
+    "voiceId": "CN_029",
+    "voiceText": "不错嘛！在你身上，我看到了你们的一线希望哦。",
+    "voiceTitle": "4星结束行动",
+    "voiceIndex": 29,
+    "voiceType": "ONLY_TEXT",
+    "unlockType": "DIRECT",
+    "unlockParam": [],
+    "lockDescription": "",
+    "placeType": "FOUR_STAR",
+    "voiceAsset": "char_2014_nian/CN_029"
+  },
+  "char_2014_nian_CN_030": {
+    "charWordId": "char_2014_nian_CN_030",
+    "charId": "char_2014_nian",
+    "voiceId": "CN_030",
+    "voiceText": "这点小菜还不够填牙缝的。",
+    "voiceTitle": "3星结束行动",
+    "voiceIndex": 30,
+    "voiceType": "ONLY_TEXT",
+    "unlockType": "DIRECT",
+    "unlockParam": [],
+    "lockDescription": "",
+    "placeType": "THREE_STAR",
+    "voiceAsset": "char_2014_nian/CN_030"
+  },
+  "char_2014_nian_CN_031": {
+    "charWordId": "char_2014_nian_CN_031",
+    "charId": "char_2014_nian",
+    "voiceId": "CN_031",
+    "voiceText": "喂，怎么出差错了？铸件里可不能有气孔呀。",
+    "voiceTitle": "非3星结束行动",
+    "voiceIndex": 31,
+    "voiceType": "ONLY_TEXT",
+    "unlockType": "DIRECT",
+    "unlockParam": [],
+    "lockDescription": "",
+    "placeType": "TWO_STAR",
+    "voiceAsset": "char_2014_nian/CN_031"
+  },
+  "char_2014_nian_CN_032": {
+    "charWordId": "char_2014_nian_CN_032",
+    "charId": "char_2014_nian",
+    "voiceId": "CN_032",
+    "voiceText": "行不行啊......让我出力的话，各位队员将会遇到的危险，也许比现在还大。",
+    "voiceTitle": "行动失败",
+    "voiceIndex": 32,
+    "voiceType": "ONLY_TEXT",
+    "unlockType": "DIRECT",
+    "unlockParam": [],
+    "lockDescription": "",
+    "placeType": "LOSE",
+    "voiceAsset": "char_2014_nian/CN_032"
+  },
+  "char_2014_nian_CN_033": {
+    "charWordId": "char_2014_nian_CN_033",
+    "charId": "char_2014_nian",
+    "voiceId": "CN_033",
+    "voiceText": "我能不能自己装饰寝室？",
+    "voiceTitle": "进驻设施",
+    "voiceIndex": 33,
+    "voiceType": "ONLY_TEXT",
+    "unlockType": "DIRECT",
+    "unlockParam": [],
+    "lockDescription": "",
+    "placeType": "BUILDING_PLACE",
+    "voiceAsset": "char_2014_nian/CN_033"
+  },
+  "char_2014_nian_CN_034": {
+    "charWordId": "char_2014_nian_CN_034",
+    "charId": "char_2014_nian",
+    "voiceId": "CN_034",
+    "voiceText": "欸，不要啦。",
+    "voiceTitle": "戳一下",
+    "voiceIndex": 34,
+    "voiceType": "ONLY_TEXT",
+    "unlockType": "DIRECT",
+    "unlockParam": [],
+    "lockDescription": "",
+    "placeType": "BUILDING_TOUCHING",
+    "voiceAsset": "char_2014_nian/CN_034"
+  },
+  "char_2014_nian_CN_036": {
+    "charWordId": "char_2014_nian_CN_036",
+    "charId": "char_2014_nian",
+    "voiceId": "CN_036",
+    "voiceText": "别动！在给你做挂饰呢，稳重点！",
+    "voiceTitle": "信赖触摸",
+    "voiceIndex": 36,
+    "voiceType": "ONLY_TEXT",
+    "unlockType": "DIRECT",
+    "unlockParam": [],
+    "lockDescription": "",
+    "placeType": "BUILDING_FAVOR_BUBBLE",
+    "voiceAsset": "char_2014_nian/CN_036"
+  },
+  "char_2014_nian_CN_037": {
+    "charWordId": "char_2014_nian_CN_037",
+    "charId": "char_2014_nian",
+    "voiceId": "CN_037",
+    "voiceText": "明日方舟。",
+    "voiceTitle": "标题",
+    "voiceIndex": 37,
+    "voiceType": "ONLY_TEXT",
+    "unlockType": "DIRECT",
+    "unlockParam": [],
+    "lockDescription": "",
+    "placeType": "LOADING_PANEL",
+    "voiceAsset": "char_2014_nian/CN_037"
+  },
+  "char_2014_nian_CN_042": {
+    "charWordId": "char_2014_nian_CN_042",
+    "charId": "char_2014_nian",
+    "voiceId": "CN_042",
+    "voiceText": "博士，你吃了没？",
+    "voiceTitle": "问候",
+    "voiceIndex": 42,
+    "voiceType": "ONLY_TEXT",
+    "unlockType": "DIRECT",
+    "unlockParam": [],
+    "lockDescription": "",
+    "placeType": "GREETING",
+    "voiceAsset": "char_2014_nian/CN_042"
+  },
+  "char_225_haak_CN_001": {
+    "charWordId": "char_225_haak_CN_001",
+    "charId": "char_225_haak",
+    "voiceId": "CN_001",
+    "voiceText": "对了，老板，你叫我的时候记得拖一下长音，不然我不一定能听得出来你在叫我。",
+    "voiceTitle": "任命助理",
+    "voiceIndex": 1,
+    "voiceType": "ONLY_TEXT",
+    "unlockType": "DIRECT",
+    "unlockParam": [],
+    "lockDescription": "",
+    "placeType": "HOME_PLACE",
+    "voiceAsset": "char_225_haak/CN_001"
+  },
+  "char_225_haak_CN_002": {
+    "charWordId": "char_225_haak_CN_002",
+    "charId": "char_225_haak",
+    "voiceId": "CN_002",
+    "voiceText": "喂喂喂，不是吧，那个血魔小姐，难道她就是“血先生”？！嗯......上次的医术对决还没有结果呢，现在不是最好的机会吗？不过试验品就要重新准备一下了，嘿嘿嘿。",
+    "voiceTitle": "交谈1",
+    "voiceIndex": 2,
+    "voiceType": "ONLY_TEXT",
+    "unlockType": "DIRECT",
+    "unlockParam": [],
+    "lockDescription": "",
+    "placeType": "HOME_SHOW",
+    "voiceAsset": "char_225_haak/CN_002"
+  },
+  "char_225_haak_CN_003": {
+    "charWordId": "char_225_haak_CN_003",
+    "charId": "char_225_haak",
+    "voiceId": "CN_003",
+    "voiceText": "吽那家伙，又是说了些让你看管我之类的话吧。照顾？啊，确实是他会用的词儿。老板，我看得出你和我一样，是那种随心所欲的人吧？只要你愿意，别听那些傻话，我们有很多有趣的事能做哦？",
+    "voiceTitle": "交谈2",
+    "voiceIndex": 3,
+    "voiceType": "ONLY_TEXT",
+    "unlockType": "DIRECT",
+    "unlockParam": [],
+    "lockDescription": "",
+    "placeType": "HOME_SHOW",
+    "voiceAsset": "char_225_haak/CN_003"
+  },
+  "char_225_haak_CN_004": {
+    "charWordId": "char_225_haak_CN_004",
+    "charId": "char_225_haak",
+    "voiceId": "CN_004",
+    "voiceText": "试剂、药物、手术和培菌，嗯，这些都是我的兴趣，当然，也仅仅只是兴趣。医生？不建议那么叫我哦，我没什么救人的本事。让人意识到生命的意义才叫拯救，我只是不让他们死。",
+    "voiceTitle": "交谈3",
+    "voiceIndex": 4,
+    "voiceType": "ONLY_TEXT",
+    "unlockType": "DIRECT",
+    "unlockParam": [],
+    "lockDescription": "",
+    "placeType": "HOME_SHOW",
+    "voiceAsset": "char_225_haak/CN_004"
+  },
+  "char_225_haak_CN_005": {
+    "charWordId": "char_225_haak_CN_005",
+    "charId": "char_225_haak",
+    "voiceId": "CN_005",
+    "voiceText": "医疗部的人找我？别了吧，我不怎么喜欢专业医生的。坚信自己的职业的高尚，为了拯救别人而感到满足......信念一旦破碎，是会死的。总是看着这种事发生，我有些难过，真的。",
+    "voiceTitle": "晋升后交谈1",
+    "voiceIndex": 5,
+    "voiceType": "ONLY_TEXT",
+    "unlockType": "AWAKE",
+    "unlockParam": [
+      {
+        "valueStr": null,
+        "valueInt": 1
+      },
+      {
+        "valueStr": null,
+        "valueInt": 1
+      }
+    ],
+    "lockDescription": "提升至精英阶段1以查看更多信息",
+    "placeType": "HOME_SHOW",
+    "voiceAsset": "char_225_haak/CN_005"
+  },
+  "char_225_haak_CN_006": {
+    "charWordId": "char_225_haak_CN_006",
+    "charId": "char_225_haak",
+    "voiceId": "CN_006",
+    "voiceText": "我不讨厌罗德岛，相反，我觉得你们很专业。这片大地上每时每刻都有人在死，光是缩起来医疗制药，直到泰拉毁灭也不会发挥什么效果的。没多少人明白这一点，但你们心里很清楚，嗯嗯，真好！",
+    "voiceTitle": "晋升后交谈2",
+    "voiceIndex": 6,
+    "voiceType": "ONLY_TEXT",
+    "unlockType": "AWAKE",
+    "unlockParam": [
+      {
+        "valueStr": null,
+        "valueInt": 2
+      },
+      {
+        "valueStr": null,
+        "valueInt": 1
+      }
+    ],
+    "lockDescription": "提升至精英阶段2以查看更多信息",
+    "placeType": "HOME_SHOW",
+    "voiceAsset": "char_225_haak/CN_006"
+  },
+  "char_225_haak_CN_007": {
+    "charWordId": "char_225_haak_CN_007",
+    "charId": "char_225_haak",
+    "voiceId": "CN_007",
+    "voiceText": "嘲笑，讨厌？没有啦老板，我只是感觉所有人的命运都很悲惨。伤痛当然可怕，但只要创造它们的人还在，医学又有什么意义？谁能拯救要被杀的人？泰拉需要的并不是医生，老板。",
+    "voiceTitle": "信赖提升后交谈1",
+    "voiceIndex": 7,
+    "voiceType": "ONLY_TEXT",
+    "unlockType": "FAVOR",
+    "unlockParam": [
+      {
+        "valueStr": null,
+        "valueInt": 40
+      }
+    ],
+    "lockDescription": "提升信赖以查看更多信息",
+    "placeType": "HOME_SHOW",
+    "voiceAsset": "char_225_haak/CN_007"
+  },
+  "char_225_haak_CN_008": {
+    "charWordId": "char_225_haak_CN_008",
+    "charId": "char_225_haak",
+    "voiceId": "CN_008",
+    "voiceText": "我爸，也算是很厉害的医生了，天天把救死扶伤挂在嘴边。然而他被侮蔑、排挤加上陷害，一下就成了个黑医生，无恶不作那种。我也不觉得这种事有多稀奇啦，真的，虽然它也算改变了我的人生吧。",
+    "voiceTitle": "信赖提升后交谈2",
+    "voiceIndex": 8,
+    "voiceType": "ONLY_TEXT",
+    "unlockType": "FAVOR",
+    "unlockParam": [
+      {
+        "valueStr": null,
+        "valueInt": 100
+      }
+    ],
+    "lockDescription": "提升信赖以查看更多信息",
+    "placeType": "HOME_SHOW",
+    "voiceAsset": "char_225_haak/CN_008"
+  },
+  "char_225_haak_CN_009": {
+    "charWordId": "char_225_haak_CN_009",
+    "charId": "char_225_haak",
+    "voiceId": "CN_009",
+    "voiceText": "槐琥姐和吽出去了吗？出去了？那太好了，就让我在你办公室里浪费下时间吧。其实啊，他们才是能让大地变好的人。而老板你，我猜猜，其实我们两个更相近些，是不是？",
+    "voiceTitle": "信赖提升后交谈3",
+    "voiceIndex": 9,
+    "voiceType": "ONLY_TEXT",
+    "unlockType": "FAVOR",
+    "unlockParam": [
+      {
+        "valueStr": null,
+        "valueInt": 200
+      }
+    ],
+    "lockDescription": "提升信赖以查看更多信息",
+    "placeType": "HOME_SHOW",
+    "voiceAsset": "char_225_haak/CN_009"
+  },
+  "char_225_haak_CN_010": {
+    "charWordId": "char_225_haak_CN_010",
+    "charId": "char_225_haak",
+    "voiceId": "CN_010",
+    "voiceText": "欸，你很累吗？要不要我给你个新配方，免费的哦。",
+    "voiceTitle": "闲置",
+    "voiceIndex": 10,
+    "voiceType": "ONLY_TEXT",
+    "unlockType": "DIRECT",
+    "unlockParam": [],
+    "lockDescription": "",
+    "placeType": "HOME_WAIT",
+    "voiceAsset": "char_225_haak/CN_010"
+  },
+  "char_225_haak_CN_011": {
+    "charWordId": "char_225_haak_CN_011",
+    "charId": "char_225_haak",
+    "voiceId": "CN_011",
+    "voiceText": "你就是博士吧？幸会幸会。我叫阿，对，就是阿——的阿。事务所在罗德岛有些事情要处理，所以我就来了。事先问问，你对医疗事故敏感吗？",
+    "voiceTitle": "干员报到",
+    "voiceIndex": 11,
+    "voiceType": "ONLY_TEXT",
+    "unlockType": "DIRECT",
+    "unlockParam": [],
+    "lockDescription": "",
+    "placeType": "GACHA",
+    "voiceAsset": "char_225_haak/CN_011"
+  },
+  "char_225_haak_CN_012": {
+    "charWordId": "char_225_haak_CN_012",
+    "charId": "char_225_haak",
+    "voiceId": "CN_012",
+    "voiceText": "嗯，你是想说，我可以在这种战斗里帮上忙吗？不能吧？",
+    "voiceTitle": "观看作战记录",
+    "voiceIndex": 12,
+    "voiceType": "ONLY_TEXT",
+    "unlockType": "DIRECT",
+    "unlockParam": [],
+    "lockDescription": "",
+    "placeType": "LEVEL_UP",
+    "voiceAsset": "char_225_haak/CN_012"
+  },
+  "char_225_haak_CN_013": {
+    "charWordId": "char_225_haak_CN_013",
+    "charId": "char_225_haak",
+    "voiceId": "CN_013",
+    "voiceText": "升职？还有这样的好事，果然事务所是在压榨我的劳动力吧，是吧。",
+    "voiceTitle": "精英化晋升1",
+    "voiceIndex": 13,
+    "voiceType": "ONLY_TEXT",
+    "unlockType": "AWAKE",
+    "unlockParam": [
+      {
+        "valueStr": null,
+        "valueInt": 1
+      },
+      {
+        "valueStr": null,
+        "valueInt": 1
+      }
+    ],
+    "lockDescription": "提升至精英阶段1以查看更多信息",
+    "placeType": "EVOLVE_ONE",
+    "voiceAsset": "char_225_haak/CN_013"
+  },
+  "char_225_haak_CN_014": {
+    "charWordId": "char_225_haak_CN_014",
+    "charId": "char_225_haak",
+    "voiceId": "CN_014",
+    "voiceText": "我其实不清楚自己算不算是个有用的人啦。毕竟在我看来，有用的人应该是好人才行，我嘛，还是有自知之明的。不过，你要是得病了，记得找我哦。",
+    "voiceTitle": "精英化晋升2",
+    "voiceIndex": 14,
+    "voiceType": "ONLY_TEXT",
+    "unlockType": "AWAKE",
+    "unlockParam": [
+      {
+        "valueStr": null,
+        "valueInt": 2
+      },
+      {
+        "valueStr": null,
+        "valueInt": 1
+      }
+    ],
+    "lockDescription": "提升至精英阶段2以查看更多信息",
+    "placeType": "EVOLVE_TWO",
+    "voiceAsset": "char_225_haak/CN_014"
+  },
+  "char_225_haak_CN_017": {
+    "charWordId": "char_225_haak_CN_017",
+    "charId": "char_225_haak",
+    "voiceId": "CN_017",
+    "voiceText": "任务吗？好啊，走吧。",
+    "voiceTitle": "编入队伍",
+    "voiceIndex": 17,
+    "voiceType": "ONLY_TEXT",
+    "unlockType": "DIRECT",
+    "unlockParam": [],
+    "lockDescription": "",
+    "placeType": "SQUAD",
+    "voiceAsset": "char_225_haak/CN_017"
+  },
+  "char_225_haak_CN_018": {
+    "charWordId": "char_225_haak_CN_018",
+    "charId": "char_225_haak",
+    "voiceId": "CN_018",
+    "voiceText": "那新药的效果，就拜托各位之后告诉我咯。",
+    "voiceTitle": "任命队长",
+    "voiceIndex": 18,
+    "voiceType": "ONLY_TEXT",
+    "unlockType": "DIRECT",
+    "unlockParam": [],
+    "lockDescription": "",
+    "placeType": "SQUAD_FIRST",
+    "voiceAsset": "char_225_haak/CN_018"
+  },
+  "char_225_haak_CN_019": {
+    "charWordId": "char_225_haak_CN_019",
+    "charId": "char_225_haak",
+    "voiceId": "CN_019",
+    "voiceText": "一旦我开始动手术，可就没人能阻止我了。",
+    "voiceTitle": "行动出发",
+    "voiceIndex": 19,
+    "voiceType": "ONLY_TEXT",
+    "unlockType": "DIRECT",
+    "unlockParam": [],
+    "lockDescription": "",
+    "placeType": "BATTLE_START",
+    "voiceAsset": "char_225_haak/CN_019"
+  },
+  "char_225_haak_CN_020": {
+    "charWordId": "char_225_haak_CN_020",
+    "charId": "char_225_haak",
+    "voiceId": "CN_020",
+    "voiceText": "放心，有我在，你们想死都难。",
+    "voiceTitle": "行动开始",
+    "voiceIndex": 20,
+    "voiceType": "ONLY_TEXT",
+    "unlockType": "DIRECT",
+    "unlockParam": [],
+    "lockDescription": "",
+    "placeType": "BATTLE_FACE_ENEMY",
+    "voiceAsset": "char_225_haak/CN_020"
+  },
+  "char_225_haak_CN_021": {
+    "charWordId": "char_225_haak_CN_021",
+    "charId": "char_225_haak",
+    "voiceId": "CN_021",
+    "voiceText": "我下的药可不轻。",
+    "voiceTitle": "选中干员1",
+    "voiceIndex": 21,
+    "voiceType": "ONLY_TEXT",
+    "unlockType": "DIRECT",
+    "unlockParam": [],
+    "lockDescription": "",
+    "placeType": "BATTLE_SELECT",
+    "voiceAsset": "char_225_haak/CN_021"
+  },
+  "char_225_haak_CN_022": {
+    "charWordId": "char_225_haak_CN_022",
+    "charId": "char_225_haak",
+    "voiceId": "CN_022",
+    "voiceText": "战场不适合我，但治疗实在是很快乐啊。",
+    "voiceTitle": "选中干员2",
+    "voiceIndex": 22,
+    "voiceType": "ONLY_TEXT",
+    "unlockType": "DIRECT",
+    "unlockParam": [],
+    "lockDescription": "",
+    "placeType": "BATTLE_SELECT",
+    "voiceAsset": "char_225_haak/CN_022"
+  },
+  "char_225_haak_CN_023": {
+    "charWordId": "char_225_haak_CN_023",
+    "charId": "char_225_haak",
+    "voiceId": "CN_023",
+    "voiceText": "就让我们临床实验一下新成果吧。",
+    "voiceTitle": "部署1",
+    "voiceIndex": 23,
+    "voiceType": "ONLY_TEXT",
+    "unlockType": "DIRECT",
+    "unlockParam": [],
+    "lockDescription": "",
+    "placeType": "BATTLE_PLACE",
+    "voiceAsset": "char_225_haak/CN_023"
+  },
+  "char_225_haak_CN_024": {
+    "charWordId": "char_225_haak_CN_024",
+    "charId": "char_225_haak",
+    "voiceId": "CN_024",
+    "voiceText": "平时不好好善待自己，出问题的时候可是会超级痛的哦。",
+    "voiceTitle": "部署2",
+    "voiceIndex": 24,
+    "voiceType": "ONLY_TEXT",
+    "unlockType": "DIRECT",
+    "unlockParam": [],
+    "lockDescription": "",
+    "placeType": "BATTLE_PLACE",
+    "voiceAsset": "char_225_haak/CN_024"
+  },
+  "char_225_haak_CN_025": {
+    "charWordId": "char_225_haak_CN_025",
+    "charId": "char_225_haak",
+    "voiceId": "CN_025",
+    "voiceText": "所有的生命都平等，但你的好像有点例外。",
+    "voiceTitle": "作战中1",
+    "voiceIndex": 25,
+    "voiceType": "ONLY_TEXT",
+    "unlockType": "DIRECT",
+    "unlockParam": [],
+    "lockDescription": "",
+    "placeType": "BATTLE_SKILL_1",
+    "voiceAsset": "char_225_haak/CN_025"
+  },
+  "char_225_haak_CN_026": {
+    "charWordId": "char_225_haak_CN_026",
+    "charId": "char_225_haak",
+    "voiceId": "CN_026",
+    "voiceText": "这管试剂打下去，你就知道厉害了。",
+    "voiceTitle": "作战中2",
+    "voiceIndex": 26,
+    "voiceType": "ONLY_TEXT",
+    "unlockType": "DIRECT",
+    "unlockParam": [],
+    "lockDescription": "",
+    "placeType": "BATTLE_SKILL_2",
+    "voiceAsset": "char_225_haak/CN_026"
+  },
+  "char_225_haak_CN_027": {
+    "charWordId": "char_225_haak_CN_027",
+    "charId": "char_225_haak",
+    "voiceId": "CN_027",
+    "voiceText": "我这种药水，说不定能让坏人重新做人。",
+    "voiceTitle": "作战中3",
+    "voiceIndex": 27,
+    "voiceType": "ONLY_TEXT",
+    "unlockType": "DIRECT",
+    "unlockParam": [],
+    "lockDescription": "",
+    "placeType": "BATTLE_SKILL_3",
+    "voiceAsset": "char_225_haak/CN_027"
+  },
+  "char_225_haak_CN_028": {
+    "charWordId": "char_225_haak_CN_028",
+    "charId": "char_225_haak",
+    "voiceId": "CN_028",
+    "voiceText": "医学，就是一旦打开就没法关上的恶毒匣子。",
+    "voiceTitle": "作战中4",
+    "voiceIndex": 28,
+    "voiceType": "ONLY_TEXT",
+    "unlockType": "DIRECT",
+    "unlockParam": [],
+    "lockDescription": "",
+    "placeType": "BATTLE_SKILL_4",
+    "voiceAsset": "char_225_haak/CN_028"
+  },
+  "char_225_haak_CN_029": {
+    "charWordId": "char_225_haak_CN_029",
+    "charId": "char_225_haak",
+    "voiceId": "CN_029",
+    "voiceText": "也许我的技术不能让这片大地变得更好，但你我合起来，能让它变得没那么坏。",
+    "voiceTitle": "4星结束行动",
+    "voiceIndex": 29,
+    "voiceType": "ONLY_TEXT",
+    "unlockType": "DIRECT",
+    "unlockParam": [],
+    "lockDescription": "",
+    "placeType": "FOUR_STAR",
+    "voiceAsset": "char_225_haak/CN_029"
+  },
+  "char_225_haak_CN_030": {
+    "charWordId": "char_225_haak_CN_030",
+    "charId": "char_225_haak",
+    "voiceId": "CN_030",
+    "voiceText": "只要没人看见，抓走敌人做实验就不会违反公约啦，放心放心。",
+    "voiceTitle": "3星结束行动",
+    "voiceIndex": 30,
+    "voiceType": "ONLY_TEXT",
+    "unlockType": "DIRECT",
+    "unlockParam": [],
+    "lockDescription": "",
+    "placeType": "THREE_STAR",
+    "voiceAsset": "char_225_haak/CN_030"
+  },
+  "char_225_haak_CN_031": {
+    "charWordId": "char_225_haak_CN_031",
+    "charId": "char_225_haak",
+    "voiceId": "CN_031",
+    "voiceText": "你真仁慈啊，居然就这样放他们走掉了。",
+    "voiceTitle": "非3星结束行动",
+    "voiceIndex": 31,
+    "voiceType": "ONLY_TEXT",
+    "unlockType": "DIRECT",
+    "unlockParam": [],
+    "lockDescription": "",
+    "placeType": "TWO_STAR",
+    "voiceAsset": "char_225_haak/CN_031"
+  },
+  "char_225_haak_CN_032": {
+    "charWordId": "char_225_haak_CN_032",
+    "charId": "char_225_haak",
+    "voiceId": "CN_032",
+    "voiceText": "别紧张，老板，只要没死，我都救得回来。",
+    "voiceTitle": "行动失败",
+    "voiceIndex": 32,
+    "voiceType": "ONLY_TEXT",
+    "unlockType": "DIRECT",
+    "unlockParam": [],
+    "lockDescription": "",
+    "placeType": "LOSE",
+    "voiceAsset": "char_225_haak/CN_032"
+  },
+  "char_225_haak_CN_033": {
+    "charWordId": "char_225_haak_CN_033",
+    "charId": "char_225_haak",
+    "voiceId": "CN_033",
+    "voiceText": "看看，我的新实验室会在哪里呢？",
+    "voiceTitle": "进驻设施",
+    "voiceIndex": 33,
+    "voiceType": "ONLY_TEXT",
+    "unlockType": "DIRECT",
+    "unlockParam": [],
+    "lockDescription": "",
+    "placeType": "BUILDING_PLACE",
+    "voiceAsset": "char_225_haak/CN_033"
+  },
+  "char_225_haak_CN_034": {
+    "charWordId": "char_225_haak_CN_034",
+    "charId": "char_225_haak",
+    "voiceId": "CN_034",
+    "voiceText": "啊？",
+    "voiceTitle": "戳一下",
+    "voiceIndex": 34,
+    "voiceType": "ONLY_TEXT",
+    "unlockType": "DIRECT",
+    "unlockParam": [],
+    "lockDescription": "",
+    "placeType": "BUILDING_TOUCHING",
+    "voiceAsset": "char_225_haak/CN_034"
+  },
+  "char_225_haak_CN_036": {
+    "charWordId": "char_225_haak_CN_036",
+    "charId": "char_225_haak",
+    "voiceId": "CN_036",
+    "voiceText": "老板，找到新试验品了吗？",
+    "voiceTitle": "信赖触摸",
+    "voiceIndex": 36,
+    "voiceType": "ONLY_TEXT",
+    "unlockType": "DIRECT",
+    "unlockParam": [],
+    "lockDescription": "",
+    "placeType": "BUILDING_FAVOR_BUBBLE",
+    "voiceAsset": "char_225_haak/CN_036"
+  },
+  "char_225_haak_CN_037": {
+    "charWordId": "char_225_haak_CN_037",
+    "charId": "char_225_haak",
+    "voiceId": "CN_037",
+    "voiceText": "明日方舟。",
+    "voiceTitle": "标题",
+    "voiceIndex": 37,
+    "voiceType": "ONLY_TEXT",
+    "unlockType": "DIRECT",
+    "unlockParam": [],
+    "lockDescription": "",
+    "placeType": "LOADING_PANEL",
+    "voiceAsset": "char_225_haak/CN_037"
+  },
+  "char_225_haak_CN_042": {
+    "charWordId": "char_225_haak_CN_042",
+    "charId": "char_225_haak",
+    "voiceId": "CN_042",
+    "voiceText": "老板，今天身体还好吧？",
+    "voiceTitle": "问候",
+    "voiceIndex": 42,
+    "voiceType": "ONLY_TEXT",
+    "unlockType": "DIRECT",
+    "unlockParam": [],
+    "lockDescription": "",
+    "placeType": "GREETING",
+    "voiceAsset": "char_225_haak/CN_042"
+  },
+  "char_226_hmau_CN_001": {
+    "charWordId": "char_226_hmau_CN_001",
+    "charId": "char_226_hmau",
+    "voiceId": "CN_001",
+    "voiceText": "嗨，老板，吃过没，我这有些饼干你要吗？",
+    "voiceTitle": "任命助理",
+    "voiceIndex": 1,
+    "voiceType": "ONLY_TEXT",
+    "unlockType": "DIRECT",
+    "unlockParam": [],
+    "lockDescription": "",
+    "placeType": "HOME_PLACE",
+    "voiceAsset": "char_226_hmau/CN_001"
+  },
+  "char_226_hmau_CN_002": {
+    "charWordId": "char_226_hmau_CN_002",
+    "charId": "char_226_hmau",
+    "voiceId": "CN_002",
+    "voiceText": "老板，阿要是来骚扰您，还麻烦您多担待担待，这小子虽然爱耍人，不过没什么恶意的，您要是真受不了，喊我来收拾他也行。",
+    "voiceTitle": "交谈1",
+    "voiceIndex": 2,
+    "voiceType": "ONLY_TEXT",
+    "unlockType": "DIRECT",
+    "unlockParam": [],
+    "lockDescription": "",
+    "placeType": "HOME_SHOW",
+    "voiceAsset": "char_226_hmau/CN_002"
+  },
+  "char_226_hmau_CN_003": {
+    "charWordId": "char_226_hmau_CN_003",
+    "charId": "char_226_hmau",
+    "voiceId": "CN_003",
+    "voiceText": "老板，您要是饿了就说一声，我去给您炒几个菜。别看我这样，其实我从老鲤那里学了几手的。",
+    "voiceTitle": "交谈2",
+    "voiceIndex": 3,
+    "voiceType": "ONLY_TEXT",
+    "unlockType": "DIRECT",
+    "unlockParam": [],
+    "lockDescription": "",
+    "placeType": "HOME_SHOW",
+    "voiceAsset": "char_226_hmau/CN_003"
+  },
+  "char_226_hmau_CN_004": {
+    "charWordId": "char_226_hmau_CN_004",
+    "charId": "char_226_hmau",
+    "voiceId": "CN_004",
+    "voiceText": "老板，罗德岛有没有开设机械班的？我对机械很有兴趣，想要进修一下。",
+    "voiceTitle": "交谈3",
+    "voiceIndex": 4,
+    "voiceType": "ONLY_TEXT",
+    "unlockType": "DIRECT",
+    "unlockParam": [],
+    "lockDescription": "",
+    "placeType": "HOME_SHOW",
+    "voiceAsset": "char_226_hmau/CN_004"
+  },
+  "char_226_hmau_CN_005": {
+    "charWordId": "char_226_hmau_CN_005",
+    "charId": "char_226_hmau",
+    "voiceId": "CN_005",
+    "voiceText": "哈哈，老板，不瞒你说，其实很长一段时间里，我都以为每个侦探都会做老鲤那些事，比如去黑帮火并现场喝茶看戏什么的。",
+    "voiceTitle": "晋升后交谈1",
+    "voiceIndex": 5,
+    "voiceType": "ONLY_TEXT",
+    "unlockType": "AWAKE",
+    "unlockParam": [
+      {
+        "valueStr": null,
+        "valueInt": 1
+      },
+      {
+        "valueStr": null,
+        "valueInt": 1
+      }
+    ],
+    "lockDescription": "提升至精英阶段1以查看更多信息",
+    "placeType": "HOME_SHOW",
+    "voiceAsset": "char_226_hmau/CN_005"
+  },
+  "char_226_hmau_CN_006": {
+    "charWordId": "char_226_hmau_CN_006",
+    "charId": "char_226_hmau",
+    "voiceId": "CN_006",
+    "voiceText": "老板，您也知道，以阿那小子的头脑和能力，将来一定会有大出息的。但对我来说，我只希望，他永远不要变回以前的样子。",
+    "voiceTitle": "晋升后交谈2",
+    "voiceIndex": 6,
+    "voiceType": "ONLY_TEXT",
+    "unlockType": "AWAKE",
+    "unlockParam": [
+      {
+        "valueStr": null,
+        "valueInt": 2
+      },
+      {
+        "valueStr": null,
+        "valueInt": 1
+      }
+    ],
+    "lockDescription": "提升至精英阶段2以查看更多信息",
+    "placeType": "HOME_SHOW",
+    "voiceAsset": "char_226_hmau/CN_006"
+  },
+  "char_226_hmau_CN_007": {
+    "charWordId": "char_226_hmau_CN_007",
+    "charId": "char_226_hmau",
+    "voiceId": "CN_007",
+    "voiceText": "我和老鲤的关系啊，怎么说呢，最早我还是比较怕他的，因为我特别不会应付那种一看城府就很深的人......现在肯定不怕了，也认识这么多年了嘛。",
+    "voiceTitle": "信赖提升后交谈1",
+    "voiceIndex": 7,
+    "voiceType": "ONLY_TEXT",
+    "unlockType": "FAVOR",
+    "unlockParam": [
+      {
+        "valueStr": null,
+        "valueInt": 40
+      }
+    ],
+    "lockDescription": "提升信赖以查看更多信息",
+    "placeType": "HOME_SHOW",
+    "voiceAsset": "char_226_hmau/CN_007"
+  },
+  "char_226_hmau_CN_008": {
+    "charWordId": "char_226_hmau_CN_008",
+    "charId": "char_226_hmau",
+    "voiceId": "CN_008",
+    "voiceText": "老板，您要是有什么想知道的事，我可以帮您联络老鲤，只要是龙门里发生的事情，我还没见过他不知道的。",
+    "voiceTitle": "信赖提升后交谈2",
+    "voiceIndex": 8,
+    "voiceType": "ONLY_TEXT",
+    "unlockType": "FAVOR",
+    "unlockParam": [
+      {
+        "valueStr": null,
+        "valueInt": 100
+      }
+    ],
+    "lockDescription": "提升信赖以查看更多信息",
+    "placeType": "HOME_SHOW",
+    "voiceAsset": "char_226_hmau/CN_008"
+  },
+  "char_226_hmau_CN_009": {
+    "charWordId": "char_226_hmau_CN_009",
+    "charId": "char_226_hmau",
+    "voiceId": "CN_009",
+    "voiceText": "打打杀杀的事情，老实说我不是很擅长，大家坐下和和气气的该有多好。不过很多时候就是没办法，我也有不想失去的东西。以前，那是侦探所，现在，也包括罗德岛了。",
+    "voiceTitle": "信赖提升后交谈3",
+    "voiceIndex": 9,
+    "voiceType": "ONLY_TEXT",
+    "unlockType": "FAVOR",
+    "unlockParam": [
+      {
+        "valueStr": null,
+        "valueInt": 200
+      }
+    ],
+    "lockDescription": "提升信赖以查看更多信息",
+    "placeType": "HOME_SHOW",
+    "voiceAsset": "char_226_hmau/CN_009"
+  },
+  "char_226_hmau_CN_010": {
+    "charWordId": "char_226_hmau_CN_010",
+    "charId": "char_226_hmau",
+    "voiceId": "CN_010",
+    "voiceText": "老……呼，好险，差点就把老板吵醒了，那我也眯一会儿好了。",
+    "voiceTitle": "闲置",
+    "voiceIndex": 10,
+    "voiceType": "ONLY_TEXT",
+    "unlockType": "DIRECT",
+    "unlockParam": [],
+    "lockDescription": "",
+    "placeType": "HOME_WAIT",
+    "voiceAsset": "char_226_hmau/CN_010"
+  },
+  "char_226_hmau_CN_011": {
+    "charWordId": "char_226_hmau_CN_011",
+    "charId": "char_226_hmau",
+    "voiceId": "CN_011",
+    "voiceText": "您就是老鲤说的博士了吧，您好，我是吽，擅长的是安保工作和机械修理，您要是出门缺个保镖，或者电视冰箱坏了，都可以叫我。",
+    "voiceTitle": "干员报到",
+    "voiceIndex": 11,
+    "voiceType": "ONLY_TEXT",
+    "unlockType": "DIRECT",
+    "unlockParam": [],
+    "lockDescription": "",
+    "placeType": "GACHA",
+    "voiceAsset": "char_226_hmau/CN_011"
+  },
+  "char_226_hmau_CN_012": {
+    "charWordId": "char_226_hmau_CN_012",
+    "charId": "char_226_hmau",
+    "voiceId": "CN_012",
+    "voiceText": "人外有人，天外有天呐，我也要加把劲才行。",
+    "voiceTitle": "观看作战记录",
+    "voiceIndex": 12,
+    "voiceType": "ONLY_TEXT",
+    "unlockType": "DIRECT",
+    "unlockParam": [],
+    "lockDescription": "",
+    "placeType": "LEVEL_UP",
+    "voiceAsset": "char_226_hmau/CN_012"
+  },
+  "char_226_hmau_CN_013": {
+    "charWordId": "char_226_hmau_CN_013",
+    "charId": "char_226_hmau",
+    "voiceId": "CN_013",
+    "voiceText": "谢谢老板，我会更加努力的。",
+    "voiceTitle": "精英化晋升1",
+    "voiceIndex": 13,
+    "voiceType": "ONLY_TEXT",
+    "unlockType": "AWAKE",
+    "unlockParam": [
+      {
+        "valueStr": null,
+        "valueInt": 1
+      },
+      {
+        "valueStr": null,
+        "valueInt": 1
+      }
+    ],
+    "lockDescription": "提升至精英阶段1以查看更多信息",
+    "placeType": "EVOLVE_ONE",
+    "voiceAsset": "char_226_hmau/CN_013"
+  },
+  "char_226_hmau_CN_014": {
+    "charWordId": "char_226_hmau_CN_014",
+    "charId": "char_226_hmau",
+    "voiceId": "CN_014",
+    "voiceText": "老板，别客气，尽管差遣我就好。别的事情我没什么自信，但是在皮糙肉厚这一点上，我自认还是点水平的！",
+    "voiceTitle": "精英化晋升2",
+    "voiceIndex": 14,
+    "voiceType": "ONLY_TEXT",
+    "unlockType": "AWAKE",
+    "unlockParam": [
+      {
+        "valueStr": null,
+        "valueInt": 2
+      },
+      {
+        "valueStr": null,
+        "valueInt": 1
+      }
+    ],
+    "lockDescription": "提升至精英阶段2以查看更多信息",
+    "placeType": "EVOLVE_TWO",
+    "voiceAsset": "char_226_hmau/CN_014"
+  },
+  "char_226_hmau_CN_017": {
+    "charWordId": "char_226_hmau_CN_017",
+    "charId": "char_226_hmau",
+    "voiceId": "CN_017",
+    "voiceText": "任务？没问题。",
+    "voiceTitle": "编入队伍",
+    "voiceIndex": 17,
+    "voiceType": "ONLY_TEXT",
+    "unlockType": "DIRECT",
+    "unlockParam": [],
+    "lockDescription": "",
+    "placeType": "SQUAD",
+    "voiceAsset": "char_226_hmau/CN_017"
+  },
+  "char_226_hmau_CN_018": {
+    "charWordId": "char_226_hmau_CN_018",
+    "charId": "char_226_hmau",
+    "voiceId": "CN_018",
+    "voiceText": "我保证让大家平安回来。",
+    "voiceTitle": "任命队长",
+    "voiceIndex": 18,
+    "voiceType": "ONLY_TEXT",
+    "unlockType": "DIRECT",
+    "unlockParam": [],
+    "lockDescription": "",
+    "placeType": "SQUAD_FIRST",
+    "voiceAsset": "char_226_hmau/CN_018"
+  },
+  "char_226_hmau_CN_019": {
+    "charWordId": "char_226_hmau_CN_019",
+    "charId": "char_226_hmau",
+    "voiceId": "CN_019",
+    "voiceText": "大家跟紧我，可别走丢了。",
+    "voiceTitle": "行动出发",
+    "voiceIndex": 19,
+    "voiceType": "ONLY_TEXT",
+    "unlockType": "DIRECT",
+    "unlockParam": [],
+    "lockDescription": "",
+    "placeType": "BATTLE_START",
+    "voiceAsset": "char_226_hmau/CN_019"
+  },
+  "char_226_hmau_CN_020": {
+    "charWordId": "char_226_hmau_CN_020",
+    "charId": "char_226_hmau",
+    "voiceId": "CN_020",
+    "voiceText": "有我在，别怕。",
+    "voiceTitle": "行动开始",
+    "voiceIndex": 20,
+    "voiceType": "ONLY_TEXT",
+    "unlockType": "DIRECT",
+    "unlockParam": [],
+    "lockDescription": "",
+    "placeType": "BATTLE_FACE_ENEMY",
+    "voiceAsset": "char_226_hmau/CN_020"
+  },
+  "char_226_hmau_CN_021": {
+    "charWordId": "char_226_hmau_CN_021",
+    "charId": "char_226_hmau",
+    "voiceId": "CN_021",
+    "voiceText": "包在我身上！",
+    "voiceTitle": "选中干员1",
+    "voiceIndex": 21,
+    "voiceType": "ONLY_TEXT",
+    "unlockType": "DIRECT",
+    "unlockParam": [],
+    "lockDescription": "",
+    "placeType": "BATTLE_SELECT",
+    "voiceAsset": "char_226_hmau/CN_021"
+  },
+  "char_226_hmau_CN_022": {
+    "charWordId": "char_226_hmau_CN_022",
+    "charId": "char_226_hmau",
+    "voiceId": "CN_022",
+    "voiceText": "哪里需要我？",
+    "voiceTitle": "选中干员2",
+    "voiceIndex": 22,
+    "voiceType": "ONLY_TEXT",
+    "unlockType": "DIRECT",
+    "unlockParam": [],
+    "lockDescription": "",
+    "placeType": "BATTLE_SELECT",
+    "voiceAsset": "char_226_hmau/CN_022"
+  },
+  "char_226_hmau_CN_023": {
+    "charWordId": "char_226_hmau_CN_023",
+    "charId": "char_226_hmau",
+    "voiceId": "CN_023",
+    "voiceText": "都来我的身后！",
+    "voiceTitle": "部署1",
+    "voiceIndex": 23,
+    "voiceType": "ONLY_TEXT",
+    "unlockType": "DIRECT",
+    "unlockParam": [],
+    "lockDescription": "",
+    "placeType": "BATTLE_PLACE",
+    "voiceAsset": "char_226_hmau/CN_023"
+  },
+  "char_226_hmau_CN_024": {
+    "charWordId": "char_226_hmau_CN_024",
+    "charId": "char_226_hmau",
+    "voiceId": "CN_024",
+    "voiceText": "我来掩护各位！",
+    "voiceTitle": "部署2",
+    "voiceIndex": 24,
+    "voiceType": "ONLY_TEXT",
+    "unlockType": "DIRECT",
+    "unlockParam": [],
+    "lockDescription": "",
+    "placeType": "BATTLE_PLACE",
+    "voiceAsset": "char_226_hmau/CN_024"
+  },
+  "char_226_hmau_CN_025": {
+    "charWordId": "char_226_hmau_CN_025",
+    "charId": "char_226_hmau",
+    "voiceId": "CN_025",
+    "voiceText": "别想前进一步！",
+    "voiceTitle": "作战中1",
+    "voiceIndex": 25,
+    "voiceType": "ONLY_TEXT",
+    "unlockType": "DIRECT",
+    "unlockParam": [],
+    "lockDescription": "",
+    "placeType": "BATTLE_SKILL_1",
+    "voiceAsset": "char_226_hmau/CN_025"
+  },
+  "char_226_hmau_CN_026": {
+    "charWordId": "char_226_hmau_CN_026",
+    "charId": "char_226_hmau",
+    "voiceId": "CN_026",
+    "voiceText": "有谁需要治疗？",
+    "voiceTitle": "作战中2",
+    "voiceIndex": 26,
+    "voiceType": "ONLY_TEXT",
+    "unlockType": "DIRECT",
+    "unlockParam": [],
+    "lockDescription": "",
+    "placeType": "BATTLE_SKILL_2",
+    "voiceAsset": "char_226_hmau/CN_026"
+  },
+  "char_226_hmau_CN_027": {
+    "charWordId": "char_226_hmau_CN_027",
+    "charId": "char_226_hmau",
+    "voiceId": "CN_027",
+    "voiceText": "别想伤害我的同伴！",
+    "voiceTitle": "作战中3",
+    "voiceIndex": 27,
+    "voiceType": "ONLY_TEXT",
+    "unlockType": "DIRECT",
+    "unlockParam": [],
+    "lockDescription": "",
+    "placeType": "BATTLE_SKILL_3",
+    "voiceAsset": "char_226_hmau/CN_027"
+  },
+  "char_226_hmau_CN_028": {
+    "charWordId": "char_226_hmau_CN_028",
+    "charId": "char_226_hmau",
+    "voiceId": "CN_028",
+    "voiceText": "这点小伤不算什么！",
+    "voiceTitle": "作战中4",
+    "voiceIndex": 28,
+    "voiceType": "ONLY_TEXT",
+    "unlockType": "DIRECT",
+    "unlockParam": [],
+    "lockDescription": "",
+    "placeType": "BATTLE_SKILL_4",
+    "voiceAsset": "char_226_hmau/CN_028"
+  },
+  "char_226_hmau_CN_029": {
+    "charWordId": "char_226_hmau_CN_029",
+    "charId": "char_226_hmau",
+    "voiceId": "CN_029",
+    "voiceText": "哈，哈，哈......老板，不好意思，让我歇会儿，可把我累坏了。",
+    "voiceTitle": "4星结束行动",
+    "voiceIndex": 29,
+    "voiceType": "ONLY_TEXT",
+    "unlockType": "DIRECT",
+    "unlockParam": [],
+    "lockDescription": "",
+    "placeType": "FOUR_STAR",
+    "voiceAsset": "char_226_hmau/CN_029"
+  },
+  "char_226_hmau_CN_030": {
+    "charWordId": "char_226_hmau_CN_030",
+    "charId": "char_226_hmau",
+    "voiceId": "CN_030",
+    "voiceText": "老板，您在这边休息一下吧，我去打扫一下战场。",
+    "voiceTitle": "3星结束行动",
+    "voiceIndex": 30,
+    "voiceType": "ONLY_TEXT",
+    "unlockType": "DIRECT",
+    "unlockParam": [],
+    "lockDescription": "",
+    "placeType": "THREE_STAR",
+    "voiceAsset": "char_226_hmau/CN_030"
+  },
+  "char_226_hmau_CN_031": {
+    "charWordId": "char_226_hmau_CN_031",
+    "charId": "char_226_hmau",
+    "voiceId": "CN_031",
+    "voiceText": "老板，别离我太远，还有漏网之鱼。",
+    "voiceTitle": "非3星结束行动",
+    "voiceIndex": 31,
+    "voiceType": "ONLY_TEXT",
+    "unlockType": "DIRECT",
+    "unlockParam": [],
+    "lockDescription": "",
+    "placeType": "TWO_STAR",
+    "voiceAsset": "char_226_hmau/CN_031"
+  },
+  "char_226_hmau_CN_032": {
+    "charWordId": "char_226_hmau_CN_032",
+    "charId": "char_226_hmau",
+    "voiceId": "CN_032",
+    "voiceText": "快，老板，上我的背，我背着您撤退！",
+    "voiceTitle": "行动失败",
+    "voiceIndex": 32,
+    "voiceType": "ONLY_TEXT",
+    "unlockType": "DIRECT",
+    "unlockParam": [],
+    "lockDescription": "",
+    "placeType": "LOSE",
+    "voiceAsset": "char_226_hmau/CN_032"
+  },
+  "char_226_hmau_CN_033": {
+    "charWordId": "char_226_hmau_CN_033",
+    "charId": "char_226_hmau",
+    "voiceId": "CN_033",
+    "voiceText": "巡逻就交给我吧。",
+    "voiceTitle": "进驻设施",
+    "voiceIndex": 33,
+    "voiceType": "ONLY_TEXT",
+    "unlockType": "DIRECT",
+    "unlockParam": [],
+    "lockDescription": "",
+    "placeType": "BUILDING_PLACE",
+    "voiceAsset": "char_226_hmau/CN_033"
+  },
+  "char_226_hmau_CN_034": {
+    "charWordId": "char_226_hmau_CN_034",
+    "charId": "char_226_hmau",
+    "voiceId": "CN_034",
+    "voiceText": "哪里有机器坏了吗？",
+    "voiceTitle": "戳一下",
+    "voiceIndex": 34,
+    "voiceType": "ONLY_TEXT",
+    "unlockType": "DIRECT",
+    "unlockParam": [],
+    "lockDescription": "",
+    "placeType": "BUILDING_TOUCHING",
+    "voiceAsset": "char_226_hmau/CN_034"
+  },
+  "char_226_hmau_CN_036": {
+    "charWordId": "char_226_hmau_CN_036",
+    "charId": "char_226_hmau",
+    "voiceId": "CN_036",
+    "voiceText": "老板，需要我帮忙吗？",
+    "voiceTitle": "信赖触摸",
+    "voiceIndex": 36,
+    "voiceType": "ONLY_TEXT",
+    "unlockType": "DIRECT",
+    "unlockParam": [],
+    "lockDescription": "",
+    "placeType": "BUILDING_FAVOR_BUBBLE",
+    "voiceAsset": "char_226_hmau/CN_036"
+  },
+  "char_226_hmau_CN_037": {
+    "charWordId": "char_226_hmau_CN_037",
+    "charId": "char_226_hmau",
+    "voiceId": "CN_037",
+    "voiceText": "明日方舟。",
+    "voiceTitle": "标题",
+    "voiceIndex": 37,
+    "voiceType": "ONLY_TEXT",
+    "unlockType": "DIRECT",
+    "unlockParam": [],
+    "lockDescription": "",
+    "placeType": "LOADING_PANEL",
+    "voiceAsset": "char_226_hmau/CN_037"
+  },
+  "char_226_hmau_CN_042": {
+    "charWordId": "char_226_hmau_CN_042",
+    "charId": "char_226_hmau",
+    "voiceId": "CN_042",
+    "voiceText": "老板，早啊。",
+    "voiceTitle": "问候",
+    "voiceIndex": 42,
+    "voiceType": "ONLY_TEXT",
+    "unlockType": "DIRECT",
+    "unlockParam": [],
+    "lockDescription": "",
+    "placeType": "GREETING",
+    "voiceAsset": "char_226_hmau/CN_042"
   },
   "char_383_snsant_CN_001": {
     "charWordId": "char_383_snsant_CN_001",

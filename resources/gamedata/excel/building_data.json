@@ -1,5 +1,5 @@
-7ò��������_P
-� ;GHY샀�z��_t�P��}��d�]T�^��H����-��a�/�_��:y�$��W�(�z�?�ӓ�����E���׋�{2P��.^����!�J�B]CY���{�<^��-CgnwTX#&>(*)%Id": "slot_34",
+{
+  "controlSlotId": "slot_34",
   "meetingSlotId": "slot_36",
   "initMaxLabor": 0,
   "laborRecoverTime": 360,
@@ -5967,6 +5967,90 @@
         }
       ]
     },
+    "char_2014_nian": {
+      "charId": "char_2014_nian",
+      "maxManpower": 8640000,
+      "buffChar": [
+        {
+          "buffData": [
+            {
+              "buffId": "workshop_formula_probability[140]",
+              "cond": {
+                "phase": 0,
+                "level": 1
+              }
+            }
+          ]
+        },
+        {
+          "buffData": [
+            {
+              "buffId": "workshop_formula_cost[010]",
+              "cond": {
+                "phase": 0,
+                "level": 1
+              }
+            }
+          ]
+        }
+      ]
+    },
+    "char_225_haak": {
+      "charId": "char_225_haak",
+      "maxManpower": 8640000,
+      "buffChar": [
+        {
+          "buffData": [
+            {
+              "buffId": "control_clue_cost[000]",
+              "cond": {
+                "phase": 0,
+                "level": 1
+              }
+            }
+          ]
+        },
+        {
+          "buffData": [
+            {
+              "buffId": "train_spd&profession[170]",
+              "cond": {
+                "phase": 2,
+                "level": 1
+              }
+            }
+          ]
+        }
+      ]
+    },
+    "char_226_hmau": {
+      "charId": "char_226_hmau",
+      "maxManpower": 8640000,
+      "buffChar": [
+        {
+          "buffData": [
+            {
+              "buffId": "workshop_proc_probability[010]",
+              "cond": {
+                "phase": 0,
+                "level": 1
+              }
+            }
+          ]
+        },
+        {
+          "buffData": [
+            {
+              "buffId": "control_mp_cost&faction2[000]",
+              "cond": {
+                "phase": 2,
+                "level": 1
+              }
+            }
+          ]
+        }
+      ]
+    },
     "char_383_snsant": {
       "charId": "char_383_snsant",
       "maxManpower": 8640000,
@@ -6019,6 +6103,18 @@
       "buffCategory": "FUNCTION",
       "roomType": "CONTROL",
       "description": "进驻控制中枢时，所有贸易站订单效率<@cc.vup>+7%</>（同种效果取最高）"
+    },
+    "control_clue_cost[000]": {
+      "buffId": "control_clue_cost[000]",
+      "buffName": "神经质",
+      "buffIcon": "control",
+      "skillIcon": "bskill_ctrl_c_wt",
+      "sortId": 1301,
+      "buffColor": "#005752",
+      "textColor": "#ffffff",
+      "buffCategory": "FUNCTION",
+      "roomType": "CONTROL",
+      "description": "进驻控制中枢时，加强会客室内干员<@cc.kw>所属派系的线索倾向效果</>，但控制中枢内所有干员<@cc.vdown>大幅提升心情消耗</>"
     },
     "control_mp_cost[000]": {
       "buffId": "control_mp_cost[000]",
@@ -6103,6 +6199,18 @@
       "buffCategory": "FUNCTION",
       "roomType": "CONTROL",
       "description": "进驻控制中枢时，控制中枢内每个<@cc.kw>龙门近卫局</>干员可使控制中枢内所有干员的心情每小时消耗<@cc.vup>-0.05</>"
+    },
+    "control_mp_cost&faction2[000]": {
+      "buffId": "control_mp_cost&faction2[000]",
+      "buffName": "坚毅随和",
+      "buffIcon": "control",
+      "skillIcon": "bskill_ctrl_lda",
+      "sortId": 1201,
+      "buffColor": "#005752",
+      "textColor": "#ffffff",
+      "buffCategory": "FUNCTION",
+      "roomType": "CONTROL",
+      "description": "进驻控制中枢时，控制中枢内每个<@cc.kw>鲤氏侦探所</>干员可使控制中枢内所有干员的心情每小时消耗<@cc.vup>-0.05</>，同时该派系干员可以<@cc.kw>额外降低心情消耗</>"
     },
     "power_rec_spd[000]": {
       "buffId": "power_rec_spd[000]",
@@ -6860,6 +6968,18 @@
       "roomType": "WORKSHOP",
       "description": "进驻加工站加工<@cc.kw>任意类材料</>时，心情消耗为<@cc.kw>4</>及以上的配方全部<@cc.vup>-2</>心情消耗"
     },
+    "workshop_formula_cost[010]": {
+      "buffId": "workshop_formula_cost[010]",
+      "buffName": "肆无忌惮",
+      "buffIcon": "workshop",
+      "skillIcon": "bskill_ws_nian",
+      "sortId": 7431,
+      "buffColor": "#e3eb00",
+      "textColor": "#333333",
+      "buffCategory": "FUNCTION",
+      "roomType": "WORKSHOP",
+      "description": "进驻加工站加工<@cc.kw>精英材料</>时，相应配方全部<@cc.vdown>+2</>心情消耗"
+    },
     "workshop_formula_probability[000]": {
       "buffId": "workshop_formula_probability[000]",
       "buffName": "技巧理论",
@@ -6991,6 +7111,18 @@
       "buffCategory": "FUNCTION",
       "roomType": "WORKSHOP",
       "description": "进驻加工站加工<@cc.kw>精英材料</>时，副产品的产出概率提升<@cc.vup>80%</>"
+    },
+    "workshop_formula_probability[140]": {
+      "buffId": "workshop_formula_probability[140]",
+      "buffName": "稀有金属辨识",
+      "buffIcon": "workshop",
+      "skillIcon": "bskill_ws_evolve4",
+      "sortId": 7431,
+      "buffColor": "#e3eb00",
+      "textColor": "#333333",
+      "buffCategory": "FUNCTION",
+      "roomType": "WORKSHOP",
+      "description": "进驻加工站加工<@cc.kw>精英材料</>时，副产品的产出概率提升<@cc.vup>100%</>"
     },
     "workshop_formula_probability[200]": {
       "buffId": "workshop_formula_probability[200]",
@@ -7255,6 +7387,18 @@
       "buffCategory": "FUNCTION",
       "roomType": "TRAINING",
       "description": "进驻训练室协助位时，<@cc.kw>狙击</>干员的专精技能训练速度<@cc.vup>+60%</>"
+    },
+    "train_spd&profession[170]": {
+      "buffId": "train_spd&profession[170]",
+      "buffName": "精准手术",
+      "buffIcon": "training",
+      "skillIcon": "bskill_train_medic3",
+      "sortId": 9221,
+      "buffColor": "#7d0022",
+      "textColor": "#ffffff",
+      "buffCategory": "FUNCTION",
+      "roomType": "TRAINING",
+      "description": "进驻训练室协助位时，<@cc.kw>医疗</>干员的专精技能训练速度<@cc.vup>+60%</>"
     },
     "dorm_rec_oneself[000]": {
       "buffId": "dorm_rec_oneself[000]",
@@ -15063,6 +15207,402 @@
         "processedByProductGroup": [],
         "canBeDestroy": true
       },
+      "furni_restaurant_ceiling1_01": {
+        "id": "furni_restaurant_ceiling1_01",
+        "name": "题字吊顶（饺子馆）",
+        "iconId": "furni_restaurant_ceiling1_01",
+        "type": "CEILING",
+        "location": "CEILING",
+        "category": "FURNITURE",
+        "rarity": 2,
+        "themeId": "",
+        "width": 13,
+        "depth": 2,
+        "height": 6,
+        "comfort": 215,
+        "usage": "能够用来装扮宿舍，提高宿舍的氛围",
+        "description": "龙门食坊的题字吊顶之一。皮薄馅香，端一碗七上八下。",
+        "obtainApproach": "家具商店限时购买",
+        "processedProductId": "3401",
+        "processedProductCount": 150,
+        "processedByProductPercentage": 0,
+        "processedByProductGroup": [],
+        "canBeDestroy": true
+      },
+      "furni_restaurant_curtain_01": {
+        "id": "furni_restaurant_curtain_01",
+        "name": "竹屏风",
+        "iconId": "furni_restaurant_curtain_01",
+        "type": "DECORATION",
+        "location": "FLOOR",
+        "category": "FURNITURE",
+        "rarity": 2,
+        "themeId": "",
+        "width": 2,
+        "depth": 7,
+        "height": 10,
+        "comfort": 350,
+        "usage": "能够用来装扮宿舍，提高宿舍的氛围",
+        "description": "龙门食坊的屏风之一。眼未见，耳未闻，香气已勾魂。",
+        "obtainApproach": "家具商店限时购买",
+        "processedProductId": "3401",
+        "processedProductCount": 243,
+        "processedByProductPercentage": 0,
+        "processedByProductGroup": [],
+        "canBeDestroy": true
+      },
+      "furni_restaurant_fryingTable_01": {
+        "id": "furni_restaurant_fryingTable_01",
+        "name": "电煎台",
+        "iconId": "furni_restaurant_fryingTable_01",
+        "type": "TABLE",
+        "location": "FLOOR",
+        "category": "FURNITURE",
+        "rarity": 2,
+        "themeId": "",
+        "width": 3,
+        "depth": 4,
+        "height": 4,
+        "comfort": 195,
+        "usage": "能够用来装扮宿舍，提高宿舍的氛围",
+        "description": "龙门食坊的电煎台。这煎物的好，三言两语怎能说得清楚？且待我慢慢道来。",
+        "obtainApproach": "家具商店限时购买",
+        "processedProductId": "3401",
+        "processedProductCount": 150,
+        "processedByProductPercentage": 0,
+        "processedByProductGroup": [],
+        "canBeDestroy": true
+      },
+      "furni_restaurant_stockPotTable_01": {
+        "id": "furni_restaurant_stockPotTable_01",
+        "name": "炖锅台",
+        "iconId": "furni_restaurant_stockPotTable_01",
+        "type": "DECORATION",
+        "location": "FLOOR",
+        "category": "FURNITURE",
+        "rarity": 2,
+        "themeId": "",
+        "width": 10,
+        "depth": 2,
+        "height": 4,
+        "comfort": 290,
+        "usage": "能够用来装扮宿舍，提高宿舍的氛围",
+        "description": "龙门食坊的炖锅台。只见那锅盖一掀!——欲知后事，请听下回。",
+        "obtainApproach": "家具商店限时购买",
+        "processedProductId": "3401",
+        "processedProductCount": 203,
+        "processedByProductPercentage": 0,
+        "processedByProductGroup": [],
+        "canBeDestroy": true
+      },
+      "furni_restaurant_barTable_01": {
+        "id": "furni_restaurant_barTable_01",
+        "name": "转角木桌",
+        "iconId": "furni_restaurant_barTable_01",
+        "type": "DECORATION",
+        "location": "FLOOR",
+        "category": "FURNITURE",
+        "rarity": 2,
+        "themeId": "",
+        "width": 16,
+        "depth": 3,
+        "height": 4,
+        "comfort": 520,
+        "usage": "能够用来装扮宿舍，提高宿舍的氛围",
+        "description": "龙门食坊用的大木桌。无米不成炊，无客不成食。",
+        "obtainApproach": "家具商店限时购买",
+        "processedProductId": "3401",
+        "processedProductCount": 360,
+        "processedByProductPercentage": 0,
+        "processedByProductGroup": [],
+        "canBeDestroy": true
+      },
+      "furni_restaurant_chair_01": {
+        "id": "furni_restaurant_chair_01",
+        "name": "食坊圆凳",
+        "iconId": "furni_restaurant_chair_01",
+        "type": "SEATING",
+        "location": "FLOOR",
+        "category": "FURNITURE",
+        "rarity": 2,
+        "themeId": "",
+        "width": 2,
+        "depth": 2,
+        "height": 2,
+        "comfort": 90,
+        "usage": "能够用来装扮宿舍，提高宿舍的氛围",
+        "description": "龙门食坊的木圆凳。新朋旧友齐来聚，此时更有几多回。",
+        "obtainApproach": "家具商店限时购买",
+        "processedProductId": "3401",
+        "processedProductCount": 63,
+        "processedByProductPercentage": 0,
+        "processedByProductGroup": [],
+        "canBeDestroy": true
+      },
+      "furni_restaurant_diningTable_01": {
+        "id": "furni_restaurant_diningTable_01",
+        "name": "食坊餐桌",
+        "iconId": "furni_restaurant_diningTable_01",
+        "type": "TABLE",
+        "location": "FLOOR",
+        "category": "FURNITURE",
+        "rarity": 2,
+        "themeId": "",
+        "width": 4,
+        "depth": 4,
+        "height": 4,
+        "comfort": 215,
+        "usage": "能够用来装扮宿舍，提高宿舍的氛围",
+        "description": "龙门食坊的餐桌。故国已在千里远，家乡酒食碗中盛。",
+        "obtainApproach": "家具商店限时购买",
+        "processedProductId": "3401",
+        "processedProductCount": 150,
+        "processedByProductPercentage": 0,
+        "processedByProductGroup": [],
+        "canBeDestroy": true
+      },
+      "furni_restaurant_longBench_01": {
+        "id": "furni_restaurant_longBench_01",
+        "name": "四方长板凳",
+        "iconId": "furni_restaurant_longBench_01",
+        "type": "SEATING",
+        "location": "FLOOR",
+        "category": "FURNITURE",
+        "rarity": 2,
+        "themeId": "",
+        "width": 2,
+        "depth": 4,
+        "height": 2,
+        "comfort": 195,
+        "usage": "能够用来装扮宿舍，提高宿舍的氛围",
+        "description": "龙门食坊的长板凳。若得友人共举杯，清水亦是兰生浆。",
+        "obtainApproach": "家具商店限时购买",
+        "processedProductId": "3401",
+        "processedProductCount": 165,
+        "processedByProductPercentage": 0,
+        "processedByProductGroup": [],
+        "canBeDestroy": true
+      },
+      "furni_restaurant_screen_01": {
+        "id": "furni_restaurant_screen_01",
+        "name": "半掩屏风",
+        "iconId": "furni_restaurant_screen_01",
+        "type": "DECORATION",
+        "location": "FLOOR",
+        "category": "FURNITURE",
+        "rarity": 2,
+        "themeId": "",
+        "width": 5,
+        "depth": 1,
+        "height": 10,
+        "comfort": 230,
+        "usage": "能够用来装扮宿舍，提高宿舍的氛围",
+        "description": "龙门食坊的屏风之一。汤一碗，菜一碟，觥筹交错，日已落西山。",
+        "obtainApproach": "家具商店限时购买",
+        "processedProductId": "3401",
+        "processedProductCount": 178,
+        "processedByProductPercentage": 0,
+        "processedByProductGroup": [],
+        "canBeDestroy": true
+      },
+      "furni_restaurant_bonsai_01": {
+        "id": "furni_restaurant_bonsai_01",
+        "name": "观赏盆栽",
+        "iconId": "furni_restaurant_bonsai_01",
+        "type": "DECORATION",
+        "location": "FLOOR",
+        "category": "FURNITURE",
+        "rarity": 2,
+        "themeId": "",
+        "width": 3,
+        "depth": 2,
+        "height": 4,
+        "comfort": 205,
+        "usage": "能够用来装扮宿舍，提高宿舍的氛围",
+        "description": "配上青瓷瓮的盆栽。翠叶粗枝御万邪，白玉青瓷镇一方。",
+        "obtainApproach": "家具商店限时购买",
+        "processedProductId": "3401",
+        "processedProductCount": 175,
+        "processedByProductPercentage": 0,
+        "processedByProductGroup": [],
+        "canBeDestroy": true
+      },
+      "furni_restaurant_pottedPlant_01": {
+        "id": "furni_restaurant_pottedPlant_01",
+        "name": "观赏植物",
+        "iconId": "furni_restaurant_pottedPlant_01",
+        "type": "DECORATION",
+        "location": "FLOOR",
+        "category": "FURNITURE",
+        "rarity": 2,
+        "themeId": "",
+        "width": 2,
+        "depth": 2,
+        "height": 4,
+        "comfort": 165,
+        "usage": "能够用来装扮宿舍，提高宿舍的氛围",
+        "description": "龙门特产的观赏植物。宝塔端中座，华盖四散开。",
+        "obtainApproach": "家具商店限时购买",
+        "processedProductId": "3401",
+        "processedProductCount": 140,
+        "processedByProductPercentage": 0,
+        "processedByProductGroup": [],
+        "canBeDestroy": true
+      },
+      "furni_restaurant_priceList1_01": {
+        "id": "furni_restaurant_priceList1_01",
+        "name": "价目表（饺子馆）",
+        "iconId": "furni_restaurant_priceList1_01",
+        "type": "WALLDECO",
+        "location": "POSTER",
+        "category": "FURNITURE",
+        "rarity": 2,
+        "themeId": "",
+        "width": 8,
+        "depth": 1,
+        "height": 4,
+        "comfort": 200,
+        "usage": "能够用来装扮宿舍，提高宿舍的氛围",
+        "description": "龙门食坊的价目表之一。明码标价，童叟无欺。",
+        "obtainApproach": "家具商店限时购买",
+        "processedProductId": "3401",
+        "processedProductCount": 170,
+        "processedByProductPercentage": 0,
+        "processedByProductGroup": [],
+        "canBeDestroy": true
+      },
+      "furni_restaurant_trottingHorseLamp_01": {
+        "id": "furni_restaurant_trottingHorseLamp_01",
+        "name": "六角宫灯",
+        "iconId": "furni_restaurant_trottingHorseLamp_01",
+        "type": "CEILINGLAMP",
+        "location": "CEILING",
+        "category": "FURNITURE",
+        "rarity": 2,
+        "themeId": "",
+        "width": 2,
+        "depth": 2,
+        "height": 5,
+        "comfort": 55,
+        "usage": "能够用来装扮宿舍，提高宿舍的氛围",
+        "description": "龙门特色六角宫灯。昔时殿堂灯一盏，今来门前高高挂。",
+        "obtainApproach": "家具商店限时购买",
+        "processedProductId": "3401",
+        "processedProductCount": 43,
+        "processedByProductPercentage": 0,
+        "processedByProductGroup": [],
+        "canBeDestroy": true
+      },
+      "furni_restaurant_spotlight_01": {
+        "id": "furni_restaurant_spotlight_01",
+        "name": "聚焦灯",
+        "iconId": "furni_restaurant_spotlight_01",
+        "type": "WALLLAMP",
+        "location": "WALL",
+        "category": "FURNITURE",
+        "rarity": 2,
+        "themeId": "",
+        "width": 2,
+        "depth": 1,
+        "height": 2,
+        "comfort": 60,
+        "usage": "能够用来装扮宿舍，提高宿舍的氛围",
+        "description": "功率充足的聚焦灯。当空暖意来，宴至合家欢。",
+        "obtainApproach": "家具商店限时购买",
+        "processedProductId": "3401",
+        "processedProductCount": 53,
+        "processedByProductPercentage": 0,
+        "processedByProductGroup": [],
+        "canBeDestroy": true
+      },
+      "furni_restaurant_downlight_01": {
+        "id": "furni_restaurant_downlight_01",
+        "name": "吸顶灯",
+        "iconId": "furni_restaurant_downlight_01",
+        "type": "CEILINGLAMP",
+        "location": "CEILING",
+        "category": "FURNITURE",
+        "rarity": 2,
+        "themeId": "",
+        "width": 3,
+        "depth": 2,
+        "height": 1,
+        "comfort": 70,
+        "usage": "能够用来装扮宿舍，提高宿舍的氛围",
+        "description": "街坊常用的吸顶灯。三阳开泰，珍馐片刻来。",
+        "obtainApproach": "家具商店限时购买",
+        "processedProductId": "3401",
+        "processedProductCount": 60,
+        "processedByProductPercentage": 0,
+        "processedByProductGroup": [],
+        "canBeDestroy": true
+      },
+      "furni_restaurant_carpet_01": {
+        "id": "furni_restaurant_carpet_01",
+        "name": "食坊地毯",
+        "iconId": "furni_restaurant_carpet_01",
+        "type": "CARPET",
+        "location": "CARPET",
+        "category": "FURNITURE",
+        "rarity": 2,
+        "themeId": "",
+        "width": 9,
+        "depth": 8,
+        "height": 1,
+        "comfort": 145,
+        "usage": "能够用来装扮宿舍，提高宿舍的氛围",
+        "description": "龙门食坊的地毯。相会终有时，来日再聚首。",
+        "obtainApproach": "家具商店限时购买",
+        "processedProductId": "3401",
+        "processedProductCount": 123,
+        "processedByProductPercentage": 0,
+        "processedByProductGroup": [],
+        "canBeDestroy": true
+      },
+      "furni_restaurant_wallpaper_01": {
+        "id": "furni_restaurant_wallpaper_01",
+        "name": "食坊壁纸",
+        "iconId": "furni_restaurant_wallpaper_01",
+        "type": "WALLPAPER",
+        "location": "WALL",
+        "category": "WALL",
+        "rarity": 2,
+        "themeId": "",
+        "width": 34,
+        "depth": 1,
+        "height": 10,
+        "comfort": 240,
+        "usage": "能够用来装扮宿舍，提高宿舍的氛围",
+        "description": "龙门食坊的喜庆壁纸。龙游墙垣间，吉时共相迎。",
+        "obtainApproach": "家具商店限时购买",
+        "processedProductId": "3401",
+        "processedProductCount": 185,
+        "processedByProductPercentage": 0,
+        "processedByProductGroup": [],
+        "canBeDestroy": true
+      },
+      "furni_restaurant_floor_01": {
+        "id": "furni_restaurant_floor_01",
+        "name": "食坊地砖",
+        "iconId": "furni_restaurant_floor_01",
+        "type": "FLOOR",
+        "location": "FLOOR",
+        "category": "FLOOR",
+        "rarity": 2,
+        "themeId": "",
+        "width": 34,
+        "depth": 10,
+        "height": 1,
+        "comfort": 240,
+        "usage": "能够用来装扮宿舍，提高宿舍的氛围",
+        "description": "龙门食坊的地砖。千客万客纷至来，福绿寿喜聚一堂。",
+        "obtainApproach": "家具商店限时购买",
+        "processedProductId": "3401",
+        "processedProductCount": 185,
+        "processedByProductPercentage": 0,
+        "processedByProductGroup": [],
+        "canBeDestroy": true
+      },
       "furni_NY2020_wallpaper_01": {
         "id": "furni_NY2020_wallpaper_01",
         "name": "龙门新印象壁纸",
@@ -18695,6 +19235,143 @@
             "pos1": 0
           }
         ]
+      },
+      "furni_set_restaurant": {
+        "id": "furni_set_restaurant",
+        "name": "龙门食坊",
+        "desc": "再现了龙门食坊的概念房间。欢庆佳节，恭迎宾客。",
+        "quickSetup": [
+          {
+            "furnitureId": "furni_restaurant_ceiling1_01",
+            "pos0": 16,
+            "pos1": 3
+          },
+          {
+            "furnitureId": "furni_restaurant_curtain_01",
+            "pos0": 30,
+            "pos1": 0
+          },
+          {
+            "furnitureId": "furni_restaurant_fryingTable_01",
+            "pos0": 27,
+            "pos1": 2
+          },
+          {
+            "furnitureId": "furni_restaurant_stockPotTable_01",
+            "pos0": 17,
+            "pos1": 1
+          },
+          {
+            "furnitureId": "furni_restaurant_barTable_01",
+            "pos0": 11,
+            "pos1": 4
+          },
+          {
+            "furnitureId": "furni_restaurant_chair_01",
+            "pos0": 9,
+            "pos1": 5
+          },
+          {
+            "furnitureId": "furni_restaurant_chair_01",
+            "pos0": 14,
+            "pos1": 7
+          },
+          {
+            "furnitureId": "furni_restaurant_chair_01",
+            "pos0": 17,
+            "pos1": 7
+          },
+          {
+            "furnitureId": "furni_restaurant_chair_01",
+            "pos0": 20,
+            "pos1": 7
+          },
+          {
+            "furnitureId": "furni_restaurant_chair_01",
+            "pos0": 23,
+            "pos1": 7
+          },
+          {
+            "furnitureId": "furni_restaurant_diningTable_01",
+            "pos0": 0,
+            "pos1": 0
+          },
+          {
+            "furnitureId": "furni_restaurant_longBench_01",
+            "pos0": 4,
+            "pos1": 0
+          },
+          {
+            "furnitureId": "furni_restaurant_screen_01",
+            "pos0": 0,
+            "pos1": 5
+          },
+          {
+            "furnitureId": "furni_restaurant_bonsai_01",
+            "pos0": 6,
+            "pos1": 0
+          },
+          {
+            "furnitureId": "furni_restaurant_pottedPlant_01",
+            "pos0": 2,
+            "pos1": 6
+          },
+          {
+            "furnitureId": "furni_restaurant_priceList1_01",
+            "pos0": 2,
+            "pos1": 3
+          },
+          {
+            "furnitureId": "furni_restaurant_trottingHorseLamp_01",
+            "pos0": 6,
+            "pos1": 5
+          },
+          {
+            "furnitureId": "furni_restaurant_trottingHorseLamp_01",
+            "pos0": 9,
+            "pos1": 5
+          },
+          {
+            "furnitureId": "furni_restaurant_trottingHorseLamp_01",
+            "pos0": 15,
+            "pos1": 5
+          },
+          {
+            "furnitureId": "furni_restaurant_trottingHorseLamp_01",
+            "pos0": 28,
+            "pos1": 5
+          },
+          {
+            "furnitureId": "furni_restaurant_spotlight_01",
+            "pos0": 3,
+            "pos1": 8
+          },
+          {
+            "furnitureId": "furni_restaurant_spotlight_01",
+            "pos0": 7,
+            "pos1": 8
+          },
+          {
+            "furnitureId": "furni_restaurant_downlight_01",
+            "pos0": 22,
+            "pos1": 6
+          },
+          {
+            "furnitureId": "furni_restaurant_carpet_01",
+            "pos0": 0,
+            "pos1": 2
+          },
+          {
+            "furnitureId": "furni_restaurant_wallpaper_01",
+            "pos0": 0,
+            "pos1": 0
+          },
+          {
+            "furnitureId": "furni_restaurant_floor_01",
+            "pos0": 0,
+            "pos1": 0
+          }
+        ]
       }
     },
     "groups": {
@@ -19762,6 +20439,69 @@
           "furni_elite_wallpaper_01",
           "furni_elite_floor_01",
           "furni_elite_ceiling_01"
+        ]
+      },
+      "furni_set_restaurant_1": {
+        "id": "furni_set_restaurant_1",
+        "name": "餐厨一体区",
+        "themeId": "furni_set_restaurant",
+        "comfort": 325,
+        "count": 4,
+        "furniture": [
+          "furni_restaurant_fryingTable_01",
+          "furni_restaurant_stockPotTable_01",
+          "furni_restaurant_barTable_01",
+          "furni_restaurant_chair_01"
+        ]
+      },
+      "furni_set_restaurant_2": {
+        "id": "furni_set_restaurant_2",
+        "name": "就餐区",
+        "themeId": "furni_set_restaurant",
+        "comfort": 140,
+        "count": 4,
+        "furniture": [
+          "furni_restaurant_screen_01",
+          "furni_restaurant_diningTable_01",
+          "furni_restaurant_longBench_01",
+          "furni_restaurant_carpet_01"
+        ]
+      },
+      "furni_set_restaurant_3": {
+        "id": "furni_set_restaurant_3",
+        "name": "店面装潢",
+        "themeId": "furni_set_restaurant",
+        "comfort": 145,
+        "count": 4,
+        "furniture": [
+          "furni_restaurant_curtain_01",
+          "furni_restaurant_trottingHorseLamp_01",
+          "furni_restaurant_spotlight_01",
+          "furni_restaurant_downlight_01"
+        ]
+      },
+      "furni_set_restaurant_4": {
+        "id": "furni_set_restaurant_4",
+        "name": "食坊基调",
+        "themeId": "furni_set_restaurant",
+        "comfort": 125,
+        "count": 4,
+        "furniture": [
+          "furni_restaurant_wallpaper_01",
+          "furni_restaurant_floor_01",
+          "furni_restaurant_bonsai_01",
+          "furni_restaurant_pottedPlant_01"
+        ]
+      },
+      "furni_set_restaurant_5": {
+        "id": "furni_set_restaurant_5",
+        "name": "饺子坊",
+        "themeId": "furni_set_restaurant",
+        "comfort": 0,
+        "count": 2,
+        "furniture": [
+          "furni_restaurant_ceiling1_01",
+          "furni_restaurant_priceList1_01"
         ]
       }
     },
