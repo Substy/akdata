@@ -12,6 +12,7 @@ const ProfessionNames = {
 //  "TRAP": "装置",
 };
 
+const akVersion = "200115";
 const currentVersion = "20-01-13-12-27-44-677ceb";
 
 function init() {
@@ -26,7 +27,7 @@ function init() {
   ], load);
 }
 
-const charColumnCount = window.screen.width <= 1280 ? 2 : 4;
+const charColumnCount = $(document).width() <= 1400 ? 2 : 3;
 const Characters = new Array(charColumnCount);
 
 function getElement(classPart, index) {
@@ -34,11 +35,11 @@ function getElement(classPart, index) {
 }
 
 function load() {
-  let version = AKDATA.Data.version.gamedata;
-  if (version != currentVersion) {
+  let version = AKDATA.Data.version;
+  if (version.gamedata != currentVersion || version.akdata != akVersion) {
     $('#update_prompt').text(`有新数据，请点击[清除缓存]更新`);
   } else {
-    $('#update_prompt').text(`程序版本: ${AKDATA.Data.version.akdata}, 数据版本: ${version}`);
+    $('#update_prompt').text(`程序版本: ${version.akdata}, 数据版本: ${version.gamedata}`);
   }
 
   let selectOptions = '';
@@ -70,7 +71,7 @@ function load() {
   </div>
   <table class="table dps" style="table-layout:fixed;">
   <tbody>
-    <tr class="dps__row-select" style="width:20%;"> <th>干员</th> </tr>
+    <tr class="dps__row-select" style="width:20%;"> <th style="width:200px;">干员</th> </tr>
     <tr class="dps__row-level"> <th>等级</th> </tr>
     <tr class="dps__row-potentialrank"> <th>潜能</th> </tr>
     <tr class="dps__row-favor"> <th>信赖</th> </tr>
@@ -80,14 +81,15 @@ function load() {
   <tbody>
     <tr class="dps__row-period"> <th>技能周期 <i class="fas fa-info-circle pull-right" data-toggle="tooltip" title="技力回复时间+技能持续时间[+眩晕时间]"></i></th> </tr>
     <tr class="dps__row-s_atk"> <th>技能攻击力 <i class="fas fa-info-circle pull-right" data-toggle="tooltip" title="角色攻击力（计算技能加成）×单次攻击次数"></i></th> </tr>
-    <tr class="dps__row-s_damage"> <th>技能伤害期望 <i class="fas fa-info-circle pull-right" data-toggle="tooltip" title="单次攻击总伤害（计算防御力）×技能持续时间内攻击次数"></i></th> </tr>
-    <tr class="dps__row-s_dps"> <th>技能</th> </tr>
-    <tr class="dps__row-n_dps"> <th>普通攻击</th> </tr>
-    <tr class="dps__row-g_dps"> <th>周期DPS</th> </tr>
+    <tr class="dps__row-s_damage"> <th>技能总伤害 <i class="fas fa-info-circle pull-right" data-toggle="tooltip" title="技能持续时间内总伤害"></i></th> </tr>
+    <tr class="dps__row-s_dps"> <th>技能DPS</th> </tr>
+    <tr class="dps__row-n_dps"> <th>普攻</th> </tr>
+    <tr class="dps__row-g_dps"> <th>平均</th> </tr>
   </tbody>
   <tbody class="">
-  <tr class="dps__row-e_time"> <th>技能击杀时间 <i class="fas fa-info-circle pull-right" data-toggle="tooltip" title="敌人HP/技能DPS（存在较大问题）"></i></th> </tr>
-  <tr class="dps__row-results"> <th>计算过程(dev)</th> </tr>
+ <!-- <tr class="dps__row-e_time"> <th>技能击杀时间 <i class="fas fa-info-circle pull-right" data-toggle="tooltip" title="敌人HP/技能DPS（存在较大问题）"></i></th> </tr> -->
+    <tr class="dps__row-damagepool"> <th>伤害表<i class="fas fa-info-circle pull-right" data-toggle="tooltip" title="伤害类型与来源(直接/额外/暴击)"></i></th></tr>
+    <tr class="dps__row-results"> <th>计算过程(dev)</th> </tr>
   </tbody>
   </table>
 </div>
@@ -100,30 +102,18 @@ function load() {
       <tr>
         <th>防御力</th>
         <th>法术抗性</th>
-        <th>HP</th>
+      <!--  <th>HP</th> -->
         <th>数量</th>
       </tr>
       <tr>
       <td><input type="text" class="dps__enemy-def" value="0"></td>
       <td><input type="text" class="dps__enemy-mr" value="0"></td>
-      <td><input type="text" class="dps__enemy-hp" value="0"></td>
+    <!--  <td><input type="text" class="dps__enemy-hp" value="0"></td> -->
       <td><input type="text" class="dps__enemy-count" value="1"></td>
       </tr>
     </tbody>
   </table>
 </div>
-<!--
-  <tr class="dps__row-damage"> <th>普通/技能瞬时伤害</th> </tr>
-<tr class="dps__row-s_atk"> <th>技能攻击力</th> </tr>
-<tr class="dps__row-s_attackSpeed"> <th>技能攻击速度</th> </tr>
-<tr class="dps__row-s_baseAttackTime"> <th>技能基础攻击间隔</th> </tr>
-<tbody>
-  <tr class="dps__row-atk"> <th>普通/技能攻击力 <i class="fas fa-info-circle pull-right" data-toggle="tooltip" title="计算攻击次数与敌人防御力"></i></th> </tr>
-  <tr class="dps__row-attackSpeed"> <th>普通/技能攻击速度</th> </tr>
-  <tr class="dps__row-baseAttackTime"> <th>普通/技能攻击间隔</th> </tr>
-  <tr class="dps__row-damage"> <th>技能伤害期望</th> </tr>
-</tbody>
--->
   `;
   let $dps = $(html);
 
@@ -149,13 +139,13 @@ function load() {
     $dps.find('.dps__row-s_dps').append(`<td><div class="dps__s_dps font-weight-bold" data-index="${i}"></div></td>`);
     $dps.find('.dps__row-n_dps').append(`<td><div class="dps__n_dps" data-index="${i}"></div></td>`);
     $dps.find('.dps__row-g_dps').append(`<td><div class="dps__g_dps font-weight-bold" data-index="${i}"></div></td>`);
-    $dps.find('.dps__row-e_time').append(`<td><div class="dps__e_time" data-index="${i}"></div></td>`);
+   // $dps.find('.dps__row-e_time').append(`<td><div class="dps__e_time" data-index="${i}"></div></td>`);
     $dps.find('.dps__row-s_damage').append(`<td><div class="dps__s_damage" data-index="${i}"></div></td>`);
     $dps.find('.dps__row-period').append(`<td><div class="dps__period" data-index="${i}"></div></td>`);
     $dps.find('.dps__row-results').append(`<td><a class="dps__results" data-index="${i}" href="#">[显示]</a></td>`);
     
     $dps.find('.dps__row-option').append(`<td></td>`);
-
+    $dps.find('.dps__row-damagepool').append(`<td><a class="dps__damagepool" data-index="${i}" href="#">[显示]</a></td>`);
     $dps.find('.dps__row-potentialrank').append(`<td><select class="form-control form-control-sm dps__potentialrank" data-index="${i}">${[0,1,2,3,4,5].map(x=>`<option value="${x}">${x+1}</option>`).join('')}</select></td>`);
     $dps.find('.dps__row-favor').append(`<td><select class="form-control form-control-sm dps__favor" data-index="${i}">${Object.keys(new Array(51).fill(0)).map(x=>`<option value="${x*2}">${x*2}</option>`).join('')}</select></td>`);
   }
@@ -175,6 +165,7 @@ function load() {
   $('.dps__skill, .dps__skilllevel, .dps__potentialrank, .dps__favor').change(chooseSkill);
   $('.dps__enemy-def, .dps__enemy-mr, .dps__enemy-count, .dps__enemy-hp').change(calculateAll);
   $('.dps__results').click(showDetail);
+  $('.dps__damagepool').click(showDamage);
   $('.dps__goto').click(goto);
   $('.dps__copy').click(copyChar);
 }
@@ -190,13 +181,70 @@ function goto() {
 function showDetail() {
   let $this = $(this);
   let index = ~~$this.data('index');
+  let name = AKDATA.Data.character_table[Characters[index].charId].name;
   pmBase.component.create({
     type: 'modal',
     id: Characters[index].charId,
-    content: Characters[index].log.replace(/\n/g,'<br>').replace(/ /g,'&nbsp;'),
-    title: Characters[index].charId,
+    content: Characters[index].dps.log.replace(/\n/g,'<br>').replace(/ /g,'&nbsp;'),
+    title: name + " - " + displayNames[Characters[index].skillId],
     show: true,
   });
+  return false;
+}
+
+function showDamage() {
+  let $this = $(this);
+  let index = ~~$this.data('index');
+  let html = `  
+<table class="table damage" style="table-layout:fixed;">
+  <tbody>
+    <tr>
+    <th></th>
+    <th>攻击力</th>
+    <th width="100px">攻击间隔</th>
+    <th>命中数</th>
+    <th>计时/s</th>
+    <th>物理</th>
+    <th>法术</th>
+    <th>治疗</th>
+    <th width="100px">真伤/护盾</th>
+    </tr>
+    <tr>
+    <th>普攻</th>
+    </tr>
+    <tr>
+    <th>技能</th>
+    </tr>
+  </tbody>
+</table>
+注：瞬发技能的施法时间暂未计算.
+`;
+
+  let name = AKDATA.Data.character_table[Characters[index].charId].name;
+
+  pmBase.component.create({
+    type: 'modal',
+    id: Characters[index].charId + "_damage",
+    content: html,
+    title: name + " - " + displayNames[Characters[index].skillId],
+    show: true,
+  });
+
+  let dps = [Characters[index].dps.normal, Characters[index].dps.skill];
+  for (let row=0; row<2; ++row){
+    let d = dps[row];
+    let row_html = $(`.damage tr:nth-child(${row+2})`);
+    
+    let pool = [0, 1, 2, 3].map(x => d.damagePool[x] + d.extraDamagePool[x], 0);
+    pool[3] += d.damagePool[4] + d.extraDamagePool[4];
+
+    let data = [d.atk, d.attackTime, d.dur.hitCount, d.dur.duration, ...pool];
+    //console.log(row_html.html(), data);
+    data.forEach(x => {
+      if (x!=0) row_html.append(`<td>${Math.round(x*1000)/1000}</td>`);
+      else row_html.append("<td>-</td>");
+    });
+  }
   return false;
 }
 
@@ -294,28 +342,6 @@ function copyChar() {
     updateChar(charId, index);
     setSelectValue("char", index, charId);
   }
-    /*
-  // 因为没有绑定，只能通过反射来取当前的选择值
-  let phase = $(`.dps__phase:eq(${index})`).val();
-  let level = $(`.dps__level:eq(${index})`).val();
-  let pot = $(`.dps__potentialrank:eq(${index})`).val();
-  let favor = $(`.dps__favor:eq(${index})`).val();
-  let skill = $(`.dps__skill:eq(${index})`).val();
-  let skill_lv = $(`.dps__skilllevel:eq(${index})`).val();
-  // console.log(phase, level, pot, favor, skill, skill_lv);
-
-  if (index < charColumnCount-1) {
-    updateChar(charId, index + 1);
-    setSelectValue("char", index+1, charId);
-    setSelectValue("phase", index+1, phase);
-    setSelectValue("level", index+1, level);
-    setSelectValue("potentialrank", index+1, pot);
-    setSelectValue("favor", index+1, favor);
-    setSelectValue("skill", index+1, skill);
-    setSelectValue("skilllevel", index+1, skill_lv);
-    getElement("skilllevel", index+1).change();
-  }
-  */
 }
 
 function choosePhase() {
@@ -347,13 +373,16 @@ function chooseLevel() {
   calculate(index);
 }
 
+const DamageColors = ['black','blue','limegreen','gold','aqua'];
+
 function calculate(index) {
   let char = Characters[index];
   let enemy = {
     def: ~~$('.dps__enemy-def').val(),
     magicResistance: ~~$('.dps__enemy-mr').val(),
     count: ~~$('.dps__enemy-count').val(),
-    hp: ~~$('.dps__enemy-hp').val(),
+  //  hp: ~~$('.dps__enemy-hp').val(),
+    hp: 0,
   };
 
   // get option info
@@ -370,49 +399,83 @@ function calculate(index) {
 
   // calc dps
   let dps = AKDATA.attributes.calculateDps(char, enemy);
-/*
-  if ( dps.isInstant ) dps.skillDps = 0;
-  getElement('atk', index).html(Math.round(dps.normalAtk) + ' / ' + Math.round(dps.skillAtk));
-  getElement('attackSpeed', index).html(dps.normalAttackSpeed + '% / ' + Math.round(dps.skillAttackSpeed) + '%');
-  getElement('baseAttackTime', index).html(dps.normalAttackTime + ' / ' + dps.skillAttackTime);
+  let s = dps.skill;
 
-  getElement('dps', index).html(dps.normalDps);
-  getElement('damage', index).html(dps.skillAttackDamage + ' × ' + dps.skillAttackCount);
-*/
-
-  getElement('s_atk', index).html(`<b style="color:${['brown','blue','green'][dps.skill.damageType-100]};">${Math.round(dps.skill.atk)}</b> × ${dps.skill.hitNumber}`);
+  getElement('s_atk', index).html(`<b>${Math.round(s.atk)}</b>`).css("color", DamageColors[s.damageType]);
   
-  let skillDamage = (dps.skill.hitDamage * dps.skill.attackCount + dps.skill.critDamage * dps.skill.critCount) * dps.skill.hitNumber;
-  let line = `${(dps.skill.hitDamage*dps.skill.hitNumber).toFixed(1)} * ${dps.skill.attackCount}`;
-  if (dps.skill.critCount > 0) line += ` + ${(dps.skill.critDamage*dps.skill.hitNumber).toFixed(1)} * ${dps.skill.critCount}`;
-  if (dps.skill.totalDamage > skillDamage+1) line += ` + ${(dps.skill.totalDamage - skillDamage).toFixed(1)}`;
-  line += ` = ${Math.round(dps.skill.totalDamage)}`;
-  getElement('s_damage', index).html(line);
+  if (dps.normal.damageType != 2) {
+    $(".dps__row-n_dps th").text("普攻DPS");
+    $(".dps__row-g_dps th").text("平均DPS");
+  } else {
+    $(".dps__row-n_dps th").text("普攻HPS");
+    $(".dps__row-g_dps th").text("平均HPS");
+  }
 
-  if (dps.skill.isInstant){
+  let line = `${s.hitDamage.toFixed(2)} * ${s.dur.hitCount}`;
+  if (s.damageType != 2) {
+    $(".dps__row-s_damage th").text("技能总伤害");
+    $(".dps__row-s_dps th").text("技能DPS");
+    var skillDamage = s.totalDamage;    
+    if (s.critDamage > 0) line += ` + ${s.critDamage.toFixed(2)} * ${s.dur.critHitCount}`;
+    if (s.extraDamage > 0) line += ` + ${s.extraDamage.toFixed(2)}`;
+    var tmp = s.hitDamage * s.dur.hitCount + ((s.critDamage * s.dur.critHitCount) || 0) + s.extraDamage;
+    if (Math.abs(skillDamage - tmp) > 10) line = "";
+    line += ` = ${skillDamage.toFixed(2)}`;
+ //   getElement('s_damage', index).html(line);
+  } else {
+    $(".dps__row-s_damage th").text("技能总治疗");
+    $(".dps__row-s_dps th").text("技能HPS");
+    var skillDamage = s.totalHeal;
+    if (s.extraHeal > 0) line += ` + ${s.extraHeal.toFixed(2)}`;
+    var tmp = s.hitDamage * s.dur.hitCount + s.extraHeal;
+    if (Math.abs(skillDamage - tmp) > 10) line = "";
+    line += ` = ${skillDamage.toFixed(2)}`;
+  //  getElement('s_damage', index).html(line);
+  }
+  // damage
+  getElement('s_damage', index).html(line);           
+  // skill dps
+  if (s.hps == 0 || s.dps == 0) {                     
+    getElement('s_dps', index).html(Math.round(s.dps || s.hps)).css("color", DamageColors[s.damageType]);
+  } else {
+    getElement('s_dps', index).html(`DPS: ${Math.round(s.dps)}, HPS: ${Math.round(s.hps)}`);
+  }
+  // normal dps
+  if (dps.normal.hps == 0 || dps.normal.dps == 0) {   
+    getElement('n_dps', index).html(Math.round(dps.normal.dps || dps.normal.hps)).css("color", DamageColors[dps.normal.damageType]);
+  } else {
+    getElement('n_dps', index).html(`DPS: ${Math.round(dps.normal.dps)}, HPS: ${Math.round(dps.normal.hps)}`);
+  }
+  // period
+  getElement('period', index).html(`${Math.round(dps.normal.dur.duration*100)/100}s + ${Math.round(s.dur.duration*100)/100}s`);
+
+  console.log(s.dur.tags);
+  if (s.dur.tags.includes("infinity"))
+    getElement('period', index).html(`${Math.round(dps.normal.dur.duration*100)/100}s + 持续时间无限(记为1800s)`);
+  if (s.dur.tags.includes("instant"))
+    getElement('s_dps', index).html("瞬发");
+  if (s.dur.tags.includes("passive")) {
+    getElement('s_damage', index).html("-");
     getElement('s_dps', index).html("-");
-  } else if (dps.skill.damagePool[2] == 0) {
-    getElement('s_dps', index).html(Math.round(dps.skill.dps));
-  } else {
-    getElement('s_dps', index).html(`DPS: ${Math.round(dps.skill.dps)}, HPS: ${Math.round(dps.skill.damagePool[2] / dps.skill.duration)}`);
+    getElement('g_dps', index).html("-");
+    getElement('period', index).html("被动");
   }
-  if (dps.normal.damagePool[2] == 0) {
-    getElement('n_dps', index).html(Math.round(dps.normal.dps));
-  } else {
-    getElement('n_dps', index).html(`DPS: ${Math.round(dps.normal.dps)}, HPS: ${Math.round(dps.normal.damagePool[2] / dps.normal.duration)}`);
-  }
-  if (dps.skill.spType < 4) {
-    getElement('period', index).html(`${Math.round(dps.normal.duration*100)/100}s + ${Math.round(dps.skill.duration*100)/100}s`);
-  } else {
-    if (dps.skill.spType == 4)
-      getElement('period', index).html(`${dps.skill.duration.toFixed(1)}s, 受击回复`);
+  if (s.dur.tags.includes("auto")) {
+    if (s.dur.tags.includes("instant"))
+      getElement('period', index).html("落地点火/瞬发/计算10s普攻");
     else 
-      getElement('period', index).html(`被动`);
+      getElement('period', index).append(" / 落地点火");
   }
-  getElement('g_dps', index).html(dps.globalDps);
-  getElement('e_time', index).html(dps.killTime ?  `${Math.ceil(dps.killTime)}秒` : '-');
-  char.log = dps.log;
+  if (s.dur.tags.includes("hit"))
+    getElement('period', index).append(" / 受击回复");
 
+    // globalDps
+  if (dps.globalDps == 0 || dps.globalHps == 0)
+    getElement('g_dps', index).html(Math.round(dps.globalDps || dps.globalHps)).css("color", DamageColors[dps.normal.damageType]);  
+  else 
+    getElement('g_dps', index).html(`DPS: ${dps.globalDps.toFixed(1)}, HPS: ${dps.globalHps.toFixed(1)}`);
+//  getElement('e_time', index).html(dps.killTime ?  `${Math.ceil(dps.killTime)}秒` : '-');
+  char.dps = dps;
 }
 
 function calculateAll() {

@@ -38,7 +38,7 @@ class Log {
 }
 
 // 天赋/技能名字cache
-let displayNames = {};
+displayNames = {};
 
 function calculateDps(char, enemy) {
   let log = new Log();
@@ -76,19 +76,20 @@ function calculateDps(char, enemy) {
   log.write(`技能:`);
   let skillAttack = calculateAttack(attr, enemy, true, charData, levelData, log);
   if (!skillAttack) return;
-
-  globalDps = Math.round((normalAttack.totalDamage + skillAttack.totalDamage) / (normalAttack.duration + skillAttack.duration + normalAttack.stunDuration));
-
+ 
+  globalDps = Math.round((normalAttack.totalDamage + skillAttack.totalDamage) / (normalAttack.dur.duration + skillAttack.dur.duration + normalAttack.dur.stunDuration));
+  globalHps = Math.round((normalAttack.totalHeal + skillAttack.totalHeal) / (normalAttack.dur.duration + skillAttack.dur.duration + normalAttack.dur.stunDuration));
+  console.log(globalDps, globalHps);
   let killTime = 0;
-  if (enemy.hp > 0) killTime = Math.ceil( enemy.count / skillAttack.maxTarget ) * enemy.hp * skillAttack.maxTarget / skillAttack.dps ;
+  // if (enemy.hp > 0) killTime = Math.ceil( enemy.count / skillAttack.maxTarget ) * enemy.hp * skillAttack.maxTarget / skillAttack.dps ;
 
   return {
     normal: normalAttack,
     skill: skillAttack,
 
     killTime: killTime,
-    globalDps: skillAttack.spType >= 4 ? '-' : Math.round(globalDps), // 受击/被动不计算平均dps
-
+    globalDps,
+    globalHps,
     log: log.toString(),
   };
 }
@@ -385,6 +386,8 @@ function applyBuff(charAttr, buffFrm, tag, blackbd, isSkill, log) {
       case "skchr_demkni_3":
       case "skchr_hsguma_3":
       case "skchr_waaifu_2":
+      case "skchr_sqrrel_2":
+      case "skchr_panda_2":
       case "skchr_red_2":
         buffFrame.maxTarget = 999;
         writeBuff(`最大目标数 = ${buffFrame.maxTarget}`);
@@ -573,7 +576,7 @@ function calcDurations(isSkill, attackTime, levelData, buffList, buffFrame, enem
         tags.push("auto"); log.write('  - 落地点火');
       } else if (checkSpecs(skillId, "passive")) { // 被动
         attackCount = 0;
-        duration = -1;
+        duration = 0;
         tags.push("passive"); log.write("  - 被动");
       } else {  // 摔炮
         attackCount = 1;
@@ -813,9 +816,9 @@ function calculateAttack(charAttr, enemy, isSkill, charData, levelData, log) {
   //console.log(finalFrame, dur);
   // 输出面板数据
   //log.write("---- 最终面板 ----");
-  let atk_line = `(${basicFrame.atk} + ${Math.round(buffFrame.atk)}) * ${buffFrame.atk_scale.toFixed(2)}`;
+  let atk_line = `(${basicFrame.atk} + ${buffFrame.atk.toFixed(1)}) * ${buffFrame.atk_scale.toFixed(2)}`;
   if (buffFrame.damage_scale != 1) { atk_line += ` * ${buffFrame.damage_scale.toFixed(2)}`; }
-  log.write(`  - 攻击力 / 倍率:  ${finalFrame.atk.toFixed(1)} = ${atk_line}`);
+  log.write(`  - 攻击力 / 倍率:  ${finalFrame.atk.toFixed(2)} = ${atk_line}`);
   log.write(`  - 攻速: ${finalFrame.attackSpeed} %`);
   log.write(`  - 攻击间隔: ${finalFrame.baseAttackTime.toFixed(3)} s`);
   log.write(`  - 最终攻击间隔 / FPS修正: ${realAttackTime.toFixed(3)} s (${frameAttackTime.toFixed(3)} s)`);
@@ -853,7 +856,7 @@ function calculateAttack(charAttr, enemy, isSkill, charData, levelData, log) {
   
   hitDamage = calculateHitDamage(finalFrame);
   damagePool[damageType] += hitDamage * dur.hitCount;
-  log.write(`  - ${dmgPrefix}: ${hitDamage.toFixed(1)}, 命中 ${dur.hitCount.toFixed(1)}`);
+  log.write(`  - ${dmgPrefix}: ${hitDamage.toFixed(2)}, 命中 ${dur.hitCount.toFixed(1)}`);
   
   // 计算额外伤害
   // 暴击
@@ -862,9 +865,9 @@ function calculateAttack(charAttr, enemy, isSkill, charData, levelData, log) {
     edef = Math.max(0, (enemy.def + critBuffFrame.edef) * critBuffFrame.edef_scale);
     critDamage = calculateHitDamage(critFrame);
     if (critDamage > 0) {
-      log.write(`  - 暴击${dmgPrefix}: ${critDamage.toFixed(1)}, 命中 ${dur.critHitCount.toFixed(1)}`);
+      log.write(`  - 暴击${dmgPrefix}: ${critDamage.toFixed(2)}, 命中 ${dur.critHitCount.toFixed(1)}`);
     }
-    extraDamagePool[damageType] += critDamage * dur.critHitCount;
+    damagePool[damageType] += critDamage * dur.critHitCount;
   }
   // 空(被动治疗没有写在天赋中)
   if (charId == "char_101_sora") {
@@ -877,12 +880,10 @@ function calculateAttack(charAttr, enemy, isSkill, charData, levelData, log) {
 
   // 额外伤害
   for (var b in buffList) {
-    if (!isSkill && b=="skill") continue;
     let buffName = b;
     let bb = buffList[b];  // blackboard
     if (buffName == "skill") {
-      if (!isSkill) continue;
-      else buffName = bb.id;
+      buffName = bb.id;
     }
     let pool = [0, 0, 0, 0, 0]; // 物理，魔法，治疗，真伤，盾
     let damage = 0;
@@ -899,6 +900,8 @@ function calculateAttack(charAttr, enemy, isSkill, charData, levelData, log) {
           damagePool[1] = 0;
           log.write(`  - [特殊] ${displayNames[buffName]}: 伤害为0`);
           break;
+        default:
+          if (b=="skill") continue; // 非技能期间，跳过其他技能的额外伤害判定
       }
     }
     switch (buffName) {
@@ -969,7 +972,7 @@ function calculateAttack(charAttr, enemy, isSkill, charData, levelData, log) {
       case "skcom_heal_self[1]":
       case "skcom_heal_self[2]":
         damagePool[2] = 0;
-        console.log(finalFrame);
+        // console.log(finalFrame);
         pool[2] += bb.heal_scale * finalFrame.maxHp; break;
       case "skchr_nightm_1":
         pool[2] += damagePool[1] * bb["attack@heal_scale"] * bb["attack@max_target"]; break;
@@ -1045,45 +1048,42 @@ function calculateAttack(charAttr, enemy, isSkill, charData, levelData, log) {
     }
 
     let dmg = pool[0] + pool[1] + pool[3];
-    if (dmg > 0) log.write(`  - [特殊] ${displayNames[buffName]}: 额外伤害 ${dmg.toFixed(1)}`);
-    if (pool[2] > 0) log.write(`  - [特殊] ${displayNames[buffName]}: 额外治疗 ${pool[2].toFixed(1)}`);
-    else if (pool[2] < 0) log.write(`  - [特殊] ${displayNames[buffName]}: 自身伤害 ${pool[2].toFixed(1)}`);
+    if (dmg > 0) log.write(`  - [特殊] ${displayNames[buffName]}: 额外伤害 ${dmg.toFixed(2)}`);
+    if (pool[2] > 0) log.write(`  - [特殊] ${displayNames[buffName]}: 额外治疗 ${pool[2].toFixed(2)}`);
+    else if (pool[2] < 0) log.write(`  - [特殊] ${displayNames[buffName]}: 自身伤害 ${pool[2].toFixed(2)}`);
     for (let i=0; i<5; ++i) extraDamagePool[i] += pool[i];
   } 
 
   // 整理返回
   let totalDamage = [0, 1, 3].reduce((x, y) => x + damagePool[y] + extraDamagePool[y], 0);
   let totalHeal = [2, 4].reduce((x, y) => x + damagePool[y] + extraDamagePool[y], 0);
+  let extraDamage = [0, 1, 3].reduce((x, y) => x + extraDamagePool[y], 0);
+  let extraHeal = [2, 4].reduce((x, y) => x + extraDamagePool[y], 0);
   let dps = totalDamage / dur.duration;
   let hps = totalHeal / dur.duration;
-  log.write(`  - 总伤害: ${totalDamage.toFixed(1)}`);
-  if (hps != 0) log.write(`  - 总治疗: ${totalHeal.toFixed(1)}`);
+  log.write(`  - 总伤害: ${totalDamage.toFixed(2)}`);
+  if (hps != 0) log.write(`  - 总治疗: ${totalHeal.toFixed(2)}`);
   log.write(`  - DPS: ${dps.toFixed(1)}, HPS: ${hps.toFixed(1)}`);
   log.write("----");
 
-  return {  // recover interface
+  return {
     atk: finalFrame.atk,
     dps,
-    duration: dur.duration,
-    isInstant: dur.tags.includes("instant"),
-    isSp8: levelData.spData.spType == 8,
+    hps,
+    dur,
+    damageType,
     hitDamage,
-    critDamage, 
-    critCount: dur.critCount,
+    critDamage,
+    extraDamage,
+    extraHeal,
     totalDamage,
+    totalHeal,
     maxTarget: ecount,
     damagePool,
-    damageType,
-    attackSpeed: finalFrame.attackSpeed,
+    extraDamagePool,
     attackTime,
     attackCount: dur.attackCount, 
-    hitNumber: 1,
-    buff: buffFrame,
-    frame: finalFrame,
-    emr,
     spType: levelData.spData.spType,
-    stunDuration: dur.stunDuration,
-    extraDamagePool,
   };
 }
 

@@ -266,7 +266,7 @@ let createFunctions = {
     if ($e.length == 0 ){
       let html =`
         <div class="modal" id="${config.id}" tabindex="-1" role="dialog" aria-labelledby="exampleModalLongTitle" aria-hidden="true">
-        <div class="modal-dialog" role="document" style="max-width:750px;">
+        <div class="modal-dialog" role="document" style="max-width:${config.width || 750}px;">
           <div class="modal-content">
             <div class="modal-header">
               <h5 class="modal-title" id="exampleModalLongTitle">${config.title}</h5>
