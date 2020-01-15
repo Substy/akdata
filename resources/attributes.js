@@ -556,7 +556,6 @@ function calcDurations(isSkill, attackTime, levelData, buffList, buffFrame, enem
     // 快速估算
     attackCount = Math.ceil(levelData.duration / attackTime);
     duration = attackCount * attackTime;
-
     // 重置普攻
     if (checkResetAttack(skillId, blackboard)) {
       duration = levelData.duration;
@@ -591,8 +590,15 @@ function calcDurations(isSkill, attackTime, levelData, buffList, buffFrame, enem
       } else { // 普通瞬发
         attackCount = 1;
         duration = attackTime;
-        // todo: cast time
         tags.push("instant"); log.write("  - 瞬发");
+        // 施法时间
+        if (checkSpecs(skillId, "cast_time")) {
+          let ct = checkSpecs(skillId, "cast_time");
+          if (duration < ct) {
+            log.write(`  - [特殊] 技能释放时间: ${ct}s`);
+            duration = ct;
+          }
+        }
       }
     }
     // 特判
@@ -614,6 +620,15 @@ function calcDurations(isSkill, attackTime, levelData, buffList, buffFrame, enem
     
     // 快速估算
     let attackDuration = spData.spCost / (1 + buffFrame.spRecoveryPerSec) - stunDuration;
+    // 施法时间
+    if (checkSpecs(skillId, "cast_time")) {
+      let ct = checkSpecs(skillId, "cast_time");
+      if (attackTime > ct) {
+        attackDuration -= (attackTime - ct);
+        log.write(`  - [特殊] 技能释放时间: ${ct}s, 普攻时间偏移 ${(ct - attackTime).toFixed(1)}s (${attackDuration.toFixed(1)}s)`);
+      }
+    }
+
     attackCount = Math.ceil(attackDuration / attackTime);
     duration = attackCount * attackTime;
     // 重置普攻
