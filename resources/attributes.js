@@ -26,10 +26,14 @@ function checkChar(char) {
 class Log {
   constructor() {
     this.log = '';
+    this.note = '';
   }
 
   write(line) {
     this.log += line + "\n";
+  }
+  writeNote(line) {
+    this.note += line + "\n";
   }
 
   toString() {
@@ -79,18 +83,20 @@ function calculateDps(char, enemy) {
  
   globalDps = Math.round((normalAttack.totalDamage + skillAttack.totalDamage) / (normalAttack.dur.duration + skillAttack.dur.duration + normalAttack.dur.stunDuration));
   globalHps = Math.round((normalAttack.totalHeal + skillAttack.totalHeal) / (normalAttack.dur.duration + skillAttack.dur.duration + normalAttack.dur.stunDuration));
-  console.log(globalDps, globalHps);
+  //console.log(globalDps, globalHps);
   let killTime = 0;
   // if (enemy.hp > 0) killTime = Math.ceil( enemy.count / skillAttack.maxTarget ) * enemy.hp * skillAttack.maxTarget / skillAttack.dps ;
 
   return {
     normal: normalAttack,
     skill: skillAttack,
+    skillName: levelData.name,
 
     killTime: killTime,
     globalDps,
     globalHps,
     log: log.toString(),
+    note: log.note,
   };
 }
 
@@ -308,9 +314,11 @@ function applyBuff(charAttr, buffFrm, tag, blackbd, isSkill, log) {
         if (skillId == "skcom_magic_rage[2]") {
           blackboard.attack_speed = 0;
           writeBuff("抽攻击卡");
+          log.writeNote("抽攻击卡");          
         } else if (skillId == "skchr_fmout_2") {
           blackboard.atk = 0;
           writeBuff("抽攻速卡");
+          log.writeNote("抽攻速卡");
         }
         break;
       case "tachr_147_shining_1": // 闪灵
@@ -490,7 +498,7 @@ function applyBuff(charAttr, buffFrm, tag, blackbd, isSkill, log) {
         break;
       case "skchr_nian_2":
       case "skchr_hsguma_2":
-        writeBuff("以下计算单次反射伤害，dps暂不计算");
+        writeBuff("计算反射伤害，而非DPS");
         break;
     }
   }
@@ -565,7 +573,7 @@ function calcDurations(isSkill, attackTime, levelData, buffList, buffFrame, enem
     if (levelData.description.includes("持续时间无限")) {
       attackCount = Math.ceil(1800 / attackTime);
       duration = attackCount * attackTime;
-      tags.push("infinity"); log.write("  - 持续时间无限 (记为1800s)");
+      tags.push("infinity"); log.write("  - 持续时间无限 (记为1800s)"); log.writeNote("持续时间无限 (记为1800s)");
     } else if (spData.spType == 8) {
       if (levelData.duration <= 0 && blackboard.duration > 0) {
         // 砾的技能也是落地点火，但是持续时间在blackboard里
@@ -574,8 +582,8 @@ function calcDurations(isSkill, attackTime, levelData, buffList, buffFrame, enem
       if (levelData.duration > 0) { // 自动点火
         tags.push("auto"); log.write('  - 落地点火');
       } else if (checkSpecs(skillId, "passive")) { // 被动
-        attackCount = 0;
-        duration = 0;
+        attackCount = 1;
+        duration = attackTime;
         tags.push("passive"); log.write("  - 被动");
       } else {  // 摔炮
         attackCount = 1;
@@ -596,6 +604,7 @@ function calcDurations(isSkill, attackTime, levelData, buffList, buffFrame, enem
           let ct = checkSpecs(skillId, "cast_time");
           if (duration < ct) {
             log.write(`  - [特殊] 技能释放时间: ${ct}s`);
+            log.writeNote(`施法时间 ${ct}s`);
             duration = ct;
           }
         }
@@ -626,6 +635,7 @@ function calcDurations(isSkill, attackTime, levelData, buffList, buffFrame, enem
       if (attackTime > ct) {
         attackDuration -= (attackTime - ct);
         log.write(`  - [特殊] 技能释放时间: ${ct}s, 普攻时间偏移 ${(ct - attackTime).toFixed(1)}s (${attackDuration.toFixed(1)}s)`);
+        log.writeNote(`施法时间 ${ct}s`);
       }
     }
 
@@ -645,6 +655,7 @@ function calcDurations(isSkill, attackTime, levelData, buffList, buffFrame, enem
         if (levelData.duration > 0) {
           tags.push("auto");
           log.write(`  - [特殊] 落地点火 - 取普攻时间=技能持续时间`);
+          log.writeNote("取普攻时间=技能持续时间");
           attackDuration = levelData.duration;
           attackCount = Math.ceil(attackDuration / attackTime);
           duration = attackCount * attackTime;
@@ -653,12 +664,14 @@ function calcDurations(isSkill, attackTime, levelData, buffList, buffFrame, enem
           duration = attackCount * attackTime;
           tags.push("passive");
           log.write(`  - [特殊] 被动 - 以10次普攻计算`);
+          log.writeNote("以10次普攻计算");
         } else {
           attackDuration = 10;
           attackCount = Math.ceil(attackDuration / attackTime);
           duration = attackCount * attackTime;
           tags.push("auto", "instant");
           log.write(`  - [特殊] 落地点火/瞬发 - 以10s普攻计算`);
+          log.writeNote("以10s普攻计算");
         }
         break;
       case 4: // 受击回复
@@ -801,6 +814,7 @@ function calculateAttack(charAttr, enemy, isSkill, charData, levelData, log) {
     let buffName = (b=="skill") ? buffList[b].id : b;
     if (checkSpecs(buffName, "keep_debuff") && !enemyBuffFrame.applied[buffName]){
       log.write("  - 假设全程覆盖Debuff");
+      log.writeNote("假设全程覆盖Debuff");      
       enemyBuffFrame = applyBuff(charAttr, enemyBuffFrame, buffName, buffList[b], true, new Log());
     }
   }
@@ -892,6 +906,10 @@ function calculateAttack(charAttr, enemy, isSkill, charData, levelData, log) {
     extraDamagePool[2] = ratio_sora * finalFrame.atk * dur.duration;
     damagePool[0] = 0; log.write("  - [特殊] 伤害为0");
   }
+  // 反射类-增加说明
+  if (checkSpecs(blackboard.id, "reflect") && isSkill) {
+    log.writeNote(`技能伤害为反射 ${dur.attackCount} 次的伤害`);
+  }
 
   // 额外伤害
   for (var b in buffList) {
@@ -980,6 +998,7 @@ function calculateAttack(charAttr, enemy, isSkill, charData, levelData, log) {
       case "skchr_haak_2":
       case "skchr_haak_3":
         log.write(`  - [特殊] 用500的攻击力攻击队友15次(不计入自身dps)`);
+        log.writeNote(`攻击队友15次(不计入自身dps)`);
         break;
       // 间接治疗
       case "skchr_tiger_2":

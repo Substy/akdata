@@ -12,8 +12,8 @@ const ProfessionNames = {
 //  "TRAP": "装置",
 };
 
-const akVersion = "200115";
-const currentVersion = "20-01-13-12-27-44-677ceb";
+const akVersion = "200116";
+const currentVersion = "20-01-14-13-20-25-7e9227";
 
 function init() {
   $('#update_prompt').text("正在载入角色数据，请耐心等待......");
@@ -90,6 +90,7 @@ function load() {
  <!-- <tr class="dps__row-e_time"> <th>技能击杀时间 <i class="fas fa-info-circle pull-right" data-toggle="tooltip" title="敌人HP/技能DPS（存在较大问题）"></i></th> </tr> -->
     <tr class="dps__row-damagepool"> <th>伤害表<i class="fas fa-info-circle pull-right" data-toggle="tooltip" title="伤害类型与来源(直接/额外/暴击)"></i></th></tr>
     <tr class="dps__row-results"> <th>计算过程(dev)</th> </tr>
+    <tr class="dps__row-note"> <th>说明</th> </tr>
   </tbody>
   </table>
 </div>
@@ -143,7 +144,7 @@ function load() {
     $dps.find('.dps__row-s_damage').append(`<td><div class="dps__s_damage" data-index="${i}"></div></td>`);
     $dps.find('.dps__row-period').append(`<td><div class="dps__period" data-index="${i}"></div></td>`);
     $dps.find('.dps__row-results').append(`<td><a class="dps__results" data-index="${i}" href="#">[显示]</a></td>`);
-    
+    $dps.find('.dps__row-note').append(`<td><div class="dps__note" data-index="${i}"></div></td>`);  
     $dps.find('.dps__row-option').append(`<td></td>`);
     $dps.find('.dps__row-damagepool').append(`<td><a class="dps__damagepool" data-index="${i}" href="#">[显示]</a></td>`);
     $dps.find('.dps__row-potentialrank').append(`<td><select class="form-control form-control-sm dps__potentialrank" data-index="${i}">${[0,1,2,3,4,5].map(x=>`<option value="${x}">${x+1}</option>`).join('')}</select></td>`);
@@ -186,7 +187,7 @@ function showDetail() {
     type: 'modal',
     id: Characters[index].charId,
     content: Characters[index].dps.log.replace(/\n/g,'<br>').replace(/ /g,'&nbsp;'),
-    title: name + " - " + displayNames[Characters[index].skillId],
+    title: name + " - " + Characters[index].dps.skillName,
     show: true,
   });
   return false;
@@ -217,20 +218,21 @@ function showDamage() {
     </tr>
   </tbody>
 </table>
-注：瞬发技能的施法时间暂未计算.
+说明: <span id="damage_note_${index}"></span>
 `;
 
   let name = AKDATA.Data.character_table[Characters[index].charId].name;
 
   pmBase.component.create({
     type: 'modal',
-    id: Characters[index].charId + "_damage",
+    id: Characters[index].charId + "_" + Characters[index].skillId,
     content: html,
-    title: name + " - " + displayNames[Characters[index].skillId],
+    title: name + " - " + Characters[index].dps.skillName,
     show: true,
   });
 
   let dps = [Characters[index].dps.normal, Characters[index].dps.skill];
+  $(`#damage_note_${index}`).text(Characters[index].dps.note);
   for (let row=0; row<2; ++row){
     let d = dps[row];
     let row_html = $(`.damage tr:nth-child(${row+2})`);
@@ -435,34 +437,39 @@ function calculate(index) {
   // damage
   getElement('s_damage', index).html(line);           
   // skill dps
-  if (s.hps == 0 || s.dps == 0) {                     
-    getElement('s_dps', index).html(Math.round(s.dps || s.hps)).css("color", DamageColors[s.damageType]);
+  if (s.hps == 0 || s.dps == 0) {
+    var color = (s.dps == 0) ? DamageColors[2] : DamageColors[dps.normal.damageType];                     
+    getElement('s_dps', index).html(Math.round(s.dps || s.hps)).css("color", color);
   } else {
     getElement('s_dps', index).html(`DPS: ${Math.round(s.dps)}, HPS: ${Math.round(s.hps)}`);
   }
   // normal dps
-  if (dps.normal.hps == 0 || dps.normal.dps == 0) {   
-    getElement('n_dps', index).html(Math.round(dps.normal.dps || dps.normal.hps)).css("color", DamageColors[dps.normal.damageType]);
+  if (dps.normal.hps == 0 || dps.normal.dps == 0) {
+    var color = (dps.normal.dps == 0) ? DamageColors[2] : DamageColors[dps.normal.damageType];
+    getElement('n_dps', index).html(Math.round(dps.normal.dps || dps.normal.hps)).css("color", color);
   } else {
     getElement('n_dps', index).html(`DPS: ${Math.round(dps.normal.dps)}, HPS: ${Math.round(dps.normal.hps)}`);
   }
   // period
   getElement('period', index).html(`${Math.round(dps.normal.dur.duration*100)/100}s + ${Math.round(s.dur.duration*100)/100}s`);
 
-  console.log(s.dur.tags);
+ // console.log(s.dur.tags);
   if (s.dur.tags.includes("infinity"))
     getElement('period', index).html(`${Math.round(dps.normal.dur.duration*100)/100}s + 持续时间无限(记为1800s)`);
   if (s.dur.tags.includes("instant"))
     getElement('s_dps', index).html("瞬发");
   if (s.dur.tags.includes("passive")) {
     getElement('s_damage', index).html("-");
-    getElement('s_dps', index).html("-");
     getElement('g_dps', index).html("-");
     getElement('period', index).html("被动");
   }
+  if (s.dur.tags.includes("reflect")) {
+    getElement('s_dps', index).html("技能伤害为反射伤害");
+    getElement("s_damage", index).html(line);
+  }
   if (s.dur.tags.includes("auto")) {
     if (s.dur.tags.includes("instant"))
-      getElement('period', index).html("落地点火/瞬发/计算10s普攻");
+      getElement('period', index).html("落地点火/瞬发");
     else 
       getElement('period', index).append(" / 落地点火");
   }
@@ -475,6 +482,7 @@ function calculate(index) {
   else 
     getElement('g_dps', index).html(`DPS: ${dps.globalDps.toFixed(1)}, HPS: ${dps.globalHps.toFixed(1)}`);
 //  getElement('e_time', index).html(dps.killTime ?  `${Math.ceil(dps.killTime)}秒` : '-');
+  getElement("note", index).html(dps.note.replace(/\n/g,'<br>').replace(/ /g,'&nbsp;'));
   char.dps = dps;
 }
 
