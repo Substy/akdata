@@ -845,7 +845,7 @@ function calculateAttack(charAttr, enemy, isSkill, charData, levelData, log) {
   //console.log(finalFrame, dur);
   // 输出面板数据
   //log.write("---- 最终面板 ----");
-  let atk_line = `(${basicFrame.atk} + ${buffFrame.atk.toFixed(1)}) * ${buffFrame.atk_scale.toFixed(2)}`;
+  let atk_line = `(${basicFrame.atk.toFixed(1)} + ${buffFrame.atk.toFixed(1)}) * ${buffFrame.atk_scale.toFixed(2)}`;
   if (buffFrame.damage_scale != 1) { atk_line += ` * ${buffFrame.damage_scale.toFixed(2)}`; }
   log.write(`  - 攻击力 / 倍率:  ${finalFrame.atk.toFixed(2)} = ${atk_line}`);
   log.write(`  - 攻速: ${finalFrame.attackSpeed} %`);
@@ -1183,7 +1183,7 @@ function getAttributes(char, log) { //charId, phase = -1, level = -1
     attributesKeyFrames[key] += getAttribute(charData.favorKeyFrames, favorLevel, 0, key);
     buffs[key] = 0;
   });
-
+  console.log(attributesKeyFrames);
   applyPotential(char.charId, charData, char.potentialRank, attributesKeyFrames);
 
   // 计算天赋/特性，记为Buff
@@ -1233,7 +1233,7 @@ function getBuffedAttributes(basic, buffs) {
 }
 
 function getAttribute(frames, level, minLevel, attr) {
-  return Math.ceil((level - minLevel) / (frames[1].level - frames[0].level) * (frames[1].data[attr] - frames[0].data[attr]) + frames[0].data[attr]);
+  return (level - minLevel) / (frames[1].level - frames[0].level) * (frames[1].data[attr] - frames[0].data[attr]) + frames[0].data[attr];
 }
 
 function getBlackboard(blackboardArray) {
