@@ -44,7 +44,7 @@ class Log {
 // 天赋/技能名字cache
 displayNames = {};
 
-function calculateDps(char, enemy) {
+function calculateDps(char, enemy, raidBuff) {
   let log = new Log();
 
   checkChar(char);
@@ -53,6 +53,15 @@ function calculateDps(char, enemy) {
     magicResistance: 0,
     count: 1,
   };
+  raidBuff = raidBuff || { atk: 0, atkpct: 0, ats: 0, cdr: 0 };
+  // 把raidBuff处理成blackboard的格式
+  let raidBlackboard = {
+    atk: raidBuff.atkpct / 100,
+    atk_override: raidBuff.atk,
+    attack_speed: raidBuff.ats,
+    sp_recovery_per_sec: raidBuff.cdr / 100
+  };
+  displayNames["raidBuff"] = "";
 
   let charId = char.charId;
   let charData = AKDATA.Data.character_table[charId];
@@ -74,11 +83,11 @@ function calculateDps(char, enemy) {
   displayNames[char.skillId] = levelData.name;  // add to name cache
 
   log.write(`普攻:`);
-  let normalAttack = calculateAttack(attr, enemy, false, charData, levelData, log);
+  let normalAttack = calculateAttack(attr, enemy, raidBlackboard, false, charData, levelData, log);
   if (!normalAttack) return;
 
   log.write(`技能:`);
-  let skillAttack = calculateAttack(attr, enemy, true, charData, levelData, log);
+  let skillAttack = calculateAttack(attr, enemy, raidBlackboard, true, charData, levelData, log);
   if (!skillAttack) return;
  
   globalDps = Math.round((normalAttack.totalDamage + skillAttack.totalDamage) / (normalAttack.dur.duration + skillAttack.dur.duration + normalAttack.dur.stunDuration));
@@ -124,7 +133,10 @@ function applyBuff(charAttr, buffFrm, tag, blackbd, isSkill, log) {
   // write log
   function writeBuff(text) {
     let line = ["  -"];
-    if (tag == skillId) line.push("[技能]"); else line.push("[天赋]");
+    if (tag == skillId) line.push("[技能]");
+    else if (tag == "raidBuff") line.push("[团辅/拐]");
+    else line.push("[天赋]");
+    
     if (checkSpecs(tag, "cond")) 
       if (options.cond) line.push("[触发]"); else line.push("[未触发]");
     if (checkSpecs(tag, "stack") && options.stack) line.push("[满层数]"); 
@@ -175,7 +187,7 @@ function applyBuff(charAttr, buffFrm, tag, blackbd, isSkill, log) {
           break;
         case "sp_recovery_per_sec":
           buffFrame.spRecoveryPerSec += blackboard.sp_recovery_per_sec;
-          writeBuff(`sp: +${buffFrame.spRecoveryPerSec}/s`);
+          if (blackboard[key]>0) writeBuff(`sp: +${buffFrame.spRecoveryPerSec}/s`);
           break;
         case "atk_scale":
         case "def_scale":
@@ -229,6 +241,12 @@ function applyBuff(charAttr, buffFrm, tag, blackbd, isSkill, log) {
         case "prob_override": // 计算后的暴击概率
           buffFrame.prob = blackboard[key];
           writeBuff(`概率(计算): ${Math.round(buffFrame.prob*100)}%`);
+          break;
+        case "atk_override":  // 加算的攻击团辅
+          buffFrame.atk += blackboard[key];
+          prefix = blackboard[key] > 0 ? "+" : "";
+          if (blackboard[key] != 0)
+            writeBuff(`atk(+): ${prefix}${(blackboard[key]*100).toFixed(1)}`);
           break;
       }
     }
@@ -735,7 +753,7 @@ function calcDurations(isSkill, attackTime, levelData, buffList, buffFrame, enem
   };
 }
 
-function calculateAttack(charAttr, enemy, isSkill, charData, levelData, log) {
+function calculateAttack(charAttr, enemy, raidBlackboard, isSkill, charData, levelData, log) {
   let charId = charAttr.char.charId;
   let buffList = charAttr.buffList;
   let blackboard = buffList.skill;
@@ -751,6 +769,9 @@ function calculateAttack(charAttr, enemy, isSkill, charData, levelData, log) {
     if (!checkSpecs(buffName, "crit"))
       buffFrame = applyBuff(charAttr, buffFrame, b, buffList[b], isSkill, log);
   }
+  // 计算团辅
+  if (options.buff)
+    buffFrame = applyBuff(charAttr, buffFrame, "raidBuff", raidBlackboard, isSkill, log);
 
   // 攻击类型
   let damageType = extractDamageType(charData, charId, isSkill, levelData.description, blackboard);

@@ -12,7 +12,7 @@ const ProfessionNames = {
 //  "TRAP": "装置",
 };
 
-const akVersion = "200116";
+const akVersion = "200119";
 const currentVersion = "20-01-14-13-20-25-7e9227";
 
 function init() {
@@ -115,6 +115,27 @@ function load() {
     </tbody>
   </table>
 </div>
+<div class="card">
+  <div class="card-header">
+    <div class="card-title mb-0">团辅（输入整数）</div>
+  </div>
+  <table class="table dps" style="table-layout:fixed;">
+    <tbody>
+      <tr>
+        <th>攻击力(+x)</th>
+        <th>攻击力(+x%)</th>
+        <th>攻速(+x)</th>
+        <th>技力恢复(+x%)</th>
+      </tr>
+      <tr>
+      <td><input type="text" class="dps__buff-atk" value="0"></td>
+      <td><input type="text" class="dps__buff-atkpct" value="0"></td>
+      <td><input type="text" class="dps__buff-ats" value="0"></td>
+      <td><input type="text" class="dps__buff-cdr" value="0"></td>
+      </tr>
+    </tbody>
+  </table>
+</div>
   `;
   let $dps = $(html);
 
@@ -165,6 +186,8 @@ function load() {
   $('.dps__level').change(chooseLevel);
   $('.dps__skill, .dps__skilllevel, .dps__potentialrank, .dps__favor').change(chooseSkill);
   $('.dps__enemy-def, .dps__enemy-mr, .dps__enemy-count, .dps__enemy-hp').change(calculateAll);
+  $('.dps__buff-atk, .dps__buff-atkpct, .dps__buff-ats, .dps__buff-cdr').change(calculateAll);
+
   $('.dps__results').click(showDetail);
   $('.dps__damagepool').click(showDamage);
   $('.dps__goto').click(goto);
@@ -306,7 +329,13 @@ function updateChar(charId, index) {
 
 function updateOptions(charId, index) {
   let opts = AKDATA.Data.dps_options;
-  let html = "";
+  let html = `    
+  <div class="form-check">
+    <label class="form-check-label">
+      <input class="form-check-input dps__buff" type="checkbox" value="" data-index="${index}" checked>
+        计算团辅
+    </label> </div>`;   // 默认计算团辅
+    
   if (opts.char[charId]) {
     for (var t of opts.char[charId]) {
       let html_bool = `
@@ -317,13 +346,13 @@ function updateOptions(charId, index) {
         </label> </div>`;
       html += html_bool;
     }
-    $(`.dps__row-option td:nth-child(${index+2})`).html(html);
+  }
+  $(`.dps__row-option td:nth-child(${index+2})`).html(html);
+  getElement("buff", index).change(calculateColumn);
+  if (opts.char[charId])
     for (var t of opts.char[charId]) {
       getElement(t, index).change(calculateColumn);
     }
-  } else {
-    $(`.dps__row-option td:nth-child(${index+2})`).html("");
-  }
 }
 
 function chooseChar() {
@@ -386,6 +415,13 @@ function calculate(index) {
   //  hp: ~~$('.dps__enemy-hp').val(),
     hp: 0,
   };
+  let raidBuff = {
+    atk: ~~$('.dps__buff-atk').val(),
+    atkpct: ~~$('.dps__buff-atkpct').val(),
+    ats: ~~$('.dps__buff-ats').val(),
+    cdr: ~~$('.dps__buff-cdr').val(),
+  };
+  console.log(raidBuff);
 
   // get option info
   let opts = AKDATA.Data.dps_options;
@@ -397,10 +433,12 @@ function calculate(index) {
       }
     }
   }
+  // 团辅
+  char.options["buff"] = getElement("buff", index).is(':checked');
   //console.log(char.options);
 
   // calc dps
-  let dps = AKDATA.attributes.calculateDps(char, enemy);
+  let dps = AKDATA.attributes.calculateDps(char, enemy, raidBuff);
   let s = dps.skill;
 
   getElement('s_atk', index).html(`<b>${Math.round(s.atk)}</b>`).css("color", DamageColors[s.damageType]);
