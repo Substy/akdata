@@ -27,7 +27,7 @@ function init() {
   ], load);
 }
 
-const charColumnCount = $(document).width() <= 1400 ? 2 : 3;
+const charColumnCount = $(document).width() <= 1400 ? 2 : 4;
 const Characters = new Array(charColumnCount);
 
 function getElement(classPart, index) {
@@ -85,6 +85,8 @@ function load() {
     <tr class="dps__row-s_dps"> <th>技能DPS</th> </tr>
     <tr class="dps__row-n_dps"> <th>普攻</th> </tr>
     <tr class="dps__row-g_dps"> <th>平均</th> </tr>
+    <tr class="dps__row-s_diff"> <th>技能总伤害提升%</th> </tr>
+    <tr class="dps__row-g_diff"> <th>平均DPS提升%</th> </tr>
   </tbody>
   <tbody class="">
  <!-- <tr class="dps__row-e_time"> <th>技能击杀时间 <i class="fas fa-info-circle pull-right" data-toggle="tooltip" title="敌人HP/技能DPS（存在较大问题）"></i></th> </tr> -->
@@ -161,6 +163,8 @@ function load() {
     $dps.find('.dps__row-s_dps').append(`<td><div class="dps__s_dps font-weight-bold" data-index="${i}"></div></td>`);
     $dps.find('.dps__row-n_dps').append(`<td><div class="dps__n_dps" data-index="${i}"></div></td>`);
     $dps.find('.dps__row-g_dps').append(`<td><div class="dps__g_dps font-weight-bold" data-index="${i}"></div></td>`);
+    $dps.find('.dps__row-s_diff').append(`<td><div class="dps__s_diff " data-index="${i}"></div></td>`);
+    $dps.find('.dps__row-g_diff').append(`<td><div class="dps__g_diff " data-index="${i}"></div></td>`);
    // $dps.find('.dps__row-e_time').append(`<td><div class="dps__e_time" data-index="${i}"></div></td>`);
     $dps.find('.dps__row-s_damage').append(`<td><div class="dps__s_damage" data-index="${i}"></div></td>`);
     $dps.find('.dps__row-period').append(`<td><div class="dps__period" data-index="${i}"></div></td>`);
@@ -440,6 +444,10 @@ function calculate(index) {
   // calc dps
   let dps = AKDATA.attributes.calculateDps(char, enemy, raidBuff);
   let s = dps.skill;
+  char.dps = dps;
+  let sdiff = 0;
+  let gdiff = 0;
+  let dps0 = Characters[0].dps;
 
   getElement('s_atk', index).html(`<b>${Math.round(s.atk)}</b>`).css("color", DamageColors[s.damageType]);
   
@@ -461,7 +469,11 @@ function calculate(index) {
     var tmp = s.hitDamage * s.dur.hitCount + ((s.critDamage * s.dur.critHitCount) || 0) + s.extraDamage;
     if (Math.abs(skillDamage - tmp) > 10) line = "";
     line += ` = ${skillDamage.toFixed(2)}`;
- //   getElement('s_damage', index).html(line);
+    if (dps0.skill.totalDamage > 0) {
+      sdiff = skillDamage / dps0.skill.totalDamage - 1;
+      gdiff = dps.globalDps / dps0.globalDps - 1;
+     // console.log(sdiff, gdiff);
+    }
   } else {
     $(".dps__row-s_damage th").text("技能总治疗");
     $(".dps__row-s_dps th").text("技能HPS");
@@ -470,10 +482,17 @@ function calculate(index) {
     var tmp = s.hitDamage * s.dur.hitCount + s.extraHeal;
     if (Math.abs(skillDamage - tmp) > 10) line = "";
     line += ` = ${skillDamage.toFixed(2)}`;
-  //  getElement('s_damage', index).html(line);
+    if (dps0.skill.totalHeal > 0) {
+      sdiff = skillDamage / dps0.skill.totalHeal - 1;
+      gdiff = dps.globalHps / dps0.globalHps - 1;
+     // console.log(sdiff, gdiff);
+    }
   }
   // damage
-  getElement('s_damage', index).html(line);           
+  getElement('s_damage', index).html(line);
+  getElement('s_diff', index).text((sdiff*100).toFixed(1));
+  getElement('g_diff', index).text((gdiff*100).toFixed(1));
+  
   // skill dps
   if (s.hps == 0 || s.dps == 0) {
     var color = (s.dps == 0) ? DamageColors[2] : DamageColors[dps.normal.damageType];                     
@@ -521,7 +540,6 @@ function calculate(index) {
     getElement('g_dps', index).html(`DPS: ${dps.globalDps.toFixed(1)}, HPS: ${dps.globalHps.toFixed(1)}`);
 //  getElement('e_time', index).html(dps.killTime ?  `${Math.ceil(dps.killTime)}秒` : '-');
   getElement("note", index).html(dps.note.replace(/\n/g,'<br>').replace(/ /g,'&nbsp;'));
-  char.dps = dps;
 }
 
 function calculateAll() {
@@ -530,7 +548,8 @@ function calculateAll() {
 
 function calculateColumn() {
   let index = ~~($(this).data('index'));
-  calculate(index);
+  if (index == 0) calculateAll();
+  else calculate(index);
 }
 
 function chooseSkill() {
@@ -539,7 +558,8 @@ function chooseSkill() {
   Characters[index].skillLevel = ~~(getElement('skilllevel', index).val());
   Characters[index].potentialRank = ~~(getElement('potentialrank', index).val());
   Characters[index].favor = ~~(getElement('favor', index).val());
-  calculate(index);
+  if (index == 0) calculateAll();
+  else calculate(index);
 }
 
 pmBase.hook.on('init', init);
