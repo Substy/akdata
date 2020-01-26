@@ -13,6 +13,9 @@ function init() {
   AKDATA.load([
     'excel/character_table.json',
     'excel/skill_table.json',
+    '../version.json',
+    '../customdata/dps_specialtags.json',
+    '../customdata/dps_options.json',
     '../resources/attributes.js'
   ], load);
 }
@@ -95,7 +98,7 @@ function load() {
           charId,
           skillId: skill.skillId,
           skillLevel: skillLevel-1,
-          cond: true,
+          options: { cond: true, buff: true },
         };
         let dps = AKDATA.attributes.calculateDps(char);
         if ( !dps ) return;
@@ -110,12 +113,12 @@ function load() {
         if(dps.skill.isInstant)
         {
           duration = dps.normal.duration + dps.skill.duration;
-          hps = Math.round((dps.normal.damagePool[2] + dps.skill.damagePool[2]) / duration);
+          hps = dps.skill.hps;
         }
         else
         {
           duration = dps.skill.duration;
-          hps = Math.round(dps.skill.damagePool[2] / duration);
+          hps = dps.skill.hps;
         }
 
         hpsList.push([
@@ -124,7 +127,7 @@ function load() {
           levelData.name,
           skillLevel,
           desc,
-          hps,
+          hps.toFixed(2),
           Math.round(duration*100)/100,
           bb.heal_scale,
         ]);
@@ -161,7 +164,7 @@ function load() {
   let item2 = pmBase.component.create({
     type: 'list',
 
-    columns: ['干员', '职业', '伤害', 'S_ATK', 'S_BAT', '技能', {header:'说明',width:'40%'}, '攻击DPS', '技能DPS', '平均DPS'],
+    columns: ['干员', '职业', '伤害', '技能攻击', '技能攻速', '技能', {header:'说明',width:'40%'}, '攻击DPS', '技能DPS', '平均DPS'],
     "class":  "dps-result",
     list: [],
 
@@ -268,7 +271,7 @@ function calculate() {
         charId,
         skillId: skill.skillId,
         skillLevel: -1,
-        cond: true,
+        options: { cond: true, buff: true },
       };
       let dps = AKDATA.attributes.calculateDps(char, enemy);
       if ( !dps ) return;

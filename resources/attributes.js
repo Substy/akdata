@@ -10,7 +10,7 @@ function getCharAttributes(char) {
   let {
     basic,
     buffs
-  } = getAttributes(char);
+  } = getAttributes(char, new Log());
   let normalFrame = getBuffedAttributes(basic, buffs);
   return normalFrame;
 }
@@ -46,7 +46,6 @@ displayNames = {};
 
 function calculateDps(char, enemy, raidBuff) {
   let log = new Log();
-
   checkChar(char);
   enemy = enemy || {
     def: 0,
@@ -78,6 +77,7 @@ function calculateDps(char, enemy, raidBuff) {
 
   log.write(`角色: ${charId} ${charData.name}`);
   log.write(`等级: 精英 ${char.phase}, 等级 ${char.level}, 潜能 ${char.potentialRank+1}`);
+  console.log(charData.name, levelData.name);
 
   log.write(`技能: ${char.skillId} ${levelData.name} @ 等级 ${char.skillLevel+1}`);
   displayNames[char.skillId] = levelData.name;  // add to name cache
@@ -1062,13 +1062,13 @@ function calculateAttack(charAttr, enemy, raidBlackboard, isSkill, charData, lev
     let hpratiosec = bb["hp_recovery_per_sec_by_max_hp_ratio"];
     let hpsec = bb["hp_recovery_per_sec"];
     if (hpratiosec) {
-      pool[2] += hpratiosec * finalFrame.maxHp * dur.duration;
+      pool[2] += hpratiosec * finalFrame.maxHp * (dur.duration + dur.stunDuration);
     }
     if (hpsec) {
       if ((buffName == "tachr_291_aglina_2" && isSkill) || 
           (buffName == "tachr_188_helage_2" && !options.noblock)) { /* skip */ }
       else
-        pool[2] += hpsec * dur.duration;
+        pool[2] += hpsec * (dur.duration + dur.stunDuration);
     }
     // 自身血量百分比相关的治疗/伤害
     if (bb["hp_ratio"]) {
@@ -1114,8 +1114,8 @@ function calculateAttack(charAttr, enemy, raidBlackboard, isSkill, charData, lev
   let totalHeal = [2, 4].reduce((x, y) => x + damagePool[y] + extraDamagePool[y], 0);
   let extraDamage = [0, 1, 3].reduce((x, y) => x + extraDamagePool[y], 0);
   let extraHeal = [2, 4].reduce((x, y) => x + extraDamagePool[y], 0);
-  let dps = totalDamage / dur.duration;
-  let hps = totalHeal / dur.duration;
+  let dps = totalDamage / (dur.duration + dur.stunDuration);
+  let hps = totalHeal / (dur.duration + dur.stunDuration);
   log.write(`  - 总伤害: ${totalDamage.toFixed(2)}`);
   if (hps != 0) log.write(`  - 总治疗: ${totalHeal.toFixed(2)}`);
   log.write(`  - DPS: ${dps.toFixed(1)}, HPS: ${hps.toFixed(1)}`);
@@ -1204,7 +1204,7 @@ function getAttributes(char, log) { //charId, phase = -1, level = -1
     attributesKeyFrames[key] += getAttribute(charData.favorKeyFrames, favorLevel, 0, key);
     buffs[key] = 0;
   });
-  console.log(attributesKeyFrames);
+  // console.log(attributesKeyFrames);
   applyPotential(char.charId, charData, char.potentialRank, attributesKeyFrames);
 
   // 计算天赋/特性，记为Buff
