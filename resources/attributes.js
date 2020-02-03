@@ -457,6 +457,7 @@ function applyBuff(charAttr, buffFrm, tag, blackbd, isSkill, log) {
       case "skchr_ccheal_1":
         delete blackboard["heal_scale"];
         break;
+      case "tachr_frostl_1":
       case "skchr_mantic_2":
       case "skchr_glaze_2": // 攻击间隔延长，但是是加算
         buffFrame.baseAttackTime += blackboard.base_attack_time;
