@@ -13,7 +13,7 @@ const ProfessionNames = {
 };
 
 const akVersion = "200205";
-const currentVersion = "20-01-14-13-20-25-7e9227";
+const currentVersion = "20-01-31-17-02-22-c57547";
 
 function init() {
   $('#update_prompt').text("正在载入角色数据，请耐心等待......");

@@ -268,6 +268,9 @@ function applyBuff(charAttr, buffFrm, tag, blackbd, isSkill, log) {
         case "tachr_226_hmau_1":
           delete blackboard["heal_scale"];
           applyBuffDefault(); break;
+        case "tachr_279_excu_trait":
+          if (isSkill && skillId == "skchr_excu_1") applyBuffDefault();
+	  break;
       };
       done = true;
     } else {
@@ -379,6 +382,8 @@ function applyBuff(charAttr, buffFrm, tag, blackbd, isSkill, log) {
         buffFrame.times = 2;
         writeBuff(`攻击次数 = ${buffFrame.times}`);
         break;
+      case "skchr_excu_1":
+        delete blackboard.atk_scale; break;
       case "skchr_texas_2":
         buffFrame.times = 2;
         buffFrame.maxTarget = 999;
@@ -448,10 +453,6 @@ function applyBuff(charAttr, buffFrm, tag, blackbd, isSkill, log) {
         break;
       case "skchr_swire_1":
         blackboard.atk = 0; // 1技能不加攻击
-        break;
-      case "skchr_excu_1":
-        buffFrame.atk_scale = 1.5;
-        writeBuff("atk_scale = 1.5");
         break;
       case "skchr_ccheal_2": // hot记为额外治疗，不在这里计算
       case "skchr_ccheal_1":
