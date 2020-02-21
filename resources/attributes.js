@@ -579,6 +579,38 @@ function calcDurations(isSkill, attackTime, levelData, buffList, buffFrame, enem
   };
   let tags = [spTypeTags[spData.spType]];  // 技能类型标记
 
+  // 需要模拟的技能（自动回复+自动释放+有充能）
+  if (checkSpecs(skillId, "sim")) {
+    duration = 120;
+    let init_sp = spData.initSp;
+    let extra_sp = 0;
+    let sp_rate = 1 + buffFrame.spRecoveryPerSec;
+    if (skillId == "skchr_amgoat_2" && buffList["tachr_180_amgoat_2"])  // 乱火
+      init_sp = (buffList["tachr_180_amgoat_2"].sp_min + buffList["tachr_180_amgoat_2"].sp_max) / 2;
+    else if (buffList["tachr_134_ifrit_2"]) // 莱茵回路
+      extra_sp = Math.floor(duration / buffList["tachr_134_ifrit_2"].interval) * buffList["tachr_134_ifrit_2"].sp;
+    let ctime = checkSpecs(skillId, "cast_time") || attackTime;
+
+    log.write(`  - [模拟] T = ${duration}s, 初始sp = ${init_sp}, 技能sp = ${spData.spCost}, 施法时间 = ${ctime.toFixed(2)}s`);
+    log.write(`  - [模拟] sp回复 = ${sp_rate.toFixed(2)}/s, 额外sp = ${extra_sp}`);
+
+    let skill_count = Math.floor((duration * sp_rate + init_sp + extra_sp) / (spData.spCost + ctime * sp_rate));
+    let normal_count = Math.floor((duration - skill_count * Math.max(attackTime, ctime)) / attackTime);
+    log.write(`  - [模拟] 技能次数 = ${skill_count}, 普攻次数 = ${normal_count}`);
+
+    if (isSkill) {
+      attackCount = skill_count;
+      duration = skill_count * Math.max(ctime, attackTime);
+    } else {
+      attackCount = normal_count;
+      duration = normal_count * attackTime;
+      let skill_sp_delta = (attackTime > ctime) ? (attackTime - ctime) * sp_rate * skill_count : 0;
+      let total_sp = init_sp + duration * sp_rate + skill_sp_delta + extra_sp;
+
+      log.write(`  - [模拟] 总sp: ${total_sp.toFixed(1)} {${[init_sp, (duration*sp_rate).toFixed(1), extra_sp, skill_sp_delta.toFixed(1)]}}`);
+    }
+  } else {
+
   if (isSkill) { 
     // 快速估算
     attackCount = Math.ceil(levelData.duration / attackTime);
@@ -733,6 +765,7 @@ function calcDurations(isSkill, attackTime, levelData, buffList, buffFrame, enem
         // todo: cast time
     } // switch
   } // else
+  } // sim else
 
   // 计算实际命中次数
   // attackCount = 发动攻击的次数(swings), hitCount = 命中敌人的次数(hits)
@@ -1038,7 +1071,7 @@ function calculateAttack(charAttr, enemy, raidBlackboard, isSkill, charData, lev
         pool[2] += damage * dur.attackCount * (enemy.count-1);
         break;
       case "skchr_ccheal_1":
-        heal = finalFrame.atk * bb.heal_scale * bb.duration;
+        heal = finalFrame.atk * bb.heal_scale * bb.duration * dur.duration / attackTime;  // 乘以技能次数
         log.write(`  - [特殊] ${displayNames[buffName]}: HoT ${heal.toFixed(1)}`);
         pool[2] += heal;
         break;
