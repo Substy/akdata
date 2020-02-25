@@ -12,8 +12,8 @@ const ProfessionNames = {
 //  "TRAP": "装置",
 };
 
-const akVersion = "200221";
-const currentVersion = "20-01-31-17-02-22-c57547";
+const akVersion = "200225";
+const currentVersion = "20-02-23-08-20-20-4161dd";
 
 function init() {
   $('#update_prompt').text("正在载入角色数据，请耐心等待......");

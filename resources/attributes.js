@@ -374,6 +374,9 @@ function applyBuff(charAttr, buffFrm, tag, blackbd, isSkill, log) {
       case "tachr_225_haak_1":
         blackboard.prob_override = 0.25;
         break;
+      case "tachr_2013_cerber_1":
+        delete blackboard["atk_scale"];
+        break;
       // ---- 技能 ----
       case "skchr_swllow_1":
       case "skchr_helage_1":
@@ -470,6 +473,7 @@ function applyBuff(charAttr, buffFrm, tag, blackbd, isSkill, log) {
         blackboard.base_attack_time *= basic.baseAttackTime;
         break;
       case "skchr_aglina_2":  // 攻击间隔缩短，但是是乘算正数
+      case "skchr_cerber_2": 
         writeBuff(`base_attack_time: ${blackboard.base_attack_time}x`);
         blackboard.base_attack_time = (blackboard.base_attack_time - 1) * basic.baseAttackTime;
         break;
@@ -600,6 +604,7 @@ function calcDurations(isSkill, attackTime, levelData, buffList, buffFrame, enem
     log.write(`  - [模拟] 技能次数 = ${skill_count}, 普攻次数 = ${normal_count}`);
 
     if (isSkill) {
+      log.writeNote("按120s进行模拟");
       attackCount = skill_count;
       duration = skill_count * Math.max(ctime, attackTime);
     } else {
@@ -879,6 +884,12 @@ function calculateAttack(charAttr, enemy, raidBlackboard, isSkill, charData, lev
   let emrpct = emr / 100;
   let ecount = Math.min(buffFrame.maxTarget, enemy.count);
 
+  // 平均化惊蛰伤害
+  if (charId == 'char_306_leizi' && !(isSkill && blackboard.id == "skchr_leizi_2")) {
+    buffFrame.damage_scale = 1 - 0.125 * (ecount-1);
+    log.write(`  - [特殊] 惊蛰: 平均伤害 ${buffFrame.damage_scale.toFixed(2)}x`);
+  }
+
   // 计算攻击次数和持续时间
   let dur = calcDurations(isSkill, attackTime, levelData, buffList, buffFrame, ecount, log);
   // 暴击次数
@@ -1008,6 +1019,10 @@ function calculateAttack(charAttr, enemy, raidBlackboard, isSkill, charData, lev
         pool[2] += bb.atk_to_hp_recovery_ratio * finalFrame.atk * dur.duration * ecount; break;
       case "tachr_188_helage_trait":
         pool[2] += bb.value * dur.hitCount; break;
+      case "tachr_2013_cerber_1":
+        damage = bb.atk_scale * edef * Math.max(1-emrpct, 0.05);
+        pool[1] += damage * dur.hitCount;
+        break;
       // 技能
       // 伤害类
       case "skchr_ifrit_2":

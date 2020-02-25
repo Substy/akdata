@@ -42,6 +42,8 @@
         "char_137_brownb" : [ "stack" ],
         "char_131_flameb" : [ "stack" ],
         "char_225_haak" : [ "crit" ],
-        "char_226_hmau" : [ "cond" ]
+        "char_226_hmau" : [ "cond" ],
+        "char_2013_cerber" : [ "cond" ],
+        "char_306_leizi" : [ "cond" ]
     }
 }
