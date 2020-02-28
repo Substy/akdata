@@ -623,8 +623,9 @@ function calcDurations(isSkill, attackTime, levelData, buffList, buffFrame, enem
     duration = attackCount * attackTime;
     // 重置普攻
     if (checkResetAttack(skillId, blackboard)) {
+      if (duration > levelData.duration)
+        log.write(`  - 可能重置普攻（覆盖 ${(duration - levelData.duration).toFixed(1)}s）`);
       duration = levelData.duration;
-      log.write('  - 可能重置普攻');
     }
     // 技能类型
     if (levelData.description.includes("持续时间无限")) {
@@ -670,7 +671,7 @@ function calcDurations(isSkill, attackTime, levelData, buffList, buffFrame, enem
     // 特判
     if (skillId == "skchr_yuki_2") {
       attackCount = Math.ceil(attackCount / 3) * 3;
-      log.write(`  - [特殊] ${displayNames["skchr_yuki_2"]}: 攻击有效时间 = ${attackCount} s`);
+      log.write(`  - [特殊] ${displayNames["skchr_yuki_2"]}: 攻击有效时间 = ${attackCount} s, 技能覆盖 2s`);
     } else if (skillId == "skchr_huang_3") {
       attackCount -= 2;
       log.write(`  - [特殊] ${displayNames["skchr_huang_3"]}: 实际攻击 ${attackCount}段+终结`);
@@ -700,7 +701,10 @@ function calcDurations(isSkill, attackTime, levelData, buffList, buffFrame, enem
     duration = attackCount * attackTime;
     // 重置普攻
     if (checkResetAttack(skillId, blackboard)) {
-      duration = spData.spCost / (1 + buffFrame.spRecoveryPerSec);
+      var dd = spData.spCost / (1 + buffFrame.spRecoveryPerSec);
+      if (duration > dd)
+        log.write(`  - 可能重置普攻（覆盖 ${(duration-dd).toFixed(1)}s）`)
+      duration = dd
     }
     // 技能类型
     switch (spData.spType) {
@@ -887,6 +891,7 @@ function calculateAttack(charAttr, enemy, raidBlackboard, isSkill, charData, lev
   // 平均化惊蛰伤害
   if (charId == 'char_306_leizi' && !(isSkill && blackboard.id == "skchr_leizi_2")) {
     buffFrame.damage_scale = 1 - 0.125 * (ecount-1);
+    finalFrame.atk *= buffFrame.damage_scale;
     log.write(`  - [特殊] 惊蛰: 平均伤害 ${buffFrame.damage_scale.toFixed(2)}x`);
   }
 
