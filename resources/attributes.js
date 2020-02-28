@@ -626,6 +626,12 @@ function calcDurations(isSkill, attackTime, levelData, buffList, buffFrame, enem
       if (duration > levelData.duration)
         log.write(`  - 可能重置普攻（覆盖 ${(duration - levelData.duration).toFixed(1)}s）`);
       duration = levelData.duration;
+      // 抬手时间
+      var frameBegin = checkSpecs(skillId, "attack_begin") || 12;
+      var t = frameBegin / 30;
+      attackCount = Math.ceil((duration - t) / attackTime);
+      log.write(`  - 抬手时间（测试）: ${t.toFixed(3)}s, ${frameBegin} 帧`);
+      log.writeNote("重置普攻抬手暂记为0.4s");
     }
     // 技能类型
     if (levelData.description.includes("持续时间无限")) {
@@ -699,12 +705,17 @@ function calcDurations(isSkill, attackTime, levelData, buffList, buffFrame, enem
 
     attackCount = Math.ceil(attackDuration / attackTime);
     duration = attackCount * attackTime;
-    // 重置普攻
-    if (checkResetAttack(skillId, blackboard)) {
+    // 重置普攻（瞬发除外）
+    if (checkResetAttack(skillId, blackboard) && spData.spType != 8) {
       var dd = spData.spCost / (1 + buffFrame.spRecoveryPerSec);
       if (duration > dd)
-        log.write(`  - 可能重置普攻（覆盖 ${(duration-dd).toFixed(1)}s）`)
-      duration = dd
+        log.write(`  - 可能重置普攻（覆盖 ${(duration-dd).toFixed(1)}s）`);
+      duration = dd;
+      // 抬手时间
+      var frameBegin = checkSpecs(skillId, "attack_begin") || 12;
+      var t = frameBegin / 30;
+      attackCount = Math.ceil((duration - t) / attackTime);
+      log.write(`  - 抬手时间（测试）: ${t.toFixed(3)}s, ${frameBegin} 帧`);
     }
     // 技能类型
     switch (spData.spType) {
@@ -855,8 +866,9 @@ function calculateAttack(charAttr, enemy, raidBlackboard, isSkill, charData, lev
     buffFrame.maxTarget = 3;
   // 计算最终攻击间隔，考虑fps修正
   let fps = 30;
-  let realAttackTime = finalFrame.baseAttackTime / finalFrame.attackSpeed * 100;
-  let frameAttackTime = Math.ceil(realAttackTime * fps) / fps;
+  let realAttackTime = finalFrame.baseAttackTime * 100 / finalFrame.attackSpeed;
+  let frame = Math.round(realAttackTime * fps); // 舍入成帧数
+  let frameAttackTime = frame / fps;
   let attackTime = frameAttackTime;
 
   // 根据最终攻击间隔，重算攻击力
@@ -922,9 +934,9 @@ function calculateAttack(charAttr, enemy, raidBlackboard, isSkill, charData, lev
   log.write(`  - 攻击力 / 倍率:  ${finalFrame.atk.toFixed(2)} = ${atk_line}`);
   log.write(`  - 攻速: ${finalFrame.attackSpeed} %`);
   log.write(`  - 攻击间隔: ${finalFrame.baseAttackTime.toFixed(3)} s`);
-  log.write(`  - 最终攻击间隔 / FPS修正: ${realAttackTime.toFixed(3)} s (${frameAttackTime.toFixed(3)} s)`);
+  log.write(`  - 最终攻击间隔 / FPS修正: ${realAttackTime.toFixed(3)} s (${frameAttackTime.toFixed(3)} s, ${frame} 帧)`);
   log.write(`  - 持续: ${dur.duration.toFixed(1)} s`);
-  log.write(`  - 攻击次数: ${dur.attackCount*dur.times} (${dur.times} 连击 x ${dur.attackCount}) (不计前摇)`);
+  log.write(`  - 攻击次数: ${dur.attackCount*dur.times} (${dur.times} 连击 x ${dur.attackCount})`);
   if (edef != enemy.def)
     log.write(`  - 敌人防御: ${edef.toFixed(1)} (${(edef-enemy.def).toFixed(1)})`);
   if (emr != enemy.magicResistance) {

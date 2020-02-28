@@ -12,7 +12,7 @@ const ProfessionNames = {
 //  "TRAP": "装置",
 };
 
-const akVersion = "200228";
+const akVersion = "200228-v2";
 const currentVersion = "20-02-23-08-20-20-4161dd";
 
 function init() {
