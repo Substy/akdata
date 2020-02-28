@@ -1,12 +1,11 @@
-{%- if jekyll.environment == 'production' and site.analytics.baidu -%}
+{%- if site.analytics.baidu -%}
 <script>
-    var _baId = '{{ site.analytics.baidu }}';
-    var _hmt = _hmt || [];
-    (function() {
-      var hm = document.createElement("script");
-      hm.src = "//hm.baidu.com/hm.js?" + _baId;
-      var s = document.getElementsByTagName("script")[0];
-      s.parentNode.insertBefore(hm, s);
-    })();
+  var _hmt = _hmt || [];
+  (function() {
+    var hm = document.createElement("script");
+    hm.src = "https://hm.baidu.com/hm.js?4158ba36cc7a19f9ba8a547fa33b69da";
+    var s = document.getElementsByTagName("script")[0]; 
+    s.parentNode.insertBefore(hm, s);
+  })();
 </script>
 {%- endif -%}

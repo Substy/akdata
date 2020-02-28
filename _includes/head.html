@@ -28,10 +28,7 @@
     document.documentElement.className += ' js-module';
   </script>
 
-{%- if jekyll.environment == 'production' -%}
-  {%- include google-analytics.html -%}
   {%- include baidu-analytics.html -%}
-{%- endif -%}
 
 {%- for url in site.data.config.css -%}
   {% if url contains "://" %}
