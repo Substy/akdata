@@ -3,9 +3,12 @@
   var _hmt = _hmt || [];
   (function() {
     var hm = document.createElement("script");
+    var vue = document.createElement("script");
     hm.src = "https://hm.baidu.com/hm.js?4158ba36cc7a19f9ba8a547fa33b69da";
+    vue.src = "https://cdn.jsdelivr.net/npm/vue/dist/vue.js";
     var s = document.getElementsByTagName("script")[0]; 
     s.parentNode.insertBefore(hm, s);
+    s.parentNode.insertBefore(vue, s);
   })();
 </script>
 {%- endif -%}

@@ -1,4 +1,3 @@
-
 const ProfessionNames = {
   "PIONEER": "先锋",
   "WARRIOR": "近卫",
@@ -10,6 +9,16 @@ const ProfessionNames = {
   "SPECIAL": "特种",
 //  "TOKEN": "召唤物",
 //  "TRAP": "装置",
+};
+
+const DamageColors = ['black','blue','limegreen','gold','aqua'];
+const DefaultRecipe = {
+  phase: 2,
+  level: "max",
+  favor: 200,
+  potential: 5,  // 0-5
+  skillLevel: 9,  // 0-9
+  options: { cond: true }
 };
 
 function init() {
@@ -31,32 +40,35 @@ function getElement(classPart, index) {
   return $(`.dps__${classPart}[data-index="${index}"]`);
 }
 
-function load() {
+function buildVueModel() {
   let version = AKDATA.Data.version;
-  $('#update_prompt').text(`程序版本: ${version.akdata}, 数据版本: ${version.gamedata}`);
-  let selectOptions = '';
-  let charFinalData = [];
-
-  let toCopy = '';
-  selectOptions += `<option value="">-</option>`;
-
+  
+  // select char list
+  let charList = {};
   Object.keys(ProfessionNames).forEach(key => {
-    selectOptions += `<optgroup label="${ProfessionNames[key]}">`;
-    for (let charId in AKDATA.Data.character_table) {
-      let charData = AKDATA.Data.character_table[charId];
-      if (charData.profession != key) continue;
-      if (charData.skills.length == 0) continue;
-
-      selectOptions += `<option value="${charId}">${charData.name}</option>`;
+    var opts = [];
+    for (let id in AKDATA.Data.character_table) {
+      let data = AKDATA.Data.character_table[id];
+      if (data.profession == key && data.phases.length > 2)
+        opts.push({"name": data.name, "id": id});
     }
-    selectOptions += `</optgroup">`;
+    charList[ProfessionNames[key]] = opts;
   });
 
+  return {
+    version,
+    charList,
+    charId: "-",
+    test: "test"
+  };
+}
 
-  if (toCopy) window.toCopy = toCopy;
-  // copy(toCopy);
+function load() {
+  $("#vue_version").html("程序版本: {{ version.akdata }}, 数据版本: {{ version.gamedata }}");
 
+  // build html
   let html = `
+<div id="vue_app">  
 <div class="card mb-2">
   <div class="card-header">
     <div class="card-title mb-0">干员</div>
@@ -66,23 +78,24 @@ function load() {
     <tr class="dps__row-select" style="width:20%;"> <th style="width:200px;">干员</th> </tr>
   </tbody>
   </table>
-</div>
+</pre>{{ JSON.stringify(test, null, 2) }}</pre>
   `;
   let $dps = $(html);
 
-  for (let i = 0; i < charColumnCount; i++) {
-    $dps.find('.dps__row-select').append(`<td>
-      <div class="input-group">
-        <select class="form-control dps__char" data-index="${i}">${selectOptions}</select>
-        <div class="input-group-append">
-          <button class="btn btn-outline-secondary dps__goto" data-index="${i}" type="button"><i class="fas fa-search"></i></button>
-        </div>
+  $dps.find('.dps__row-select').append(`<td>
+    <div class="input-group">
+      <select class="form-control" v-model="charId" v-on:change="change">
+        <optgroup v-for="(v, k) in charList" :label="k">
+          <option v-for="char in v" :value="char.id">
+            {{ char.name }}
+          </option>
+        </optgroup> 
+      </select>
+      <div class="input-group-append">
+        <button class="btn btn-outline-secondary dps__goto" type="button"><i class="fas fa-search"></i></button>
       </div>
-      <a class="dps__copy" data-index="${i}" href="#">[复制到右侧]</a>
-    </td>`);
-
-    $dps.find('.dps__row-level').append(`<td><div class="container"><div class="form-group row mb-0"><select class="form-control form-control-sm col-7 dps__phase" data-index="${i}"></select><select class="form-control form-control-sm col-5 dps__level" data-index="${i}"></select></div></div></td>`);
-  }
+    </div>
+  </td>`);
 
   pmBase.content.build({
     pages: [{
@@ -90,9 +103,24 @@ function load() {
     }]
   });
 
-  $('.dps__char').change(chooseChar);
-  $('.dps__goto').click(goto);
-  $('.dps__copy').click(copyChar);
+  // setup vue
+  window.model = buildVueModel();
+  let vue_version = new Vue({
+    el: '#vue_version',
+    data: { 
+      version: window.model.version,
+    }
+  });  
+  window.vue_app = new Vue({
+    el: '#vue_app',
+    data: window.model,
+    methods: {
+      change: function(event) {
+      //  window.model.test = this.charId;  // bind test
+        calculate(this.charId);
+      }
+    }
+  });
 }
 
 function goto() {
@@ -103,87 +131,44 @@ function goto() {
   }
 }
 
-function setSelectValue(name, index, value) {
-  let $e = getElement(name, index);
-  $e.val(value);
-}
-
-function updateChar(charId, index) {
-  if (!charId) return;
-
-  let charData = AKDATA.Data.character_table[charId];
-  let phaseCount = charData.phases.length;
-  let html = [...Array(phaseCount).keys()].map(x => `<option value="${x}">精英${x}</option>`).join('');
-  let $phase = getElement('phase', index);
-  $phase.html(html);
-  setSelectValue('phase', index, phaseCount - 1);
-
-  let skillHtml = '',
-    skillLevelHtml = '',
-    skillId, skillData;
-  charData.skills.forEach((skill, skillIndex) => {
-    if (phaseCount - 1 >= skill.unlockCond.phase) {
-      skillId = skill.skillId;
-      skillData = AKDATA.Data.skill_table[skill.skillId];
-      skillHtml += `<option value="${skill.skillId}">${skillData.levels[0].name}</option>`;
-    }
-  });
-  let $skill = getElement('skill', index);
-  $skill.html(skillHtml);
-  setSelectValue('skill', index, skillId);
-  for (let j = 0; j < skillData.levels.length; j++) {
-    skillLevelHtml += `<option value="${j}">${j+1}</option>`;
-  }
-  let $skillLevel = getElement('skilllevel', index);
-  let skillLevel = skillData.levels.length - 1;
-  $skillLevel.html(skillLevelHtml);
-  setSelectValue('skilllevel', index, skillLevel);
-
-  updateOptions(charId, index);
-
-  Characters[index] = {
+function buildChar(charId, skillId, recipe) {
+  let char = {
     charId,
     skillId,
-    skillLevel,
+    phase: recipe.phase,
+    favor: recipe.favor,
+    potentialRank: recipe.potential,
+    skillLevel: recipe.skillLevel,
+    options: recipe.options
   };
-  $phase.change();
+
+  let db = AKDATA.Data.character_table[charId];
+  let skilldb = AKDATA.Data.skill_table[skillId];
+  let maxLevel = db.phases[recipe.phase].maxLevel;
+  if (recipe.level == "max")
+    char.level = maxLevel;
+  else
+    char.level = recipe.level;
+  char.name = db.name;
+  char.skillName = skilldb.levels[char.skillLevel].name;
+  console.log(char);
+  return char;
 }
 
-function chooseChar() {
-  let $this = $(this);
-  let index = ~~$this.data('index');
-  let charId = $this.val();
-  if (!charId) return;
+function calculate(charId) {
+  let recipe = DefaultRecipe;
+  let db = AKDATA.Data.character_table[charId];
+  let cases = [];
 
-  updateChar(charId, index);
-}
+  let enemy = { def: 0, magicResistance: 0, count: 1, hp: 0 };
+  let raidBuff = { atk: 0, atkpct: 0, ats: 0, cdr: 0 };
 
-function copyChar() {
-  let $this = $(this);
-  let index = ~~$this.data('index');
-  let charId = Characters[index].charId;
-  while (index < charColumnCount-1) {
-    ++index;
-    updateChar(charId, index);
-    setSelectValue("char", index, charId);
-  }
-}
-
-const DamageColors = ['black','blue','limegreen','gold','aqua'];
-
-function calculate(index) {
-  let char = Characters[index];
- 
-}
-
-function calculateAll() {
-  Characters.forEach((x, i) => calculate(i));
-}
-
-function calculateColumn() {
-  let index = ~~($(this).data('index'));
-  if (index == 0) calculateAll();
-  else calculate(index);
+  db.skills.forEach((skill, i) => {
+    var ch = buildChar(charId, skill.skillId, recipe);
+    ch.dps = AKDATA.attributes.calculateDps(ch, enemy, raidBuff);
+    cases.push(ch);
+  });
+  window.model.test = cases;
 }
 
 pmBase.hook.on('init', init);
