@@ -12,13 +12,23 @@ const ProfessionNames = {
 };
 
 const DamageColors = ['black','blue','limegreen','gold','aqua'];
-const DefaultRecipe = {
+const DefaultAttribute = {
   phase: 2,
   level: "max",
   favor: 200,
   potential: 5,  // 0-5
   skillLevel: 9,  // 0-9
-  options: { cond: true }
+  options: { cond: true, crit: true, stack: true }
+};
+const DefaultEnemy = { def: 0, magicResistance: 0, count: 1, hp: 0 };
+
+const Stages = {
+  "基准": { level: 1, potential: 0, skillLevel: 6, desc: "精2 1级 潜能1 技能7级" },
+  "满级": { level: "max", desc: "精2 满级 潜能1 技能7级" },
+  "专1": { skillLevel: 7, desc: "满级 潜能1 专精1" },
+  "专2": { skillLevel: 8, desc: "满级 潜能1 专精2" },
+  "专3": { skillLevel: 9, desc: "满级 潜能1 专精3" },
+  "满潜": { potential: 5, desc: "满级 满潜 专精3"},
 };
 
 function init() {
@@ -59,6 +69,8 @@ function buildVueModel() {
     version,
     charList,
     charId: "-",
+    chartKey: "dps",
+    resultView: {},
     test: "test"
   };
 }
@@ -69,22 +81,46 @@ function load() {
   // build html
   let html = `
 <div id="vue_app">  
-<div class="card mb-2">
-  <div class="card-header">
-    <div class="card-title mb-0">干员</div>
+  <div class="card mb-2">
+    <div class="card-header">
+      <div class="card-title mb-0">干员</div>
+    </div>
+    <table class="table dps" style="table-layout:fixed;">
+    <tbody>
+      <tr class="dps__row-select" style="width:20%;"> <th style="width:200px;">干员</th> </tr>
+    </tbody>
+    </table>
   </div>
-  <table class="table dps" style="table-layout:fixed;">
-  <tbody>
-    <tr class="dps__row-select" style="width:20%;"> <th style="width:200px;">干员</th> </tr>
-  </tbody>
-  </table>
-</pre>{{ JSON.stringify(test, null, 2) }}</pre>
-  `;
+  <div class="card mb-2">
+    <div class="card-header">
+      <div class="card-title">
+        专精收益
+        <span class="float-right">
+          <input type="radio" id="btn_avg" value="dps" v-model="chartKey">
+          <label for="btn_avg">平均dps</label>
+          <input type="radio" id="btn_skill" value="s_dps" v-model="chartKey">
+          <label for="btn_skill">技能dps</label>
+          <input type="radio" id="btn_total" value="s_dmg" v-model="chartKey">
+          <label for="btn_total">技能总伤害</label>
+        </span>
+      </div>
+    </div>
+    <div id="chart"></div>
+  </div>
+  <!--
+  <div class="card mb-2">
+    <div class="card-header">
+      <div class="card-title mb-0">调试信息</div>
+    </div>
+    <pre>{{ debugPrint(test) }}</pre>
+  </div>
+  -->
+</div>`;
   let $dps = $(html);
 
   $dps.find('.dps__row-select').append(`<td>
     <div class="input-group">
-      <select class="form-control" v-model="charId" v-on:change="change">
+      <select class="form-control" v-model="charId" v-on:change="changeChar">
         <optgroup v-for="(v, k) in charList" :label="k">
           <option v-for="char in v" :value="char.id">
             {{ char.name }}
@@ -115,12 +151,34 @@ function load() {
     el: '#vue_app',
     data: window.model,
     methods: {
-      change: function(event) {
-      //  window.model.test = this.charId;  // bind test
-        calculate(this.charId);
+      changeChar: function(event) {
+        this.resultView = calculate(this.charId);
+      },
+      debugPrint: function(obj) {
+        //console.log(JSON.stringify(obj, null, 2));
+        return JSON.stringify(obj, null, 2);
+      }
+    },
+    watch: {
+      resultView: function(_new, _old) {
+        plot(this.resultView, this.chartKey);
+      },
+      chartKey: function(_new, _old) {
+        updatePlot(this.resultView, this.chartKey);
       }
     }
   });
+
+  // test c3.js
+  // var chart = c3.generate({
+  //   bindto: '#chart',
+  //   data: {
+  //     columns: [
+  //       ['data1', 30, 200, 100, 400, 150, 250],
+  //       ['data2', 50, 20, 10, 40, 15, 25]
+  //     ]
+  //   } 
+  // });
 }
 
 function goto() {
@@ -151,24 +209,129 @@ function buildChar(charId, skillId, recipe) {
     char.level = recipe.level;
   char.name = db.name;
   char.skillName = skilldb.levels[char.skillLevel].name;
-  console.log(char);
+  //console.log(char);
   return char;
 }
 
 function calculate(charId) {
-  let recipe = DefaultRecipe;
   let db = AKDATA.Data.character_table[charId];
-  let cases = [];
-
-  let enemy = { def: 0, magicResistance: 0, count: 1, hp: 0 };
+  let recipe = DefaultAttribute;
+  let enemy = DefaultEnemy;
+  let stages = Stages;
   let raidBuff = { atk: 0, atkpct: 0, ats: 0, cdr: 0 };
+  let result = {};
 
-  db.skills.forEach((skill, i) => {
-    var ch = buildChar(charId, skill.skillId, recipe);
-    ch.dps = AKDATA.attributes.calculateDps(ch, enemy, raidBuff);
-    cases.push(ch);
+  // calculate dps for each recipe case.
+  db.skills.forEach(skill => {
+    var entry = {};
+    for (let st in stages) {
+      $.extend(recipe, stages[st]);
+      var ch = buildChar(charId, skill.skillId, recipe);
+      ch.dps = AKDATA.attributes.calculateDps(ch, enemy, raidBuff);
+      entry[st] = ch;
+    };
+    result[skill.skillId] = entry;
   });
-  window.model.test = cases;
+  // window.model.test = result;
+
+  // extract result, making it more readable
+  // name, skill, stage, damageType, avg, skill, skilldamage, cdr
+  let resultView = {
+    name: db.name,
+    skill: {},
+    stages: stages,
+    dps: {}
+  };
+  for (let k in result) {
+    resultView.skill[k] = result[k]["基准"].skillName;
+    resultView.dps[k] = {};
+    for (let st in stages) {
+      var entry = result[k][st].dps;
+      resultView.dps[k][st] = {
+        damageType: entry.skill.damageType,
+        dps: entry.globalDps,
+        hps: entry.globalHps,
+        s_dps: entry.skill.dps,
+        s_hps: entry.skill.hps,
+        s_dmg: entry.skill.totalDamage,
+      };
+    };
+  };
+
+  return resultView;
+}
+
+function plot(view, key) {
+  // rotate data for plot columns
+  let columns = [], groups = [], skill_names = [];
+  var last = {};
+  for (let stg in view.stages) {
+    var entry = [stg];
+    for (let skill in view.skill) {
+      var dps = view.dps[skill][stg][key];
+      if (skill in last)
+        entry.push(dps - last[skill]);
+      else
+        entry.push(dps);
+      last[skill] = dps;
+    }
+    columns.push(entry);
+    groups.push(stg);
+  }
+  for (let skill in view.skill)
+    skill_names.push(view.skill[skill]);
+
+  window.chart = c3.generate({
+    bindto: "#chart",
+    data: {
+      type: "bar",
+      columns: [],
+      groups: [groups],
+      order: null,
+      colors: { "基准": "#eeeeee" }
+    },
+    axis: {
+      rotated: true,
+      x: {
+        type: "category",
+        categories: skill_names
+      }
+    },
+    bar: {
+      width: { ratio: 0.4 }
+    },
+    zoom: { enabled: true },
+  });
+
+  setTimeout(function() {
+    window.chart.load({ columns: columns }, 1000);
+  });
+}
+
+function updatePlot(view, key) {
+  // rotate data for plot columns
+  let columns = [], groups = [], skill_names = [];
+  var last = {};
+  for (let stg in view.stages) {
+    var entry = [stg];
+    for (let skill in view.skill) {
+      var dps = view.dps[skill][stg][key];
+      if (skill in last)
+        entry.push(dps - last[skill]);
+      else
+        entry.push(dps);
+      last[skill] = dps;
+    }
+    columns.push(entry);
+    groups.push(stg);
+  }
+  for (let skill in view.skill)
+    skill_names.push(view.skill[skill]);
+
+  setTimeout(function() {
+    window.chart.load({ columns: columns, groups: groups }, 1000);
+  });
+
 }
 
 pmBase.hook.on('init', init);

@@ -910,7 +910,7 @@ function calculateAttack(charAttr, enemy, raidBlackboard, isSkill, charData, lev
   // 计算攻击次数和持续时间
   let dur = calcDurations(isSkill, attackTime, levelData, buffList, buffFrame, ecount, log);
   // 暴击次数
-  if (options.crit) {
+  if (options.crit && critBuffFrame["prob"]) {
     if (damageType != 2) {
       if (buffList["tachr_155_tiger_1"])
         dur.critCount = dur.duration / 3 * critBuffFrame.prob;
@@ -924,6 +924,8 @@ function calculateAttack(charAttr, enemy, raidBlackboard, isSkill, charData, lev
     } else {
       dur.critCount = 0; dur.critHitCount = 0;
     }
+  } else {
+    dur.critCount = 0; dur.critHitCount = 0;
   }
 
   //console.log(finalFrame, dur);
