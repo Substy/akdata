@@ -97,11 +97,11 @@ function load() {
         专精收益
         <span class="float-right">
           <input type="radio" id="btn_avg" value="dps" v-model="chartKey">
-          <label for="btn_avg">平均dps</label>
+          <label for="btn_avg">平均dps/hps</label>
           <input type="radio" id="btn_skill" value="s_dps" v-model="chartKey">
-          <label for="btn_skill">技能dps</label>
+          <label for="btn_skill">技能dps/hps</label>
           <input type="radio" id="btn_total" value="s_dmg" v-model="chartKey">
-          <label for="btn_total">技能总伤害</label>
+          <label for="btn_total">技能总伤害/治疗</label>
         </span>
       </div>
     </div>
@@ -161,10 +161,10 @@ function load() {
     },
     watch: {
       resultView: function(_new, _old) {
-        plot(this.resultView, this.chartKey);
+        plot(_new, this.chartKey);
       },
       chartKey: function(_new, _old) {
-        updatePlot(this.resultView, this.chartKey);
+        updatePlot(this.resultView, _new);
       }
     }
   });
@@ -254,12 +254,19 @@ function calculate(charId) {
         s_dps: entry.skill.dps,
         s_hps: entry.skill.hps,
         s_dmg: entry.skill.totalDamage,
+        s_heal: entry.skill.totalHeal,
       };
     };
   };
 
   return resultView;
 }
+
+const HealKeys = {
+  dps: "hps",
+  s_dps: "s_hps",
+  s_dmg: "s_heal"
+};
 
 function plot(view, key) {
   // rotate data for plot columns
@@ -268,12 +275,15 @@ function plot(view, key) {
   for (let stg in view.stages) {
     var entry = [stg];
     for (let skill in view.skill) {
-      var dps = view.dps[skill][stg][key];
+      var value = view.dps[skill][stg][key];
+      if (view.dps[skill][stg].damageType == 2) {
+        value = view.dps[skill][stg][HealKeys[key]];
+      }
       if (skill in last)
-        entry.push(dps - last[skill]);
+        entry.push(value - last[skill]);
       else
-        entry.push(dps);
-      last[skill] = dps;
+        entry.push(value);
+      last[skill] = value;
     }
     columns.push(entry);
     groups.push(stg);
@@ -315,12 +325,15 @@ function updatePlot(view, key) {
   for (let stg in view.stages) {
     var entry = [stg];
     for (let skill in view.skill) {
-      var dps = view.dps[skill][stg][key];
+      var value = view.dps[skill][stg][key];
+      if (view.dps[skill][stg].damageType == 2) {
+        value = view.dps[skill][stg][HealKeys[key]];
+      }
       if (skill in last)
-        entry.push(dps - last[skill]);
+        entry.push(value - last[skill]);
       else
-        entry.push(dps);
-      last[skill] = dps;
+        entry.push(value);
+      last[skill] = value;
     }
     columns.push(entry);
     groups.push(stg);

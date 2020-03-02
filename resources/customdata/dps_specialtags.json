@@ -15,6 +15,7 @@
     "skchr_estell_2":	{ "damage_type": "0" },
     "skchr_ethan_1":	{ "passive": true },
     "skchr_finlpp_1":   { "reset_attack": true },
+    "skchr_fmout_2":    { "reset_attack": true },
     "skchr_franka_2":	{ "reset_attack": true },
     "skchr_frostl_1":   { "cast_time": 1.33, "sim": true}, 
     "skchr_glacus_2":	{ "cond": true },
