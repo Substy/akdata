@@ -473,7 +473,8 @@ function applyBuff(charAttr, buffFrm, tag, blackbd, isSkill, log) {
         blackboard.base_attack_time *= basic.baseAttackTime;
         break;
       case "skchr_aglina_2":  // 攻击间隔缩短，但是是乘算正数
-      case "skchr_cerber_2": 
+      case "skchr_cerber_2":
+      case "skchr_finlpp_2": 
         writeBuff(`base_attack_time: ${blackboard.base_attack_time}x`);
         blackboard.base_attack_time = (blackboard.base_attack_time - 1) * basic.baseAttackTime;
         break;

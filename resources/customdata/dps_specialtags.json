@@ -14,6 +14,7 @@
     "skchr_demkni_3":	{ "sec": true },
     "skchr_estell_2":	{ "damage_type": "0" },
     "skchr_ethan_1":	{ "passive": true },
+    "skchr_finlpp_1":   { "reset_attack": true },
     "skchr_franka_2":	{ "reset_attack": true },
     "skchr_frostl_1":   { "cast_time": 1.33, "sim": true}, 
     "skchr_glacus_2":	{ "cond": true },
@@ -98,6 +99,7 @@
     "tachr_348_ceylon_trait":	{ "ranged_penalty": true },
     "tachr_356_broca_1":	{ "cond": true },
     "tachr_367_swllow_1":	{ "crit": true },
+    "tachr_385_finlpp_trait":   { "ranged_penalty": true },
     "tachr_503_rang_1":	{ "cond": true },
     "tachr_2013_cerber_2": { "cond": true }
 }
