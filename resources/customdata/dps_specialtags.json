@@ -22,7 +22,7 @@
     "skchr_estell_2":	{ "damage_type": "0", "frame_corr": 1 },
     "skchr_ethan_1":	{ "passive": true },
     "skchr_finlpp_1":   { "reset_attack": true, "cast_time": 1.33, "attack_begin": 17 },
-    "skchr_finlpp_2":   { "attack_begin": 11 },
+    "skchr_finlpp_2":   { "attack_begin": 11, "frame_corr": 1 },
     "skchr_fmout_2":    { "reset_attack": true },
     "skchr_franka_2":	{ "reset_attack": true },
     "skchr_frostl_1":   { "cast_time": 1.33, "sim": true}, 
