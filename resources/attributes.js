@@ -321,6 +321,7 @@ function applyBuff(charAttr, buffFrm, tag, blackbd, isSkill, log) {
       case "tachr_144_red_1": // 红
         writeBuff(`min_atk_scale: ${blackboard.atk_scale}`);
         done = true; break;
+      case "tachr_117_myrrh_1":
       case "tachr_2014_nian_2":
       case "tachr_215_mantic_1": // 狮蝎，平时不触发
         done = true; break;
@@ -446,6 +447,8 @@ function applyBuff(charAttr, buffFrm, tag, blackbd, isSkill, log) {
       case "skchr_grani_2":
       case "skchr_astesi_2":
       case "skchr_hpsts_2":
+      case "skchr_myrrh_1":
+      case "skchr_myrrh_2":
         buffFrame.maxTarget = 2;
         writeBuff(`最大目标数 = ${buffFrame.maxTarget}`);
         break;
@@ -632,7 +635,7 @@ function calcDurations(isSkill, attackTime, levelData, buffList, buffFrame, enem
       var t = frameBegin / 30;
       attackCount = Math.ceil((duration - t) / attackTime);
       log.write(`  - 抬手时间（测试）: ${t.toFixed(3)}s, ${frameBegin} 帧`);
-      log.writeNote("重置普攻抬手暂记为0.4s");
+      log.writeNote(`重置普攻抬手估算 ${t.toFixed(3)}s`);
     }
     // 技能类型
     if (levelData.description.includes("持续时间无限")) {
@@ -865,10 +868,28 @@ function calculateAttack(charAttr, enemy, raidBlackboard, isSkill, charData, lev
   } else if (charData.description.includes("恢复三个") &&
              !(isSkill && charId == "char_275_breeze"))
     buffFrame.maxTarget = 3;
+
   // 计算最终攻击间隔，考虑fps修正
   let fps = 30;
   let realAttackTime = finalFrame.baseAttackTime * 100 / finalFrame.attackSpeed;
-  let frame = Math.round(realAttackTime * fps); // 舍入成帧数
+  let frame = realAttackTime * fps; // 舍入成帧数
+  // 额外帧数补偿 https://bbs.nga.cn/read.php?tid=20555008
+  let corr = checkSpecs(charId, "frame_corr");
+  if (!isSkill) {
+    if (corr) {
+      log.write(`  - 帧数补偿 ${frame.toFixed(2)}+${corr}`);
+      log.writeNote(`普攻帧数补偿 +${corr}`);
+      frame += corr;
+    }
+  } else {
+    corr = checkSpecs(blackboard.id, "frame_corr");
+    if (corr) {
+      log.write(`  - 帧数补偿 ${frame.toFixed(2)}+${corr}`);
+      log.writeNote(`技能帧数补偿 +${corr}`);
+      frame += corr;
+    }
+  }
+  frame = Math.round(frame);  // 最后再舍入
   let frameAttackTime = frame / fps;
   let attackTime = frameAttackTime;
 
