@@ -128,7 +128,7 @@ function load() {
         </optgroup> 
       </select>
       <div class="input-group-append">
-        <button class="btn btn-outline-secondary dps__goto" type="button"><i class="fas fa-search"></i></button>
+        <button class="btn btn-outline-secondary dps__goto" type="button" v-on:click="goto"><i class="fas fa-search"></i></button>
       </div>
     </div>
   </td>`);
@@ -157,6 +157,9 @@ function load() {
       debugPrint: function(obj) {
         //console.log(JSON.stringify(obj, null, 2));
         return JSON.stringify(obj, null, 2);
+      },
+      goto: function(event) {
+        window.open(`../character/#!/${this.charId}`, '_blank'); 
       }
     },
     watch: {
@@ -240,10 +243,12 @@ function calculate(charId) {
     name: db.name,
     skill: {},
     stages: stages,
-    dps: {}
+    dps: {},
+    notes: {}
   };
   for (let k in result) {
-    resultView.skill[k] = result[k]["基准"].skillName;
+    resultView.skill[k] = result[k]["满潜"].skillName;
+    resultView.notes[k] = result[k]["满潜"].dps.note;
     resultView.dps[k] = {};
     for (let st in stages) {
       var entry = result[k][st].dps;
@@ -270,7 +275,7 @@ const HealKeys = {
 
 function plot(view, key) {
   // rotate data for plot columns
-  let columns = [], groups = [], skill_names = [];
+  let columns = [], groups = [], skill_names = [], notes = [];
   var last = {};
   for (let stg in view.stages) {
     var entry = [stg];
@@ -288,34 +293,50 @@ function plot(view, key) {
     columns.push(entry);
     groups.push(stg);
   }
-  for (let skill in view.skill)
+  var x = 0.02;
+  for (let skill in view.skill) {
     skill_names.push(view.skill[skill]);
-
+    notes.push({x: x, y: 20, content: view.notes[skill]});
+    x+=1;
+  }
   window.chart = c3.generate({
     bindto: "#chart",
+    size: { height: 400 },
     data: {
       type: "bar",
       columns: [],
       groups: [groups],
       order: null,
-      colors: { "基准": "#eeeeee" }
     },
     axis: {
       rotated: true,
       x: {
         type: "category",
         categories: skill_names
+      },
+      y: {
+        tick: { fit: false },
       }
     },
     bar: {
       width: { ratio: 0.4 }
     },
+    stanford: {
+      texts: notes
+    },
+    grid: {
+      y: { show: true }
+    },
     zoom: { enabled: true },
+    color: {
+      pattern: [ "#cccccc", "#4169e1", "#ff7f50", "#ffd700", "#dc143c", "#ee82ee" ]
+    }
   });
 
+  window.chart.load({ columns: columns });
   setTimeout(function() {
-    window.chart.load({ columns: columns }, 1000);
-  });
+    $(".c3-chart-bar.c3-target-基准").css("opacity", 0.4);
+  }, 100);
 }
 
 function updatePlot(view, key) {
@@ -330,9 +351,9 @@ function updatePlot(view, key) {
         value = view.dps[skill][stg][HealKeys[key]];
       }
       if (skill in last)
-        entry.push(value - last[skill]);
+        entry.push((value - last[skill]).toFixed(2));
       else
-        entry.push(value);
+        entry.push(value.toFixed(2));
       last[skill] = value;
     }
     columns.push(entry);
@@ -341,10 +362,10 @@ function updatePlot(view, key) {
   for (let skill in view.skill)
     skill_names.push(view.skill[skill]);
 
-  setTimeout(function() {
-    window.chart.load({ columns: columns, groups: groups }, 1000);
-  });
-
+    window.chart.load({ columns: columns, groups: groups });
+    setTimeout(function() {
+      $(".c3-chart-bar.c3-target-基准").css("opacity", 0.4);
+    }, 200);
 }
 
 pmBase.hook.on('init', init);
