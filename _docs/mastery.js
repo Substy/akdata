@@ -36,6 +36,7 @@ function init() {
   AKDATA.load([
     'excel/character_table.json',
     'excel/skill_table.json',
+    'excel/item_table.json',
     '../version.json',
     '../customdata/dps_specialtags.json',
     '../customdata/dps_options.json',
@@ -43,12 +44,31 @@ function init() {
   ], load);
 }
 
-const charColumnCount = $(document).width() <= 1400 ? 2 : 4;
-const Characters = new Array(charColumnCount);
-
-function getElement(classPart, index) {
-  return $(`.dps__${classPart}[data-index="${index}"]`);
+function queryArkPlanner(mats, callback, ...args) {
+  var url = "https://planner.penguin-stats.io/plan";
+  var data = {
+    required: mats,
+    owned: {},
+    extra_outc: false,
+    exp_demand: false,
+    gold_demand: true
+  };
+  //console.log("query ArkPlanner ->", JSON.stringify(data, null, 2));
+  
+  $.ajax({
+    type: "post",
+    url: url,
+    data: JSON.stringify(data, null, 2),
+    dataType: "json",
+    crossDomain: true,  // 跨域
+    success: function (result) {
+   //   console.log("<-", result, args);
+      callback(result, ...args);
+    },
+    error: alert
+  });
 }
+// queryArkPlanner({"碳素组": 30, "技巧概要·卷3": 30});
 
 function buildVueModel() {
   let version = AKDATA.Data.version;
@@ -71,7 +91,9 @@ function buildVueModel() {
     charId: "-",
     chartKey: "dps",
     resultView: {},
-    test: "test"
+    test: {},
+    plannerResponse: {},
+    jobs: 0
   };
 }
 
@@ -107,14 +129,20 @@ function load() {
     </div>
     <div id="chart"></div>
   </div>
-  <!--
+  <div class="card mb-2">
+    <div class="card-header">
+      <div class="card-title mb-0">专精材料（ × <a href="https://planner.penguin-stats.io/" target="_blank">ArkPlanner</a>）</div>
+    </div>
+    <div id="mats_table"></div>
+  </div>  
   <div class="card mb-2">
     <div class="card-header">
       <div class="card-title mb-0">调试信息</div>
     </div>
     <pre>{{ debugPrint(test) }}</pre>
+    <div id="_post"></div>
   </div>
-  -->
+
 </div>`;
   let $dps = $(html);
 
@@ -153,6 +181,8 @@ function load() {
     methods: {
       changeChar: function(event) {
         this.resultView = calculate(this.charId);
+        $("#mats_table").text("正在计算...");
+        beginCalcMats(this.resultView);
       },
       debugPrint: function(obj) {
         //console.log(JSON.stringify(obj, null, 2));
@@ -160,6 +190,43 @@ function load() {
       },
       goto: function(event) {
         window.open(`../character/#!/${this.charId}`, '_blank'); 
+      },
+      updateMats: function(result) {
+        let matsView = {};
+        let rv = this.resultView;
+        let pr = this.plannerResponse;
+        for (var sk in rv.skill) {
+          matsView[sk] = {title: rv.skill[sk]};
+          matsView[sk].list = [];
+          for (var lv in pr[sk]) {
+            var items = [];
+            for (var x in pr[sk][lv].mats) {
+              items.push(` ${x} × ${pr[sk][lv].mats[x]}`);
+            }
+            matsView[sk].list.push([
+              `${lv} <i class="fas fa-angle-right"></i> ${parseInt(lv)+1}`,
+              items,
+              pr[sk][lv].cost
+            ]);
+          }
+        }
+        // this.test = matsView;
+        let matsHtml = "";
+        for (var sk in matsView) {
+          matsHtml += pmBase.component.create({
+            type: 'list',
+            card: true,
+            title: `${matsView[sk].title}`,
+            header: ['等级', '素材', '等效理智'],
+            list: matsView[sk].list
+          });
+        }
+        $("#mats_table").html(matsHtml);
+      },
+      jobCallback: function() {
+        console.log("- all jobs finished");
+        console.timeEnd("calcMats");
+        this.updateMats(this.plannerResponse);
       }
     },
     watch: {
@@ -170,20 +237,14 @@ function load() {
       chartKey: function(_new, _old) {
         let cv = buildChartView(this.resultView, _new);
         updatePlot(cv);
+      },
+      jobs: function(_new, _old) {
+        if (this.charId != "-" && this.jobs == 0)
+          this.jobCallback();
       }
     }
   });
 
-  // test c3.js
-  // var chart = c3.generate({
-  //   bindto: '#chart',
-  //   data: {
-  //     columns: [
-  //       ['data1', 30, 200, 100, 400, 150, 250],
-  //       ['data2', 50, 20, 10, 40, 15, 25]
-  //     ]
-  //   } 
-  // });
 }
 
 function goto() {
@@ -220,11 +281,12 @@ function buildChar(charId, skillId, recipe) {
 
 function calculate(charId) {
   let db = AKDATA.Data.character_table[charId];
+  let itemdb = AKDATA.Data.item_table.items;
   let recipe = DefaultAttribute;
   let enemy = DefaultEnemy;
   let stages = Stages;
   let raidBuff = { atk: 0, atkpct: 0, ats: 0, cdr: 0 };
-  let result = {};
+  let result = {}, mats = {};
 
   // calculate dps for each recipe case.
   db.skills.forEach(skill => {
@@ -236,17 +298,21 @@ function calculate(charId) {
       entry[st] = ch;
     };
     result[skill.skillId] = entry;
+
+    mats[skill.skillId] = skill.levelUpCostCond.map(x => x.levelUpCost);
   });
   // window.model.test = result;
 
   // extract result, making it more readable
   // name, skill, stage, damageType, avg, skill, skilldamage, cdr
   let resultView = {
+    id: charId,
     name: db.name,
     skill: {},
     stages: stages,
     dps: {},
-    notes: {}
+    notes: {},
+    mats: {}
   };
   for (let k in result) {
     resultView.skill[k] = result[k]["满潜"].skillName;
@@ -267,8 +333,17 @@ function calculate(charId) {
       };
      // console.log(k, st, entry.skill.dur.startSp);
     };
+    resultView.mats[k] = [];
+    mats[k].forEach(level => {
+      var i = {};
+      level.forEach(x => {
+        i[itemdb[x.id].name] = x.count;
+      });
+      resultView.mats[k].push(i);
+    });
   };
 
+ //console.log(window.vue_app.debugPrint(resultView.mats));
   return resultView;
 }
 
@@ -365,6 +440,37 @@ function updatePlot(chartView) {
   setTimeout(function() {
     $(".c3-chart-bar.c3-target-基准").css("opacity", 0.4);
   }, 200);
+}
+
+// use ajax post to invoke ArkPlanner
+// use vue var as semaphore to cooperate requests
+// when all request jobs are done (jobs == 0), the vue watch invokes jobDoneCallback()
+function beginCalcMats(resultView) {
+  console.time("calcMats");
+  window.vue_app.jobs = Object.keys(resultView.mats).length * 3;  // semaphore
+  var delay = 300;
+  for (var sk in resultView.mats) {
+    let level = 7;  // 7->8
+    resultView.mats[sk].forEach(m => {
+      (function (_m, _s, _l) {  // closure to bind args to setTimeout
+        setTimeout(function () {
+          queryArkPlanner(_m, matsCallback, {mats: _m, id: resultView.id, skill: _s, level: _l});
+        }, delay);
+      }(m, sk, level));
+      level += 1; delay += 300;
+    });
+  }
+}
+
+function matsCallback(result, kwargs) {
+  console.log(result.cost, kwargs);
+  if (!window.vue_app.plannerResponse[kwargs.skill])
+    window.vue_app.plannerResponse[kwargs.skill] = {};
+//  window.vue_app.plannerResponse[kwargs.skill][`${kwargs.level}`] = { mats: kwargs.mats, result: result };
+  window.vue_app.plannerResponse[kwargs.skill][`${kwargs.level}`] = { mats: kwargs.mats, cost: result.cost };
+
+  if (kwargs.id == window.vue_app.charId)  // filter old (slow) calls
+    window.vue_app.jobs -= 1;
 }
 
 pmBase.hook.on('init', init);
