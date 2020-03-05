@@ -1,7 +1,7 @@
 // 获取技能特判标记，存放在dps_specialtags.json中
 function checkSpecs(tag, spec) {
   let specs = AKDATA.Data.dps_specialtags;
-  if (!specs[tag]) return false;
+  if (!(tag in specs)) return false;
   else return specs[tag][spec];
 }
 
@@ -572,13 +572,14 @@ function checkResetAttack(key, blackboard) {
 }
 
 // 计算攻击次数和持续时间
-function calcDurations(isSkill, attackTime, levelData, buffList, buffFrame, enemyCount, log) {
+function calcDurations(isSkill, attackTime, attackSpeed, levelData, buffList, buffFrame, enemyCount, log) {
   let blackboard = buffList.skill;
   let skillId = blackboard.id;
   let spData = levelData.spData;
   let duration = 0;
   let attackCount = 0;
   let stunDuration = 0;
+  let startSp = 0;
 
   const spTypeTags = {
     1: "time",
@@ -611,6 +612,7 @@ function calcDurations(isSkill, attackTime, levelData, buffList, buffFrame, enem
       log.writeNote("按120s进行模拟");
       attackCount = skill_count;
       duration = skill_count * Math.max(ctime, attackTime);
+      startSp = spData.spCost - init_sp;
     } else {
       attackCount = normal_count;
       duration = normal_count * attackTime;
@@ -625,13 +627,19 @@ function calcDurations(isSkill, attackTime, levelData, buffList, buffFrame, enem
     // 快速估算
     attackCount = Math.ceil(levelData.duration / attackTime);
     duration = attackCount * attackTime;
+    startSp = spData.spCost - spData.initSp;
+
+    if (buffList["tachr_180_amgoat_2"]) { // 乱火
+      var init_sp = spData.initSp + (buffList["tachr_180_amgoat_2"].sp_min + buffList["tachr_180_amgoat_2"].sp_max) / 2;
+      startSp = spData.spCost - init_sp;
+    }
     // 重置普攻
     if (checkResetAttack(skillId, blackboard)) {
       if (duration > levelData.duration)
         log.write(`  - 可能重置普攻（覆盖 ${(duration - levelData.duration).toFixed(1)}s）`);
       duration = levelData.duration;
       // 抬手时间
-      var frameBegin = checkSpecs(skillId, "attack_begin") || 12;
+      var frameBegin = Math.round((checkSpecs(skillId, "attack_begin") || 12) * 100 / attackSpeed);
       var t = frameBegin / 30;
       attackCount = Math.ceil((duration - t) / attackTime);
       log.write(`  - 抬手时间（测试）: ${t.toFixed(3)}s, ${frameBegin} 帧`);
@@ -716,7 +724,7 @@ function calcDurations(isSkill, attackTime, levelData, buffList, buffFrame, enem
         log.write(`  - 可能重置普攻（覆盖 ${(duration-dd).toFixed(1)}s）`);
       duration = dd;
       // 抬手时间
-      var frameBegin = checkSpecs(skillId, "attack_begin") || 12;
+      var frameBegin = Math.round((checkSpecs(skillId, "attack_begin") || 12) * 100 / attackSpeed);
       var t = frameBegin / 30;
       attackCount = Math.ceil((duration - t) / attackTime);
       log.write(`  - 抬手时间（测试）: ${t.toFixed(3)}s, ${frameBegin} 帧`);
@@ -808,7 +816,8 @@ function calcDurations(isSkill, attackTime, levelData, buffList, buffFrame, enem
     hitCount,
     duration,
     stunDuration,
-    tags
+    tags,
+    startSp
   };
 }
 
@@ -930,7 +939,7 @@ function calculateAttack(charAttr, enemy, raidBlackboard, isSkill, charData, lev
   }
 
   // 计算攻击次数和持续时间
-  let dur = calcDurations(isSkill, attackTime, levelData, buffList, buffFrame, ecount, log);
+  let dur = calcDurations(isSkill, attackTime, finalFrame.attackSpeed, levelData, buffList, buffFrame, ecount, log);
   // 暴击次数
   if (options.crit && critBuffFrame["prob"]) {
     if (damageType != 2) {

@@ -7,6 +7,7 @@
     "char_260_durnar":	{ "damage_type": 1 },
     "char_2013_cerber": { "frame_corr": 1 },
     "skchr_amgoat_2":   { "keep_debuff": true, "cast_time": 1.2, "sim": true},
+    "skchr_amgoat_3":   { "frame_corr": 1 },
     "skchr_amiya_3":	{ "damage_type": 3 },
     "skchr_bldsk_2":    { "instant_buff": true },
     "skchr_broca_2":    { "frame_corr": 1.65 },

@@ -94,7 +94,7 @@ function load() {
   <div class="card mb-2">
     <div class="card-header">
       <div class="card-title">
-        专精收益
+        专精收益（以精2 1级 7级技能为基准计算）
         <span class="float-right">
           <input type="radio" id="btn_avg" value="dps" v-model="chartKey">
           <label for="btn_avg">平均dps/hps</label>
@@ -164,10 +164,12 @@ function load() {
     },
     watch: {
       resultView: function(_new, _old) {
-        plot(_new, this.chartKey);
+        let cv = buildChartView(_new, this.chartKey);
+        plot(cv);
       },
       chartKey: function(_new, _old) {
-        updatePlot(this.resultView, _new);
+        let cv = buildChartView(this.resultView, _new);
+        updatePlot(cv);
       }
     }
   });
@@ -254,13 +256,16 @@ function calculate(charId) {
       var entry = result[k][st].dps;
       resultView.dps[k][st] = {
         damageType: entry.skill.damageType,
+        spType: entry.skill.spType,
         dps: entry.globalDps,
         hps: entry.globalHps,
         s_dps: entry.skill.dps,
         s_hps: entry.skill.hps,
         s_dmg: entry.skill.totalDamage,
         s_heal: entry.skill.totalHeal,
+        s_ssp: entry.skill.dur.startSp,
       };
+     // console.log(k, st, entry.skill.dur.startSp);
     };
   };
 
@@ -273,83 +278,18 @@ const HealKeys = {
   s_dmg: "s_heal"
 };
 
-function plot(view, key) {
+// calculate() -> resultView -> build(key) -> chartView -> plot()
+function buildChartView(resultView, key) {
   // rotate data for plot columns
+  let view = resultView;
+  let k = key;
   let columns = [], groups = [], skill_names = [], notes = [];
   var last = {};
   for (let stg in view.stages) {
     var entry = [stg];
     for (let skill in view.skill) {
-      var value = view.dps[skill][stg][key];
-      if (view.dps[skill][stg].damageType == 2) {
-        value = view.dps[skill][stg][HealKeys[key]];
-      }
-      if (skill in last)
-        entry.push(value - last[skill]);
-      else
-        entry.push(value);
-      last[skill] = value;
-    }
-    columns.push(entry);
-    groups.push(stg);
-  }
-  var x = 0.02;
-  for (let skill in view.skill) {
-    skill_names.push(view.skill[skill]);
-    notes.push({x: x, y: 20, content: view.notes[skill]});
-    x+=1;
-  }
-  window.chart = c3.generate({
-    bindto: "#chart",
-    size: { height: 400 },
-    data: {
-      type: "bar",
-      columns: [],
-      groups: [groups],
-      order: null,
-    },
-    axis: {
-      rotated: true,
-      x: {
-        type: "category",
-        categories: skill_names
-      },
-      y: {
-        tick: { fit: false },
-      }
-    },
-    bar: {
-      width: { ratio: 0.4 }
-    },
-    stanford: {
-      texts: notes
-    },
-    grid: {
-      y: { show: true }
-    },
-    zoom: { enabled: true },
-    color: {
-      pattern: [ "#cccccc", "#4169e1", "#ff7f50", "#ffd700", "#dc143c", "#ee82ee" ]
-    }
-  });
-
-  window.chart.load({ columns: columns });
-  setTimeout(function() {
-    $(".c3-chart-bar.c3-target-基准").css("opacity", 0.4);
-  }, 100);
-}
-
-function updatePlot(view, key) {
-  // rotate data for plot columns
-  let columns = [], groups = [], skill_names = [];
-  var last = {};
-  for (let stg in view.stages) {
-    var entry = [stg];
-    for (let skill in view.skill) {
-      var value = view.dps[skill][stg][key];
-      if (view.dps[skill][stg].damageType == 2) {
-        value = view.dps[skill][stg][HealKeys[key]];
-      }
+      k = (view.dps[skill][stg].damageType == 2) ? HealKeys[key] : key; 
+      var value = view.dps[skill][stg][k];
       if (skill in last)
         entry.push((value - last[skill]).toFixed(2));
       else
@@ -359,13 +299,72 @@ function updatePlot(view, key) {
     columns.push(entry);
     groups.push(stg);
   }
-  for (let skill in view.skill)
+  var x = 0.02, i = 0;
+  for (let skill in view.skill) {
     skill_names.push(view.skill[skill]);
+    let line = view.notes[skill];
+    
+    if (view.dps[skill]["满潜"].spType != 8) {
+      if (line != "") line += "\n";
+      line += `点火时间 ${view.dps[skill]["基准"].s_ssp}s -> ${view.dps[skill]["满潜"].s_ssp}s`;
+      console.log(view.dps[skill]["满潜"].spType);
+      if (view.dps[skill]["满潜"].s_ssp <= 0)
+        line += " （落地点火）";
+    }
+    notes.push({x: x, y: 20, content: line});
+    x+=1;
+  }
+  // console.log(columns, groups, skill_names, notes);
 
-    window.chart.load({ columns: columns, groups: groups });
-    setTimeout(function() {
-      $(".c3-chart-bar.c3-target-基准").css("opacity", 0.4);
-    }, 200);
+  return { columns, groups, skill_names, notes };
+}
+
+function plot(chartView) {  
+  window.chart = c3.generate({
+    bindto: "#chart",
+    size: { height: 400 },
+    data: {
+      type: "bar",
+      columns: [],
+      groups: [chartView.groups],
+      order: null,
+    },
+    axis: {
+      rotated: true,
+      x: {
+        type: "category",
+        categories: chartView.skill_names
+      },
+      y: {
+        tick: { fit: false },
+      }
+    },
+    bar: {
+      width: { ratio: 0.4 }
+    },
+    stanford: {
+      texts: chartView.notes
+    },
+    grid: {
+      y: { show: true }
+    },
+    zoom: { enabled: true },
+    color: {
+      pattern: [ "#cccccc", "#4169e1", "#ff7f50", "#ffd700", "#dc143c", "#ee82ee", "#e6e6fa" ]
+    }
+  });
+
+  window.chart.load({ columns: chartView.columns });
+  setTimeout(function() {
+    $(".c3-chart-bar.c3-target-基准").css("opacity", 0.4);
+  }, 100);
+}
+
+function updatePlot(chartView) {
+  window.chart.load({ columns: chartView.columns, groups: chartView.groups });
+  setTimeout(function() {
+    $(".c3-chart-bar.c3-target-基准").css("opacity", 0.4);
+  }, 200);
 }
 
 pmBase.hook.on('init', init);
