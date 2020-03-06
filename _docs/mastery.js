@@ -31,6 +31,8 @@ const Stages = {
   "满潜": { potential: 5, desc: "满级 满潜 专精3"},
 };
 
+let itemCache = {};
+
 function init() {
   $('#update_prompt').text("正在载入角色数据，请耐心等待......");
   AKDATA.load([
@@ -98,8 +100,13 @@ function buildVueModel() {
 }
 
 function load() {
-  $("#vue_version").html("程序版本: {{ version.akdata }}, 数据版本: {{ version.gamedata }}");
-
+  let version = AKDATA.Data.version;
+  if (version.gamedata != AKDATA.currentVersion || version.akdata != AKDATA.akVersion) {
+    $('#vue_version').text(`有新数据，请点击[清除缓存]更新`);
+  } else {
+    $("#vue_version").html("程序版本: {{ version.akdata }}, 数据版本: {{ version.gamedata }}");
+  }
+  
   // build html
   let html = `
 <div id="vue_app">  
@@ -135,6 +142,7 @@ function load() {
     </div>
     <div id="mats_table"></div>
   </div>  
+  <!--
   <div class="card mb-2">
     <div class="card-header">
       <div class="card-title mb-0">调试信息</div>
@@ -142,7 +150,7 @@ function load() {
     <pre>{{ debugPrint(test) }}</pre>
     <div id="_post"></div>
   </div>
-
+  -->
 </div>`;
   let $dps = $(html);
 
@@ -201,7 +209,8 @@ function load() {
           for (var lv in pr[sk]) {
             var items = [];
             for (var x in pr[sk][lv].mats) {
-              items.push(` ${x} × ${pr[sk][lv].mats[x]}`);
+            //  items.push(` ${x} × ${pr[sk][lv].mats[x]}`);
+              items.push(AKDATA.getItemBadge("MATERIAL", itemCache[x].id, pr[sk][lv].mats[x]));
             }
             matsView[sk].list.push([
               `${lv} <i class="fas fa-angle-right"></i> ${parseInt(lv)+1}`,
@@ -338,6 +347,7 @@ function calculate(charId) {
       var i = {};
       level.forEach(x => {
         i[itemdb[x.id].name] = x.count;
+        itemCache[itemdb[x.id].name] = {id: x.id, name: itemdb[x.id].name, rarity: itemdb[x.id].rarity};
       });
       resultView.mats[k].push(i);
     });

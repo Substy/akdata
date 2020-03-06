@@ -12,9 +12,6 @@ const ProfessionNames = {
 //  "TRAP": "装置",
 };
 
-const akVersion = "200305";
-const currentVersion = "20-02-28-17-29-41-008887";
-
 function init() {
   $('#update_prompt').text("正在载入角色数据，请耐心等待......");
   AKDATA.load([
@@ -36,7 +33,7 @@ function getElement(classPart, index) {
 
 function load() {
   let version = AKDATA.Data.version;
-  if (version.gamedata != currentVersion || version.akdata != akVersion) {
+  if (version.gamedata != AKDATA.currentVersion || version.akdata != AKDATA.akVersion) {
     $('#update_prompt').text(`有新数据，请点击[清除缓存]更新`);
   } else {
     $('#update_prompt').text(`程序版本: ${version.akdata}, 数据版本: ${version.gamedata}`);
