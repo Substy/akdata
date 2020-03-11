@@ -1,6 +1,7 @@
 ---
-title: 关卡信息（可用）
+title: 关卡信息（beta）
 withjs: true
 withcss: true
 parent: /stages/
 ---
+注意：关卡信息功能测试中，显示信息可能有遗漏，仅供参考
