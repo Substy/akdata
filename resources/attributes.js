@@ -528,6 +528,10 @@ function applyBuff(charAttr, buffFrm, tag, blackbd, isSkill, log) {
       case "skchr_hsguma_2":
         writeBuff("计算反射伤害，而非DPS");
         break;
+      case "skchr_yuki_2":
+        blackboard["attack@atk_scale"] *= 3;
+        writeBuff(`总倍率: ${blackboard["attack@atk_scale"]}`);
+        break;
     }
   }
   
@@ -687,10 +691,7 @@ function calcDurations(isSkill, attackTime, attackSpeed, levelData, buffList, bu
       }
     }
     // 特判
-    if (skillId == "skchr_yuki_2") {
-      attackCount = Math.ceil(attackCount / 3) * 3;
-      log.write(`  - [特殊] ${displayNames["skchr_yuki_2"]}: 攻击有效时间 = ${attackCount} s, 技能覆盖 2s`);
-    } else if (skillId == "skchr_huang_3") {
+    if (skillId == "skchr_huang_3") {
       attackCount -= 2;
       log.write(`  - [特殊] ${displayNames["skchr_huang_3"]}: 实际攻击 ${attackCount}段+终结`);
     }

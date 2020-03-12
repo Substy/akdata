@@ -1,4 +1,5 @@
 {
+    "char_118_yuki":    { "frame_corr": 1 },
     "char_127_estell":  { "frame_corr": 1 },
     "char_134_ifrit":   { "frame_corr": 1 }, 
     "char_158_milu":    { "frame_corr": 1 },
@@ -67,7 +68,7 @@
     "skchr_texas_2":    { "cast_time": 2.2},
     "skchr_whitew_2":	{ "reset_attack": true },
     "skchr_yak_1":	{ "damage_type": "0" },
-    "skchr_yuki_2":	{ "reset_attack": true, "sec": true },
+    "skchr_yuki_2":	{ "reset_attack": true, "attack_begin": 22, "frame_corr": 1 },
     "skcom_heal_self[1]":   { "cast_time": 1.2},
     "skcom_heal_self[2]":   { "cast_time": 1.5},
     "skcom_assist_cost[2]":	{ "reset_attack": true },
