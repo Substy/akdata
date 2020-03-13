@@ -1215,10 +1215,18 @@ function calculateAttack(charAttr, enemy, raidBlackboard, isSkill, charData, lev
   let totalHeal = [2, 4].reduce((x, y) => x + damagePool[y] + extraDamagePool[y], 0);
   let extraDamage = [0, 1, 3].reduce((x, y) => x + extraDamagePool[y], 0);
   let extraHeal = [2, 4].reduce((x, y) => x + extraDamagePool[y], 0);
+
+  log.write(`  - 总伤害: ${totalDamage.toFixed(2)}`);
+  if (totalHeal != 0) log.write(`  - 总治疗: ${totalHeal.toFixed(2)}`);
+
   let dps = totalDamage / (dur.duration + dur.stunDuration);
   let hps = totalHeal / (dur.duration + dur.stunDuration);
-  log.write(`  - 总伤害: ${totalDamage.toFixed(2)}`);
-  if (hps != 0) log.write(`  - 总治疗: ${totalHeal.toFixed(2)}`);
+  // 均匀化重置普攻时的普攻dps
+  if (!isSkill && checkResetAttack(blackboard.id, blackboard)) {
+    let d = dur.attackCount * attackTime;
+    log.write(`  - 以 ${d.toFixed(1)}s 计算普攻dps`);
+    dps = totalDamage / d; hps = totalHeal / d;
+  }
   log.write(`  - DPS: ${dps.toFixed(1)}, HPS: ${hps.toFixed(1)}`);
   log.write("----");
 
@@ -1355,7 +1363,7 @@ function getBuffedAttributes(basic, buffs) {
 }
 
 function getAttribute(frames, level, minLevel, attr) {
-  return (level - minLevel) / (frames[1].level - frames[0].level) * (frames[1].data[attr] - frames[0].data[attr]) + frames[0].data[attr];
+  return Math.round((level - minLevel) / (frames[1].level - frames[0].level) * (frames[1].data[attr] - frames[0].data[attr]) + frames[0].data[attr]);
 }
 
 function getBlackboard(blackboardArray) {
