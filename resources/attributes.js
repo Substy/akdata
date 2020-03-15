@@ -1,8 +1,9 @@
 // 获取技能特判标记，存放在dps_specialtags.json中
 function checkSpecs(tag, spec) {
   let specs = AKDATA.Data.dps_specialtags;
-  if (!(tag in specs)) return false;
-  else return specs[tag][spec];
+  if ((tag in specs) && (spec in specs[tag]))
+    return specs[tag][spec];
+  else return false;
 }
 
 function getCharAttributes(char) {
@@ -173,10 +174,10 @@ function applyBuff(charAttr, buffFrm, tag, blackbd, isSkill, log) {
         case "base_attack_time":
           if (blackboard.base_attack_time < 0) { // 攻击间隔缩短 - 加算
             buffFrame.baseAttackTime += blackboard.base_attack_time;
-            writeBuff(`base_attack_time: ${buffFrame.baseAttackTime.toFixed(2)}s`);
+            writeBuff(`base_attack_time: ${buffFrame.baseAttackTime.toFixed(3)}s`);
           } else {  // 攻击间隔延长 - 乘算
             buffFrame.baseAttackTime += basic.baseAttackTime * blackboard.base_attack_time;
-            writeBuff(`base_attack_time: +${(basic.baseAttackTime * blackboard.base_attack_time).toFixed(2)}s`);
+            writeBuff(`base_attack_time: +${(basic.baseAttackTime * blackboard.base_attack_time).toFixed(3)}s`);
           }
           break;
         case "attack_speed":
@@ -603,9 +604,15 @@ function calcDurations(isSkill, attackTime, attackSpeed, levelData, buffList, bu
       init_sp = (buffList["tachr_180_amgoat_2"].sp_min + buffList["tachr_180_amgoat_2"].sp_max) / 2;
     else if (buffList["tachr_134_ifrit_2"]) // 莱茵回路
       extra_sp = Math.floor(duration / buffList["tachr_134_ifrit_2"].interval) * buffList["tachr_134_ifrit_2"].sp;
-    let ctime = checkSpecs(skillId, "cast_time") || attackTime;
+    
+    // 施法时间
+    let ctime = attackTime;
+    if (checkSpecs(skillId, "cast_time"))
+      ctime = checkSpecs(skillId, "cast_time") / 30;
+    if (checkSpecs(skillId, "cast_bat"))
+      ctime = checkSpecs(skillId, "cast_bat") * 100 / attackSpeed / 30;
 
-    log.write(`  - [模拟] T = ${duration}s, 初始sp = ${init_sp}, 技能sp = ${spData.spCost}, 施法时间 = ${ctime.toFixed(2)}s`);
+    log.write(`  - [模拟] T = ${duration}s, 初始sp = ${init_sp}, 技能sp = ${spData.spCost}, 施法时间 = ${ctime.toFixed(3)}s`);
     log.write(`  - [模拟] sp回复 = ${sp_rate.toFixed(2)}/s, 额外sp = ${extra_sp}`);
 
     let skill_count = Math.floor((duration * sp_rate + init_sp + extra_sp) / (spData.spCost + ctime * sp_rate));
@@ -640,13 +647,14 @@ function calcDurations(isSkill, attackTime, attackSpeed, levelData, buffList, bu
     // 重置普攻
     if (checkResetAttack(skillId, blackboard)) {
       if (duration > levelData.duration)
-        log.write(`  - 可能重置普攻（覆盖 ${(duration - levelData.duration).toFixed(1)}s）`);
+        log.write(`  - 可能重置普攻（覆盖 ${(duration - levelData.duration).toFixed(3)}s）`);
       duration = levelData.duration;
       // 抬手时间
       var frameBegin = Math.round((checkSpecs(skillId, "attack_begin") || 12) * 100 / attackSpeed);
       var t = frameBegin / 30;
       attackCount = Math.ceil((duration - t) / attackTime);
-      log.write(`  - 抬手时间（测试）: ${t.toFixed(3)}s, ${frameBegin} 帧`);
+      log.write(`  - 抬手时间: ${t.toFixed(3)}s, ${frameBegin} 帧`);
+      if (frameBegin == 12) log.write("  - （需要补充实测数据）");
       log.writeNote(`重置普攻抬手估算 ${t.toFixed(3)}s`);
     }
     // 技能类型
@@ -683,9 +691,9 @@ function calcDurations(isSkill, attackTime, attackSpeed, levelData, buffList, bu
         if (checkSpecs(skillId, "cast_time")) {
           let ct = checkSpecs(skillId, "cast_time");
           if (duration < ct) {
-            log.write(`  - [特殊] 技能释放时间: ${ct}s`);
-            log.writeNote(`施法时间 ${ct}s`);
-            duration = ct;
+            log.write(`  - [特殊] 技能释放时间: ${ct} 帧, ${(ct/30).toFixed(3)} s`);
+            log.writeNote(`施法时间 ${ct} 帧`);
+            duration = ct / 30;
           }
         }
       }
@@ -709,10 +717,10 @@ function calcDurations(isSkill, attackTime, attackSpeed, levelData, buffList, bu
     // 施法时间
     if (checkSpecs(skillId, "cast_time")) {
       let ct = checkSpecs(skillId, "cast_time");
-      if (attackTime > ct) {
-        attackDuration -= (attackTime - ct);
-        log.write(`  - [特殊] 技能释放时间: ${ct}s, 普攻时间偏移 ${(ct - attackTime).toFixed(1)}s (${attackDuration.toFixed(1)}s)`);
-        log.writeNote(`施法时间 ${ct}s`);
+      if (attackTime > ct/30) {
+        attackDuration -= (attackTime - ct/30);
+        log.write(`  - [特殊] 技能释放时间: ${ct} 帧, 普攻时间偏移 ${(ct/30 - attackTime).toFixed(3)}s (${attackDuration.toFixed(3)}s)`);
+        log.writeNote(`施法时间 ${ct} 帧`);
       }
     }
 
@@ -722,13 +730,14 @@ function calcDurations(isSkill, attackTime, attackSpeed, levelData, buffList, bu
     if (checkResetAttack(skillId, blackboard) && spData.spType != 8) {
       var dd = spData.spCost / (1 + buffFrame.spRecoveryPerSec);
       if (duration > dd)
-        log.write(`  - 可能重置普攻（覆盖 ${(duration-dd).toFixed(1)}s）`);
+        log.write(`  - 可能重置普攻（覆盖 ${(duration-dd).toFixed(3)}s）`);
       duration = dd;
       // 抬手时间
       var frameBegin = Math.round((checkSpecs(skillId, "attack_begin") || 12) * 100 / attackSpeed);
       var t = frameBegin / 30;
       attackCount = Math.ceil((duration - t) / attackTime);
-      log.write(`  - 抬手时间（测试）: ${t.toFixed(3)}s, ${frameBegin} 帧`);
+      log.write(`  - 抬手时间: ${t.toFixed(3)}s, ${frameBegin} 帧`);
+      if (frameBegin == 12) log.write("  - （需要补充实测数据）");
     }
     // 技能类型
     switch (spData.spType) {
@@ -856,6 +865,12 @@ function calculateAttack(charAttr, enemy, raidBlackboard, isSkill, charData, lev
     buffFrame.times = 2;
     log.write("  - [特殊] 陈 - 攻击2次");
   }
+  // 瞬发技能的实际基础攻击间隔
+  if (isSkill && checkSpecs(blackboard.id, "cast_bat")) {
+    var f = checkSpecs(blackboard.id, "cast_bat");
+    basicFrame.baseAttackTime = f / 30;
+    log.write(`  - [特殊] ${displayNames[blackboard.id]} - 技能原本攻击间隔 ${(f/30).toFixed(3)}s, ${f} 帧`);
+  }
 
   let finalFrame = getBuffedAttributes(basicFrame, buffFrame);
   let critBuffFrame = JSON.parse(JSON.stringify(buffFrame));  // deep copy?
@@ -884,19 +899,18 @@ function calculateAttack(charAttr, enemy, raidBlackboard, isSkill, charData, lev
   let realAttackTime = finalFrame.baseAttackTime * 100 / finalFrame.attackSpeed;
   let frame = realAttackTime * fps; // 舍入成帧数
   // 额外帧数补偿 https://bbs.nga.cn/read.php?tid=20555008
-  let corr = checkSpecs(charId, "frame_corr");
-  if (!isSkill) {
-    if (corr) {
-      log.write(`  - 帧数补偿 ${frame.toFixed(2)}+${corr}`);
-      log.writeNote(`普攻帧数补偿 +${corr}`);
-      frame += corr;
-    }
-  } else {
-    corr = checkSpecs(blackboard.id, "frame_corr");
-    if (corr) {
-      log.write(`  - 帧数补偿 ${frame.toFixed(2)}+${corr}`);
-      log.writeNote(`技能帧数补偿 +${corr}`);
-      frame += corr;
+  let corr = checkSpecs(charId, "frame_corr") || 0;
+  let corr_s = checkSpecs(blackboard.id, "frame_corr");
+  console.log(corr, corr_s);
+  if ((!(corr_s === false)) && isSkill) corr = corr_s;
+  if (corr != 0) {
+    var prefix = (corr>0?"+":"");
+    log.write(`  - 帧数补偿 ${frame.toFixed(3)} ${prefix} ${corr}`);
+    frame += corr;  
+    if (isSkill) {
+      log.writeNote(`技能帧数补偿 ${prefix}${corr}`);
+    } else {
+      log.writeNote(`普攻帧数补偿 ${prefix}${corr}`);
     }
   }
   frame = Math.round(frame);  // 最后再舍入
@@ -968,8 +982,8 @@ function calculateAttack(charAttr, enemy, raidBlackboard, isSkill, charData, lev
   log.write(`  - 攻击力 / 倍率:  ${finalFrame.atk.toFixed(2)} = ${atk_line}`);
   log.write(`  - 攻速: ${finalFrame.attackSpeed} %`);
   log.write(`  - 攻击间隔: ${finalFrame.baseAttackTime.toFixed(3)} s`);
-  log.write(`  - 最终攻击间隔 / FPS修正: ${realAttackTime.toFixed(3)} s (${frameAttackTime.toFixed(3)} s, ${frame} 帧)`);
-  log.write(`  - 持续: ${dur.duration.toFixed(1)} s`);
+  log.write(`  - 最终攻击间隔 / 舍入到帧: ${realAttackTime.toFixed(3)} s (${frame} 帧, ${frameAttackTime.toFixed(3)} s)`);
+  log.write(`  - 持续: ${dur.duration.toFixed(3)} s`);
   log.write(`  - 攻击次数: ${dur.attackCount*dur.times} (${dur.times} 连击 x ${dur.attackCount})`);
   if (edef != enemy.def)
     log.write(`  - 敌人防御: ${edef.toFixed(1)} (${(edef-enemy.def).toFixed(1)})`);
@@ -1224,7 +1238,7 @@ function calculateAttack(charAttr, enemy, raidBlackboard, isSkill, charData, lev
   // 均匀化重置普攻时的普攻dps
   if (!isSkill && checkResetAttack(blackboard.id, blackboard)) {
     let d = dur.attackCount * attackTime;
-    log.write(`  - 以 ${d.toFixed(1)}s 计算普攻dps`);
+    log.write(`  - 以 ${d.toFixed(3)}s 计算普攻dps`);
     dps = totalDamage / d; hps = totalHeal / d;
   }
   log.write(`  - DPS: ${dps.toFixed(1)}, HPS: ${hps.toFixed(1)}`);
