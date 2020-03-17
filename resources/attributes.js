@@ -81,6 +81,7 @@ function calculateDps(char, enemy, raidBuff) {
   console.log(charData.name, levelData.name);
 
   log.write(`技能: ${char.skillId} ${levelData.name} @ 等级 ${char.skillLevel+1}`);
+  displayNames[charId] = charData.name;
   displayNames[char.skillId] = levelData.name;  // add to name cache
 
   log.write(`普攻:`);
@@ -302,7 +303,7 @@ function applyBuff(charAttr, buffFrm, tag, blackbd, isSkill, log) {
         ["atk", "def", "attack_speed", "max_hp"].forEach(key => {
           if (blackboard[key]) blackboard[key] *= blackboard.max_stack_cnt;
       });
-      } else if (tag == "tachr_188_helage_1") {
+      } else if (["tachr_188_helage_1", "tachr_337_utage_1"].includes(tag)) {
         blackboard.attack_speed = blackboard.min_attack_speed;
       }
     } else done = true;
@@ -384,6 +385,7 @@ function applyBuff(charAttr, buffFrm, tag, blackbd, isSkill, log) {
       case "skchr_helage_1":
       case "skchr_helage_2":
       case "skchr_excu_2":
+      case "skchr_bpipe_2":
         buffFrame.times = 2;
         writeBuff(`攻击次数 = ${buffFrame.times}`);
         break;
@@ -395,6 +397,7 @@ function applyBuff(charAttr, buffFrm, tag, blackbd, isSkill, log) {
         writeBuff(`攻击次数 = ${buffFrame.times} 最大目标数 = ${buffFrame.maxTarget}`);
         break;
       case "skchr_swllow_2":
+      case "skchr_bpipe_3":
         buffFrame.times = 3;
         writeBuff(`攻击次数 = ${buffFrame.times}`);
         break;
@@ -557,7 +560,7 @@ function extractDamageType(charData, charId, isSkill, skillDesc, skillBlackboard
     ret = 1;
   }
   if (isSkill) {
-    if (["法术伤害", "<@ba.vup>法术</>伤害", "伤害类型变为"].some(x => skillDesc.includes(x)))
+    if (["法术伤害", "法术</>伤害", "伤害类型变为"].some(x => skillDesc.includes(x)))
       ret = 1;
     else if (["治疗", "恢复", "每秒回复"].some(x => skillDesc.includes(x)) && 
              !skillBlackboard["hp_recovery_per_sec_by_max_hp_ratio"]) {
@@ -601,9 +604,11 @@ function calcDurations(isSkill, attackTime, attackSpeed, levelData, buffList, bu
     let extra_sp = 0;
     let sp_rate = 1 + buffFrame.spRecoveryPerSec;
     if (skillId == "skchr_amgoat_2" && buffList["tachr_180_amgoat_2"])  // 乱火
-      init_sp = (buffList["tachr_180_amgoat_2"].sp_min + buffList["tachr_180_amgoat_2"].sp_max) / 2;
+      init_sp += (buffList["tachr_180_amgoat_2"].sp_min + buffList["tachr_180_amgoat_2"].sp_max) / 2;
     else if (buffList["tachr_134_ifrit_2"]) // 莱茵回路
       extra_sp = Math.floor(duration / buffList["tachr_134_ifrit_2"].interval) * buffList["tachr_134_ifrit_2"].sp;
+    else if (buffList["tachr_222_bpipe_2"]) // 军事传统
+      init_sp += buffList["tachr_222_bpipe_2"].sp;
     
     // 施法时间
     let ctime = attackTime;
@@ -643,6 +648,8 @@ function calcDurations(isSkill, attackTime, attackSpeed, levelData, buffList, bu
     if (buffList["tachr_180_amgoat_2"]) { // 乱火
       var init_sp = spData.initSp + (buffList["tachr_180_amgoat_2"].sp_min + buffList["tachr_180_amgoat_2"].sp_max) / 2;
       startSp = spData.spCost - init_sp;
+    } else if (buffList["tachr_222_bpipe_2"]) { // 军事传统
+      startSp = spData.spCost - spData.initSp - buffList["tachr_222_bpipe_2"].sp;
     }
     // 重置普攻
     if (checkResetAttack(skillId, blackboard)) {
@@ -817,6 +824,8 @@ function calcDurations(isSkill, attackTime, attackSpeed, levelData, buffList, bu
   if (isSkill) {
     if (skillId == "skchr_bluep_2") {
       hitCount += attackCount * (blackboard["attack@times"] - 1);
+    } else if (["skcom_assist_cost[2]", "skchr_myrtle_2", "skchr_utage_1"].includes(skillId)) { // 投降类
+      hitCount = 0;
     }
   }
 
@@ -861,9 +870,9 @@ function calculateAttack(charAttr, enemy, raidBlackboard, isSkill, charData, lev
     log.write(`  - [特殊] ${displayNames["tachr_367_swllow_1"]} - attack_speed + ${buffFrame.attackSpeed}`);
   }
   // 陈特判
-  if (charId == 'char_010_chen' && !isSkill) {
+  if (['char_010_chen', 'char_252_bibeak'].includes(charId) && !isSkill) {
     buffFrame.times = 2;
-    log.write("  - [特殊] 陈 - 攻击2次");
+    log.write(`  - [特殊] ${displayNames[charId]} - 攻击2次`);
   }
   // 瞬发技能的实际基础攻击间隔
   if (isSkill && checkSpecs(blackboard.id, "cast_bat")) {
@@ -904,8 +913,6 @@ function calculateAttack(charAttr, enemy, raidBlackboard, isSkill, charData, lev
   console.log(corr, corr_s);
   if ((!(corr_s === false)) && isSkill) corr = corr_s;
   if (corr != 0) {
-    var prefix = (corr>0?"+":"");
-    log.write(`  - 帧数补偿 ${frame.toFixed(3)} ${prefix} ${corr}`);
     frame += corr;  
     if (isSkill) {
       log.writeNote(`技能帧数补偿 ${prefix}${corr}`);
@@ -967,6 +974,9 @@ function calculateAttack(charAttr, enemy, raidBlackboard, isSkill, charData, lev
       // 折算为命中次数
       dur.hitCount = (dur.attackCount - dur.critCount) * dur.times * ecount;
       dur.critHitCount = dur.critCount * dur.times * ecount;
+      if (buffList["tachr_222_bpipe_1"]) {
+        dur.critHitCount = dur.critCount * dur.times * Math.min(enemy.count, 2);
+      }
     } else {
       dur.critCount = 0; dur.critHitCount = 0;
     }
@@ -982,6 +992,10 @@ function calculateAttack(charAttr, enemy, raidBlackboard, isSkill, charData, lev
   log.write(`  - 攻击力 / 倍率:  ${finalFrame.atk.toFixed(2)} = ${atk_line}`);
   log.write(`  - 攻速: ${finalFrame.attackSpeed} %`);
   log.write(`  - 攻击间隔: ${finalFrame.baseAttackTime.toFixed(3)} s`);
+  if (corr != 0) {
+    var prefix = (corr>0?"+":"");
+    log.write(`  - 帧数补偿 ${frame.toFixed(3)} ${prefix} ${corr}`);
+  }
   log.write(`  - 最终攻击间隔 / 舍入到帧: ${realAttackTime.toFixed(3)} s (${frame} 帧, ${frameAttackTime.toFixed(3)} s)`);
   log.write(`  - 持续: ${dur.duration.toFixed(3)} s`);
   log.write(`  - 攻击次数: ${dur.attackCount*dur.times} (${dur.times} 连击 x ${dur.attackCount})`);
@@ -1083,6 +1097,7 @@ function calculateAttack(charAttr, enemy, raidBlackboard, isSkill, charData, lev
       case "tachr_181_flower_1":
         pool[2] += bb.atk_to_hp_recovery_ratio * finalFrame.atk * dur.duration * ecount; break;
       case "tachr_188_helage_trait":
+      case "tachr_337_utage_trait":
         pool[2] += bb.value * dur.hitCount; break;
       case "tachr_2013_cerber_1":
         damage = bb.atk_scale * edef * Math.max(1-emrpct, 0.05);
@@ -1116,9 +1131,17 @@ function calculateAttack(charAttr, enemy, raidBlackboard, isSkill, charData, lev
         pool[1] += damage * dur.hitCount;
         log.write(`  - [特殊] ${displayNames[buffName]}: 法术伤害 = ${damage.toFixed(1)}, 命中 ${dur.hitCount}`);
         break;
+      case "skchr_bibeak_1":
+        if (enemy.count > 1) {
+          damage = finalFrame.atk * (1 - emrpct);
+          pool[1] += damage * dur.hitCount;
+          log.write(`  - [特殊] ${displayNames[buffName]}: 法术伤害 = ${damage.toFixed(1)}, 命中 ${dur.hitCount}`);
+        }
+        break;
       case "skcom_assist_cost[2]":
       case "skchr_myrtle_2":
       case "skchr_skgoat_2":
+      case "skchr_utage_1":
         damagePool[0] = 0; damagePool[1] = 0;
         log.write(`  - [特殊] ${displayNames[buffName]}: 伤害为0`);
         break;
@@ -1325,6 +1348,7 @@ function getAttributes(char, log) { //charId, phase = -1, level = -1
   let favorLevel = Math.floor(Math.min(char.favor, 100) / 2);
   AttributeKeys.forEach(key => {
     attributesKeyFrames[key] += getAttribute(charData.favorKeyFrames, favorLevel, 0, key);
+    // console.log(char.level, key, attributesKeyFrames[key]);
     buffs[key] = 0;
   });
   // console.log(attributesKeyFrames);
@@ -1377,7 +1401,10 @@ function getBuffedAttributes(basic, buffs) {
 }
 
 function getAttribute(frames, level, minLevel, attr) {
-  return Math.round((level - minLevel) / (frames[1].level - frames[0].level) * (frames[1].data[attr] - frames[0].data[attr]) + frames[0].data[attr]);
+  var ret = (level - minLevel) / (frames[1].level - frames[0].level) * (frames[1].data[attr] - frames[0].data[attr]) + frames[0].data[attr];
+  if (attr != "baseAttackTime")
+    return Math.round(ret);
+  else return ret;
 }
 
 function getBlackboard(blackboardArray) {

@@ -10,9 +10,11 @@
     "char_219_meteo":   { "frame_corr": 1 },
     "char_260_durnar":	{ "damage_type": 1 },
     "char_2013_cerber": { "frame_corr": 1 },
+    "skchr_aglina_1":   { "reset_attack": true },
     "skchr_amgoat_2":   { "keep_debuff": true, "cast_time": 36, "sim": true },
     "skchr_amiya_3":	{ "damage_type": 3 },
     "skchr_bldsk_2":    { "instant_buff": true, "cast_time": 35 },
+    "skchr_bpipe_2":    { "sim": true },
     "skchr_broca_2":    { "frame_corr": 1.65 },
     "skchr_brownb_1":	{ "passive": true },
     "skchr_ccheal_1":   { "cast_time": 35, "sim": true},
@@ -107,7 +109,7 @@
     "tachr_225_haak_1":     { "crit": true },
     "tachr_226_hmau_1":     { "cond": true },
     "tachr_230_savage_1":	{ "cond": true },
-    "tachr_243_waaifu_1":	{ "crit": true },
+    "tachr_243_waaifu_1":	{ "crit": true },    
     "tachr_274_astesi_1":	{ "stack": true },
     "tachr_279_excu_trait":	{ "cond": true },
     "tachr_283_midn_1":	{ "crit": true },
@@ -125,5 +127,9 @@
     "tachr_367_swllow_1":	{ "crit": true },
     "tachr_385_finlpp_trait":   { "ranged_penalty": true },
     "tachr_503_rang_1":	{ "cond": true },
-    "tachr_2013_cerber_2": { "cond": true }
+    "tachr_2013_cerber_2": { "cond": true },
+    "tachr_222_bpipe_1": { "crit": true },
+    "tachr_252_bibeak_1":   { "stack": true, "todo": true },
+    "tachr_337_utage_1":    { "stack": true },
+    "tachr_379_sesa_1":     { "cond": true }
 }

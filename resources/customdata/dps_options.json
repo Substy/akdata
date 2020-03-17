@@ -45,6 +45,10 @@
         "char_226_hmau" : [ "cond" ],
         "char_2013_cerber" : [ "cond" ],
         "char_306_leizi" : [ "cond" ],
-        "char_385_finlpp": [ "ranged_penalty" ]
+        "char_385_finlpp": [ "ranged_penalty" ],
+        "char_222_bpipe" : [ "crit" ],
+        "char_337_utage" : [ "stack" ],
+        "char_379_sesa" : [ "cond" ],
+        "char_252_bibeak" : [ "stack" ]
     }
 }
