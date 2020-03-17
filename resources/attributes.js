@@ -913,7 +913,8 @@ function calculateAttack(charAttr, enemy, raidBlackboard, isSkill, charData, lev
   console.log(corr, corr_s);
   if ((!(corr_s === false)) && isSkill) corr = corr_s;
   if (corr != 0) {
-    frame += corr;  
+    frame += corr;
+    var prefix = (corr>0 ? "+":"");  
     if (isSkill) {
       log.writeNote(`技能帧数补偿 ${prefix}${corr}`);
     } else {
