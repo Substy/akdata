@@ -1213,6 +1213,7 @@ function calculateAttack(charAttr, enemy, raidBlackboard, isSkill, charData, lev
     if (bb["hp_ratio"]) {
       switch (buffName) {
         case "skchr_huang_3":
+        case "skchr_utage_2":
           pool[2] -= bb.hp_ratio * finalFrame.maxHp; break;
         case "skchr_ifrit_3":
           pool[2] -= bb.hp_ratio * finalFrame.maxHp * dur.duration; break;
