@@ -996,7 +996,7 @@ function calculateAttack(charAttr, enemy, raidBlackboard, isSkill, charData, lev
   // 输出面板数据
   //log.write("---- 最终面板 ----");
   let atk_line = `(${basicFrame.atk.toFixed(1)} + ${buffFrame.atk.toFixed(1)}) * ${buffFrame.atk_scale.toFixed(2)}`;
-  if (buffFrame.damage_scale != 1) { atk_line += ` * ${buffFrame.damage_scale.toFixed(2)}`; }
+  // if (buffFrame.damage_scale != 1) { atk_line += ` * ${buffFrame.damage_scale.toFixed(2)}`; }
   log.write(`  - 攻击力 / 倍率:  ${finalFrame.atk.toFixed(2)} = ${atk_line}`);
   log.write(`  - 攻速: ${finalFrame.attackSpeed} %`);
   log.write(`  - 攻击间隔: ${finalFrame.baseAttackTime.toFixed(3)} s`);
@@ -1025,7 +1025,7 @@ function calculateAttack(charAttr, enemy, raidBlackboard, isSkill, charData, lev
   let damagePool = [0, 0, 0, 0, 0]; // 物理，魔法，治疗，真伤，盾
   let extraDamagePool = [0, 0, 0, 0, 0];
 
-  function calculateHitDamage(frame) {
+  function calculateHitDamage(frame, scale) {
     let minRate = (buffList["tachr_144_red_1"] ? buffList["tachr_144_red_1"].atk_scale : 0.05);
     if (damageType == 0)
       ret = Math.max(frame.atk - edef, frame.atk * minRate);
@@ -1034,10 +1034,14 @@ function calculateAttack(charAttr, enemy, raidBlackboard, isSkill, charData, lev
     else 
       ret = frame.atk;
     if (ret <= frame.atk * minRate) log.write("  - [抛光]");
+    if (scale != 1) { 
+      ret *= scale;
+      log.write(`  - damage_scale: ${scale.toFixed(2)}x`);
+    }
     return ret;
   }
   
-  hitDamage = calculateHitDamage(finalFrame);
+  hitDamage = calculateHitDamage(finalFrame, buffFrame.damage_scale);
   damagePool[damageType] += hitDamage * dur.hitCount;
   log.write(`  - ${dmgPrefix}: ${hitDamage.toFixed(2)}, 命中 ${dur.hitCount.toFixed(1)}`);
   
@@ -1046,7 +1050,7 @@ function calculateAttack(charAttr, enemy, raidBlackboard, isSkill, charData, lev
   if (options.crit) {
     // console.log(critBuffFrame);
     edef = Math.max(0, (enemy.def + critBuffFrame.edef) * critBuffFrame.edef_scale);
-    critDamage = calculateHitDamage(critFrame);
+    critDamage = calculateHitDamage(critFrame, critBuffFrame.damage_scale);
     if (critDamage > 0) {
       log.write(`  - 暴击${dmgPrefix}: ${critDamage.toFixed(2)}, 命中 ${dur.critHitCount.toFixed(1)}`);
     }
@@ -1405,7 +1409,7 @@ function getBuffedAttributes(basic, buffs) {
 
   final.atk *= buffs.atk_scale;
   final.def *= buffs.def_scale;
-  final.atk *= buffs.damage_scale;
+  // final.atk *= buffs.damage_scale;
   return final;
 }
 
