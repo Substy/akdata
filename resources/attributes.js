@@ -1142,8 +1142,8 @@ function calculateAttack(charAttr, enemy, raidBlackboard, isSkill, charData, lev
       case "skchr_bibeak_1":
         if (enemy.count > 1) {
           damage = finalFrame.atk * (1 - emrpct);
-          pool[1] += damage * dur.hitCount;
-          log.write(`  - [特殊] ${displayNames[buffName]}: 法术伤害 = ${damage.toFixed(1)}, 命中 ${dur.hitCount}`);
+          pool[1] += damage * (enemy.count - 1);
+          log.write(`  - [特殊] ${displayNames[buffName]}: 法术伤害 = ${damage.toFixed(1)}, 命中 ${(enemy.count-1)}`);
         }
         break;
       case "skcom_assist_cost[2]":

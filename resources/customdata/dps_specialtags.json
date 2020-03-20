@@ -15,7 +15,7 @@
     "skchr_aglina_1":   { "reset_attack": true },
     "skchr_amgoat_2":   { "keep_debuff": true, "cast_time": 36, "sim": true },
     "skchr_amiya_3":	{ "damage_type": 3 },
-    "skchr_bibeak_1":   { "times": 2, "damage_type": 0 },
+    "skchr_bibeak_1":   { "times": 2, "damage_type":"0" },
     "skchr_bldsk_2":    { "instant_buff": true, "cast_time": 35 },
     "skchr_bpipe_2":    { "sim": true },
     "skchr_broca_2":    { "frame_corr": 1.65 },
