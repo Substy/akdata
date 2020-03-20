@@ -869,11 +869,18 @@ function calculateAttack(charAttr, enemy, raidBlackboard, isSkill, charData, lev
     buffFrame.attackSpeed += buffList["tachr_367_swllow_1"].attack_speed;
     log.write(`  - [特殊] ${displayNames["tachr_367_swllow_1"]} - attack_speed + ${buffFrame.attackSpeed}`);
   }
-  // 陈特判
-  if (['char_010_chen', 'char_252_bibeak'].includes(charId) && !isSkill) {
-    buffFrame.times = 2;
-    log.write(`  - [特殊] ${displayNames[charId]} - 攻击2次`);
+  // 连击特判
+  if (!isSkill && checkSpecs(charId, "times")) {
+    var t = checkSpecs(charId, "times");
+    buffFrame.times = t;
+    log.write(`  - [连击] ${displayNames[charId]} - 攻击 ${t} 次`);
   }
+  if (isSkill && checkSpecs(blackboard.id, "times")) {
+    var t = checkSpecs(blackboard.id, "times");
+    buffFrame.times = t;
+    log.write(`  - [连击] ${displayNames[blackboard.id]} - 攻击 ${t} 次`);
+  }
+  
   // 瞬发技能的实际基础攻击间隔
   if (isSkill && checkSpecs(blackboard.id, "cast_bat")) {
     var f = checkSpecs(blackboard.id, "cast_bat");
