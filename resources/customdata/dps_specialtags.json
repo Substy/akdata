@@ -132,7 +132,7 @@
     "tachr_503_rang_1":	{ "cond": true },
     "tachr_2013_cerber_2": { "cond": true },
     "tachr_222_bpipe_1": { "crit": true },
-    "tachr_252_bibeak_1":   { "stack": true, "todo": true },
+    "tachr_252_bibeak_1":   { "stack": true },
     "tachr_337_utage_1":    { "stack": true },
     "tachr_379_sesa_1":     { "cond": true }
 }
