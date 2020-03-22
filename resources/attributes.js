@@ -468,6 +468,8 @@ function applyBuff(charAttr, buffFrm, tag, blackbd, isSkill, log) {
       case "skchr_ccheal_1":
         delete blackboard["heal_scale"];
         break;
+      case "skchr_hmau_2":
+      case "skchr_spot_1":
       case "tachr_193_frostl_1":
       case "skchr_mantic_2":
       case "skchr_glaze_2": // 攻击间隔延长，但是是加算
@@ -824,7 +826,7 @@ function calcDurations(isSkill, attackTime, attackSpeed, levelData, buffList, bu
   if (isSkill) {
     if (skillId == "skchr_bluep_2") {
       hitCount += attackCount * (blackboard["attack@times"] - 1);
-    } else if (["skcom_assist_cost[2]", "skchr_myrtle_2", "skchr_utage_1"].includes(skillId)) { // 投降类
+    } else if (["skcom_assist_cost[2]", "skchr_utage_1"].includes(skillId)) { // 投降类
       hitCount = 0;
     }
   }

@@ -17,8 +17,7 @@ window.AKDATA = {
     for( let i=0;i<paths.length;i++) {
       if ( paths[i].endsWith('.json') ){
         let name = paths[i].split('/').pop().replace('.json', '');
-        let path = `${siteInfo.baseurl}/resources/gamedata/${paths[i].toLowerCase()}`;
-        //paths[i] =  $.getJSON(path, data => AKDATA.Data[name] = data);
+        let path = `https://cdn.jsdelivr.net/gh/xulai1001/akdata/resources/gamedata/${paths[i].toLowerCase()}`;
         paths[i] = loadJSON(path, data => AKDATA.Data[name] = data);
       }
     }
