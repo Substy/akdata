@@ -538,6 +538,9 @@ function applyBuff(charAttr, buffFrm, tag, blackbd, isSkill, log) {
         blackboard["attack@atk_scale"] *= 3;
         writeBuff(`总倍率: ${blackboard["attack@atk_scale"]}`);
         break;
+      case "skchr_waaifu_1":
+        blackboard.atk = blackboard["waaifu_s_1[self].atk"];
+        break;
     }
   }
   
