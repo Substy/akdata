@@ -550,8 +550,9 @@ function applyBuff(charAttr, buffFrm, tag, blackbd, isSkill, isCrit, log) {
           writeBuff(`成功 - atk_scale = ${blackboard["success.atk_scale"]}`);
           blackboard.atk_scale = blackboard["success.atk_scale"];
           buffFrame.maxTarget = 999;
+        } else {
+          writeBuff("失败时有一次普攻")
         }
-        else blackboard.atk_scale = 0;
         break;
     }
   }
@@ -734,7 +735,7 @@ function calcDurations(isSkill, attackTime, attackSpeed, levelData, buffList, bu
       stunDuration = blackboard.time;
     } else if (skillId == "skchr_peacok_2") {
       stunDuration = blackboard["failure.stun"] * (1 - blackboard.prob);
-      log.write(` - [特殊] 计算平均晕眩时间`);
+      log.write(`  - [特殊] 计算平均晕眩时间`);
     } else if (["skchr_amiya_2", "skchr_liskam_2", "skchr_ghost_2", "skchr_broca_2"].includes(skillId)) {
       stunDuration = blackboard.stun;
     }
@@ -1069,6 +1070,10 @@ function calculateAttack(charAttr, enemy, raidBlackboard, isSkill, charData, lev
   // 暴击
   if (options.crit) {
     // console.log(critBuffFrame);
+    if (isSkill && blackboard.id == "skchr_peacok_2") {
+      log.write("  - 创世纪 - 成功（暴击）为法术伤害");
+      damageType = 1;
+    }
     edef = Math.max(0, (enemy.def + critBuffFrame.edef) * critBuffFrame.edef_scale);
     critDamage = calculateHitDamage(critFrame, critBuffFrame.damage_scale);
     if (critDamage > 0) {

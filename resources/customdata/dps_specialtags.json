@@ -71,7 +71,7 @@
     "skchr_nian_2":     { "reflect": true },
     "skchr_nightm_1":	{ "damage_type": 1 },
     "skchr_peacok_1":   { "sim": true },
-    "skchr_peacok_2":   { "cast_time": 45, "frame_corr": -15 },
+    "skchr_peacok_2":   { "cast_time": 45, "frame_corr": -15, "damage_type": "0" },
     "skchr_prove_1":	{ "passive": true },
     "skchr_rope_1":     { "cast_time": 50 },
     "skchr_rope_2":     { "cast_time": 50 },
