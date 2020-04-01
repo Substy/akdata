@@ -21,6 +21,7 @@
     "skchr_bibeak_2":	{ "cast_time": 23, "attack_begin": "0" },
     "skchr_bldsk_2":    { "instant_buff": true, "cast_time": 35 },
     "skchr_bpipe_2":    { "sim": true },
+    "skchr_bpipe_3":	{ "attack_begin": 15 },
     "skchr_broca_2":    { "frame_corr": 1.65 },
     "skchr_brownb_1":	{ "passive": true },
     "skchr_ccheal_1":   { "cast_time": 35, "sim": true},
