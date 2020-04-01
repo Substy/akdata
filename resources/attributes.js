@@ -717,7 +717,8 @@ function calcDurations(isSkill, attackTime, attackSpeed, levelData, buffList, bu
           if (duration < ct) {
             log.write(`  - [特殊] 技能释放时间: ${ct} 帧, ${(ct/30).toFixed(3)} s`);
             log.writeNote(`施法时间 ${ct} 帧`);
-            duration = ct / 30;
+            if (skillId != "skchr_peacok_2")
+              duration = ct / 30;
           }
         }
       }
