@@ -69,6 +69,7 @@
     "skchr_myrtle_2":	{ "reset_attack": true, "sec": true },
     "skchr_nian_2":     { "reflect": true },
     "skchr_nightm_1":	{ "damage_type": 1 },
+    "skchr_peacok_1":   { "sim": true },
     "skchr_prove_1":	{ "passive": true },
     "skchr_rope_1":     { "cast_time": 50 },
     "skchr_rope_2":     { "cast_time": 50 },

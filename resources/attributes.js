@@ -113,7 +113,7 @@ function calculateDps(char, enemy, raidBuff) {
 
 
 // 叠加计算指定的技能/天赋效果，返回buffFrame
-function applyBuff(charAttr, buffFrm, tag, blackbd, isSkill, log) {
+function applyBuff(charAttr, buffFrm, tag, blackbd, isSkill, isCrit, log) {
   let { ...buffFrame } = buffFrm || initBuffFrame();
   let { ...blackboard } = blackbd;
   let basic = charAttr.basic;
@@ -541,6 +541,18 @@ function applyBuff(charAttr, buffFrm, tag, blackbd, isSkill, log) {
       case "skchr_waaifu_1":
         blackboard.atk = blackboard["waaifu_s_1[self].atk"];
         break;
+      case "skchr_peacok_1":
+        blackboard.prob_override = blackboard["peacok_s_1[crit].prob"];
+        if (isCrit) blackboard.atk_scale = blackboard.atk_scale_fake;
+        break;
+      case "skchr_peacok_2":
+        if (isCrit) {
+          writeBuff(`成功 - atk_scale = ${blackboard["success.atk_scale"]}`);
+          blackboard.atk_scale = blackboard["success.atk_scale"];
+          buffFrame.maxTarget = 999;
+        }
+        else blackboard.atk_scale = 0;
+        break;
     }
   }
   
@@ -719,6 +731,9 @@ function calcDurations(isSkill, attackTime, attackSpeed, levelData, buffList, bu
     // 眩晕处理
     if (skillId == "skchr_fmout_2") {
       stunDuration = blackboard.time;
+    } else if (skillId == "skchr_peacok_2") {
+      stunDuration = blackboard["failure.stun"] * (1 - blackboard.prob);
+      log.write(` - [特殊] 计算平均晕眩时间`);
     } else if (["skchr_amiya_2", "skchr_liskam_2", "skchr_ghost_2", "skchr_broca_2"].includes(skillId)) {
       stunDuration = blackboard.stun;
     }
@@ -859,11 +874,11 @@ function calculateAttack(charAttr, enemy, raidBlackboard, isSkill, charData, lev
     let buffName = (b=="skill") ? buffList[b].id : b;
     //console.log(buffName);
     if (!checkSpecs(buffName, "crit"))
-      buffFrame = applyBuff(charAttr, buffFrame, b, buffList[b], isSkill, log);
+      buffFrame = applyBuff(charAttr, buffFrame, b, buffList[b], isSkill, false, log);
   }
   // 计算团辅
   if (options.buff)
-    buffFrame = applyBuff(charAttr, buffFrame, "raidBuff", raidBlackboard, isSkill, log);
+    buffFrame = applyBuff(charAttr, buffFrame, "raidBuff", raidBlackboard, isSkill, false, log);
 
   // 攻击类型
   let damageType = extractDamageType(charData, charId, isSkill, levelData.description, blackboard);
@@ -894,14 +909,13 @@ function calculateAttack(charAttr, enemy, raidBlackboard, isSkill, charData, lev
   }
 
   let finalFrame = getBuffedAttributes(basicFrame, buffFrame);
-  let critBuffFrame = JSON.parse(JSON.stringify(buffFrame));  // deep copy?
+  let critBuffFrame = initBuffFrame();
   let critFrame = {};
   // 暴击面板
   if (options.crit) {
     for (var b in buffList) {
       let buffName = (b=="skill") ? blackboard.id : b;
-      if (checkSpecs(buffName, "crit"))
-        critBuffFrame = applyBuff(charAttr, critBuffFrame, b, buffList[b], isSkill, log);
+      critBuffFrame = applyBuff(charAttr, critBuffFrame, b, buffList[b], isSkill, true, log);
     }
     critFrame = getBuffedAttributes(basicFrame, critBuffFrame);
   }
@@ -958,7 +972,7 @@ function calculateAttack(charAttr, enemy, raidBlackboard, isSkill, charData, lev
     if (checkSpecs(buffName, "keep_debuff") && !enemyBuffFrame.applied[buffName]){
       log.write("  - 假设全程覆盖Debuff");
       log.writeNote("假设全程覆盖Debuff");      
-      enemyBuffFrame = applyBuff(charAttr, enemyBuffFrame, buffName, buffList[b], true, new Log());
+      enemyBuffFrame = applyBuff(charAttr, enemyBuffFrame, buffName, buffList[b], true, false, new Log());
     }
   }
   let edef = Math.max(0, (enemy.def + enemyBuffFrame.edef) * enemyBuffFrame.edef_scale);

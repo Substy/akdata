@@ -49,6 +49,7 @@
         "char_222_bpipe" : [ "crit" ],
         "char_337_utage" : [ "stack" ],
         "char_379_sesa" : [ "cond" ],
-        "char_252_bibeak" : [ "stack" ]
+        "char_252_bibeak" : [ "stack" ],
+        "char_159_peacok" : [ "crit" ]
     }
 }
