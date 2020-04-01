@@ -1071,8 +1071,10 @@ function calculateAttack(charAttr, enemy, raidBlackboard, isSkill, charData, lev
   if (options.crit) {
     // console.log(critBuffFrame);
     if (isSkill && blackboard.id == "skchr_peacok_2") {
-      log.write("  - 创世纪 - 成功（暴击）为法术伤害");
+      log.write(`  - 创世纪 - 成功（暴击）为全体法术伤害`);
       damageType = 1;
+      ecount = enemy.count;
+      dur.critHitCount = enemy.count;
     }
     edef = Math.max(0, (enemy.def + critBuffFrame.edef) * critBuffFrame.edef_scale);
     critDamage = calculateHitDamage(critFrame, critBuffFrame.damage_scale);
