@@ -125,12 +125,14 @@ function load() {
         <th>攻击力(+x%)</th>
         <th>攻速(+x)</th>
         <th>技力恢复(+x%)</th>
+        <th>原本攻击力变化<br>(危机合约Tag +/-%)</th>
       </tr>
       <tr>
       <td><input type="text" class="dps__buff-atk" value="0"></td>
       <td><input type="text" class="dps__buff-atkpct" value="0"></td>
       <td><input type="text" class="dps__buff-ats" value="0"></td>
       <td><input type="text" class="dps__buff-cdr" value="0"></td>
+      <td><input type="text" class="dps__buff-batk" value="0"></td>
       </tr>
     </tbody>
   </table>
@@ -187,7 +189,7 @@ function load() {
   $('.dps__level').change(chooseLevel);
   $('.dps__skill, .dps__skilllevel, .dps__potentialrank, .dps__favor').change(chooseSkill);
   $('.dps__enemy-def, .dps__enemy-mr, .dps__enemy-count, .dps__enemy-hp').change(calculateAll);
-  $('.dps__buff-atk, .dps__buff-atkpct, .dps__buff-ats, .dps__buff-cdr').change(calculateAll);
+  $('.dps__buff-atk, .dps__buff-atkpct, .dps__buff-ats, .dps__buff-cdr, .dps__buff-batk').change(calculateAll);
 
   $('.dps__results').click(showDetail);
   $('.dps__damagepool').click(showDamage);
@@ -421,6 +423,7 @@ function calculate(index) {
     atkpct: ~~$('.dps__buff-atkpct').val(),
     ats: ~~$('.dps__buff-ats').val(),
     cdr: ~~$('.dps__buff-cdr').val(),
+    base_atk: ~~$('.dps__buff-batk').val(),
   };
   console.log(raidBuff);
 

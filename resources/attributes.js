@@ -53,13 +53,14 @@ function calculateDps(char, enemy, raidBuff) {
     magicResistance: 0,
     count: 1,
   };
-  raidBuff = raidBuff || { atk: 0, atkpct: 0, ats: 0, cdr: 0 };
+  raidBuff = raidBuff || { atk: 0, atkpct: 0, ats: 0, cdr: 0, base_atk: 0 };
   // 把raidBuff处理成blackboard的格式
   let raidBlackboard = {
     atk: raidBuff.atkpct / 100,
     atk_override: raidBuff.atk,
     attack_speed: raidBuff.ats,
-    sp_recovery_per_sec: raidBuff.cdr / 100
+    sp_recovery_per_sec: raidBuff.cdr / 100,
+    base_atk: raidBuff.base_atk / 100
   };
   displayNames["raidBuff"] = "";
 
@@ -83,6 +84,14 @@ function calculateDps(char, enemy, raidBuff) {
   log.write(`技能: ${char.skillId} ${levelData.name} @ 等级 ${char.skillLevel+1}`);
   displayNames[charId] = charData.name;
   displayNames[char.skillId] = levelData.name;  // add to name cache
+
+  // 原本攻击力的修正量
+  if (raidBlackboard.base_atk != 0) {
+    let delta = attr.basic.atk * raidBlackboard.base_atk;
+    let prefix = (delta > 0 ? "+" : "");
+    attr.basic.atk = Math.round(attr.basic.atk + delta);
+    log.write(`[团辅] 原本攻击力变为 ${attr.basic.atk} (${prefix}${delta.toFixed(1)})`); 
+  }
 
   log.write(`普攻:`);
   let normalAttack = calculateAttack(attr, enemy, raidBlackboard, false, charData, levelData, log);
@@ -501,6 +510,8 @@ function applyBuff(charAttr, buffFrm, tag, blackbd, isSkill, isCrit, log) {
         break;
       case "skchr_svrash_2":
       case "skchr_svrash_3":
+      case "skchr_svrash_1":
+      case "skchr_frostl_1":
         if (options.ranged_penalty) {
           buffFrame.atk_scale = 1;
           writeBuff(`不降低攻击力`);
