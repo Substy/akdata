@@ -294,7 +294,7 @@ function calculate(charId) {
   let recipe = DefaultAttribute;
   let enemy = DefaultEnemy;
   let stages = Stages;
-  let raidBuff = { atk: 0, atkpct: 0, ats: 0, cdr: 0 };
+  let raidBuff = { atk: 0, atkpct: 0, ats: 0, cdr: 0, base_atk: 0 };
   let result = {}, mats = {};
 
   // calculate dps for each recipe case.
