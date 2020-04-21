@@ -12,6 +12,9 @@
     "char_252_bibeak":  { "times": 2, "frame_corr": 1 },
     "char_260_durnar":	{ "damage_type": 1 },
     "char_2013_cerber": { "frame_corr": 1 },
+    "char_250_phatom":  { "token": "token_10007_phatom_twin" },
+    "char_110_deepcl":  { "token": "token_10001_deepcl_tentac" },
+    "char_242_otter":   { "token": "token_10004_otter_motter" },
     "skchr_aglina_1":   { "reset_attack": true, "attack_begin": 19 },
     "skchr_aglina_2":   { "attack_begin": 10 },
     "skchr_aglina_3":	{ "attack_begin": 23 },
@@ -31,6 +34,7 @@
     "skchr_ceylon_1":   { "cast_time": 43 },
     "skchr_chen_2":     { "cast_bat": 40 },
     "skchr_chen_3":     { "cast_bat": 102 },
+    "skchr_cutter_2":   { "cond" : true },
     "skchr_deepcl_1":	{ "damage_type": 1 },
     "skchr_demkni_1":   { "frame_corr": -1 },
     "skchr_demkni_2":   { "frame_corr": 0 },
@@ -58,7 +62,8 @@
     "skchr_mantic_2":	{ "attack_begin": 36, "frame_corr": 1 },
     "skchr_meteo_1":    { "cast_time": 31 },
     "skchr_meteo_2":    { "reset_attack": true, "cast_time": 31, "attack_begin": 8 },
-    "skchr_mgllan_3":	{ "reset_attack": true },
+    "skchr_mgllan_2":   { "token": "token_10005_mgllan_drone2" },
+    "skchr_mgllan_3":	{ "token": "token_10005_mgllan_drone3", "reset_attack": true },
     "skchr_midn_1":	    { "reset_attack": true },
     "skchr_milu_1":     { "frame_corr": 1 },
     "skchr_milu_2":     { "cast_time": 46 },
@@ -141,5 +146,7 @@
     "tachr_222_bpipe_1": { "crit": true },
     "tachr_252_bibeak_1":   { "stack": true },
     "tachr_337_utage_1":    { "stack": true },
-    "tachr_379_sesa_1":     { "cond": true }
+    "tachr_379_sesa_1":     { "cond": true },
+    "tachr_254_vodfox_1":   { "cond": true },
+    "tachr_333_sidero_1":   { "cond": true }
 }

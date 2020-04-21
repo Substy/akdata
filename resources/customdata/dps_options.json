@@ -3,6 +3,7 @@
         "crit" : { "type" : "bool", "displaytext" : "计算暴击" },
         "cond" : { "type" : "bool", "displaytext" : "触发天赋" },
         "ranged_penalty" : { "type" : "bool", "displaytext" : "距离惩罚" },
+        "token" : { "type" : "bool", "displaytext" : "计算召唤物数据" },
         "stack" : { "type" : "bool", "displaytext" : "被动叠满" },
         "noblock" : { "type" : "bool", "displaytext" : "未阻挡" }
     },
@@ -50,6 +51,13 @@
         "char_337_utage" : [ "stack" ],
         "char_379_sesa" : [ "cond" ],
         "char_252_bibeak" : [ "stack" ],
-        "char_159_peacok" : [ "crit" ]
+        "char_159_peacok" : [ "crit" ],
+        "char_250_phatom" : [ "token" ],
+        "char_254_vodfox" : [ "cond" ],
+        "char_333_sidero" : [ "cond" ],
+        "char_110_deepcl" : [ "token" ],
+        "char_242_otter"  : [ "token" ],
+        "char_248_mgllan" : [ "token" ],
+        "char_301_cutter" : [ "cond" ]
     }
 }

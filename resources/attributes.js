@@ -16,6 +16,17 @@ function getCharAttributes(char) {
   return normalFrame;
 }
 
+function getTokenAtkHp(charAttr, tokenId, log) {
+  var id = charAttr.char.charId;
+  charAttr.char.charId = tokenId;
+  var token = getAttributes(charAttr.char, log);
+  // console.log(token);
+  charAttr.basic.atk = token.basic.atk;
+  charAttr.basic.maxHp = token.basic.maxHp;
+  charAttr.char.charId = id;
+  log.write(`[召唤物] ${tokenId} maxHp = ${charAttr.basic.maxHp}, atk = ${charAttr.basic.atk}`);
+}
+
 function checkChar(char) {
   let charData = AKDATA.Data.character_table[char.charId];
   if (!('phase' in char)) char.phase = charData.phases.length - 1;
@@ -84,6 +95,12 @@ function calculateDps(char, enemy, raidBuff) {
   log.write(`技能: ${char.skillId} ${levelData.name} @ 等级 ${char.skillLevel+1}`);
   displayNames[charId] = charData.name;
   displayNames[char.skillId] = levelData.name;  // add to name cache
+
+  if (char.options.token) {
+    log.writeNote("召唤物数据");
+    var tokenId = checkSpecs(charId, "token") || checkSpecs(char.skillId, "token");      
+    getTokenAtkHp(attr, tokenId, log);
+  }
 
   // 原本攻击力的修正量
   if (raidBlackboard.base_atk != 0) {
@@ -274,6 +291,8 @@ function applyBuff(charAttr, buffFrm, tag, blackbd, isSkill, isCrit, log) {
         case "skchr_glacus_2":  // 格劳克斯
           buffFrame.atk_scale = blackboard["atk_scale[normal]"];
           writeBuff(`atk_scale = ${buffFrame.atk_scale} 不受天赋影响`);
+        case "skchr_cutter_2":
+          applyBuffDefault(); break;
         case "tachr_145_prove_1": // 普罗旺斯
           applyBuffDefault(); break;
         case "tachr_226_hmau_1":
@@ -281,7 +300,7 @@ function applyBuff(charAttr, buffFrm, tag, blackbd, isSkill, isCrit, log) {
           applyBuffDefault(); break;
         case "tachr_279_excu_trait":
           if (isSkill && skillId == "skchr_excu_1") applyBuffDefault();
-	  break;
+          break;
       };
       done = true;
     } else {
@@ -294,6 +313,11 @@ function applyBuff(charAttr, buffFrm, tag, blackbd, isSkill, isCrit, log) {
           buffFrame.atk_scale = blackboard["atk_scale[drone]"];
           writeBuff(`atk_scale = ${buffFrame.atk_scale} 不受天赋影响`);
           done = true; break;
+        case "skchr_cutter_2":
+          buffFrame.maxTarget = blackboard.max_target;
+          buffFrame.atk_scale = blackboard.atk_scale * blackboard["cutter_s_2[drone].atk_scale"];
+          writeBuff(`对空 atk_scale = ${buffFrame.atk_scale}`);
+          done = true; break;
         case "tachr_187_ccheal_1": // 贾维尔
           buffFrame.def += blackboard.def;
           blackboard.def = 0;
@@ -301,6 +325,9 @@ function applyBuff(charAttr, buffFrm, tag, blackbd, isSkill, isCrit, log) {
           break;
         case "tachr_145_prove_1":
           blackboard.prob_override = blackboard.prob2;
+          break;
+        case "tachr_333_sidero_1":
+          delete blackboard.times;
           break;
       }
     }
@@ -437,6 +464,7 @@ function applyBuff(charAttr, buffFrm, tag, blackbd, isSkill, isCrit, log) {
       case "skchr_sqrrel_2":
       case "skchr_panda_2":
       case "skchr_red_2":
+      case "skchr_phatom_3":
         buffFrame.maxTarget = 999;
         writeBuff(`最大目标数 = ${buffFrame.maxTarget}`);
         break;
@@ -447,7 +475,12 @@ function applyBuff(charAttr, buffFrm, tag, blackbd, isSkill, isCrit, log) {
       case "skchr_huang_3":
         blackboard.atk /= 2;
         buffFrame.maxTarget = 999;
-        writeBuff(`avg atk + ${blackboard.atk}x, 最大目标数 = ${buffFrame.maxTarget}`);
+        writeBuff(`平均攻击加成 + ${(blackboard.atk*100).toFixed(1)}%, 最大目标数 = ${buffFrame.maxTarget}`);
+        break;
+      case "skchr_phatom_2":
+        blackboard.atk *= (blackboard.times+1) / 2.0;
+        delete blackboard.times;
+        writeBuff(`平均攻击加成 + ${(blackboard.atk*100).toFixed(1)}%`);
         break;
       case "skchr_bluep_2":
         // 蓝毒2: 只对主目标攻击多次
@@ -466,6 +499,11 @@ function applyBuff(charAttr, buffFrm, tag, blackbd, isSkill, isCrit, log) {
         writeBuff(`最大目标数 = ${buffFrame.maxTarget}`);
         break;
       case "skchr_deepcl_1":
+        if (!options.token) {
+          blackboard.atk = 0; // 不增加本体攻击
+          blackboard.def = 0;
+        }
+        break;
       case "skchr_sora_2":
         blackboard.atk = 0; // 不增加本体攻击
         blackboard.def = 0;
@@ -564,6 +602,13 @@ function applyBuff(charAttr, buffFrm, tag, blackbd, isSkill, isCrit, log) {
         } else {
           writeBuff("失败时有一次普攻")
         }
+        break;
+      case "skchr_vodfox_1":
+        buffFrame.damage_scale = 1 + (buffFrame.damage_scale - 1) * blackboard.scale_delta_to_one;
+        break;
+      case "skchr_silent_2":
+      case "skchr_vodfox_2":
+        if (isSkill) log.writeNote("召唤类技能，调整中");
         break;
     }
   }
@@ -709,6 +754,9 @@ function calcDurations(isSkill, attackTime, attackSpeed, levelData, buffList, bu
         attackCount = 1;
         duration = attackTime;
         tags.push("passive"); log.write("  - 被动");
+      } else if (skillId == "skchr_phatom_2") { // 傀影2
+        attackCount = blackboard.times;
+        duration = attackTime * attackCount;
       } else {  // 摔炮
         attackCount = 1;
         duration = 0;
@@ -818,6 +866,9 @@ function calcDurations(isSkill, attackTime, attackSpeed, levelData, buffList, bu
           attackCount = Math.ceil(spData.spCost / (1 + attackTime / buffList["tachr_010_chen_1"].interval));
           let sp = Math.floor(attackCount * attackTime / buffList["tachr_010_chen_1"].interval);
           log.write(`  - [特殊] ${displayNames["tachr_010_chen_1"]}: sp = ${sp}, attack_count = ${attackCount}`);
+        } else if (buffList["tachr_301_cutter_1"]) { // 刻刀  
+          attackCount = Math.ceil(spData.spCost / (1 + buffList["tachr_301_cutter_1"].prob));
+          log.write(`  - [特殊] ${displayNames["tachr_301_cutter_1"]}: sp = ${spData.spCost - attackCount}, attack_count = ${attackCount}`);
         }
         duration = attackCount * attackTime;
         if (checkResetAttack(skillId, blackboard)) {
@@ -1281,11 +1332,13 @@ function calculateAttack(charAttr, enemy, raidBlackboard, isSkill, charData, lev
         case "skchr_ccheal_1":
         case "skchr_ccheal_2":
         case "tachr_174_slbell_1":
+        case "tachr_254_vodfox_1":
           break;
         case "skchr_gravel_2":
+        case "skchr_phatom_1":
           pool[4] += bb.hp_ratio * finalFrame.maxHp;
           log.write(`  - [特殊] ${displayNames[buffName]}: 护盾量 ${pool[4]}`);
-          break;
+          break;          
         default:
           pool[2] += bb.hp_ratio * finalFrame.maxHp * dur.attackCount;
       };
@@ -1387,7 +1440,7 @@ function getAttributes(char, log) { //charId, phase = -1, level = -1
   let attributesKeyFrames = {};
   let buffs = initBuffFrame();
   let buffList = {};
-
+  //console.log(charData);
   // 计算基础属性，包括等级和潜能
   if (char.level == charData.phases[char.phase].maxLevel) {
     attributesKeyFrames = Object.assign(attributesKeyFrames, phaseData.attributesKeyFrames[1].data);
@@ -1396,12 +1449,14 @@ function getAttributes(char, log) { //charId, phase = -1, level = -1
       attributesKeyFrames[key] = getAttribute(phaseData.attributesKeyFrames, char.level, 1, key);
     });
   }
-  let favorLevel = Math.floor(Math.min(char.favor, 100) / 2);
-  AttributeKeys.forEach(key => {
-    attributesKeyFrames[key] += getAttribute(charData.favorKeyFrames, favorLevel, 0, key);
-    // console.log(char.level, key, attributesKeyFrames[key]);
-    buffs[key] = 0;
-  });
+  if (charData.favorKeyFrames) {
+    let favorLevel = Math.floor(Math.min(char.favor, 100) / 2);
+    AttributeKeys.forEach(key => {
+      attributesKeyFrames[key] += getAttribute(charData.favorKeyFrames, favorLevel, 0, key);
+      // console.log(char.level, key, attributesKeyFrames[key]);
+      buffs[key] = 0;
+    });
+  }
   // console.log(attributesKeyFrames);
   applyPotential(char.charId, charData, char.potentialRank, attributesKeyFrames);
 
