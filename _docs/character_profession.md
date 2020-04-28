@@ -1,6 +1,6 @@
 ---
-title: 干员
+title: 干员属性
 withjs: true
-order: 1.1
+order: 1
 category: 资料
 ---

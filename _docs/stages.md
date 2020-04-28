@@ -1,7 +1,7 @@
 ---
-title: 关卡
+title: 关卡信息
 withjs: true
-order: 1
-category: 关卡
+order: 2
+category: 资料
 icon: map
 ---

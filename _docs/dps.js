@@ -1,4 +1,3 @@
-
 const ProfessionNames = {
   "PIONEER": "先锋",
   "WARRIOR": "近卫",
@@ -38,6 +37,9 @@ function load() {
   } else {
     $('#update_prompt').text(`程序版本: ${version.akdata}, 数据版本: ${version.gamedata}`);
   }
+
+  var charId_hash = window.location.hash.replace("#", "");
+  console.log(charId_hash);
 
   let selectOptions = '';
   let charFinalData = [];
@@ -176,9 +178,7 @@ function load() {
   }
 
   pmBase.content.build({
-    pages: [{
-      content: $dps,
-    }]
+    pages: [{ content: $dps }],    
   });
 
   $('.dps__potentialrank').val(5);
@@ -195,6 +195,10 @@ function load() {
   $('.dps__damagepool').click(showDamage);
   $('.dps__goto').click(goto);
   $('.dps__copy').click(copyChar);
+
+  if (charId_hash.length > 0)
+    $(".dps__char:eq(0)").val(charId_hash);
+    updateChar(charId_hash, 0);
 }
 
 function goto() {

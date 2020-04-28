@@ -1,9 +1,9 @@
 ---
-title: 专精收益计算器
+title: DPS曲线(测试)
 withjs: true
-order: 2
+order: 3
 category: 工具
-icon: calculator
+icon: signal
 ---
 <div id="vue_version">正在载入游戏数据，请耐心等待……</div>
 <div>

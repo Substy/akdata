@@ -165,7 +165,6 @@ function load() {
       </select>
       <div class="input-group-append">
         <button class="btn btn-outline-secondary dps__goto" type="button" v-on:click="goto"><i class="fas fa-search"></i></button>
-        <button class="btn btn-outline-secondary dps__godps" type="button" v-on:click="godps"><i class="fas fa-calculator"></i></button>
       </div>
     </div>
   </td>`);
@@ -199,9 +198,6 @@ function load() {
       },
       goto: function(event) {
         window.open(`../character/#!/${this.charId}`, '_blank'); 
-      },
-      godps: function(event) {
-        window.open(`../dps/#${this.charId}`, '_blank'); 
       },
       updateMats: function(result) {
         let matsView = {};
@@ -258,6 +254,14 @@ function load() {
     }
   });
 
+}
+
+function goto() {
+  let $this = $(this);
+  let index = ~~$this.data('index');
+  if ( Characters[index].charId ) {
+    window.open(`../character/#!/${Characters[index].charId}`, '_blank'); 
+  }
 }
 
 function buildChar(charId, skillId, recipe) {
