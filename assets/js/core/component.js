@@ -274,7 +274,7 @@ let createFunctions = {
                 <span aria-hidden="true">&times;</span>
               </button>
             </div>
-            <div class="modal-body">
+            <div class="modal-body" id="vue-dialog">
             </div>
             <!--<div class="modal-footer">
               <button type="button" class="btn btn-secondary" data-dismiss="modal">Close</button>

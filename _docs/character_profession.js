@@ -20,6 +20,7 @@ function init() {
 function load() {
   let upCharNames = [];
   let nowTime = new Date().getTime() / 1000;
+  /*
   AKDATA.Data.gacha_table.gachaPoolClient
     .filter(x => x.endTime > nowTime)
     .forEach(data => {
@@ -32,7 +33,7 @@ function load() {
       if (m4) upCharNames.push(...m4[1].split(' / '));
       if (m3) upCharNames.push(...m3[1].split(' / '));
     });
-  
+  */
   let upCharHtml = '';
   let proKeys = Object.keys(ProfessionNames);
   let charPools = Array.from(Array(6), () => Array(proKeys.length).fill(''));

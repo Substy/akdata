@@ -1,3 +1,5 @@
+const DamageColors = ['black','blue','limegreen','gold','aqua'];
+
 const ProfessionNames = {
   "PIONEER": "先锋",
   "WARRIOR": "近卫",
@@ -11,91 +13,124 @@ const ProfessionNames = {
 //  "TRAP": "装置",
 };
 
-const DamageColors = ['black','blue','limegreen','gold','aqua'];
-const DefaultAttribute = {
-  phase: 2,
-  level: "max",
-  favor: 200,
-  potential: 5,  // 0-5
-  skillLevel: 9,  // 0-9
-  options: { cond: true, crit: true, stack: true }
-};
-const DefaultEnemy = { def: 0, magicResistance: 0, count: 1, hp: 0 };
+// build html
+let page_html = `
+<div id="vue_app">  
+  <div class="card mb-2">
+    <div class="card-header">
+      <div class="card-title mb-0">
+        干员
+        <span class="float-right">
+          <button class="btn btn-outline-secondary" type="button" v-on:click="addChar"><i class="fas fa-plus"></i></button>
+          <button class="btn btn-outline-secondary" type="button" v-on:click="delChar"><i class="fas fa-minus"></i></button>
+        </span>
+      </div>
+    </div>
+    <table class="table dps" style="table-layout:fixed;">
+    <tbody>
+      <tr class="dps__row-select" v-for="(item, index) in plotList">
+        <th style="width:100px;"><a href="#" @click="showDetail(index)">选择干员</a></th>
+        <td>
+          <span id="txt_detail" :data-index="index"></span>
+        </td>
+      </tr>
+    </tbody>
+    </table>
+  </div>
+  <div class="card mb-2">
+    <div class="card-header">
+      <div class="card-title mb-0">调试信息</div>
+    </div>
+    <pre>{{ debugPrint(test) }}</pre>
+  <!--  <div><char_select /></div> -->
+  </div>
+</div>`;
 
-const Stages = {
-  "基准": { level: 1, potential: 0, skillLevel: 6, desc: "精2 1级 潜能1 技能7级" },
-  "满级": { level: "max", desc: "精2 满级 潜能1 技能7级" },
-  "专1": { skillLevel: 7, desc: "满级 潜能1 专精1" },
-  "专2": { skillLevel: 8, desc: "满级 潜能1 专精2" },
-  "专3": { skillLevel: 9, desc: "满级 潜能1 专精3" },
-  "满潜": { potential: 5, desc: "满级 满潜 专精3"},
-};
-
-let itemCache = {};
+var char_select_html = `
+<div id="char_select_component">
+<table class="table" style="table-layout:fixed;">
+<tbody>
+  <tr>
+  <th style="width:100px;">角色</th>
+  <td><select class="form-control" @change="setChar">
+    <option value="-">-</option>
+    <optgroup v-for="(v, k) in charList" :label="k">
+      <option v-for="char in v" :value="char.charId">
+        {{ char.name }}
+      </option>
+    </optgroup> 
+  </select></td>
+  </tr>
+  <tr>
+    <th style="width:100px;">精英</th>
+    <td><select id="sel_phase" class="form-control" :value="result.phase"></select></td>
+  </tr>
+  <tr>
+    <th style="width:100px;">等级</th>
+    <td><select id="sel_level" class="form-control" :value="result.level"></select></td>
+  </tr>
+  <tr>
+    <th style="width:100px;">潜能</th>
+    <td><select id="sel_potential" class="form-control" :value="result.potential"></select></td>
+  </tr>
+  <tr>
+    <th style="width:100px;">技能</th>
+    <td><select id="sel_skill" class="form-control" :value="result.skillId"></select></td>
+  </tr>
+  <tr>
+    <th style="width:100px;">技能等级</th>
+    <td><select id="sel_skilllv" class="form-control" :value="result.skillLevel"></select></td>
+  </tr>
+  <tr>
+    <th style="width:100px;">条件</th>
+    <td><div id="sel_options">特殊条件</div></td>
+  </tr>
+</tbody>
+</table>
+</div>
+`;
 
 function init() {
   $('#update_prompt').text("正在载入角色数据，请耐心等待......");
   AKDATA.load([
     'excel/character_table.json',
     'excel/skill_table.json',
-    'excel/item_table.json',
     '../version.json',
     '../customdata/dps_specialtags.json',
     '../customdata/dps_options.json',
-    '../resources/attributes.js'
+    '../resources/attributes.js',
   ], load);
 }
 
-function queryArkPlanner(mats, callback, ...args) {
-  var url = "https://planner.penguin-stats.io/plan";
-  var data = {
-    required: mats,
-    owned: {},
-    extra_outc: false,
-    exp_demand: false,
-    gold_demand: true
-  };
-  //console.log("query ArkPlanner ->", JSON.stringify(data, null, 2));
-  
-  $.ajax({
-    type: "post",
-    url: url,
-    data: JSON.stringify(data, null, 2),
-    dataType: "json",
-    crossDomain: true,  // 跨域
-    success: function (result) {
-   //   console.log("<-", result, args);
-      callback(result, ...args);
-    },
-    error: alert
-  });
-}
-// queryArkPlanner({"碳素组": 30, "技巧概要·卷3": 30});
+var charDB = AKDATA.Data.character_table;
+var skillDB = AKDATA.Data.skill_table;
 
+// 载入vue需要的数据
 function buildVueModel() {
   let version = AKDATA.Data.version;
-  
-  // select char list
-  let charList = {};
+  let charList = {};  
+  let plotList = [{ charId: "-"}];
+
   Object.keys(ProfessionNames).forEach(key => {
-    var opts = [];
-    for (let id in AKDATA.Data.character_table) {
-      let data = AKDATA.Data.character_table[id];
-      if (data.profession == key && data.phases.length > 2)
-        opts.push({"name": data.name, "id": id});
+    var arr = [];
+    for (let charId in charDB) {
+        var char = charDB[charId];
+        if (char.profession == key) arr.push({"name": char.name, "charId": charId});
     }
-    charList[ProfessionNames[key]] = opts;
+    charList[ProfessionNames[key]] = arr;
   });
 
   return {
     version,
     charList,
+    plotList,
     charId: "-",
     chartKey: "dps",
     resultView: {},
     test: {},
     plannerResponse: {},
-    jobs: 0
+    jobs: 0,
+    details: { phase: 2, level: 90, potential: 5, skillId: "-", skillLevel: 9, options: {} }
   };
 }
 
@@ -107,67 +142,8 @@ function load() {
     $("#vue_version").html("程序版本: {{ version.akdata }}, 数据版本: {{ version.gamedata }}");
   }
   
-  // build html
-  let html = `
-<div id="vue_app">  
-  <div class="card mb-2">
-    <div class="card-header">
-      <div class="card-title mb-0">干员</div>
-    </div>
-    <table class="table dps" style="table-layout:fixed;">
-    <tbody>
-      <tr class="dps__row-select" style="width:20%;"> <th style="width:200px;">干员</th> </tr>
-    </tbody>
-    </table>
-  </div>
-  <div class="card mb-2">
-    <div class="card-header">
-      <div class="card-title">
-        专精收益（以精2 1级 7级技能为基准计算）
-        <span class="float-right">
-          <input type="radio" id="btn_avg" value="dps" v-model="chartKey">
-          <label for="btn_avg">平均dps/hps</label>
-          <input type="radio" id="btn_skill" value="s_dps" v-model="chartKey">
-          <label for="btn_skill">技能dps/hps</label>
-          <input type="radio" id="btn_total" value="s_dmg" v-model="chartKey">
-          <label for="btn_total">技能总伤害/治疗</label>
-        </span>
-      </div>
-    </div>
-    <div id="chart"></div>
-  </div>
-  <div class="card mb-2">
-    <div class="card-header">
-      <div class="card-title mb-0">专精材料（ × <a href="https://planner.penguin-stats.io/" target="_blank">ArkPlanner</a>）</div>
-    </div>
-    <div id="mats_table"></div>
-  </div>  
-  <!--
-  <div class="card mb-2">
-    <div class="card-header">
-      <div class="card-title mb-0">调试信息</div>
-    </div>
-    <pre>{{ debugPrint(test) }}</pre>
-    <div id="_post"></div>
-  </div>
-  -->
-</div>`;
-  let $dps = $(html);
 
-  $dps.find('.dps__row-select').append(`<td>
-    <div class="input-group">
-      <select class="form-control" v-model="charId" v-on:change="changeChar">
-        <optgroup v-for="(v, k) in charList" :label="k">
-          <option v-for="char in v" :value="char.id">
-            {{ char.name }}
-          </option>
-        </optgroup> 
-      </select>
-      <div class="input-group-append">
-        <button class="btn btn-outline-secondary dps__goto" type="button" v-on:click="goto"><i class="fas fa-search"></i></button>
-      </div>
-    </div>
-  </td>`);
+  let $dps = $(page_html);
 
   pmBase.content.build({
     pages: [{
@@ -187,10 +163,24 @@ function load() {
     el: '#vue_app',
     data: window.model,
     methods: {
-      changeChar: function(event) {
-        this.resultView = calculate(this.charId);
-        $("#mats_table").text("正在计算...");
-        beginCalcMats(this.resultView);
+      addChar: function() {
+        this.plotList.push({charId: "-"});
+      },
+      delChar: function() {
+        this.plotList.splice(-1, 1);
+      },
+      setChar: function(index) {
+        
+      },
+      showDetail: function(index) {
+        pmBase.component.create({
+          type: 'modal',
+          id: `dlg_details_${index}`,
+          content: char_select_html,
+          title: index,
+          show: true,
+        });
+        this.$mount("#vue-dialog");
       },
       debugPrint: function(obj) {
         //console.log(JSON.stringify(obj, null, 2));

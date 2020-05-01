@@ -5,7 +5,8 @@
         "ranged_penalty" : { "type" : "bool", "displaytext" : "距离惩罚" },
         "token" : { "type" : "bool", "displaytext" : "计算召唤物数据" },
         "stack" : { "type" : "bool", "displaytext" : "被动叠满" },
-        "noblock" : { "type" : "bool", "displaytext" : "未阻挡" }
+        "noblock" : { "type" : "bool", "displaytext" : "未阻挡" },
+        "cannon":  { "type": "bool", "displaytext": "水炮充能" }
     },
     "char" : {
         "char_503_rang" : [ "cond" ],
@@ -58,6 +59,8 @@
         "char_110_deepcl" : [ "token" ],
         "char_242_otter"  : [ "token" ],
         "char_248_mgllan" : [ "token" ],
-        "char_301_cutter" : [ "cond" ]
+        "char_301_cutter" : [ "cond" ],
+        "char_113_cqbw":    [ "cond" ],
+        "char_400_weedy":   [ "token", "cannon" ]
     }
 }

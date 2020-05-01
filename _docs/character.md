@@ -1,5 +1,5 @@
 ---
-title: 干员
+title: 干员数据
 withjs: true
 withcss: true
 order: 1
