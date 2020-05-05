@@ -1022,7 +1022,7 @@ function calculateAttack(charAttr, enemy, raidBlackboard, isSkill, charData, lev
   }
   // ---- 计算攻击参数
   // 最大目标数
-  if (charData.description.includes("阻挡的<@ba.kw>所有敌人")) {
+  if (charData.description.includes("阻挡的<@ba.kw>所有敌人") && buffFrame < basicFrame.blockCnt) {
     buffFrame.maxTarget = basicFrame.blockCnt;
   } else if (["所有敌人", "群体法术伤害", "群体物理伤害"].some(kw => charData.description.includes(kw))) {
     buffFrame.maxTarget = 999;

@@ -19,24 +19,53 @@ let page_html = `
   <div class="card mb-2">
     <div class="card-header">
       <div class="card-title mb-0">
-        干员
-        <span class="float-right">
+        选择干员
+        <span class="float">
           <button class="btn btn-outline-secondary" type="button" v-on:click="addChar"><i class="fas fa-plus"></i></button>
           <button class="btn btn-outline-secondary" type="button" v-on:click="delChar"><i class="fas fa-minus"></i></button>
         </span>
       </div>
     </div>
-    <table class="table dps" style="table-layout:fixed;">
-    <tbody>
-      <tr class="dps__row-select" v-for="(item, index) in plotList">
-        <th style="width:100px;"><a href="#" @click="showDetail(index)">选择干员</a></th>
-        <td>
-          <span id="txt_detail" :data-index="index"></span>
-        </td>
-      </tr>
-    </tbody>
-    </table>
-  </div>
+    <div class="row">
+      <div class="col-md-2 input-group">
+        <span style="padding: 0 10px"><b>角色</b></span>
+        <select class="form-control" @change="setChar">
+          <option value="-">-</option>
+          <optgroup v-for="(v, k) in charList" :label="k">
+            <option v-for="char in v" :value="char.charId">
+              {{ char.name }}
+            </option>
+          </optgroup> 
+        </select>
+      </div>
+      <div class="col-md-1 input-group">
+        <span style="padding: 0 10px"><b>精英</b></span>
+        <select id="sel_phase" class="form-control"></select>
+      </div>
+      <div class="col-md-1 input-group">
+        <span style="padding: 0 10px"><b>等级</b></span>
+        <select id="sel_phase" class="form-control"></select>
+      </div>
+      <div class="col-md-1 input-group">
+        <span style="padding: 0 10px"><b>潜能</b></span>
+        <select id="sel_phase" class="form-control"></select>
+      </div>
+      <div class="col-md-2 input-group">
+        <span style="padding: 0 10px"><b>技能</b></span>
+        <select id="sel_phase" class="form-control"></select>
+      </div>
+      <div class="col-md-2 input-group">
+        <span style="padding: 0 10px"><b>技能等级</b></span>
+        <select id="sel_phase" class="form-control"></select>
+      </div>
+      <div class="col-md-3 input-group">
+        <span style="padding: 0 10px"><b>条件</b></span>
+        <label class="form-check-label" style="margin-left: 30px">
+          <input class="form-check-input" type="checkbox" checked>1
+        </label>
+      </div>
+    </div>
+  </div> <!-- card -->
   <div class="card mb-2">
     <div class="card-header">
       <div class="card-title mb-0">调试信息</div>
@@ -102,14 +131,16 @@ function init() {
   ], load);
 }
 
-var charDB = AKDATA.Data.character_table;
-var skillDB = AKDATA.Data.skill_table;
+var charDB;
+var skillDB;
 
 // 载入vue需要的数据
 function buildVueModel() {
   let version = AKDATA.Data.version;
   let charList = {};  
   let plotList = [{ charId: "-"}];
+  charDB = AKDATA.Data.character_table;
+  skillDB = AKDATA.Data.skill_table;
 
   Object.keys(ProfessionNames).forEach(key => {
     var arr = [];
