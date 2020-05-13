@@ -252,7 +252,7 @@ function buildVueModel() {
     enemy: { def: 0, magicResistance: 0, count: 1 },
     raidBuff: { atk: 0, atkpct: 0, ats: 0, cdr: 0, base_atk: 0, damage_scale: 0},
     resultCache: {},
-    chartView: []
+    chartView: [],
   };
 }
 
@@ -286,8 +286,15 @@ function load() {
     data: window.model,
     methods: {
       addChar: function() {
-        if (charDB[this.charId])
-          this.plotList.push({charId: this.charId, ...this.details});
+        if (charDB[this.charId]) {
+          var charInfo = {charId: this.charId, ...this.details};
+          var hash = getHashCode(charInfo);
+          if (this.plotList.some(x => (getHashCode(x) == hash))) {
+            alert("相同干员已经存在");
+          }
+          else 
+            this.plotList.push(charInfo);
+        }
       },
       delChar: function(index=-1) {
         this.plotList.splice(index, 1);
@@ -396,10 +403,10 @@ function load() {
         this.buildChartView();
       },
       columns: function() {      
-        window.chart.load({ columns: this.columns });
+        window.chart.load({ columns: this.columns, unload: true });
       },
       chartKey: function() {      
-        window.chart.load({ columns: this.columns });
+        window.chart.load({ columns: this.columns, unload: true });
       }, 
     }
   });
