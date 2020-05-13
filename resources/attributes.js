@@ -54,6 +54,12 @@ class Log {
   }
 }
 
+class NoLog {
+  write(line) { /* console.log(line); */}
+  writeNote(line) {}
+  toString() { return ""; }
+}
+
 // 天赋/技能名字cache
 displayNames = {};
 
@@ -65,14 +71,15 @@ function calculateDps(char, enemy, raidBuff) {
     magicResistance: 0,
     count: 1,
   };
-  raidBuff = raidBuff || { atk: 0, atkpct: 0, ats: 0, cdr: 0, base_atk: 0 };
+  raidBuff = raidBuff || { atk: 0, atkpct: 0, ats: 0, cdr: 0, base_atk: 0, damage_scale: 0 };
   // 把raidBuff处理成blackboard的格式
   let raidBlackboard = {
     atk: raidBuff.atkpct / 100,
     atk_override: raidBuff.atk,
     attack_speed: raidBuff.ats,
     sp_recovery_per_sec: raidBuff.cdr / 100,
-    base_atk: raidBuff.base_atk / 100
+    base_atk: raidBuff.base_atk / 100,
+    damage_scale: 1 + raidBuff.damage_scale / 100
   };
   displayNames["raidBuff"] = "";
 
@@ -123,7 +130,6 @@ function calculateDps(char, enemy, raidBuff) {
   globalHps = Math.round((normalAttack.totalHeal + skillAttack.totalHeal) / (normalAttack.dur.duration + skillAttack.dur.duration + normalAttack.dur.stunDuration));
   //console.log(globalDps, globalHps);
   let killTime = 0;
-  // if (enemy.hp > 0) killTime = Math.ceil( enemy.count / skillAttack.maxTarget ) * enemy.hp * skillAttack.maxTarget / skillAttack.dps ;
 
   return {
     normal: normalAttack,
@@ -136,6 +142,79 @@ function calculateDps(char, enemy, raidBuff) {
     log: log.toString(),
     note: log.note,
   };
+}
+
+function calculateDpsSeries(char, enemy, raidBuff, key, series) {
+  let log = new NoLog();
+  checkChar(char);
+  enemy = enemy || {
+    def: 0,
+    magicResistance: 0,
+    count: 1,
+  };
+  raidBuff = raidBuff || { atk: 0, atkpct: 0, ats: 0, cdr: 0, base_atk: 0, damage_scale: 0 };
+  // 把raidBuff处理成blackboard的格式
+  let raidBlackboard = {
+    atk: raidBuff.atkpct / 100,
+    atk_override: raidBuff.atk,
+    attack_speed: raidBuff.ats,
+    sp_recovery_per_sec: raidBuff.cdr / 100,
+    base_atk: raidBuff.base_atk / 100,
+    damage_scale: 1 + raidBuff.damage_scale / 100
+  };
+  displayNames["raidBuff"] = "";
+
+  let charId = char.charId;
+  let charData = AKDATA.Data.character_table[charId];
+  let skillData = AKDATA.Data.skill_table[char.skillId];
+  if (char.skillLevel == -1) char.skillLevel = skillData.levels.length - 1;
+
+  let levelData = skillData.levels[char.skillLevel];
+  let blackboard = getBlackboard(skillData.levels[char.skillLevel].blackboard) || {};
+
+  // calculate basic attribute package
+  let attr = getAttributes(char, log);
+  blackboard.id = skillData.skillId;
+  attr.buffList["skill"] = blackboard;
+
+  displayNames[charId] = charData.name;
+  displayNames[char.skillId] = levelData.name;  // add to name cache
+
+  if (char.options.token) {
+    var tokenId = checkSpecs(charId, "token") || checkSpecs(char.skillId, "token");      
+    getTokenAtkHp(attr, tokenId, log);
+  }
+
+  // 原本攻击力的修正量
+  if (raidBlackboard.base_atk != 0) {
+    let delta = attr.basic.atk * raidBlackboard.base_atk;
+    let prefix = (delta > 0 ? "+" : "");
+    attr.basic.atk = Math.round(attr.basic.atk + delta);
+  }
+
+  var results = {};
+  series.forEach(x => {
+    enemy[key] = x;
+    //log.write(`普攻:`);
+    let normalAttack = calculateAttack(attr, enemy, raidBlackboard, false, charData, levelData, log);
+    if (!normalAttack) return;
+
+    //log.write(`技能:`);
+    let skillAttack = calculateAttack(attr, enemy, raidBlackboard, true, charData, levelData, log);
+    if (!skillAttack) return;
+  
+    globalDps = Math.round((normalAttack.totalDamage + skillAttack.totalDamage) / (normalAttack.dur.duration + skillAttack.dur.duration + normalAttack.dur.stunDuration));
+    globalHps = Math.round((normalAttack.totalHeal + skillAttack.totalHeal) / (normalAttack.dur.duration + skillAttack.dur.duration + normalAttack.dur.stunDuration));
+    results[x] = {
+      normal: normalAttack,
+      skill: skillAttack,
+      skillName: levelData.name,
+      globalDps,
+      globalHps,
+    };
+  });
+
+  return results;
 }
 
 
@@ -967,7 +1046,7 @@ function calculateAttack(charAttr, enemy, raidBlackboard, isSkill, charData, lev
   let blackboard = buffList.skill;
   let basicFrame = charAttr.basic;
   let options = charAttr.char.options;
-
+ 
   // 计算面板属性
   //log.write("---- Buff ----");
   let buffFrame = initBuffFrame();
@@ -1041,7 +1120,6 @@ function calculateAttack(charAttr, enemy, raidBlackboard, isSkill, charData, lev
   // 额外帧数补偿 https://bbs.nga.cn/read.php?tid=20555008
   let corr = checkSpecs(charId, "frame_corr") || 0;
   let corr_s = checkSpecs(blackboard.id, "frame_corr");
-  console.log(corr, corr_s);
   if ((!(corr_s === false)) && isSkill) corr = corr_s;
   if (corr != 0) {
     frame += corr;
@@ -1600,4 +1678,5 @@ function applyPotential(charId, charData, rank, basic) {
 AKDATA.attributes = {
   getCharAttributes,
   calculateDps,
-}
+  calculateDpsSeries
+};

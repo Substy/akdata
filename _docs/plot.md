@@ -1,5 +1,5 @@
 ---
-title: 开发中内容
+title: DPS图表 (beta)
 withjs: true
 order: 3
 category: 工具

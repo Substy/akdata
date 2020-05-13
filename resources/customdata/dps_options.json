@@ -6,7 +6,8 @@
         "token" : { "type" : "bool", "displaytext" : "计算召唤物数据" },
         "stack" : { "type" : "bool", "displaytext" : "被动叠满" },
         "noblock" : { "type" : "bool", "displaytext" : "未阻挡" },
-        "cannon":  { "type": "bool", "displaytext": "水炮充能" }
+        "cannon":  { "type": "bool", "displaytext": "水炮充能" },
+        "buff":  { "type": "bool", "displaytext": "计算团辅" }
     },
     "char" : {
         "char_503_rang" : [ "cond" ],

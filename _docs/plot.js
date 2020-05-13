@@ -13,111 +13,189 @@ const ProfessionNames = {
 //  "TRAP": "装置",
 };
 
+const EnemySeries = {
+  "def": [...Array(26).keys()].map(x => x * 100),
+  "magicResistance":  [...Array(11).keys()].map(x => x * 10),
+  "count": [...Array(11).keys()]
+};
+
 // build html
 let page_html = `
 <div id="vue_app">  
-  <div class="card mb-2">
+  <div class="card">
+    <div class="card-header">
+      <b>DPS曲线</b>
+      <span class="float-right">
+        <span class="mx-2"><b>变量</b></span>
+        <input type="radio" id="btn_def" value="def" v-model="enemyKey">
+        <label for="btn_def">敌人护甲</label>
+        <input type="radio" id="btn_emr" value="magicResistance" v-model="enemyKey">
+        <label for="btn_avg">法抗</label>
+        <input type="radio" id="btn_count" value="count" v-model="enemyKey">
+        <label for="btn_avg">数量</label>
+        <span class="mx-2"><b>统计量</b></span>
+        <input type="radio" id="btn_avg" value="dps" v-model="chartKey">
+        <label for="btn_avg">平均dps</label>
+        <input type="radio" id="btn_skill" value="s_dps" v-model="chartKey">
+        <label for="btn_avg">技能dps</label>
+      </span>
+    </div>
+    <div class="card-body">
+      <div id="chart"></div>
+  <!--  <pre>{{ debugPrint(chartView) }}</pre> -->
+  <!-- {{ columns }} -->
+    
+    </div>
+  </div> <!-- card -->
+  <div class="card">
     <div class="card-header">
       <div class="card-title mb-0">
-        选择干员
-        <span class="float">
+        选择干员，之后点击添加
+        <span class="float pl-4">
           <button class="btn btn-outline-secondary" type="button" v-on:click="addChar"><i class="fas fa-plus"></i></button>
-          <button class="btn btn-outline-secondary" type="button" v-on:click="delChar"><i class="fas fa-minus"></i></button>
         </span>
       </div>
     </div>
-    <div class="row">
-      <div class="col-md-2 input-group">
-        <span style="padding: 0 10px"><b>角色</b></span>
-        <select class="form-control" @change="setChar">
-          <option value="-">-</option>
-          <optgroup v-for="(v, k) in charList" :label="k">
-            <option v-for="char in v" :value="char.charId">
-              {{ char.name }}
-            </option>
-          </optgroup> 
-        </select>
+    <table class="table" style="table-layout:fixed">
+      <tbody>
+        <tr>
+          <td><b>角色</b>
+            <select class="form-control" v-model="charId" @change="setChar">
+              <option value="-">-</option>
+              <optgroup v-for="(v, k) in charList" :label="k">
+                <option v-for="char in v" :value="char.charId">
+                  {{ char.name }}
+                </option>
+              </optgroup> 
+            </select>
+          </td>
+        <td><b>精英</b>
+          <select id="sel_phase" class="form-control" v-model="details.phase" @change="setPhase">
+            <option v-for="x in opt_phase" :value="x">{{ x }}</option>
+          </select>
+        </td>
+        <td><b>等级</b>
+          <select id="sel_level" class="form-control" v-model="details.level">
+            <option v-for="x in opt_level" :value="x">{{ x }}</option>
+          </select>
+        </td>
+        <td><b>潜能(满信赖)</b>
+          <select id="sel_pot" class="form-control" v-model="details.potential">
+            <option v-for="x in opt_pot" :value="x">{{ x+1 }}</option>
+          </select>
+        </td>
+        <td><b>技能</b>
+          <select id="sel_skill" class="form-control" v-model="details.skillId">
+            <option v-for="x in opt_skill" :value="x.id">{{ x.name }}</option>
+          </select>
+        </td>
+        <td><b>技能等级</b>
+          <select id="sel_skilllv" class="form-control" v-model="details.skillLevel">
+            <option v-for="x in opt_skillLv" :value="x">{{ x+1 }}</option>
+          </select>
+        </td>
+        <td><b>条件</b><br>
+          <label class="form-check-label" style="margin-left: 30px" v-for="opt in opt_options">
+            <input class="form-check-input" type="checkbox" checked :value="opt.tag" :id="opt.tag" v-model="details.options">
+            {{ opt.text }}
+          </label>
+        </td>
+        </tr>
+      </tbody>
+    </table>
+    <div class="card m-3">
+      <div class="card-header">
+        <button class="btn btn-block btn-light text-left" type="button" data-toggle="collapse" data-target="#plot_list" aria-expanded="true" aria-controls="plot_list">
+          已添加的干员
+        </button>
       </div>
-      <div class="col-md-1 input-group">
-        <span style="padding: 0 10px"><b>精英</b></span>
-        <select id="sel_phase" class="form-control"></select>
+      <div id="plot_list" class="collapse show">
+        <div class="card-body">
+          <div class="row">
+            <div class="card col-md-3 p-2" v-for="(x, index) in plotList">
+              <p class="card-title"><b>
+                {{ explainChar(x).name }}
+                <button type="button" class="btn btn-outline-danger float-right" @click="delChar(index)">删除</button>
+              </b></p>
+              <p class="card-text"> {{ explainChar(x).text }} </p>
+              <p class="card-text"> {{ explainChar(x).option }} </p>
+            </div>
+          </div>
       </div>
-      <div class="col-md-1 input-group">
-        <span style="padding: 0 10px"><b>等级</b></span>
-        <select id="sel_phase" class="form-control"></select>
-      </div>
-      <div class="col-md-1 input-group">
-        <span style="padding: 0 10px"><b>潜能</b></span>
-        <select id="sel_phase" class="form-control"></select>
-      </div>
-      <div class="col-md-2 input-group">
-        <span style="padding: 0 10px"><b>技能</b></span>
-        <select id="sel_phase" class="form-control"></select>
-      </div>
-      <div class="col-md-2 input-group">
-        <span style="padding: 0 10px"><b>技能等级</b></span>
-        <select id="sel_phase" class="form-control"></select>
-      </div>
-      <div class="col-md-3 input-group">
-        <span style="padding: 0 10px"><b>条件</b></span>
-        <label class="form-check-label" style="margin-left: 30px">
-          <input class="form-check-input" type="checkbox" checked>1
-        </label>
-      </div>
-    </div>
+    </div> <!-- card -->
   </div> <!-- card -->
+  
+  <div class="card">
+    <div class="card-body">
+      <button class="button btn-primary" type="button" data-toggle="collapse" data-target="#tbl_enemy" aria-expanded="false" aria-controls="tbl_enemy">
+        敌人属性设置
+      </button>
+      <button class="button btn-primary" type="button" data-toggle="collapse" data-target="#tbl_raidBuff" aria-expanded="false" aria-controls="tbl_raidBuff">
+        团队Buff设置
+      </button>
+      <div class="collapse" id="tbl_enemy">
+        <table class="table" style="table-layout:fixed">
+          <tbody>
+            <tr><th><b>敌人属性</b></th>
+              <td><b>防御力</b><br>
+                <input id="txt_edef" type="text" v-model="enemy.def">
+              </td>
+              <td><b>法抗</b><br>
+                <input id="txt_emr" type="text" v-model="enemy.magicResistance">
+              </td>
+              <td><b>数量</b><br>
+                <input id="txt_ecount" type="text" v-model="enemy.count">
+              </td>
+            </tr>
+          </tbody>
+        </table>
+      </div>
+      <div class="collapse" id="tbl_raidBuff">
+        <table class="table" style="table-layout:fixed">
+          <tbody>
+            <tr><th><b>团队Buff</b></th>
+              <td><b>攻击力(+x)</b><br>
+                <input id="txt_atk" type="text" v-model="raidBuff.atk">
+              </td>
+              <td><b>攻击力(+x%)</b><br>
+                <input id="txt_atkpct" type="text" v-model="raidBuff.atkpct">
+              </td>
+              <td><b>攻击速度(+x%)</b><br>
+                <input id="txt_ats" type="text" v-model="raidBuff.ats">
+              </td>
+            </tr>
+            <tr><th></th>
+              <td><b>技力恢复(+x%)</b><br>
+                <input id="txt_cdr" type="text" v-model="raidBuff.cdr">
+              </td>
+              <td><b>合约攻击力Tag(+/-x%)</b><br>
+                <input id="txt_batk" type="text" v-model="raidBuff.base_atk">
+              </td>
+              <td><b>伤害倍率(damage_scale/x%)</b><br>
+                <input id="txt_scale" type="text" v-model="raidBuff.damage_scale">
+              </td>
+            </tr>
+          </tbody>
+        </table>
+      </div>
+    </div> <!-- card-body -->
+  </div> <!-- card -->
+  <!--
   <div class="card mb-2">
     <div class="card-header">
       <div class="card-title mb-0">调试信息</div>
     </div>
-    <pre>{{ debugPrint(test) }}</pre>
-  <!--  <div><char_select /></div> -->
-  </div>
-</div>`;
+    <pre>{{ resultCache }}</pre>
+    <pre>{{ chartKey }}</pre>
+    <pre>{{ raidBuff }}</pre>
+    <pre>{{ enemy }}</pre>
 
-var char_select_html = `
-<div id="char_select_component">
-<table class="table" style="table-layout:fixed;">
-<tbody>
-  <tr>
-  <th style="width:100px;">角色</th>
-  <td><select class="form-control" @change="setChar">
-    <option value="-">-</option>
-    <optgroup v-for="(v, k) in charList" :label="k">
-      <option v-for="char in v" :value="char.charId">
-        {{ char.name }}
-      </option>
-    </optgroup> 
-  </select></td>
-  </tr>
-  <tr>
-    <th style="width:100px;">精英</th>
-    <td><select id="sel_phase" class="form-control" :value="result.phase"></select></td>
-  </tr>
-  <tr>
-    <th style="width:100px;">等级</th>
-    <td><select id="sel_level" class="form-control" :value="result.level"></select></td>
-  </tr>
-  <tr>
-    <th style="width:100px;">潜能</th>
-    <td><select id="sel_potential" class="form-control" :value="result.potential"></select></td>
-  </tr>
-  <tr>
-    <th style="width:100px;">技能</th>
-    <td><select id="sel_skill" class="form-control" :value="result.skillId"></select></td>
-  </tr>
-  <tr>
-    <th style="width:100px;">技能等级</th>
-    <td><select id="sel_skilllv" class="form-control" :value="result.skillLevel"></select></td>
-  </tr>
-  <tr>
-    <th style="width:100px;">条件</th>
-    <td><div id="sel_options">特殊条件</div></td>
-  </tr>
-</tbody>
-</table>
-</div>
-`;
+    ------
+    已添加的干员
+    <pre>{{ plotList.map(x => explainChar(x)) }}</pre>
+  </div>
+  -->
+</div>`;
 
 function init() {
   $('#update_prompt').text("正在载入角色数据，请耐心等待......");
@@ -129,18 +207,23 @@ function init() {
     '../customdata/dps_options.json',
     '../resources/attributes.js',
   ], load);
+};
+
+function getHashCode(obj) {
+  var str = JSON.stringify(obj, null, 2);
+  return str.split("").reduce(function(a, b) {a=((a<<5)-a)+b.charCodeAt(0); return a&a}, 0);
 }
 
-var charDB;
-var skillDB;
+var charDB, skillDB, optionDB;
 
 // 载入vue需要的数据
 function buildVueModel() {
   let version = AKDATA.Data.version;
-  let charList = {};  
-  let plotList = [{ charId: "-"}];
+  let charList = {}; // 选人菜单内容
+  let plotList = [];  // 图表里的人物信息
   charDB = AKDATA.Data.character_table;
   skillDB = AKDATA.Data.skill_table;
+  optionDB = AKDATA.Data.dps_options;
 
   Object.keys(ProfessionNames).forEach(key => {
     var arr = [];
@@ -155,13 +238,21 @@ function buildVueModel() {
     version,
     charList,
     plotList,
+    opt_phase: [], // 下拉框选项
+    opt_level: [],
+    opt_pot: [0, 1, 2, 3, 4, 5],
+    opt_skill: [],
+    opt_skillLv: [],
+    opt_options: [],
     charId: "-",
     chartKey: "dps",
-    resultView: {},
+    enemyKey: "def",
     test: {},
-    plannerResponse: {},
-    jobs: 0,
-    details: { phase: 2, level: 90, potential: 5, skillId: "-", skillLevel: 9, options: {} }
+    details: { phase: 2, level: 90, potential: 5, skillId: "-", skillLevel: 9, favor: 200, options: [] },
+    enemy: { def: 0, magicResistance: 0, count: 1 },
+    raidBuff: { atk: 0, atkpct: 0, ats: 0, cdr: 0, base_atk: 0, damage_scale: 0},
+    resultCache: {},
+    chartView: []
   };
 }
 
@@ -195,23 +286,60 @@ function load() {
     data: window.model,
     methods: {
       addChar: function() {
-        this.plotList.push({charId: "-"});
+        if (charDB[this.charId])
+          this.plotList.push({charId: this.charId, ...this.details});
       },
-      delChar: function() {
-        this.plotList.splice(-1, 1);
+      delChar: function(index=-1) {
+        this.plotList.splice(index, 1);
       },
-      setChar: function(index) {
-        
+      explainChar: function(char) {
+        // { charId, phase: 2, level: 90, potential: 5, skillId: "-", skillLevel: 9, options: [] }
+        // console.log(char, char.options);
+        var levelStr = `精${char.phase} ${char.level}级, 潜能${char.potential+1}, `;
+        var skillStr = skillDB[char.skillId] ? `${skillDB[char.skillId].levels[0].name} 等级${char.skillLevel+1}` : "";
+        var optionStr = char.options.map(x => optionDB.tags[x].displaytext).join("/");
+        return { name: charDB[char.charId].name, text: levelStr + skillStr, option: optionStr }
       },
-      showDetail: function(index) {
-        pmBase.component.create({
-          type: 'modal',
-          id: `dlg_details_${index}`,
-          content: char_select_html,
-          title: index,
-          show: true,
+      setChar: function(event) {
+        let phases = charDB[this.charId].phases.length;
+        this.opt_phase = [...Array(phases).keys()];
+        this.details.phase = phases-1;
+        this.setPhase();
+
+        var opts = (optionDB.char[this.charId] || []).map(
+          x => ({ tag: x, text: optionDB.tags[x].displaytext })
+        );
+        opts.push({ tag: "buff", text: "计算团辅"});
+        var sel_opts = [];
+        opts.forEach(x => {
+          if (x.tag != "token") sel_opts.push(x.tag);         
         });
-        this.$mount("#vue-dialog");
+        this.opt_options = opts;
+        this.details.options = sel_opts;
+      },
+      setPhase: function(event) {
+        let maxLv = charDB[this.charId].phases[this.details.phase].maxLevel;
+        this.opt_level = [...Array(maxLv).keys()].map(x => x+1);
+        this.details.level = maxLv;
+        this.setSkill();
+      },
+      setSkill: function() {
+        let skills=[], slv = 0;
+        charDB[this.charId].skills.forEach((skill, sid) => {
+          if (this.details.phase >= skill.unlockCond.phase) {
+            let name = skillDB[skill.skillId].levels[0].name;
+            skills.push({id: skill.skillId, name: name});
+            slv = skillDB[skill.skillId].levels.length;
+          }
+        });
+        slv = Math.min(slv, this.details.phase*3 + 4);
+        if (slv == 0)
+          this.details.skillId = "-";
+        else
+          this.details.skillId = skills[skills.length-1].id;
+        this.opt_skill = skills;
+        this.opt_skillLv = [...Array(slv).keys()];
+        this.details.skillLevel = slv-1;
       },
       debugPrint: function(obj) {
         //console.log(JSON.stringify(obj, null, 2));
@@ -220,288 +348,106 @@ function load() {
       goto: function(event) {
         window.open(`../character/#!/${this.charId}`, '_blank'); 
       },
-      updateMats: function(result) {
-        let matsView = {};
-        let rv = this.resultView;
-        let pr = this.plannerResponse;
-        for (var sk in rv.skill) {
-          matsView[sk] = {title: rv.skill[sk]};
-          matsView[sk].list = [];
-          for (var lv in pr[sk]) {
-            var items = [];
-            for (var x in pr[sk][lv].mats) {
-            //  items.push(` ${x} × ${pr[sk][lv].mats[x]}`);
-              items.push(AKDATA.getItemBadge("MATERIAL", itemCache[x].id, pr[sk][lv].mats[x]));
-            }
-            matsView[sk].list.push([
-              `${lv} <i class="fas fa-angle-right"></i> ${parseInt(lv)+1}`,
-              items,
-              pr[sk][lv].cost
-            ]);
-          }
-        }
-        // this.test = matsView;
-        let matsHtml = "";
-        for (var sk in matsView) {
-          matsHtml += pmBase.component.create({
-            type: 'list',
-            card: true,
-            title: `${matsView[sk].title}`,
-            header: ['等级', '素材', '等效理智'],
-            list: matsView[sk].list
+      buildChartView: function() {
+        this.chartView = this.results.map(x => {
+          var d = {};
+          Object.keys(x).forEach(k => {
+            d[k] = {
+              dps: x[k].globalDps,
+              s_dps: x[k].skill.dps
+            };
           });
-        }
-        $("#mats_table").html(matsHtml);
-      },
-      jobCallback: function() {
-        console.log("- all jobs finished");
-        console.timeEnd("calcMats");
-        this.updateMats(this.plannerResponse);
+          return d;
+        });
       }
+
+    },
+    computed: {
+      results: {
+        //cache: false,
+        get: function() {
+          var new_result = [];
+          this.plotList.forEach(x => {
+            var args = buildArgs(x, this.enemy, this.raidBuff, this.enemyKey);
+            var hash = getHashCode(args);
+            // console.log(args.enemyKey, EnemySeries[this.enemyKey]);
+            if (!this.resultCache[hash]) {
+              this.resultCache[hash] = AKDATA.attributes.calculateDpsSeries(args.char, args.enemy, args.raidBuff, args.enemyKey, EnemySeries[args.enemyKey]);
+            }
+            new_result.push(this.resultCache[hash]);
+          });
+          return new_result;
+        }
+      },
+      columns: function () {
+        var cols = [];
+        cols.push(["x", ...EnemySeries[this.enemyKey]]);
+        for (var i=0; i<this.plotList.length; ++i) {
+          var info = this.explainChar(this.plotList[i]);
+          var title = info.name + " " + info.text;
+          var values = Object.keys(this.chartView[i]).map(k => this.chartView[i][k][this.chartKey]);
+          cols.push([title, ...values]);
+        }
+        return cols;
+      },
     },
     watch: {
-      resultView: function(_new, _old) {
-        let cv = buildChartView(_new, this.chartKey);
-        plot(cv);
+      results: function() {
+        this.buildChartView();
       },
-      chartKey: function(_new, _old) {
-        let cv = buildChartView(this.resultView, _new);
-        updatePlot(cv);
+      columns: function() {      
+        window.chart.load({ columns: this.columns });
       },
-      jobs: function(_new, _old) {
-        if (this.charId != "-" && this.jobs == 0)
-          this.jobCallback();
-      }
+      chartKey: function() {      
+        window.chart.load({ columns: this.columns });
+      }, 
     }
   });
 
-}
-
-function goto() {
-  let $this = $(this);
-  let index = ~~$this.data('index');
-  if ( Characters[index].charId ) {
-    window.open(`../character/#!/${Characters[index].charId}`, '_blank'); 
-  }
-}
-
-function buildChar(charId, skillId, recipe) {
-  let char = {
-    charId,
-    skillId,
-    phase: recipe.phase,
-    favor: recipe.favor,
-    potentialRank: recipe.potential,
-    skillLevel: recipe.skillLevel,
-    options: recipe.options
-  };
-
-  let db = AKDATA.Data.character_table[charId];
-  let skilldb = AKDATA.Data.skill_table[skillId];
-  let maxLevel = db.phases[recipe.phase].maxLevel;
-  if (recipe.level == "max")
-    char.level = maxLevel;
-  else
-    char.level = recipe.level;
-  char.name = db.name;
-  char.skillName = skilldb.levels[char.skillLevel].name;
-  //console.log(char);
-  return char;
-}
-
-function calculate(charId) {
-  let db = AKDATA.Data.character_table[charId];
-  let itemdb = AKDATA.Data.item_table.items;
-  let recipe = DefaultAttribute;
-  let enemy = DefaultEnemy;
-  let stages = Stages;
-  let raidBuff = { atk: 0, atkpct: 0, ats: 0, cdr: 0, base_atk: 0 };
-  let result = {}, mats = {};
-
-  // calculate dps for each recipe case.
-  db.skills.forEach(skill => {
-    var entry = {};
-    for (let st in stages) {
-      $.extend(recipe, stages[st]);
-      var ch = buildChar(charId, skill.skillId, recipe);
-      ch.dps = AKDATA.attributes.calculateDps(ch, enemy, raidBuff);
-      entry[st] = ch;
-    };
-    result[skill.skillId] = entry;
-
-    mats[skill.skillId] = skill.levelUpCostCond.map(x => x.levelUpCost);
-  });
-  // window.model.test = result;
-
-  // extract result, making it more readable
-  // name, skill, stage, damageType, avg, skill, skilldamage, cdr
-  let resultView = {
-    id: charId,
-    name: db.name,
-    skill: {},
-    stages: stages,
-    dps: {},
-    notes: {},
-    mats: {}
-  };
-  for (let k in result) {
-    resultView.skill[k] = result[k]["满潜"].skillName;
-    resultView.notes[k] = result[k]["满潜"].dps.note;
-    resultView.dps[k] = {};
-    for (let st in stages) {
-      var entry = result[k][st].dps;
-      resultView.dps[k][st] = {
-        damageType: entry.skill.damageType,
-        spType: entry.skill.spType,
-        dps: entry.globalDps,
-        hps: entry.globalHps,
-        s_dps: entry.skill.dps,
-        s_hps: entry.skill.hps,
-        s_dmg: entry.skill.totalDamage,
-        s_heal: entry.skill.totalHeal,
-        s_ssp: entry.skill.dur.startSp,
-      };
-     // console.log(k, st, entry.skill.dur.startSp);
-    };
-    resultView.mats[k] = [];
-    mats[k].forEach(level => {
-      var i = {};
-      level.forEach(x => {
-        i[itemdb[x.id].name] = x.count;
-        itemCache[itemdb[x.id].name] = {id: x.id, name: itemdb[x.id].name, rarity: itemdb[x.id].rarity};
-      });
-      resultView.mats[k].push(i);
-    });
-  };
-
- //console.log(window.vue_app.debugPrint(resultView.mats));
-  return resultView;
-}
-
-const HealKeys = {
-  dps: "hps",
-  s_dps: "s_hps",
-  s_dmg: "s_heal"
-};
-
-// calculate() -> resultView -> build(key) -> chartView -> plot()
-function buildChartView(resultView, key) {
-  // rotate data for plot columns
-  let view = resultView;
-  let k = key;
-  let columns = [], groups = [], skill_names = [], notes = [];
-  var last = {};
-  for (let stg in view.stages) {
-    var entry = [stg];
-    for (let skill in view.skill) {
-      k = (view.dps[skill][stg].damageType == 2) ? HealKeys[key] : key; 
-      var value = view.dps[skill][stg][k];
-      if (skill in last)
-        entry.push((value - last[skill]).toFixed(2));
-      else
-        entry.push(value.toFixed(2));
-      last[skill] = value;
-    }
-    columns.push(entry);
-    groups.push(stg);
-  }
-  var x = 0.02, i = 0;
-  for (let skill in view.skill) {
-    skill_names.push(view.skill[skill]);
-    let line = view.notes[skill];
-    
-    if (view.dps[skill]["满潜"].spType != 8) {
-      if (line != "") line += "\n";
-      line += `点火时间 ${view.dps[skill]["基准"].s_ssp}s -> ${view.dps[skill]["满潜"].s_ssp}s`;
-      console.log(view.dps[skill]["满潜"].spType);
-      if (view.dps[skill]["满潜"].s_ssp <= 0)
-        line += " （落地点火）";
-    }
-    notes.push({x: x, y: 20, content: line});
-    x+=1;
-  }
-  // console.log(columns, groups, skill_names, notes);
-
-  return { columns, groups, skill_names, notes };
-}
-
-function plot(chartView) {  
+  // init chart
   window.chart = c3.generate({
     bindto: "#chart",
-    size: { height: 400 },
+    size: { height: 600 },
     data: {
-      type: "bar",
+      x: "x",
       columns: [],
-      groups: [chartView.groups],
-      order: null,
     },
     axis: {
-      rotated: true,
-      x: {
-        type: "category",
-        categories: chartView.skill_names
-      },
-      y: {
-        tick: { fit: false },
-      }
-    },
-    bar: {
-      width: { ratio: 0.4 }
-    },
-    stanford: {
-      texts: chartView.notes
     },
     grid: {
+      x: { show: true },
       y: { show: true }
     },
     zoom: { enabled: true },
-    color: {
-      pattern: [ "#cccccc", "#4169e1", "#ff7f50", "#ffd700", "#dc143c", "#ee82ee", "#e6e6fa" ]
-    }
   });
 
-  window.chart.load({ columns: chartView.columns });
-  setTimeout(function() {
-    $(".c3-chart-bar.c3-target-基准").css("opacity", 0.4);
-  }, 100);
 }
 
-function updatePlot(chartView) {
-  window.chart.load({ columns: chartView.columns, groups: chartView.groups });
-  setTimeout(function() {
-    $(".c3-chart-bar.c3-target-基准").css("opacity", 0.4);
-  }, 200);
-}
-
-// use ajax post to invoke ArkPlanner
-// use vue var as semaphore to cooperate requests
-// when all request jobs are done (jobs == 0), the vue watch invokes jobDoneCallback()
-function beginCalcMats(resultView) {
-  console.time("calcMats");
-  window.vue_app.jobs = Object.keys(resultView.mats).length * 3;  // semaphore
-  var delay = 300;
-  for (var sk in resultView.mats) {
-    let level = 7;  // 7->8
-    resultView.mats[sk].forEach(m => {
-      (function (_m, _s, _l) {  // closure to bind args to setTimeout
-        setTimeout(function () {
-          queryArkPlanner(_m, matsCallback, {mats: _m, id: resultView.id, skill: _s, level: _l});
-        }, delay);
-      }(m, sk, level));
-      level += 1; delay += 300;
-    });
-  }
-}
-
-function matsCallback(result, kwargs) {
-  console.log(result.cost, kwargs);
-  if (!window.vue_app.plannerResponse[kwargs.skill])
-    window.vue_app.plannerResponse[kwargs.skill] = {};
-//  window.vue_app.plannerResponse[kwargs.skill][`${kwargs.level}`] = { mats: kwargs.mats, result: result };
-  window.vue_app.plannerResponse[kwargs.skill][`${kwargs.level}`] = { mats: kwargs.mats, cost: result.cost };
-
-  if (kwargs.id == window.vue_app.charId)  // filter old (slow) calls
-    window.vue_app.jobs -= 1;
+// adapt info obj to calculateDps() function
+function buildArgs(info, enemy, raidBuff, key) {
+  let char_obj = {
+    charId: info.charId,
+    skillId: info.skillId,
+    phase: info.phase,
+    level: info.level,
+    favor: info.favor,
+    potentialRank: info.potential,
+    skillLevel: info.skillLevel,
+    options: {}
+  };
+  info.options.forEach(x => { char_obj.options[x] = true; });
+  let enemy_obj = {
+    def: parseFloat(enemy.def),
+    magicResistance: parseFloat(enemy.magicResistance),
+    count: parseFloat(enemy.count)
+  };
+  Object.keys(raidBuff).forEach(k => { raidBuff[k] = parseFloat(raidBuff[k]); });
+  return {
+    char: char_obj,
+    enemy: enemy_obj,
+    raidBuff,
+    enemyKey: key
+  };
 }
 
 pmBase.hook.on('init', init);
