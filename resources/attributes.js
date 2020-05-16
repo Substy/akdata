@@ -302,7 +302,7 @@ function applyBuff(charAttr, buffFrm, tag, blackbd, isSkill, isCrit, log) {
         case "heal_scale":
         case "damage_scale":
           buffFrame[key] *= blackboard[key];
-          writeBuff(`${key}: ${blackboard[key].toFixed(2)}x`);
+          if (blackboard[key] != 1) writeBuff(`${key}: ${blackboard[key].toFixed(2)}x`);
           break;
         case "attack@atk_scale":
           buffFrame.atk_scale *= blackboard["attack@atk_scale"];
@@ -771,43 +771,97 @@ function calcDurations(isSkill, attackTime, attackSpeed, levelData, buffList, bu
   // 需要模拟的技能（自动回复+自动释放+有充能）
   if (checkSpecs(skillId, "sim")) {
     duration = 120;
-    let init_sp = spData.initSp;
-    let extra_sp = 0;
-    let sp_rate = 1 + buffFrame.spRecoveryPerSec;
-    if (skillId == "skchr_amgoat_2" && buffList["tachr_180_amgoat_2"])  // 乱火
-      init_sp += (buffList["tachr_180_amgoat_2"].sp_min + buffList["tachr_180_amgoat_2"].sp_max) / 2;
-    else if (buffList["tachr_134_ifrit_2"]) // 莱茵回路
-      extra_sp = Math.floor(duration / buffList["tachr_134_ifrit_2"].interval) * buffList["tachr_134_ifrit_2"].sp;
-    else if (buffList["tachr_222_bpipe_2"]) // 军事传统
-      init_sp += buffList["tachr_222_bpipe_2"].sp;
-    
-    // 施法时间
-    let ctime = attackTime;
-    if (checkSpecs(skillId, "cast_time"))
-      ctime = checkSpecs(skillId, "cast_time") / 30;
-    if (checkSpecs(skillId, "cast_bat"))
-      ctime = checkSpecs(skillId, "cast_bat") * 100 / attackSpeed / 30;
+    let fps = 30;
+    let now = 1, sp = spData.initSp;
+    let last = {}, timeline = {}, total = {};
+    const TimelineMarks = {
+      "attack": "-",
+      "skill": "+",
+      "ifrit": "",
+      "ifrit_recover_sp": "*",
+      "reset_animation": "*",
+    };
+    // 阻回时间(帧)
+    let cast_time = checkSpecs(skillId, "cast_time") ||
+                    checkSpecs(skillId, "cast_bat") * 100 / attackSpeed ||
+                    attackTime * fps;
+    let skill_time = Math.max(cast_time, attackTime * fps);
 
-    log.write(`  - [模拟] T = ${duration}s, 初始sp = ${init_sp}, 技能sp = ${spData.spCost}, 施法时间 = ${ctime.toFixed(3)}s`);
-    log.write(`  - [模拟] sp回复 = ${sp_rate.toFixed(2)}/s, 额外sp = ${extra_sp}`);
+    function time_since(key) { return now - (last[key] || -999); }
+    function action(key) {
+      if (!timeline[now]) timeline[now] = [];
+      timeline[now].push(key);
+      last[key] = now;
+      total[key] = (total[key] || 0) + 1;
+    }
 
-    let skill_count = Math.floor((duration * sp_rate + init_sp + extra_sp) / (spData.spCost + ctime * sp_rate));
-    let normal_count = Math.floor((duration - skill_count * Math.max(attackTime, ctime)) / attackTime);
-    log.write(`  - [模拟] 技能次数 = ${skill_count}, 普攻次数 = ${normal_count}`);
+    // init sp
+    if (skillId == "skchr_amgoat_2" && buffList["tachr_180_amgoat_2"])
+      sp = (buffList["tachr_180_amgoat_2"].sp_min + buffList["tachr_180_amgoat_2"].sp_max) / 2 * fps;
+    else if (buffList["tachr_222_bpipe_2"])
+      sp = buffList["tachr_222_bpipe_2"].sp * fps;
+    last["ifrit"] = 1;
+    startSp = spData.spCost - sp / fps;
+
+    log.write(`  - [模拟] T = 120s, 初始sp = ${(sp/fps).toFixed(1)}, 技能sp = ${spData.spCost}, 阻回时间 = ${Math.round(cast_time)} 帧`);
+    if (checkSpecs(skillId, "attack_animation"))
+      log.write(`  - [模拟] 攻击动画 = ${checkSpecs(skillId, "attack_animation")} 帧`);
+
+    while (now <= duration * fps) {
+      // normal attack
+      if (sp < spData.spCost * fps &&
+          time_since("attack") >= attackTime * fps &&
+          time_since("skill")  >= skill_time) {
+        action("attack");
+      }
+      // skill
+      if (sp >= spData.spCost * fps &&
+          time_since("skill") >= skill_time &&
+          (time_since("attack") >= attackTime * fps || time_since("attack") == checkSpecs(skillId, "attack_animation"))
+         ) {
+        if (time_since("attack") == checkSpecs(skillId, "attack_animation"))
+          action("reset_animation");
+        action("skill");
+      }
+      // sp recover
+      if (time_since("skill") == 0)
+        sp -= spData.spCost * fps;
+      if (time_since("skill") >= cast_time) {
+        sp += (1 + buffFrame.spRecoveryPerSec);
+      }
+      if (buffList["tachr_134_ifrit_2"] && time_since("ifrit") >= buffList["tachr_134_ifrit_2"].interval * fps) {
+        action("ifrit");
+        if (time_since("skill") >= cast_time) {
+          action("ifrit_recover_sp");
+          sp += buffList["tachr_134_ifrit_2"].sp * fps;
+        }   
+      }
+      ++now;
+    }
 
     if (isSkill) {
-      log.writeNote("按120s进行模拟");
-      attackCount = skill_count;
-      duration = skill_count * Math.max(ctime, attackTime);
-      startSp = spData.spCost - init_sp;
+      attackCount = total.skill;
+      duration = attackCount * skill_time / fps;
     } else {
-      attackCount = normal_count;
-      duration = normal_count * attackTime;
-      let skill_sp_delta = (attackTime > ctime) ? (attackTime - ctime) * sp_rate * skill_count : 0;
-      let total_sp = init_sp + duration * sp_rate + skill_sp_delta + extra_sp;
+      attackCount = total.attack;
+      duration -= total.skill * skill_time / fps;
 
-      log.write(`  - [模拟] 总sp: ${total_sp.toFixed(1)} {${[init_sp, (duration*sp_rate).toFixed(1), extra_sp, skill_sp_delta.toFixed(1)]}}`);
+      // 打印时间轴和特殊动作
+      var line_str = "";
+      Object.keys(timeline).forEach(t => {
+        line_str += timeline[t].map(x => TimelineMarks[x]).join("");
+      });
+      log.write(`  - [模拟] 时间轴: ${line_str}`);
+      log.write(`           ( -: 普攻, +: 技能, *: 特殊 )`)
+      
+      if (total.ifrit)
+        log.write(`  - [模拟] 莱茵回路(*): 触发 ${total.ifrit_recover_sp} / ${total.ifrit} 次, sp + ${buffList["tachr_134_ifrit_2"].sp * total.ifrit_recover_sp}`);
+      if (total.reset_animation)
+        log.write(`  - [模拟] 取消攻击间隔(*) ${total.reset_animation} 次`);
     }
+    // console.log(duration);
+    // console.log("total", total);
+    // console.log("timeline", timeline);
   } else {
 
   if (isSkill) { 
@@ -832,7 +886,7 @@ function calcDurations(isSkill, attackTime, attackSpeed, levelData, buffList, bu
       var t = frameBegin / 30;
       attackCount = Math.ceil((duration - t) / attackTime);
       log.write(`  - 抬手时间: ${t.toFixed(3)}s, ${frameBegin} 帧`);
-      if (frameBegin == 12) log.write("  - （需要补充实测数据）");
+      if (!checkSpecs(skillId, "attack_begin")) log.write("  - （需要补充实测数据）");
       log.writeNote(`重置普攻抬手估算 ${t.toFixed(3)}s`);
     }
     // 技能类型
@@ -922,7 +976,7 @@ function calcDurations(isSkill, attackTime, attackSpeed, levelData, buffList, bu
       var t = frameBegin / 30;
       attackCount = Math.ceil((duration - t) / attackTime);
       log.write(`  - 抬手时间: ${t.toFixed(3)}s, ${frameBegin} 帧`);
-      if (frameBegin == 12) log.write("  - （需要补充实测数据）");
+      if (!checkSpecs(skillId, "attack_begin")) log.write("  - （需要补充实测数据）");
     }
     // 技能类型
     switch (spData.spType) {
