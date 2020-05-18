@@ -772,7 +772,7 @@ function calcDurations(isSkill, attackTime, attackSpeed, levelData, buffList, bu
   if (checkSpecs(skillId, "sim")) {
     duration = 120;
     let fps = 30;
-    let now = 1, sp = spData.initSp;
+    let now = fps, sp = spData.initSp;
     let last = {}, timeline = {}, total = {};
     const TimelineMarks = {
       "attack": "-",
@@ -781,7 +781,7 @@ function calcDurations(isSkill, attackTime, attackSpeed, levelData, buffList, bu
       "ifrit_recover_sp": "*",
       "reset_animation": "*",
     };
-    // 阻回时间(帧)
+    // 技能动画(阻回)时间-帧
     let cast_time = checkSpecs(skillId, "cast_time") ||
                     checkSpecs(skillId, "cast_bat") * 100 / attackSpeed ||
                     attackTime * fps;
@@ -803,9 +803,11 @@ function calcDurations(isSkill, attackTime, attackSpeed, levelData, buffList, bu
     last["ifrit"] = 1;
     startSp = spData.spCost - sp / fps;
 
-    log.write(`  - [模拟] T = 120s, 初始sp = ${(sp/fps).toFixed(1)}, 技能sp = ${spData.spCost}, 阻回时间 = ${Math.round(cast_time)} 帧`);
+    log.write(`  - [模拟] T = 120s, 初始sp = ${(sp/fps).toFixed(1)} (+1落地sp), 技能sp = ${spData.spCost}, 技能动画时间 = ${Math.round(cast_time)} 帧`);
     if (checkSpecs(skillId, "attack_animation"))
       log.write(`  - [模拟] 攻击动画 = ${checkSpecs(skillId, "attack_animation")} 帧`);
+
+    sp+=fps;  // 落地时恢复1sp
 
     while (now <= duration * fps) {
       // normal attack
@@ -1139,7 +1141,7 @@ function calculateAttack(charAttr, enemy, raidBlackboard, isSkill, charData, lev
   if (isSkill && checkSpecs(blackboard.id, "cast_bat")) {
     var f = checkSpecs(blackboard.id, "cast_bat");
     basicFrame.baseAttackTime = f / 30;
-    log.write(`  - [特殊] ${displayNames[blackboard.id]} - 技能原本攻击间隔 ${(f/30).toFixed(3)}s, ${f} 帧`);
+    log.write(`  - [特殊] ${displayNames[blackboard.id]} - 技能动画时间 ${(f/30).toFixed(3)}s, ${f} 帧`);
   }
 
   let finalFrame = getBuffedAttributes(basicFrame, buffFrame);

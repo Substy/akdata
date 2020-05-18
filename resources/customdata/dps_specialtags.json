@@ -81,7 +81,7 @@
     "skchr_moeshd_2":   { "cast_time": 34 },
     "skchr_mostma_2":	{ "reset_attack": true, "sec": true },
     "skchr_mostma_3":	{ "reset_attack": true },
-    "skchr_myrrh_1":    { "cast_time" : 30, "attack_begin": 14, "attack_animation": 44, "sim": true },
+    "skchr_myrrh_1":    { "cast_time" : 30, "attack_begin": 12, "attack_animation": 30, "sim": true },
     "skchr_myrtle_2":	{ "reset_attack": true, "sec": true },
     "skchr_nian_2":     { "reflect": true },
     "skchr_nightm_1":	{ "damage_type": 1 },
