@@ -772,7 +772,7 @@ function calcDurations(isSkill, attackTime, attackSpeed, levelData, buffList, bu
   if (checkSpecs(skillId, "sim")) {
     duration = 120;
     let fps = 30;
-    let now = fps, sp = spData.initSp;
+    let now = fps, sp = spData.initSp, max_sp = 999;
     let last = {}, timeline = {}, total = {};
     const TimelineMarks = {
       "attack": "-",
@@ -803,6 +803,9 @@ function calcDurations(isSkill, attackTime, attackSpeed, levelData, buffList, bu
     last["ifrit"] = 1;
     startSp = spData.spCost - sp / fps;
 
+    // sp barrier
+    if (skillId == "skchr_frostl_1") max_sp = spData.spCost * fps;
+
     log.write(`  - [模拟] T = 120s, 初始sp = ${(sp/fps).toFixed(1)} (+1落地sp), 技能sp = ${spData.spCost}, 技能动画时间 = ${Math.round(cast_time)} 帧`);
     if (checkSpecs(skillId, "attack_animation"))
       log.write(`  - [模拟] 攻击动画 = ${checkSpecs(skillId, "attack_animation")} 帧`);
@@ -828,7 +831,7 @@ function calcDurations(isSkill, attackTime, attackSpeed, levelData, buffList, bu
       // sp recover
       if (time_since("skill") == 0)
         sp -= spData.spCost * fps;
-      if (time_since("skill") >= cast_time) {
+      if (time_since("skill") >= cast_time && sp < max_sp) {
         sp += (1 + buffFrame.spRecoveryPerSec);
       }
       if (buffList["tachr_134_ifrit_2"] && time_since("ifrit") >= buffList["tachr_134_ifrit_2"].interval * fps) {
@@ -1020,8 +1023,15 @@ function calcDurations(isSkill, attackTime, attackSpeed, levelData, buffList, bu
           let sp = Math.floor(attackCount * attackTime / buffList["tachr_010_chen_1"].interval);
           log.write(`  - [特殊] ${displayNames["tachr_010_chen_1"]}: sp = ${sp}, attack_count = ${attackCount}`);
         } else if (buffList["tachr_301_cutter_1"]) { // 刻刀  
-          attackCount = Math.ceil(spData.spCost / (1 + buffList["tachr_301_cutter_1"].prob));
-          log.write(`  - [特殊] ${displayNames["tachr_301_cutter_1"]}: sp = ${spData.spCost - attackCount}, attack_count = ${attackCount}`);
+          let p = buffList["tachr_301_cutter_1"].prob;
+          if (skillId == "skchr_cutter_1") {
+            attackCount = Math.ceil((spData.spCost - p) / (1+p*2));
+            log.write(`  - [特殊] ${displayNames["skchr_cutter_1"]}: 额外判定1次天赋`);   
+            log.write(`  - [特殊] ${displayNames["tachr_301_cutter_1"]}: sp = ${((attackCount*2+1) * p).toFixed(2)}, attack_count = ${attackCount}`);
+           } else {
+            attackCount = Math.ceil(spData.spCost / (1+p*2));
+            log.write(`  - [特殊] ${displayNames["tachr_301_cutter_1"]}: sp = ${(attackCount*2*p).toFixed(2)}, attack_count = ${attackCount}`);
+          }
         }
         duration = attackCount * attackTime;
         if (checkResetAttack(skillId, blackboard)) {
