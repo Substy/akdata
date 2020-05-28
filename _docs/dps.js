@@ -432,7 +432,7 @@ function calculate(index) {
     base_atk: ~~$('.dps__buff-batk').val(),
     damage_scale: ~~$('.dps__buff-scale').val(),
   };
-  console.log(raidBuff);
+  //console.log(raidBuff);
 
   // get option info
   let opts = AKDATA.Data.dps_options;

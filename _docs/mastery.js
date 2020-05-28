@@ -31,6 +31,8 @@ const Stages = {
   "满潜": { potential: 5, desc: "满级 满潜 专精3"},
 };
 
+const LevelingCost = {4: [2391, 9], 5: [3699, 13], 6: [5874, 21] };
+
 let itemCache = {};
 
 function init() {
@@ -141,7 +143,13 @@ function load() {
       <div class="card-title mb-0">专精材料（ × <a href="https://planner.penguin-stats.io/" target="_blank">ArkPlanner</a>）</div>
     </div>
     <div id="mats_table"></div>
-  </div>  
+  </div>
+  <div class="card mb-2">
+    <div class="card-header">
+      <div class="card-title mb-0">升级收益</div>
+    </div>
+    <div id="level_table"></div>
+  </div>    
   <!--
   <div class="card mb-2">
     <div class="card-header">
@@ -192,6 +200,7 @@ function load() {
         this.resultView = calculate(this.charId);
         $("#mats_table").text("正在计算...");
         beginCalcMats(this.resultView);
+        this.updateLevelingTable();
       },
       debugPrint: function(obj) {
         //console.log(JSON.stringify(obj, null, 2));
@@ -240,6 +249,29 @@ function load() {
         console.log("- all jobs finished");
         console.timeEnd("calcMats");
         this.updateMats(this.plannerResponse);
+      },
+      updateLevelingTable: function () {
+        var db = AKDATA.Data.character_table[this.charId];
+        var r = DefaultAttribute; $.extend(r, Stages["基准"]);
+        var ch0 = buildChar(this.charId, db.skills[0].skillId, r);
+        r.level = "max";
+        var ch1 = buildChar(this.charId, db.skills[0].skillId, r);
+        var a0 = AKDATA.attributes.getCharAttributes(ch0), a1 = AKDATA.attributes.getCharAttributes(ch1);
+
+        var result = [(a1.maxHp - a0.maxHp)/a0.maxHp, (a1.atk - a0.atk)/a0.atk, (a1.def - a0.def)/a0.def].map(x => (x*100).toFixed(1) + "%");
+        result.push(...LevelingCost[db.rarity + 1]);
+        //console.log(result);
+        //console.log(ch0, ch1);
+        //console.log(a0, a1);
+
+        let html = pmBase.component.create({
+            type: 'list',
+            card: false,
+            title: `升级属性提升（精二1级->满级）`,
+            header: ['HP', '攻击力', '防御力', '等效理智(按CE5/LS5计算)', '需要天数(按基建+自回体+月卡计算)'],
+            list: [result]
+          });
+        $("#level_table").html(html);
       }
     },
     watch: {

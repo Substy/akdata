@@ -1162,7 +1162,10 @@ function calculateAttack(charAttr, enemy, raidBlackboard, isSkill, charData, lev
     for (var b in buffList) {
       let buffName = (b=="skill") ? blackboard.id : b;
       critBuffFrame = applyBuff(charAttr, critBuffFrame, b, buffList[b], isSkill, true, log);
-    }
+    }  
+    // 计算团辅
+    if (options.buff)
+      critBuffFrame = applyBuff(charAttr, critBuffFrame, "raidBuff", raidBlackboard, isSkill, true, log);
     critFrame = getBuffedAttributes(basicFrame, critBuffFrame);
   }
   // ---- 计算攻击参数
@@ -1178,9 +1181,9 @@ function calculateAttack(charAttr, enemy, raidBlackboard, isSkill, charData, lev
   // 计算最终攻击间隔，考虑fps修正
   let fps = 30;
   let realAttackTime = finalFrame.baseAttackTime * 100 / finalFrame.attackSpeed;
-  if (options.token) {
-    realAttackTime = finalFrame.baseAttackTime; // token不计算攻速影响
-    log.write("  - (token不计算自身攻速)");
+  if (options.token && blackboard.id != "skchr_mgllan_2") {
+    realAttackTime = basicFrame.baseAttackTime; // token不计算攻速影响
+    log.write("  - *** token不计算自身攻速，以最终攻击间隔数据为准 ***");
   }
   let frame = realAttackTime * fps; // 舍入成帧数
   // 额外帧数补偿 https://bbs.nga.cn/read.php?tid=20555008
