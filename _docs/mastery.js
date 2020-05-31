@@ -33,10 +33,6 @@ const Stages = {
 
 const CostStages = [
   { level: 1, potential: 0, skillLevel: 6, desc: "2017" },
-  { level: 30, desc: "2307" },
-  { level: 40, skillLevel: 7, desc: "2408" },
-  { level: 50, skillLevel: 8, desc: "2509" },
-  { level: 60, skillLevel: 9, desc: "26010" },
   { level: 80, desc: "28010" },
   { level: "max", desc: "满级" },
   { potential: 5, desc: "满潜" }
@@ -65,7 +61,7 @@ function queryArkPlanner(mats, callback, ...args) {
   var data = {
     required: mats,
     owned: {},
-    extra_outc: false,
+    extra_outc: true,
     exp_demand: false,
     gold_demand: true
   };
@@ -109,9 +105,9 @@ function buildVueModel() {
     resultView: {},
     test: {},
     plannerResponse: {},
-    currResponse: {},
+    recom: {},
     jobs: 0,
-    test: ""
+    test: "",
   };
 }
 
@@ -236,11 +232,14 @@ function load() {
         let matsView = {};
         let rv = this.resultView;
         let pr = this.plannerResponse;
-        let curr = {};
+
+        let costResult = calculateCost(this.charId, pr, this.resultView);
+        //this.test = costResult;
+        updateCostPlot(costResult, this.chartKey);
+
         for (var sk in rv.skill) {
           matsView[sk] = {title: rv.skill[sk]};
           matsView[sk].list = [];
-          curr[sk] = pr[sk];
           for (var lv in pr[sk]) {
             var items = [];
             for (var x in pr[sk][lv].mats) {
@@ -250,11 +249,11 @@ function load() {
             matsView[sk].list.push([
               `${lv} <i class="fas fa-angle-right"></i> ${parseInt(lv)+1}`,
               items,
-              pr[sk][lv].cost
+              pr[sk][lv].cost,
+              this.recom[sk][lv-7]
             ]);
           }
         }
-        this.currResponse = curr;
         // this.test = matsView;
         let matsHtml = "";
         for (var sk in matsView) {
@@ -262,7 +261,7 @@ function load() {
             type: 'list',
             card: true,
             title: `${matsView[sk].title}`,
-            header: ['等级', '素材', '等效理智'],
+            header: ['等级', '素材', '等效理智', '推荐等级(测试)'],
             list: matsView[sk].list
           });
         }
@@ -281,7 +280,8 @@ function load() {
         var ch1 = buildChar(this.charId, db.skills[0].skillId, r);
         var a0 = AKDATA.attributes.getCharAttributes(ch0), a1 = AKDATA.attributes.getCharAttributes(ch1);
 
-        var result = [(a1.maxHp - a0.maxHp)/a0.maxHp, (a1.atk - a0.atk)/a0.atk, (a1.def - a0.def)/a0.def].map(x => (x*100).toFixed(1) + "%");
+        var gain = [(a1.maxHp - a0.maxHp)/a0.maxHp, (a1.atk - a0.atk)/a0.atk, (a1.def - a0.def)/a0.def];
+        var result = gain.map(x => (x*100).toFixed(1) + "%");
         result.push(...LevelingCost[db.rarity + 1]);
         //console.log(result);
         //console.log(ch0, ch1);
@@ -310,11 +310,6 @@ function load() {
         if (this.charId != "-" && this.jobs == 0)
           this.jobCallback();
       },
-      currResponse: function(_new, _old) {
-        let costResult = calculateCost(this.charId, _new);
-        this.test = costResult;
-        updateCostPlot(costResult, this.chartKey);
-      }
     }
   });
 
@@ -540,18 +535,54 @@ function matsCallback(result, kwargs) {
     window.vue_app.jobs -= 1;
 }
 
-function calculateCost(charId, masteryCost) {
-  let view = {}, result = {};
+function calculateCost(charId, masteryCost, resultView) {
+  let result = {};
   let db = AKDATA.Data.character_table[charId];
   let costdb = AKDATA.Data.leveling_cost;
+  var perLevelSanity = costdb.map((x, idx) => (idx==0) ? 0 : x - costdb[idx-1]);
+
   let recipe = DefaultAttribute;
   let enemy = DefaultEnemy;
-  let stages = CostStages;
+  let stages = [];
   let raidBuff = { atk: 0, atkpct: 0, ats: 0, cdr: 0, base_atk: 0, damage_scale: 0 };
 
+  var chartView = buildChartView(resultView, "s_dps");
+  var i=0;
   // calculate dps for each recipe case.
   db.skills.forEach(skill => {
     var entry = [];
+    stages = [...CostStages];
+    // calculate efficiency. base: 0, level: 1, m1:2, m2:3, m3:4, skill:i+1
+    var base = chartView.columns[0][i+1];
+    var mc = masteryCost[skill.skillId];
+    var perLevelGain = chartView.columns[1][i+1] / base / (db.rarity * 10 + 39);  // per level dps gain rate
+    var mg = [2, 3, 4].map(x => chartView.columns[x][i+1] / base);  // mastery dps gain rate
+    mg[1] += mg[0];
+    mg[2] += mg[1]; // accumulate
+
+    var perLevelEffInv = perLevelSanity.map(x => x / perLevelGain);  // inverse of efficiency
+    var masteryEffInv = [mc[7].cost, mc[7].cost + mc[8].cost, mc[7].cost + mc[8].cost + mc[9].cost].map((x, idx) => x / mg[idx]);
+    var recom = masteryEffInv.map(x => perLevelEffInv.findIndex(y => y > x)).map(x => (x <= 0) ? (db.rarity*10+40) : x);
+    recom[2] = Math.min(80, recom[2]);
+    recom[1] = Math.min(recom[1]+5, recom[2]);  // tweak result
+    recom[0] = Math.min(recom[0]+5, recom[1]);
+    // console.log(perLevelEffInv, masteryEffInv);
+    //console.log(recom);
+    window.vue_app.recom[skill.skillId] = recom;
+
+    // set stages
+    var j=1;
+    for (var k=0; k<3; ++k) {
+   //   if (k==0 || recom[k] > recom[k-1]) {
+   //     stages.splice(j, 0, { level: recom[k], desc: `2${recom[k]}${k+7}` }); ++j;
+   //   }
+      stages.splice(j, 0, { level: recom[k], skillLevel: k+7, desc: `2${recom[k]}${k+8}` }); ++j;
+    }
+    if (recom[2] < 60)
+      stages.splice(j, 0, {level: 60, desc: "26010"}); ++j;
+
+    //console.log(stages);
+    // calculate stage dps
     stages.forEach(st => {
       var item = {};
       if (!(st.level == 80 && db.rarity < 5)) {
@@ -578,10 +609,12 @@ function calculateCost(charId, masteryCost) {
           --slv;
         }
         item.masteryCost = mcost;
+        
         entry.push(item);
       }
     });
     result[skill.skillId] = entry;
+    i+=1;
   });
   return result;
 }
@@ -600,7 +633,7 @@ function updateCostPlot(result, chartKey) {
     if (result[key][0].damageType == 2) ck = HealKeys[chartKey];
     let x_arr = result[key].map(x => x.desc);
     let dps_arr = result[key].map(x => x[ck]);
-    let cost_arr = result[key].map(x => x.levelingCost + x.masteryCost);
+    let cost_arr = result[key].map(x => x.masteryCost + x.levelingCost);
     $(`#${idstr}`).append(window.vue_app.debugPrint({x_arr, dps_arr, cost_arr}));
     window.chart[idstr] = c3.generate({
       bindto: `#${idstr}`,
@@ -628,7 +661,7 @@ function updateCostPlot(result, chartKey) {
         y2: {
           show: true, 
           min: 0,
-          max: cost_arr[cost_arr.length-1], 
+         // max: cost_arr[cost_arr.length-1], 
           padding: 0, 
           label: { text: "理智消耗", position: 'outer-middle' }
         }

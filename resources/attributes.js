@@ -772,7 +772,7 @@ function calcDurations(isSkill, attackTime, attackSpeed, levelData, buffList, bu
   if (checkSpecs(skillId, "sim")) {
     duration = 120;
     let fps = 30;
-    let now = fps, sp = spData.initSp, max_sp = 999;
+    let now = fps, sp = spData.initSp * fps, max_sp = 999;
     let last = {}, timeline = {}, total = {};
     const TimelineMarks = {
       "attack": "-",
