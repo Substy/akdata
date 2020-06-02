@@ -558,6 +558,7 @@ function applyBuff(charAttr, buffFrm, tag, blackbd, isSkill, isCrit, log) {
       case "skchr_phatom_3":
       case "skchr_weedy_2":
       case "skchr_weedy_3":
+      case "skchr_asbest_2":
         buffFrame.maxTarget = 999;
         writeBuff(`最大目标数 = ${buffFrame.maxTarget}`);
         break;
@@ -707,6 +708,9 @@ function applyBuff(charAttr, buffFrm, tag, blackbd, isSkill, isCrit, log) {
         delete blackboard["def"];
         delete blackboard["max_target"];
         break;
+      case "skchr_asbest_1":
+        delete blackboard["damage_scale"];
+        break;
     }
   }
   
@@ -727,7 +731,7 @@ function extractDamageType(charData, charId, isSkill, skillDesc, skillBlackboard
   let ret = 0;
   if (charData.profession == "MEDIC")
     ret = 2;
-  else if (charData.description.includes('法术伤害') && charId != "char_260_durnar") {
+  else if (charData.description.includes('法术伤害') && !["char_260_durnar", "char_378_asbest"].includes(charId)) {
     ret = 1;
   }
   if (isSkill) {
@@ -1496,6 +1500,12 @@ function calculateAttack(charAttr, enemy, raidBlackboard, isSkill, charData, lev
         log.write(`  - [特殊] ${displayNames[buffName]}: 护盾量 ${heal}, 命中 ${ecount}`);
         pool[4] += heal * ecount;
         break;
+      case "skchr_tknogi_2":
+        heal = finalFrame.atk * bb["attack@atk_to_hp_recovery_ratio"] * ecount * dur.duration;
+        log.write(`  - [特殊] ${displayNames[buffName]}: HoT ${heal.toFixed(1)}`);
+        pool[2] += heal;
+        damagePool[2] = 0; log.write("  - [特殊] 直接治疗为0");
+        break;
     }; // switch
 
     // 百分比/固定回血
@@ -1534,6 +1544,7 @@ function calculateAttack(charAttr, enemy, raidBlackboard, isSkill, charData, lev
         case "skchr_ccheal_2":
         case "tachr_174_slbell_1":
         case "tachr_254_vodfox_1":
+        case "tachr_343_tknogi_1":
           break;
         case "skchr_gravel_2":
         case "skchr_phatom_1":
