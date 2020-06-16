@@ -934,10 +934,10 @@ function calcDurations(isSkill, attackTime, attackSpeed, levelData, buffList, bu
         // 施法时间
         if (checkSpecs(skillId, "cast_time")) {
           let ct = checkSpecs(skillId, "cast_time");
-          if (duration < ct) {
+          if (duration < ct/30) {
             log.write(`  - [特殊] 技能释放时间: ${ct} 帧, ${(ct/30).toFixed(3)} s`);
             log.writeNote(`施法时间 ${ct} 帧`);
-            if (skillId != "skchr_peacok_2")
+            if (spData.spType == 1)
               duration = ct / 30;
           }
         }
@@ -985,7 +985,7 @@ function calcDurations(isSkill, attackTime, attackSpeed, levelData, buffList, bu
       var t = frameBegin / 30;
       attackCount = Math.ceil((duration - t) / attackTime);
       log.write(`  - 抬手时间: ${t.toFixed(3)}s, ${frameBegin} 帧`);
-      if (!checkSpecs(skillId, "attack_begin")) log.write("  - （需要补充实测数据）");
+      if (!checkSpecs(skillId, "attack_begin")) log.write("  - （未实测）");
     }
     // 技能类型
     switch (spData.spType) {
