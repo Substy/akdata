@@ -219,7 +219,7 @@ function calculateDpsSeries(char, enemy, raidBuff, key, series) {
 
 
 // 叠加计算指定的技能/天赋效果，返回buffFrame
-function applyBuff(charAttr, buffFrm, tag, blackbd, isSkill, isCrit, log) {
+function applyBuff(charAttr, buffFrm, tag, blackbd, isSkill, isCrit, log, enemy) {
   let { ...buffFrame } = buffFrm || initBuffFrame();
   let { ...blackboard } = blackbd;
   let basic = charAttr.basic;
@@ -236,7 +236,7 @@ function applyBuff(charAttr, buffFrm, tag, blackbd, isSkill, isCrit, log) {
 
   buffFrm.applied[tag] = true;
   let done = false; // if !done, will call applyBuffDefault() in the end
-  // log.write("----" + tag + "----");
+  log.write("----" + tag + "----");
   // console.log("bb", blackboard);
   // write log
   function writeBuff(text) {
@@ -338,13 +338,21 @@ function applyBuff(charAttr, buffFrm, tag, blackbd, isSkill, isCrit, log) {
           }
           break;
         // 计算值，非原始数据
-        case "edef":  // 敌人防御加算值
+        case "edef":  // 减甲加算值（负数）
           buffFrame.edef += blackboard[key];
-          writeBuff(`敌人防御: ${blackboard[key]}`);
+          writeBuff(`敌人护甲: ${blackboard[key]}`);
           break;
-        case "edef_scale": // 敌人防御乘算值
+        case "edef_scale": // 减甲乘算值
           buffFrame.edef_scale *= (1+blackboard[key]);
-          writeBuff(`敌人防御: ${(buffFrame.edef_scale*100).toFixed(1)}%`);
+          writeBuff(`敌人护甲: ${blackboard[key] *100}%`);
+          break;
+        case "edef_pene": // 无视护甲加算值
+          buffFrame.edef_pene += blackboard[key];
+          writeBuff(`无视护甲（最终加算）: -${blackboard[key]}`);
+          break;
+        case "edef_pene_scale":
+          buffFrame.edef_pene_scale = blackboard[key];
+          writeBuff(`无视护甲（最终乘算）: -${blackboard[key]*100}%`);
           break;
         case "prob_override": // 计算后的暴击概率
           buffFrame.prob = blackboard[key];
@@ -412,6 +420,9 @@ function applyBuff(charAttr, buffFrm, tag, blackbd, isSkill, isCrit, log) {
         case "tachr_333_sidero_1":
           delete blackboard.times;
           break;
+        case "tachr_197_poca_1": // 早露
+          blackboard.edef_pene_scale = blackboard["def_penetrate"];
+          break;
       }
     }
   } else if (checkSpecs(tag, "ranged_penalty")) { // 距离惩罚类
@@ -473,14 +484,17 @@ function applyBuff(charAttr, buffFrm, tag, blackbd, isSkill, isCrit, log) {
         blackboard.attack_speed = 0;  // 特判已经加了
         break;
       case "tachr_279_excu_1": // 送葬
-        blackboard.edef = -blackboard["def_penetrate_fixed"];
+        blackboard.edef_pene = blackboard["def_penetrate_fixed"];
+        break;
+      case "tachr_373_lionhd_1":  // 莱恩哈特
+        blackboard.atk *= Math.min(enemy.count, blackboard.max_valid_stack_cnt);
         break;
       // 暴击类
       case "tachr_290_vigna_1":
         blackboard.prob_override = (isSkill ? blackboard.prob2 : blackboard.prob1);
         break;
       case "tachr_106_franka_1": // 芙兰卡
-        blackboard.edef_scale = -1;
+        blackboard.edef_pene_scale = 1;
         if (isSkill && skillId == "skchr_franka_2")
           blackboard.prob_override = 0.5;
         break;
@@ -895,7 +909,7 @@ function calcDurations(isSkill, attackTime, attackSpeed, levelData, buffList, bu
       var t = frameBegin / 30;
       attackCount = Math.ceil((duration - t) / attackTime);
       log.write(`  - 抬手时间: ${t.toFixed(3)}s, ${frameBegin} 帧`);
-      if (!checkSpecs(skillId, "attack_begin")) log.write("  - （需要补充实测数据）");
+      if (!checkSpecs(skillId, "attack_begin")) log.write("  - （未实测）");
       log.writeNote(`重置普攻抬手估算 ${t.toFixed(3)}s`);
     }
     // 技能类型
@@ -1124,11 +1138,11 @@ function calculateAttack(charAttr, enemy, raidBlackboard, isSkill, charData, lev
     let buffName = (b=="skill") ? buffList[b].id : b;
     //console.log(buffName);
     if (!checkSpecs(buffName, "crit"))
-      buffFrame = applyBuff(charAttr, buffFrame, b, buffList[b], isSkill, false, log);
+      buffFrame = applyBuff(charAttr, buffFrame, b, buffList[b], isSkill, false, log, enemy);
   }
   // 计算团辅
   if (options.buff)
-    buffFrame = applyBuff(charAttr, buffFrame, "raidBuff", raidBlackboard, isSkill, false, log);
+    buffFrame = applyBuff(charAttr, buffFrame, "raidBuff", raidBlackboard, isSkill, false, log, enemy);
 
   // 攻击类型
   let damageType = extractDamageType(charData, charId, isSkill, levelData.description, blackboard);
@@ -1165,11 +1179,11 @@ function calculateAttack(charAttr, enemy, raidBlackboard, isSkill, charData, lev
   if (options.crit) {
     for (var b in buffList) {
       let buffName = (b=="skill") ? blackboard.id : b;
-      critBuffFrame = applyBuff(charAttr, critBuffFrame, b, buffList[b], isSkill, true, log);
+      critBuffFrame = applyBuff(charAttr, critBuffFrame, b, buffList[b], isSkill, true, log, enemy);
     }  
     // 计算团辅
     if (options.buff)
-      critBuffFrame = applyBuff(charAttr, critBuffFrame, "raidBuff", raidBlackboard, isSkill, true, log);
+      critBuffFrame = applyBuff(charAttr, critBuffFrame, "raidBuff", raidBlackboard, isSkill, true, log, enemy);
     critFrame = getBuffedAttributes(basicFrame, critBuffFrame);
   }
   // ---- 计算攻击参数
@@ -1228,10 +1242,10 @@ function calculateAttack(charAttr, enemy, raidBlackboard, isSkill, charData, lev
     if (checkSpecs(buffName, "keep_debuff") && !enemyBuffFrame.applied[buffName]){
       log.write("  - 假设全程覆盖Debuff");
       log.writeNote("假设全程覆盖Debuff");      
-      enemyBuffFrame = applyBuff(charAttr, enemyBuffFrame, buffName, buffList[b], true, false, new Log());
+      enemyBuffFrame = applyBuff(charAttr, enemyBuffFrame, buffName, buffList[b], true, false, new Log(), enemy);
     }
   }
-  let edef = Math.max(0, (enemy.def + enemyBuffFrame.edef) * enemyBuffFrame.edef_scale);
+  let edef = Math.max(0, (enemy.def + enemyBuffFrame.edef) * enemyBuffFrame.edef_scale * (1-enemyBuffFrame.edef_pene_scale) - enemyBuffFrame.edef_pene);
   let emr = Math.max(0, (enemy.magicResistance + enemyBuffFrame.emr) * enemyBuffFrame.emr_scale);
   let emrpct = emr / 100;
   let ecount = Math.min(buffFrame.maxTarget, enemy.count);
@@ -1344,7 +1358,7 @@ function calculateAttack(charAttr, enemy, raidBlackboard, isSkill, charData, lev
     if (isSkill && blackboard.id == "skchr_sora_1")
       ratio_sora = blackboard["attack@atk_to_hp_recovery_ratio"];
     extraDamagePool[2] = ratio_sora * finalFrame.atk * dur.duration;
-    damagePool[0] = 0; log.write("  - [特殊] 伤害为0");
+    damagePool[0] = 0; log.write("  - [特殊] 伤害为0 （以上计算无效）");
   }
   // 反射类-增加说明
   if (checkSpecs(blackboard.id, "reflect") && isSkill) {
@@ -1371,7 +1385,7 @@ function calculateAttack(charAttr, enemy, raidBlackboard, isSkill, charData, lev
         case "skchr_aglina_2":
         case "skchr_aglina_3":
           damagePool[1] = 0;
-          log.write(`  - [特殊] ${displayNames[buffName]}: 伤害为0`);
+          log.write(`  - [特殊] ${displayNames[buffName]}: 伤害为0 （以上计算无效）`);
           break;
         default:
           if (b=="skill") continue; // 非技能期间，跳过其他技能的额外伤害判定
@@ -1449,11 +1463,11 @@ function calculateAttack(charAttr, enemy, raidBlackboard, isSkill, charData, lev
       case "skchr_skgoat_2":
       case "skchr_utage_1":
         damagePool[0] = 0; damagePool[1] = 0;
-        log.write(`  - [特殊] ${displayNames[buffName]}: 伤害为0`);
+        log.write(`  - [特殊] ${displayNames[buffName]}: 伤害为0 （以上计算无效）`);
         break;
       case "skchr_silent_2":
         damagePool[2] = 0;
-        log.write(`  - [特殊] ${displayNames[buffName]}: 治疗为0`);
+        log.write(`  - [特殊] ${displayNames[buffName]}: 治疗为0 （以上计算无效）`);
         break;
       case "skchr_sddrag_2":
         damage = finalFrame.atk * bb["attack@skill.atk_scale"] * (1-emrpct);
@@ -1464,6 +1478,11 @@ function calculateAttack(charAttr, enemy, raidBlackboard, isSkill, charData, lev
       case "skchr_haak_3":
         log.write(`  - [特殊] 用500的攻击力攻击队友15次(不计入自身dps)`);
         log.writeNote(`攻击队友15次(不计入自身dps)`);
+        break;
+      case "skchr_podego_2":
+        log.write(`  - [特殊] ${displayNames[buffName]}: 直接伤害为0 （以上计算无效）, 效果持续${bb.projectile_delay_time}秒`);
+        damage = finalFrame.atk * bb.projectile_delay_time * (1-emrpct) * ecount;
+        pool[1] = damage; damagePool[1] = 0;
         break;
       // 间接治疗
       case "skchr_tiger_2":
@@ -1545,6 +1564,7 @@ function calculateAttack(charAttr, enemy, raidBlackboard, isSkill, charData, lev
         case "tachr_174_slbell_1":
         case "tachr_254_vodfox_1":
         case "tachr_343_tknogi_1":
+        case "tachr_405_absin_1":
           break;
         case "skchr_gravel_2":
         case "skchr_phatom_1":
@@ -1634,6 +1654,8 @@ function initBuffFrame() {
     times: 1,
     edef:0, // 敌人防御/魔抗
     edef_scale:1,
+    edef_pene:0,
+    edef_pene_scale:0,
     emr:0,
     emr_scale:1,
     atk:0,

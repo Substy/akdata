@@ -7,8 +7,8 @@ const useCache = true;
 const cacheBeginTime = new Date(2019, 12, 10).getTime();
 
 window.AKDATA = {
-  akVersion: "200602",
-  currentVersion: "20-06-01-08-17-46-94dd4c",
+  akVersion: "200618",
+  currentVersion: "20-06-16-13-50-54-ab69f7",
 
   Data: {},
 

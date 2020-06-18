@@ -299,7 +299,7 @@
       "description": "以某支传奇雇佣兵队伍所使用的标志为蓝本铸造的蚀刻章。\n成就他人未成之事。",
       "advancedMedal": null,
       "originMedal": null,
-      "activeTime": 1591084800,
+      "activeTime": -1,
       "medalRewardGroup": []
     },
     {
@@ -320,7 +320,7 @@
       "description": "黄铁行动中颁发给面对逆境之人的蚀刻章。",
       "advancedMedal": null,
       "originMedal": null,
-      "activeTime": 1591084800,
+      "activeTime": -1,
       "medalRewardGroup": []
     },
     {
@@ -341,7 +341,7 @@
       "description": "黄铁行动中颁发给战胜绝境之人的蚀刻章。\n您已克服了诸多挑战。",
       "advancedMedal": "medal_activity_10d0_035",
       "originMedal": null,
-      "activeTime": 1591084800,
+      "activeTime": -1,
       "medalRewardGroup": []
     },
     {
@@ -361,7 +361,7 @@
       "description": "黄铁行动中随时装附送的蚀刻章。\n狮蝎或许不清楚这件衣服的意义，您很清楚。",
       "advancedMedal": null,
       "originMedal": null,
-      "activeTime": 1591084800,
+      "activeTime": -1,
       "medalRewardGroup": []
     },
     {
@@ -381,7 +381,7 @@
       "description": "黄铁行动中颁发给坚守阵线之人的蚀刻章。\n您已具备了指挥高强度阵地战的能力。",
       "advancedMedal": null,
       "originMedal": null,
-      "activeTime": 1591084800,
+      "activeTime": -1,
       "medalRewardGroup": []
     },
     {
@@ -401,7 +401,7 @@
       "description": "黄铁行动中颁发给随机应变之人的蚀刻章。",
       "advancedMedal": null,
       "originMedal": null,
-      "activeTime": 1591084800,
+      "activeTime": -1,
       "medalRewardGroup": []
     },
     {
@@ -421,7 +421,7 @@
       "description": "黄铁行动中颁发给当机立断之人的蚀刻章。\n您已具备了响应多种紧急事态的实力。",
       "advancedMedal": null,
       "originMedal": null,
-      "activeTime": 1591084800,
+      "activeTime": -1,
       "medalRewardGroup": []
     },
     {
@@ -434,14 +434,14 @@
       "template": "CrisisUnlockPermRuneSome",
       "unlockParam": [
         "rune_season_1_1",
-        "char_atk_3;enemy_hp_3;enemy_crowns_3;enemy_ghost_3;char_def_3;global_forbidloc_3",
+        "char_atk_3;enemy_hp_3;enemy_crowns_3;enemy_ghost_3;char_def_3;global_costrecovery_3",
         "4"
       ],
       "getMethod": "在黄铁行动中，常驻行动地点解锁4个3级合约",
       "description": "黄铁行动中颁发给遍历战场之人的蚀刻章。",
       "advancedMedal": null,
       "originMedal": null,
-      "activeTime": 1591084800,
+      "activeTime": -1,
       "medalRewardGroup": []
     },
     {
@@ -462,7 +462,7 @@
       "description": "黄铁行动中颁发给深思熟虑之人的蚀刻章。",
       "advancedMedal": null,
       "originMedal": null,
-      "activeTime": 1591084800,
+      "activeTime": -1,
       "medalRewardGroup": []
     },
     {
@@ -481,7 +481,45 @@
       "description": "黄铁行动中颁发给互帮互助之人的蚀刻章。",
       "advancedMedal": null,
       "originMedal": null,
-      "activeTime": 1591084800,
+      "activeTime": -1,
+      "medalRewardGroup": []
+    },
+    {
+      "medalId": "medal_activity_10d5_01",
+      "medalName": "彼得海姆中学校徽",
+      "medalType": "activityMedal",
+      "slotId": 11,
+      "preMedalIdList": [],
+      "rarity": 2,
+      "template": "UnlockStoryGroup",
+      "unlockParam": [
+        "act10d5"
+      ],
+      "getMethod": "解锁乌萨斯的孩子们的全部故事",
+      "description": "按照彼得海姆中学校徽打造的蚀刻章。\n她们还没有准备好，但她们想要走向明天。",
+      "advancedMedal": null,
+      "originMedal": null,
+      "activeTime": -1,
+      "medalRewardGroup": []
+    },
+    {
+      "medalId": "medal_activity_10d5_02",
+      "medalName": "破损的切尔诺伯格警徽",
+      "medalType": "activityMedal",
+      "slotId": 12,
+      "preMedalIdList": [],
+      "rarity": 2,
+      "template": "GotItemBeforeTime",
+      "unlockParam": [
+        "1",
+        "p_char_405_absin",
+        "1593287999"
+      ],
+      "getMethod": "在乌萨斯的孩子们活动中，购买1次苦艾信物",
+      "description": "使用苦艾珍藏的警徽复原的蚀刻章。\n苦涩，哀伤，生活还得继续。",
+      "advancedMedal": null,
+      "originMedal": null,
+      "activeTime": -1,
       "medalRewardGroup": []
     },
     {

@@ -62,6 +62,8 @@
         "char_248_mgllan" : [ "token" ],
         "char_301_cutter" : [ "cond" ],
         "char_113_cqbw":    [ "cond" ],
-        "char_400_weedy":   [ "token", "cannon" ]
+        "char_400_weedy":   [ "token", "cannon" ],
+        "char_405_absin":   [ "cond" ],
+        "char_197_poca":    [ "cond" ]
     }
 }

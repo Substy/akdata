@@ -21,6 +21,7 @@
     "char_110_deepcl":  { "token": "token_10001_deepcl_tentac" },
     "char_242_otter":   { "token": "token_10004_otter_motter" },
     "char_400_weedy":   { "token": "token_10009_weedy_cannon" },
+    "skchr_absin_2":    { "reset_attack": true },
     "skchr_aglina_1":   { "reset_attack": true, "attack_begin": 19 },
     "skchr_aglina_2":   { "attack_begin": 10 },
     "skchr_aglina_3":	{ "attack_begin": 23 },
@@ -71,6 +72,7 @@
     "skchr_huang_3":	{ "reset_attack": true, "sec": true },
     "skchr_ifrit_2":    { "cast_time": 39, "sim": true },
     "skchr_ifrit_3":	{ "reset_attack": true, "sec": true, "frame_corr": 0 },
+    "skchr_lionhd_2":   { "reset_attack": true },
     "skchr_mantic_1":	{ "passive": true },
     "skchr_mantic_2":	{ "attack_begin": 36, "frame_corr": 1 },
     "skchr_meteo_1":    { "cast_time": 31 },
@@ -90,6 +92,9 @@
     "skchr_nightm_1":	{ "damage_type": 1 },
     "skchr_peacok_1":   { "sim": true },
     "skchr_peacok_2":   { "cast_time": 45, "frame_corr": -15, "damage_type": "0" },
+    "skchr_poca_3":     { "sec": true},
+    "skchr_podego_1":   { "reset_attack": true },
+    "skchr_podego_2":   { "reset_attack": true },
     "skchr_prove_1":	{ "passive": true },
     "skchr_rope_1":     { "cast_time": 50 },
     "skchr_rope_2":     { "cast_time": 50 },
@@ -135,6 +140,7 @@
     "tachr_188_helage_1":	{ "stack": true },
     "tachr_193_frostl_trait":	{ "ranged_penalty": true },
     "tachr_196_sunbr_1":	{ "crit": true },
+    "tachr_197_poca_1":     { "cond": true },
     "tachr_198_blackd_1":	{ "cond": true },
     "tachr_202_demkni_1":	{ "stack": true },
     "tachr_211_adnach_1":	{ "todo": true },
@@ -167,5 +173,6 @@
     "tachr_337_utage_1":    { "stack": true },
     "tachr_379_sesa_1":     { "cond": true },
     "tachr_254_vodfox_1":   { "cond": true },
-    "tachr_333_sidero_1":   { "cond": true }
+    "tachr_333_sidero_1":   { "cond": true },
+    "tachr_405_absin_1":    { "cond": true }
 }
