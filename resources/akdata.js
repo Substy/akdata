@@ -7,7 +7,7 @@ const useCache = true;
 const cacheBeginTime = new Date(2019, 12, 10).getTime();
 
 window.AKDATA = {
-  akVersion: "200618",
+  akVersion: "200623",
   currentVersion: "20-06-16-13-50-54-ab69f7",
 
   Data: {},
@@ -17,8 +17,8 @@ window.AKDATA = {
     for( let i=0;i<paths.length;i++) {
       if ( paths[i].endsWith('.json') ){
         let name = paths[i].split('/').pop().replace('.json', '');
-        let path = `https://cdn.jsdelivr.net/gh/xulai1001/akdata@${window.AKDATA.akVersion}/resources/gamedata/${paths[i].toLowerCase()}`;
-        //let path = `../resources/gamedata/${paths[i].toLowerCase()}`;
+        //let path = `https://cdn.jsdelivr.net/gh/xulai1001/akdata@${window.AKDATA.akVersion}/resources/gamedata/${paths[i].toLowerCase()}`;
+        let path = `../resources/gamedata/${paths[i].toLowerCase()}`;
           
         paths[i] = loadJSON(path, data => AKDATA.Data[name] = data);
       }

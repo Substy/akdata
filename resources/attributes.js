@@ -105,7 +105,7 @@ function calculateDps(char, enemy, raidBuff) {
   displayNames[char.skillId] = levelData.name;  // add to name cache
 
   if (char.options.token) {
-    log.writeNote("召唤物数据");
+    log.writeNote("召唤物dps，非本体");
     var tokenId = checkSpecs(charId, "token") || checkSpecs(char.skillId, "token");      
     getTokenAtkHp(attr, tokenId, log);
   }
@@ -539,13 +539,13 @@ function applyBuff(charAttr, buffFrm, tag, blackbd, isSkill, isCrit, log, enemy)
         break;
       case "skchr_milu_2":  // 守林(茂名版)
         buffFrame.times = blackboard.max_cnt;
-        log.writeNote(`核弹数量 ${buffFrame.times} (按全中计算)`);
+        log.writeNote(`核弹数量: ${buffFrame.times} (按全中计算)`);
         buffFrame.maxTarget = 999;
         break;
       case "skchr_cqbw_3":  // D12(茂名版)
         buffFrame.times = blackboard.max_target;
         blackboard.max_target = 999;
-        log.writeNote(`核弹数量 ${buffFrame.times} (按全中计算)`);
+        log.writeNote(`核弹数量: ${buffFrame.times} (按全中计算)`);
         break;
       case "skchr_slbell_1":  // 不结算的技能
       case "skchr_shining_2": 
@@ -580,15 +580,15 @@ function applyBuff(charAttr, buffFrm, tag, blackbd, isSkill, isCrit, log, enemy)
         buffFrame.maxTarget = 3;
         writeBuff(`最大目标数 = ${buffFrame.maxTarget}`);
         break;
-      case "skchr_huang_3":
-        blackboard.atk /= 2;
+      case "skchr_huang_3": // 可变攻击力技能，计算每段攻击力表格以和其他buff叠加
         buffFrame.maxTarget = 999;
-        writeBuff(`平均攻击加成 + ${(blackboard.atk*100).toFixed(1)}%, 最大目标数 = ${buffFrame.maxTarget}`);
+        buffFrame.atk_table = [...Array(8).keys()].map(x => blackboard.atk / 8 *(x+1));
+        writeBuff(`技能攻击力系数: ${buffFrame.atk_table.map(x => x.toFixed(2))}`);
         break;
       case "skchr_phatom_2":
-        blackboard.atk *= (blackboard.times+1) / 2.0;
+        buffFrame.atk_table = [...Array(blackboard.times).keys()].reverse().map(x => blackboard.atk * (x+1));
+        writeBuff(`技能攻击力系数: ${buffFrame.atk_table.map(x => x.toFixed(2))}`);
         delete blackboard.times;
-        writeBuff(`平均攻击加成 + ${(blackboard.atk*100).toFixed(1)}%`);
         break;
       case "skchr_bluep_2":
         // 蓝毒2: 只对主目标攻击多次
@@ -777,6 +777,7 @@ function calcDurations(isSkill, attackTime, attackSpeed, levelData, buffList, bu
   let attackCount = 0;
   let stunDuration = 0;
   let startSp = 0;
+  let rst = checkResetAttack(skillId, blackboard);
 
   const spTypeTags = {
     1: "time",
@@ -900,17 +901,17 @@ function calcDurations(isSkill, attackTime, attackSpeed, levelData, buffList, bu
       startSp = spData.spCost - spData.initSp - buffList["tachr_222_bpipe_2"].sp;
     }
     // 重置普攻
-    if (checkResetAttack(skillId, blackboard)) {
-      if (duration > levelData.duration)
+    if (rst) {
+      if (duration > levelData.duration && rst != "ogcd")
         log.write(`  - 可能重置普攻（覆盖 ${(duration - levelData.duration).toFixed(3)}s）`);
       duration = levelData.duration;
       // 抬手时间
       var frameBegin = Math.round((checkSpecs(skillId, "attack_begin") || 12) * 100 / attackSpeed);
       var t = frameBegin / 30;
       attackCount = Math.ceil((duration - t) / attackTime);
-      log.write(`  - 抬手时间: ${t.toFixed(3)}s, ${frameBegin} 帧`);
-      if (!checkSpecs(skillId, "attack_begin")) log.write("  - （未实测）");
-      log.writeNote(`重置普攻抬手估算 ${t.toFixed(3)}s`);
+      log.write(`  - 技能前摇: ${t.toFixed(3)}s, ${frameBegin} 帧`);
+      if (!checkSpecs(skillId, "attack_begin")) log.write("  - （估算值）");
+      else log.writeNote(`技能前摇: ${t.toFixed(3)}s`);
     }
     // 技能类型
     if (levelData.description.includes("持续时间无限")) {
@@ -943,15 +944,17 @@ function calcDurations(isSkill, attackTime, attackSpeed, levelData, buffList, bu
         tags.push("instant", "buff"); log.write("  - 瞬发增益效果");
       } else { // 普通瞬发
         attackCount = 1;
-        duration = attackTime;
+        // 不占用普攻的瞬发技能，持续时间等于动画时间。否则持续时间为一次普攻间隔
+        if (checkSpecs(skillId, "reset_attack") != "ogcd")
+          duration = attackTime;
         tags.push("instant"); log.write("  - 瞬发");
         // 施法时间
         if (checkSpecs(skillId, "cast_time")) {
           let ct = checkSpecs(skillId, "cast_time");
-          if (duration < ct/30) {
+          if (duration < ct/30 || rst == "ogcd") {
             log.write(`  - [特殊] 技能释放时间: ${ct} 帧, ${(ct/30).toFixed(3)} s`);
-            log.writeNote(`施法时间 ${ct} 帧`);
-            if (spData.spType == 1)
+            log.writeNote(`技能动画(阻回): ${ct} 帧`);
+            if (spData.spType == 1 || rst == "ogcd")
               duration = ct / 30;
           }
         }
@@ -979,17 +982,17 @@ function calcDurations(isSkill, attackTime, attackSpeed, levelData, buffList, bu
     // 施法时间
     if (checkSpecs(skillId, "cast_time")) {
       let ct = checkSpecs(skillId, "cast_time");
-      if (attackTime > ct/30) {
+      if (attackTime > ct/30 && rst != "ogcd") {
         attackDuration -= (attackTime - ct/30);
         log.write(`  - [特殊] 技能释放时间: ${ct} 帧, 普攻时间偏移 ${(ct/30 - attackTime).toFixed(3)}s (${attackDuration.toFixed(3)}s)`);
-        log.writeNote(`施法时间 ${ct} 帧`);
+        log.writeNote(`技能动画(阻回): ${ct} 帧`);
       }
     }
 
     attackCount = Math.ceil(attackDuration / attackTime);
     duration = attackCount * attackTime;
-    // 重置普攻（瞬发除外）
-    if (checkResetAttack(skillId, blackboard) && spData.spType != 8) {
+    // 重置普攻（瞬发/ogcd除外）
+    if (rst && rst != "ogcd" && spData.spType != 8) {
       var dd = spData.spCost / (1 + buffFrame.spRecoveryPerSec);
       if (duration > dd)
         log.write(`  - 可能重置普攻（覆盖 ${(duration-dd).toFixed(3)}s）`);
@@ -998,9 +1001,10 @@ function calcDurations(isSkill, attackTime, attackSpeed, levelData, buffList, bu
       var frameBegin = Math.round((checkSpecs(skillId, "attack_begin") || 12) * 100 / attackSpeed);
       var t = frameBegin / 30;
       attackCount = Math.ceil((duration - t) / attackTime);
-      log.write(`  - 抬手时间: ${t.toFixed(3)}s, ${frameBegin} 帧`);
-      if (!checkSpecs(skillId, "attack_begin")) log.write("  - （未实测）");
+      log.write(`  - 技能前摇: ${t.toFixed(3)}s, ${frameBegin} 帧`);
+      if (!checkSpecs(skillId, "attack_begin")) log.write("  - （估算值）");
     }
+
     // 技能类型
     switch (spData.spType) {
       case 8: // 被动或落地点火
@@ -1052,7 +1056,7 @@ function calcDurations(isSkill, attackTime, attackSpeed, levelData, buffList, bu
           }
         }
         duration = attackCount * attackTime;
-        if (checkResetAttack(skillId, blackboard)) {
+        if (rst) {
           duration -= attackTime;
         }
         break;
@@ -1098,6 +1102,15 @@ function calcDurations(isSkill, attackTime, attackSpeed, levelData, buffList, bu
         break;
         // todo: cast time
     } // switch
+
+    // ogcd穿插收益
+    if (rst == "ogcd") {
+      var _ct = (checkSpecs(skillId, "cast_time") || 12) / 30;
+      var weavingGain = _ct / duration * 100;
+      log.write("  - [提示] 非GCD技能（技能不影响普攻间隔），计算器不计入穿插收益");
+      log.write(`  - [提示] 穿插收益: ${weavingGain.toFixed(1)} %`);
+      log.writeNote(`OGCD技能/穿插收益: ${weavingGain.toFixed(1)}%`);
+    }
   } // else
   } // sim else
 
@@ -1212,9 +1225,9 @@ function calculateAttack(charAttr, enemy, raidBlackboard, isSkill, charData, lev
     frame += corr;
     var prefix = (corr>0 ? "+":"");  
     if (isSkill) {
-      log.writeNote(`技能帧数补偿 ${prefix}${corr}`);
+      log.writeNote(`技能帧数修正 ${prefix}${corr}`);
     } else {
-      log.writeNote(`普攻帧数补偿 ${prefix}${corr}`);
+      log.writeNote(`普攻帧数修正 ${prefix}${corr}`);
     }
   }
   frame = Math.round(frame);  // 最后再舍入
@@ -1363,6 +1376,24 @@ function calculateAttack(charAttr, enemy, raidBlackboard, isSkill, charData, lev
   // 反射类-增加说明
   if (checkSpecs(blackboard.id, "reflect") && isSkill) {
     log.writeNote(`技能伤害为反射 ${dur.attackCount} 次的伤害`);
+  }
+  // 可变攻击力-重新计算
+  if (checkSpecs(blackboard.id, "grad") && isSkill) {
+    log.write("  - [特殊] 可变攻击力技能");
+    damagePool[damageType] = 0;
+
+    // 将finalFrame.atk变换为每次攻击的实际攻击力，同时不影响其他buff
+    var a = buffFrame.atk_table.map(x => basicFrame.atk * x);
+    var pivot = a[a.length-1];
+    a = a.map(x => (finalFrame.atk - pivot + x));
+    //console.log(a);
+
+    // 计算每次伤害
+    if (damageType == 0) {
+      a = a.map(x => Math.max(x-edef, x*0.05) * buffFrame.damage_scale);
+    }
+    log.write(`  - 单次伤害: ${a.map(x => x.toFixed(1))}`);
+    damagePool[damageType] = a.reduce((x, y) => x + y);
   }
 
   // 额外伤害
