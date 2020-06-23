@@ -1106,10 +1106,12 @@ function calcDurations(isSkill, attackTime, attackSpeed, levelData, buffList, bu
     // ogcd穿插收益
     if (rst == "ogcd") {
       var _ct = (checkSpecs(skillId, "cast_time") || 12) / 30;
-      var weavingGain = _ct / duration * 100;
+      var weavingGain = (duration - spData.spCost - _ct) / duration * 100;
       log.write("  - [提示] 非GCD技能（技能不影响普攻间隔），计算器不计入穿插收益");
-      log.write(`  - [提示] 穿插收益: ${weavingGain.toFixed(1)} %`);
-      log.writeNote(`OGCD技能/穿插收益: ${weavingGain.toFixed(1)}%`);
+      if (weavingGain > 0) {
+        log.write(`  - [提示] 穿插收益: ${weavingGain.toFixed(1)} %`);
+        log.writeNote(`OGCD技能/穿插收益: ${weavingGain.toFixed(1)}%`);
+      }
     }
   } // else
   } // sim else
