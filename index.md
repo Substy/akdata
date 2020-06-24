@@ -4,7 +4,7 @@
 # See: https://jekyllrb.com/docs/themes/#overriding-theme-defaults
 layout: home
 collection: docs
-title: AKDATA - 明日方舟数据分析工具集
+title: Arknights DPS - 明日方舟数据分析工具
 ---
 
 无法刷新请点击以下按钮：
