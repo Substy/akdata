@@ -78,19 +78,22 @@ function load() {
     <tr class="dps__row-option"> <th>选项</th> </tr>
   </tbody>
   <tbody>
-    <tr class="dps__row-period"> <th>技能周期 <i class="fas fa-info-circle pull-right" data-toggle="tooltip" title="技力回复时间+技能持续时间[+眩晕时间]"></i></th> </tr>
-    <tr class="dps__row-s_atk"> <th>技能攻击力 <i class="fas fa-info-circle pull-right" data-toggle="tooltip" title="角色攻击力（计算技能加成）×单次攻击次数"></i></th> </tr>
-    <tr class="dps__row-s_damage"> <th>技能总伤害 <i class="fas fa-info-circle pull-right" data-toggle="tooltip" title="技能持续时间内总伤害"></i></th> </tr>
+    <tr class="dps__row-period"> 
+      <th>技能周期
+        <i class="fas fa-info-circle pull-right" data-toggle="tooltip" data-html="true" data-placement="right"
+           title="普攻时间 + 技能持续时间 [ + 眩晕时间 ]"></i>
+      </th></tr>
+    <tr class="dps__row-s_atk"> <th>技能攻击力 <i class="fas fa-info-circle pull-right" data-toggle="tooltip" data-placement="right" title="角色攻击力（计算技能倍数）"></i></th> </tr>
+    <tr class="dps__row-s_damage"> <th>技能总伤害 <i class="fas fa-info-circle pull-right" data-toggle="tooltip" data-placement="right" title="单次伤害 x 命中数"></i></th> </tr>
     <tr class="dps__row-s_dps"> <th>技能DPS</th> </tr>
     <tr class="dps__row-n_dps"> <th>普攻</th> </tr>
     <tr class="dps__row-g_dps"> <th>平均</th> </tr>
-    <tr class="dps__row-s_diff"> <th>技能总伤害提升%</th> </tr>
-    <tr class="dps__row-g_diff"> <th>平均DPS提升%</th> </tr>
+    <tr class="dps__row-s_diff"> <th>技能总伤害提升% <i class="fas fa-info-circle pull-right" data-toggle="tooltip" data-placement="right" title="对比首列 +/-%"></i></th> </tr>
+    <tr class="dps__row-g_diff"> <th>平均DPS提升% <i class="fas fa-info-circle pull-right" data-toggle="tooltip" data-placement="right" title="对比首列 +/-%"></i></th> </tr>
   </tbody>
   <tbody class="">
- <!-- <tr class="dps__row-e_time"> <th>技能击杀时间 <i class="fas fa-info-circle pull-right" data-toggle="tooltip" title="敌人HP/技能DPS（存在较大问题）"></i></th> </tr> -->
-    <tr class="dps__row-damagepool"> <th>伤害表<i class="fas fa-info-circle pull-right" data-toggle="tooltip" title="伤害类型与来源(直接/额外/暴击)"></i></th></tr>
-    <tr class="dps__row-results"> <th>计算过程(dev)</th> </tr>
+    <tr class="dps__row-damagepool"> <th>伤害表<i class="fas fa-info-circle pull-right" data-toggle="tooltip" title="详细的伤害表格"></i></th></tr>
+    <tr class="dps__row-results"> <th>计算过程</th> </tr>
     <tr class="dps__row-note"> <th>说明</th> </tr>
   </tbody>
   </table>
@@ -171,10 +174,10 @@ function load() {
    // $dps.find('.dps__row-e_time').append(`<td><div class="dps__e_time" data-index="${i}"></div></td>`);
     $dps.find('.dps__row-s_damage').append(`<td><div class="dps__s_damage" data-index="${i}"></div></td>`);
     $dps.find('.dps__row-period').append(`<td><div class="dps__period" data-index="${i}"></div></td>`);
-    $dps.find('.dps__row-results').append(`<td><a class="dps__results" data-index="${i}" href="#">[显示]</a></td>`);
+    $dps.find('.dps__row-results').append(`<td><a class="dps__results" data-index="${i}" href="#">[点击显示]</a></td>`);
     $dps.find('.dps__row-note').append(`<td><div class="dps__note" data-index="${i}"></div></td>`);  
     $dps.find('.dps__row-option').append(`<td></td>`);
-    $dps.find('.dps__row-damagepool').append(`<td><a class="dps__damagepool" data-index="${i}" href="#">[显示]</a></td>`);
+    $dps.find('.dps__row-damagepool').append(`<td><a class="dps__damagepool" data-index="${i}" href="#">[点击显示]</a></td>`);
     $dps.find('.dps__row-potentialrank').append(`<td><select class="form-control form-control-sm dps__potentialrank" data-index="${i}">${[0,1,2,3,4,5].map(x=>`<option value="${x}">${x+1}</option>`).join('')}</select></td>`);
     $dps.find('.dps__row-favor').append(`<td><select class="form-control form-control-sm dps__favor" data-index="${i}">${Object.keys(new Array(51).fill(0)).map(x=>`<option value="${x*2}">${x*2}</option>`).join('')}</select></td>`);
   }
@@ -182,6 +185,7 @@ function load() {
   pmBase.content.build({
     pages: [{ content: $dps }],    
   });
+  $('[data-toggle="tooltip"]').tooltip();  
 
   $('.dps__potentialrank').val(5);
   $('.dps__favor').val(100);
@@ -219,6 +223,7 @@ function showDetail() {
     type: 'modal',
     id: Characters[index].charId,
     content: Characters[index].dps.log.replace(/\n/g,'<br>').replace(/ /g,'&nbsp;'),
+    width: 650,
     title: name + " - " + Characters[index].dps.skillName,
     show: true,
   });
@@ -259,6 +264,7 @@ function showDamage() {
     type: 'modal',
     id: Characters[index].charId + "_" + Characters[index].skillId,
     content: html,
+    width: 850,
     title: name + " - " + Characters[index].dps.skillName,
     show: true,
   });
@@ -269,14 +275,14 @@ function showDamage() {
     let d = dps[row];
     let row_html = $(`.damage tr:nth-child(${row+2})`);
     
-    let pool = [0, 1, 2, 3].map(x => d.damagePool[x] + d.extraDamagePool[x], 0);
+    let pool = [0, 1, 2, 3].map(x => Math.round(d.damagePool[x] + d.extraDamagePool[x]), 0);
     pool[3] += d.damagePool[4] + d.extraDamagePool[4];
 
-    let data = [d.atk, d.attackTime, d.dur.hitCount, d.dur.duration, ...pool];
+    let data = [Math.round(d.atk), `${d.attackTime.toFixed(3)}s<br>${Math.round(d.attackTime * 30)}帧`, Math.round(d.dur.hitCount), d.dur.duration.toFixed(2), ...pool];
     //console.log(row_html.html(), data);
     data.forEach(x => {
-      if (x!=0) row_html.append(`<td>${Math.round(x*1000)/1000}</td>`);
-      else row_html.append("<td>-</td>");
+      if (x==0) x="-";
+      row_html.append(`<td>${x}</td>`);
     });
   }
   return false;

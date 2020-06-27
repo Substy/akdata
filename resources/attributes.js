@@ -81,7 +81,7 @@ function calculateDps(char, enemy, raidBuff) {
     base_atk: raidBuff.base_atk / 100,
     damage_scale: 1 + raidBuff.damage_scale / 100
   };
-  displayNames["raidBuff"] = "";
+  displayNames["raidBuff"] = "团辅";
 
   let charId = char.charId;
   let charData = AKDATA.Data.character_table[charId];
@@ -236,23 +236,26 @@ function applyBuff(charAttr, buffFrm, tag, blackbd, isSkill, isCrit, log, enemy)
 
   buffFrm.applied[tag] = true;
   let done = false; // if !done, will call applyBuffDefault() in the end
-  log.write("----" + tag + "----");
+  if (isCrit)
+    log.write("- [暴击] " +displayNames[tag] + ":");
+  else 
+    log.write("- " + displayNames[tag] + ":");
   // console.log("bb", blackboard);
   // write log
   function writeBuff(text) {
     let line = ["  -"];
-    if (tag == skillId) line.push("[技能]");
-    else if (tag == "raidBuff") line.push("[团辅/拐]");
-    else line.push("[天赋]");
+  //  if (tag == skillId) line.push("[技能]");
+  //  else if (tag == "raidBuff") line.push("[团辅/拐]");
+  //  else line.push("[天赋]");
     
     if (checkSpecs(tag, "cond")) 
       if (options.cond) line.push("[触发]"); else line.push("[未触发]");
     if (checkSpecs(tag, "stack") && options.stack) line.push("[满层数]"); 
-    if (checkSpecs(tag, "crit")) line.push("[暴击]");
+  //  if (checkSpecs(tag, "crit")) line.push("[暴击]");
     if (checkSpecs(tag, "ranged_penalty")) line.push("[距离惩罚]");
     
-    line.push(displayNames[tag]);
-    if (text) line.push("-> " + text);
+  //  line.push(displayNames[tag]);
+    if (text) line.push(text);
     log.write(line.join(" "));
   }
 
@@ -779,6 +782,8 @@ function calcDurations(isSkill, attackTime, attackSpeed, levelData, buffList, bu
   let startSp = 0;
   let rst = checkResetAttack(skillId, blackboard);
 
+  log.write("[循环计算]");
+
   const spTypeTags = {
     1: "time",
     2: "attack",
@@ -875,8 +880,9 @@ function calcDurations(isSkill, attackTime, attackSpeed, levelData, buffList, bu
       Object.keys(timeline).forEach(t => {
         line_str += timeline[t].map(x => TimelineMarks[x]).join("");
       });
-      log.write(`  - [模拟] 时间轴: ${line_str}`);
-      log.write(`           ( -: 普攻, +: 技能, *: 特殊 )`)
+      log.write(`  - [模拟] 时间轴: `);
+      log.write(`    ${line_str}`);
+      log.write(`    ( -: 普攻, +: 技能, *: 特殊 )`)
       
       if (total.ifrit)
         log.write(`  - [模拟] 莱茵回路(*): 触发 ${total.ifrit_recover_sp} / ${total.ifrit} 次, sp + ${buffList["tachr_134_ifrit_2"].sp * total.ifrit_recover_sp}`);
@@ -1128,6 +1134,9 @@ function calcDurations(isSkill, attackTime, attackSpeed, levelData, buffList, bu
     }
   }
 
+  log.write(`  - 持续: ${duration.toFixed(3)} s`);
+  log.write(`  - 攻击次数: ${attackCount*buffFrame.times} (${buffFrame.times} 连击 x ${attackCount})`);
+
   return {
     attackCount,
     times: buffFrame.times,
@@ -1147,7 +1156,7 @@ function calculateAttack(charAttr, enemy, raidBlackboard, isSkill, charData, lev
   let options = charAttr.char.options;
  
   // 计算面板属性
-  //log.write("---- Buff ----");
+  log.write("[Buff计算]");
   let buffFrame = initBuffFrame();
   for (var b in buffList) {
     let buffName = (b=="skill") ? buffList[b].id : b;
@@ -1298,7 +1307,7 @@ function calculateAttack(charAttr, enemy, raidBlackboard, isSkill, charData, lev
 
   //console.log(finalFrame, dur);
   // 输出面板数据
-  //log.write("---- 最终面板 ----");
+  log.write("[最终面板]");
   let atk_line = `(${basicFrame.atk.toFixed(1)} + ${buffFrame.atk.toFixed(1)}) * ${buffFrame.atk_scale.toFixed(2)}`;
   // if (buffFrame.damage_scale != 1) { atk_line += ` * ${buffFrame.damage_scale.toFixed(2)}`; }
   log.write(`  - 攻击力 / 倍率:  ${finalFrame.atk.toFixed(2)} = ${atk_line}`);
@@ -1306,11 +1315,9 @@ function calculateAttack(charAttr, enemy, raidBlackboard, isSkill, charData, lev
   log.write(`  - 攻击间隔: ${finalFrame.baseAttackTime.toFixed(3)} s`);
   if (corr != 0) {
     var prefix = (corr>0?"+":"");
-    log.write(`  - 帧数补偿 ${frame.toFixed(3)} ${prefix} ${corr}`);
+    log.write(`  - 帧数补偿 ${frame} (${prefix}${corr})`);
   }
   log.write(`  - 最终攻击间隔 / 舍入到帧: ${realAttackTime.toFixed(3)} s (${frame} 帧, ${frameAttackTime.toFixed(3)} s)`);
-  log.write(`  - 持续: ${dur.duration.toFixed(3)} s`);
-  log.write(`  - 攻击次数: ${dur.attackCount*dur.times} (${dur.times} 连击 x ${dur.attackCount})`);
   if (edef != enemy.def)
     log.write(`  - 敌人防御: ${edef.toFixed(1)} (${(edef-enemy.def).toFixed(1)})`);
   if (emr != enemy.magicResistance) {
@@ -1321,7 +1328,7 @@ function calculateAttack(charAttr, enemy, raidBlackboard, isSkill, charData, lev
     log.write(`  - 目标数: ${ecount} / ${enemy.count}`);
 
   // 计算伤害
-  //log.write("----");
+  log.write("[伤害计算]");
   log.write(`  - 伤害类型: ${['物理','法术','治疗','真伤'][damageType]}`);
   let dmgPrefix = (damageType == 2) ? "治疗" : "伤害";
   let hitDamage = finalFrame.atk;

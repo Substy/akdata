@@ -7,7 +7,6 @@ collection: docs
 title: Arknights DPS - 明日方舟数据分析工具
 ---
 
-无法刷新请点击以下按钮：
 <div>
-    <button type="button" class="btn btn-primary" onclick="localStorage.clear();">清除缓存</button>
+    <button type="button" class="btn btn-primary" onclick="localStorage.clear();">更新数据</button>
 </div>

@@ -40,3 +40,6 @@
     background-color: rgb(240, 240, 240);
 }
 */
+.tooltip-inner {
+    max-width: 450px;
+}
