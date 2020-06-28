@@ -654,7 +654,7 @@ function applyBuff(charAttr, buffFrm, tag, blackbd, isSkill, isCrit, log, enemy)
         writeBuff(`最大目标数 = ${buffFrame.maxTarget}`);
         if (options.ranged_penalty) {
           buffFrame.atk_scale = 1;
-          writeBuff(`不降低攻击力`);
+          writeBuff(`不受距离惩罚`);
         }
         break;
       case "skchr_svrash_2":
@@ -663,7 +663,7 @@ function applyBuff(charAttr, buffFrm, tag, blackbd, isSkill, isCrit, log, enemy)
       case "skchr_frostl_1":
         if (options.ranged_penalty) {
           buffFrame.atk_scale = 1;
-          writeBuff(`不降低攻击力`);
+          writeBuff(`不受距离惩罚`);
         }
         break;
       case "skchr_nightm_1":

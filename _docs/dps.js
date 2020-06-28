@@ -346,7 +346,7 @@ function updateOptions(charId, index) {
   let opts = AKDATA.Data.dps_options;
   let html = `    
   <div class="form-check">
-    <label class="form-check-label">
+    <label class="form-check-label" data-toggle="tooltip" data-placement="right" title="${opts.tags['buff'].explain}">
       <input class="form-check-input dps__buff" type="checkbox" value="" data-index="${index}" checked>
         计算团辅
     </label> </div>`;   // 默认计算团辅
@@ -355,7 +355,7 @@ function updateOptions(charId, index) {
     for (var t of opts.char[charId]) {
       let html_bool = `
       <div class="form-check">
-        <label class="form-check-label">
+        <label class="form-check-label" data-toggle="tooltip" data-placement="right" title="${opts.tags[t].explain}">
           <input class="form-check-input dps__${t}" type="checkbox" value="" data-index="${index}" checked>
             ${opts.tags[t].displaytext}
         </label> </div>`;
@@ -368,6 +368,7 @@ function updateOptions(charId, index) {
     for (var t of opts.char[charId]) {
       getElement(t, index).change(calculateColumn);
     }
+  $('[data-toggle="tooltip"]').tooltip(); 
 }
 
 function chooseChar() {

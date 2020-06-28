@@ -259,7 +259,7 @@ function buildVueModel() {
 function load() {
   let version = AKDATA.Data.version;
   if (version.gamedata != AKDATA.currentVersion || version.akdata != AKDATA.akVersion) {
-    $('#vue_version').text(`有新数据，请点击[清除缓存]更新`);
+    $('#vue_version').text(`有新数据，请点击[更新数据]更新`);
   } else {
     $("#vue_version").html("程序版本: {{ version.akdata }}, 数据版本: {{ version.gamedata }}");
   }
@@ -388,10 +388,20 @@ function load() {
       },
       columns: function () {
         var cols = [];
+        var counts = {};
         cols.push(["x", ...EnemySeries[this.enemyKey]]);
         for (var i=0; i<this.plotList.length; ++i) {
           var info = this.explainChar(this.plotList[i]);
           var title = info.name + " " + info.text;
+          if (!counts[title]) counts[title] = 0;
+          counts[title] += 1;
+        }
+        
+        for (var i=0; i<this.plotList.length; ++i) {
+          var info = this.explainChar(this.plotList[i]);
+          var title = info.name + " " + info.text;
+          
+          if (counts[title] >= 2) title += " " + info.option;
           var values = Object.keys(this.chartView[i]).map(k => this.chartView[i][k][this.chartKey]);
           cols.push([title, ...values]);
         }
