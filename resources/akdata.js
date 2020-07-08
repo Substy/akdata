@@ -18,7 +18,10 @@ window.AKDATA = {
       if ( paths[i].endsWith('.json') ){
         let name = paths[i].split('/').pop().replace('.json', '');
         let path = `https://cdn.jsdelivr.net/gh/xulai1001/akdata@${window.AKDATA.akVersion}/resources/gamedata/${paths[i].toLowerCase()}`;
-        //let path = `../resources/gamedata/${paths[i].toLowerCase()}`;
+        
+        // custom json data: always use local copy
+        if (paths[i].includes("customdata"))
+          path = `../resources/gamedata/${paths[i].toLowerCase()}`;
           
         paths[i] = loadJSON(path, data => AKDATA.Data[name] = data);
       }

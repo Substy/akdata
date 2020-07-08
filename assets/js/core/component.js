@@ -265,7 +265,7 @@ let createFunctions = {
     let $e = $('#' + config.id);
     if ($e.length == 0 ){
       let html =`
-        <div class="modal" id="${config.id}" tabindex="-1" role="dialog" aria-labelledby="exampleModalLongTitle" aria-hidden="true">
+        <div class="modal fade" id="${config.id}" tabindex="-1" role="dialog" aria-labelledby="exampleModalLongTitle" aria-hidden="true">
         <div class="modal-dialog" role="document" style="max-width:${config.width || 750}px;">
           <div class="modal-content">
             <div class="modal-header">
@@ -276,10 +276,6 @@ let createFunctions = {
             </div>
             <div class="modal-body" id="vue-dialog">
             </div>
-            <!--<div class="modal-footer">
-              <button type="button" class="btn btn-secondary" data-dismiss="modal">Close</button>
-              <button type="button" class="btn btn-primary">Save changes</button>
-            </div>-->
           </div>
         </div>
       </div>
@@ -291,83 +287,6 @@ let createFunctions = {
     if (config.show) $e.modal();
   },
 
-  /*
-  {
-    tabs: { key: value },
-    title: string,
-    items: [{
-      html: '',
-      value: '',
-      disabled: false,
-      tab: 'tab key',
-    }],
-    check: func,
-    callback: func,
-
-  }
-  */
-  /*
-  'selectDialog': function(config) {
-
-    let body = '';
-      let html = `
-<div class="modal" class="c-selectdialog">
-  <div class="modal-dialog modal-dialog-centered" style="min-width:1000px;">
-    <div class="modal-content">
-      <div class="modal-header">
-        <h5 class="modal-title">${config.title}</h5>
-        <button type="button" class="close" data-dismiss="modal">
-          <span aria-hidden="true">&times;</span>
-        </button>
-      </div>
-      <div class="modal-body servantSelector__body" style="min-height:600px;">${body}
-      </div>
-      <div class="modal-footer" style="display:none;">
-        <button type="button" class="btn btn-secondary" data-dismiss="modal">取消</button>
-      </div>
-    </div>
-  </div>
-</div>
-  `;
-  $('body').append(html);
-  
-    return {
-      popup: () => {
-        if ( $('.c-selectdialog').length == 0 ) UOMO.servantSelector.createModal();
-        $('.c-selectdialog').modal('show');
-      }
-    };
-
-  }
-  UOMO.servantSelector = {
-    createModal : function(){
-      var html = '';
-      html  += '<ul class="nav nav-tabs" class="f-svt-tabNav" role="tablist">';
-      $.each( [ 1,2,3,4,5,6,7,1002 ], function( i,classId ) {
-        html += '<li class="nav-item"><a class="nav-link ' + (i==0?'active':'') +'" href="#f-svtSel-class-' + classId + '" data-toggle="tab">'+ UOMO.util.getSpriteImg( 'class', classId, 40, 5 )+'</a></li>';
-      });
-      html += '</ul>';
-      html += '<div class="tab-content" id="f-svt-tabContent">';
-      $.each( [ 1,2,3,4,5,6,7,1002 ], function( i,classId ) {
-        html += '<div class="tab-pane' + (i==0?' fade show active':'') +'" id="f-svtSel-class-' + classId + '" role="tabpanel"><div class="row">';
-        $.each( UOMO.servant._classes[classId], function( j, svtId ) {
-          var svtData = UOMO.database.card[svtId];
-            html += '<div class="col-2"><div class="servantSelector__item" data-id="'+svtId+'">' + UOMO.util.getSvtThumb( svtData.number, false ) + '</div></div>';
-        });
-        html += '</div></div>';
-      });
-      html += '</div>';
-      
-      $('.servantSelector__body').append(html);
-      
-      $('.servantSelector__item:not(.is-disable)').click( function(){
-        $('#servantSelector').modal('hide');
-        UOMO.servantSelector.callback($(this).data('id'));
-      });
-      $('#servantSelector').modal();
-    },
-  };
-*/
 }
 
 export default {

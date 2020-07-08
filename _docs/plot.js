@@ -52,7 +52,7 @@ let page_html = `
       <div class="card-title mb-0">
         选择干员，之后点击添加
         <span class="float pl-4">
-          <button class="btn btn-outline-secondary" type="button" v-on:click="addChar"><i class="fas fa-plus"></i></button>
+          <button class="btn btn-primary" type="button" v-on:click="addChar"><i class="fas fa-plus"></i></button>
         </span>
       </div>
     </div>
@@ -103,28 +103,29 @@ let page_html = `
         </tr>
       </tbody>
     </table>
-    <div class="card m-3">
-      <div class="card-header">
-        <button class="btn btn-block btn-light text-left" type="button" data-toggle="collapse" data-target="#plot_list" aria-expanded="true" aria-controls="plot_list">
-          已添加的干员
-        </button>
-      </div>
-      <div id="plot_list" class="collapse show">
-        <div class="card-body">
-          <div class="row">
-            <div class="card col-md-3 p-2" v-for="(x, index) in plotList">
-              <p class="card-title"><b>
-                {{ explainChar(x).name }}
-                <button type="button" class="btn btn-outline-danger float-right" @click="delChar(index)">删除</button>
-              </b></p>
-              <p class="card-text"> {{ explainChar(x).text }} </p>
-              <p class="card-text"> {{ explainChar(x).option }} </p>
-            </div>
-          </div>
-      </div>
-    </div> <!-- card -->
   </div> <!-- card -->
-  
+  <br>
+  <div class="card">
+    <div class="card-header">
+      <button class="btn btn-block btn-success text-left" type="button" data-toggle="collapse" data-target="#plot_list" aria-expanded="true" aria-controls="plot_list">
+        已添加的干员
+      </button>
+    </div>
+    <div id="plot_list" class="collapse show">
+      <div class="card-body">
+        <div class="row">
+          <div class="card col-md-3 p-2" v-for="(x, index) in plotList">
+            <p class="card-title"><b>
+              {{ explainChar(x).name }}
+              <button type="button" class="btn btn-outline-danger float-right" @click="delChar(index)">删除</button>
+            </b></p>
+            <p class="card-text"> {{ explainChar(x).text }} </p>
+            <p class="card-text"> {{ explainChar(x).option }} </p>
+          </div>
+        </div>
+    </div>
+  </div> <!-- card -->
+  <br>
   <div class="card">
     <div class="card-body">
       <button class="button btn-primary" type="button" data-toggle="collapse" data-target="#tbl_enemy" aria-expanded="false" aria-controls="tbl_enemy">
@@ -435,7 +436,7 @@ function load() {
       x: { show: true },
       y: { show: true }
     },
-    zoom: { enabled: true },
+    zoom: { enabled: false },
   });
 
 }

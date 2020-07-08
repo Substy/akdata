@@ -35,11 +35,17 @@
     --badge-light: rgb(160,160,160);
     --badge-color: black;
 }
-/*
-.l-layout__sidebar {
-    background-color: rgb(240, 240, 240);
+
+.l-layout__sidebar, .l-header__logo {
+    box-shadow: 5px 2px 10px 0px #3333;
+    z-index: 10;
+    border-right: 1px solid #ccc;
 }
-*/
+
 .tooltip-inner {
-    max-width: 450px;
+    max-width: 600px;
+}
+
+.table th {
+    font-weight: 400;
 }

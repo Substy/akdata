@@ -485,7 +485,7 @@ function plot(chartView) {
     grid: {
       y: { show: true }
     },
-    zoom: { enabled: true },
+    zoom: { enabled: false },
     color: {
       pattern: [ "#cccccc", "#4169e1", "#ff7f50", "#ffd700", "#dc143c", "#ee82ee", "#e6e6fa" ]
     }
@@ -675,7 +675,7 @@ function updateCostPlot(result, chartKey) {
       grid: {
         y: { show: true }
       },
-      zoom: { enabled: true },
+      zoom: { enabled: false },
     });
 
     ++idx;
