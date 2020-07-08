@@ -117,6 +117,8 @@ function load() {
     $('#vue_version').text(`有新数据，请点击[清除缓存]更新`);
   } else {
     $("#vue_version").html("程序版本: {{ version.akdata }}, 数据版本: {{ version.gamedata }}");
+    $("#btn_update_data").text("最新版本");
+    $("#btn_update_data").attr("class", "btn btn-success");
   }
   
   // build html

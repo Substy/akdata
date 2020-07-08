@@ -1,5 +1,6 @@
 .o-badge--item {
     width: 120px;
+    box-shadow: 1px 2px 4px 0px;
 }
 
 .o-badge--count {
@@ -14,26 +15,32 @@
 .o-badge--rarity-5 {
     --badge-light: rgb(161,72,5);
     --badge-color: rgb(250,195,95);
+    box-shadow: 1px 2px 4px 0px #333;
 }
 .o-badge--rarity-4 {
     --badge-light: rgb(250,198,2);
     --badge-color: rgb(46,41,5);
+    box-shadow: 1px 2px 4px 0px #333;
 }
 .o-badge--rarity-3 {
     --badge-light: rgb(214,197,214);
     --badge-color: rgb(46,33,63);
+    box-shadow: 1px 2px 4px 0px #333;
 }
 .o-badge--rarity-2 {
     --badge-light: rgb(0,179,252);
     --badge-color: black;
+    box-shadow: 1px 2px 4px 0px #333;
 }
 .o-badge--rarity-1 {
     --badge-light: rgb(220,229,55);
     --badge-color: black;
+    box-shadow: 1px 2px 4px 0px #333;
 }
 .o-badge--rarity-0 {
     --badge-light: rgb(160,160,160);
     --badge-color: black;
+    box-shadow: 1px 2px 4px 0px #333;
 }
 
 .l-layout__sidebar, .l-header__logo {

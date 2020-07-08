@@ -26,6 +26,12 @@ function init() {
 const charColumnCount = $(document).width() <= 1400 ? 2 : 4;
 const Characters = new Array(charColumnCount);
 
+let markdown = new window.showdown.Converter();
+markdown.setOption("simpleLineBreaks", true);
+markdown.setOption("headerLevelStart", 4);
+markdown.setOption("tables", true);
+markdown.setOption("tablesHeaderId", true);
+
 function getElement(classPart, index) {
   return $(`.dps__${classPart}[data-index="${index}"]`);
 }
@@ -221,10 +227,11 @@ function showDetail() {
   let $this = $(this);
   let index = ~~$this.data('index');
   let name = AKDATA.Data.character_table[Characters[index].charId].name;
+  //console.log(Characters[index].dps.log);
   pmBase.component.create({
     type: 'modal',
     id: Characters[index].charId,
-    content: Characters[index].dps.log.replace(/\n/g,'<br>').replace(/ /g,'&nbsp;'),
+    content: markdown.makeHtml(Characters[index].dps.log).replace("table", 'table class="table"'),
     width: 650,
     title: name + " - " + Characters[index].dps.skillName,
     show: true,
