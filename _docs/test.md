@@ -12,5 +12,6 @@ jQuery: <span id="jquery">Error</span>
 <div id="vue">
 </div>
 
-如果不能正常显示，您的浏览器可能不支持es6，可用以下网站进行详细检测：
-http://ruanyf.github.io/es-checker/index.cn.html
+如果不能正常显示，您可以换个浏览器试试。
+
+这里可以进行详细检测：<http://ruanyf.github.io/es-checker/index.cn.html>
