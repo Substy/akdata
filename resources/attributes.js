@@ -778,7 +778,8 @@ function extractDamageType(charData, charId, isSkill, skillDesc, skillBlackboard
 
 // 重置普攻判定
 function checkResetAttack(key, blackboard) {
-  return (checkSpecs(key, "reset_attack") || 
+  if (checkSpecs(key, "reset_attack") == "false") return false;
+  else return (checkSpecs(key, "reset_attack") || 
           blackboard['base_attack_time'] || blackboard['attack@max_target'] ||
           blackboard['max_target']);
 }
