@@ -1401,7 +1401,7 @@ function calculateAttack(charAttr, enemy, raidBlackboard, isSkill, charData, lev
   }
   // 可变攻击力-重新计算
   if (checkSpecs(blackboard.id, "grad") && isSkill) {
-    log.write("[特殊] 可变攻击力技能");
+    log.write("[特殊] 可变攻击力技能，重新计算伤害");
     damagePool[damageType] = 0;
 
     // 将finalFrame.atk变换为每次攻击的实际攻击力，同时不影响其他buff
@@ -1416,6 +1416,18 @@ function calculateAttack(charAttr, enemy, raidBlackboard, isSkill, charData, lev
     }
     log.write(`单次伤害: ${a.map(x => x.toFixed(1))}`);
     damagePool[damageType] = a.reduce((x, y) => x + y);
+  }
+  if (charId == "char_328_cammou") {  // 卡达: 重新计算倍率
+    log.write("[特殊] 卡达: 可变攻击倍率，重新计算伤害");
+    damagePool[damageType] = 0;
+
+    var tb = [1.2, 1.35, 1.5, 1.65, 1.8, 1.95, 2.1]; // 本体+无人机总的atk_scale
+    var dmg = [...Array(dur.attackCount).keys()].map(x => (
+      x >= tb.length ? Math.round(hitDamage * tb[tb.length-1]) : Math.round(hitDamage * tb[x])
+    ));
+    console.log(dmg);
+    log.write(`单次伤害: ${dmg.splice(0, 6)}, ${dmg[6]} * ${dur.attackCount-6}`);
+    damagePool[damageType] = dmg.reduce((x, y) => x + y);
   }
 
   // 额外伤害
