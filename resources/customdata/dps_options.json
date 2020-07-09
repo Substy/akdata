@@ -32,6 +32,7 @@
         "char_193_frostl" : [ "ranged_penalty" ],
         "char_140_whitew" : [ "ranged_penalty" ],
         "char_172_svrash" : [ "ranged_penalty" ],
+        "char_294_ayer": [ "ranged_penalty" ],
         "char_283_midn" : [ "ranged_penalty", "crit" ],
         "char_202_demkni" : [ "stack" ],
         "char_290_vigna" : [ "crit" ],
@@ -64,6 +65,7 @@
         "char_113_cqbw":    [ "cond" ],
         "char_400_weedy":   [ "token", "cannon" ],
         "char_405_absin":   [ "cond" ],
-        "char_197_poca":    [ "cond" ]
+        "char_197_poca":    [ "cond" ],
+        "char_358_lisa":    [ "cond" ]
     }
 }

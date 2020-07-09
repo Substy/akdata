@@ -156,6 +156,7 @@
     "tachr_283_midn_trait":	{ "ranged_penalty": true },
     "tachr_286_cast3_1":	{ "cond": true },
     "tachr_290_vigna_1":	{ "crit": true },
+    "tachr_294_ayer_trait": { "ranged_penalty": true },
     "tachr_298_susuro_1":	{ "cond": true },
     "tachr_306_leizi_1": { "cond": true },
     "tachr_326_glacus_1":	{ "cond": true },
@@ -164,6 +165,7 @@
     "tachr_348_ceylon_1":	{ "cond": true },
     "tachr_348_ceylon_trait":	{ "ranged_penalty": true },
     "tachr_356_broca_1":	{ "cond": true },
+    "tachr_358_lisa_2":     { "cond": true },
     "tachr_367_swllow_1":	{ "crit": true },
     "tachr_385_finlpp_trait":   { "ranged_penalty": true },
     "tachr_503_rang_1":	{ "cond": true },
@@ -173,6 +175,7 @@
     "tachr_337_utage_1":    { "stack": true },
     "tachr_379_sesa_1":     { "cond": true },
     "tachr_254_vodfox_1":   { "cond": true },
+    "tachr_328_cammou_1":   { "todo": true },
     "tachr_333_sidero_1":   { "cond": true },
     "tachr_405_absin_1":    { "cond": true }
 }

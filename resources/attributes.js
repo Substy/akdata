@@ -428,6 +428,10 @@ function applyBuff(charAttr, buffFrm, tag, blackbd, isSkill, isCrit, log, enemy)
         case "tachr_197_poca_1": // 早露
           blackboard.edef_pene_scale = blackboard["def_penetrate"];
           break;
+        case "tachr_358_lisa_2":  // 铃兰2
+          if (isSkill && skillId == "skchr_lisa_3")
+            delete blackboard.damage_scale; // 治疗不计易伤
+          break;
       }
     }
   } else if (checkSpecs(tag, "ranged_penalty")) { // 距离惩罚类
@@ -521,6 +525,9 @@ function applyBuff(charAttr, buffFrm, tag, blackbd, isSkill, isCrit, log, enemy)
       case "tachr_401_elysm_1":
         delete blackboard["attack_speed"];
         break;
+      case "tachr_345_folnic_1":
+        delete blackboard["damage_scale"];
+        break;
       // ---- 技能 ----
       case "skchr_swllow_1":
       case "skchr_helage_1":
@@ -578,6 +585,7 @@ function applyBuff(charAttr, buffFrm, tag, blackbd, isSkill, isCrit, log, enemy)
       case "skchr_weedy_2":
       case "skchr_weedy_3":
       case "skchr_asbest_2":
+      case "skchr_folnic_2":
         buffFrame.maxTarget = 999;
         writeBuff(`最大目标数 = ${buffFrame.maxTarget}`);
         break;
@@ -659,6 +667,8 @@ function applyBuff(charAttr, buffFrm, tag, blackbd, isSkill, isCrit, log, enemy)
           writeBuff(`不受距离惩罚`);
         }
         break;
+      case "skchr_ayer_2":
+        delete blackboard.atk_scale;  // 断崖2记为额外伤害
       case "skchr_svrash_2":
       case "skchr_svrash_3":
       case "skchr_svrash_1":
@@ -668,7 +678,7 @@ function applyBuff(charAttr, buffFrm, tag, blackbd, isSkill, isCrit, log, enemy)
           writeBuff(`不受距离惩罚`);
         }
         break;
-      case "skchr_nightm_1":
+        case "skchr_nightm_1":
         writeBuff(`治疗目标数 ${blackboard["attack@max_target"]}`);  
         delete blackboard["attack@max_target"];
         break;
@@ -1381,8 +1391,9 @@ function calculateAttack(charAttr, enemy, raidBlackboard, isSkill, charData, lev
     let ratio_sora = 0.1;
     if (isSkill && blackboard.id == "skchr_sora_1")
       ratio_sora = blackboard["attack@atk_to_hp_recovery_ratio"];
-    extraDamagePool[2] = ratio_sora * finalFrame.atk * dur.duration;
-    damagePool[0] = 0; log.write("[特殊] 伤害为0 （以上计算无效）");
+    extraDamagePool[2] = ratio_sora * finalFrame.atk * dur.duration * enemy.count;
+    damagePool[0] = 0; log.write("[特殊] 伤害为0 （以上计算无效），可以治疗召唤物");
+    log.writeNote("可以治疗召唤物");
   }
   // 反射类-增加说明
   if (checkSpecs(blackboard.id, "reflect") && isSkill) {
@@ -1445,7 +1456,9 @@ function calculateAttack(charAttr, enemy, raidBlackboard, isSkill, charData, lev
         pool[1] += total_damage;
         break;
       case "tachr_181_flower_1":
-        pool[2] += bb.atk_to_hp_recovery_ratio * finalFrame.atk * dur.duration * ecount; break;
+        pool[2] += bb.atk_to_hp_recovery_ratio * finalFrame.atk * dur.duration * enemy.count;
+        if (isSkill) log.writeNote("可以治疗召唤物");
+        break;
       case "tachr_188_helage_trait":
       case "tachr_337_utage_trait":
         pool[2] += bb.value * dur.hitCount; break;
@@ -1498,6 +1511,12 @@ function calculateAttack(charAttr, enemy, raidBlackboard, isSkill, charData, lev
           log.write(`[特殊] ${displayNames[buffName]}: 法术伤害 = ${damage.toFixed(1)}, 命中 ${(enemy.count-1)}`);
         }
         break;
+      case "skchr_ayer_2":
+        damage = finalFrame.atk * bb.atk_scale * (1 - emrpct);
+        pool[1] += damage * enemy.count * dur.hitCount;
+        log.write(`[特殊] ${displayNames[buffName]}: 法术伤害 = ${damage.toFixed(1)}, 命中 ${enemy.count * dur.hitCount}`);
+        log.writeNote("假设断崖的当前攻击目标也被阻挡");
+        break;
       case "skcom_assist_cost[2]":
       case "skcom_assist_cost[3]":
       case "skchr_myrtle_2":
@@ -1536,6 +1555,8 @@ function calculateAttack(charAttr, enemy, raidBlackboard, isSkill, charData, lev
         pool[2] += bb.heal_scale * finalFrame.maxHp; break;
       case "skchr_nightm_1":
         pool[2] += damagePool[1] * bb["attack@heal_scale"] * bb["attack@max_target"]; break;
+      case "skchr_folnic_2":
+        pool[2] += bb["attack@heal_scale"] * finalFrame.atk / buffFrame.atk_scale * dur.hitCount; break;
       case "skchr_breeze_2":
         damage = finalFrame.atk/2 ;
         log.write(`[特殊] ${displayNames[buffName]}: 溅射治疗 ${damage.toFixed(1)}, 命中 ${dur.attackCount * (enemy.count-1)}`);
@@ -1562,8 +1583,10 @@ function calculateAttack(charAttr, enemy, raidBlackboard, isSkill, charData, lev
         pool[4] += heal * ecount;
         break;
       case "skchr_tknogi_2":
-        heal = finalFrame.atk * bb["attack@atk_to_hp_recovery_ratio"] * ecount * dur.duration;
-        log.write(`[特殊] ${displayNames[buffName]}: HoT ${heal.toFixed(1)}`);
+      case "skchr_lisa_3":
+        heal = finalFrame.atk * bb["attack@atk_to_hp_recovery_ratio"] * enemy.count * dur.duration;
+        log.write(`[特殊] ${displayNames[buffName]}: HoT ${heal.toFixed(1)}，可以治疗召唤物`);
+        log.writeNote("可以治疗召唤物");
         pool[2] += heal;
         damagePool[2] = 0; log.write("[特殊] 直接治疗为0");
         break;
@@ -1579,7 +1602,10 @@ function calculateAttack(charAttr, enemy, raidBlackboard, isSkill, charData, lev
       if ((buffName == "tachr_291_aglina_2" && isSkill) || 
           (buffName == "tachr_188_helage_2" && !options.noblock)) { /* skip */ }
       else
+      {
         pool[2] += hpsec * (dur.duration + dur.stunDuration);
+        log.writeNote("可以治疗召唤物");
+      }
     }
     // 自身血量百分比相关的治疗/伤害
     if (bb["hp_ratio"]) {
@@ -1756,7 +1782,7 @@ function getAttributes(char, log) { //charId, phase = -1, level = -1
         displayNames[prefabKey] = cd.name;  // add to name cache
         // bufflist处理
         buffList[prefabKey] = blackboard;
-        if (checkSpecs(prefabKey, "todo")) log.write('[BUG] 天赋效果在调整中或有Bug，结果仅供参考');
+        if (checkSpecs(prefabKey, "todo")) log.writeNote('计算结果调整中，敬请期待');
         break;
       }
     };
