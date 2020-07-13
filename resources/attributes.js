@@ -669,6 +669,7 @@ function applyBuff(charAttr, buffFrm, tag, blackbd, isSkill, isCrit, log, enemy)
         break;
       case "skchr_ayer_2":
         delete blackboard.atk_scale;  // 断崖2记为额外伤害
+      case "skchr_ayer_1":
       case "skchr_svrash_2":
       case "skchr_svrash_3":
       case "skchr_svrash_1":
@@ -678,7 +679,7 @@ function applyBuff(charAttr, buffFrm, tag, blackbd, isSkill, isCrit, log, enemy)
           writeBuff(`不受距离惩罚`);
         }
         break;
-        case "skchr_nightm_1":
+      case "skchr_nightm_1":
         writeBuff(`治疗目标数 ${blackboard["attack@max_target"]}`);  
         delete blackboard["attack@max_target"];
         break;
