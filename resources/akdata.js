@@ -7,20 +7,28 @@ const useCache = true;
 const cacheBeginTime = new Date(2019, 12, 10).getTime();
 
 window.AKDATA = {
-  akVersion: "200709-v2",
-  currentVersion: "20-07-08-12-58-19-ee6a0d",
+  akdata: "200709-v2",   // 主程序Tag版本
+  gamedata: "20-07-08-12-58-19-ee6a0d", // CDN游戏数据版本
+  customdata: "200714", // 额外数据版本
 
   Data: {},
+
+  checkVersion: function () {
+    var result = ["akdata", "gamedata", "customdata"].reduce((x, y) => x && (this[y] == this.Data.version[y]), true);
+    var reason = {};
+    ["akdata", "gamedata", "customdata"].forEach(x => { reason[x] = [this.Data.version[x], this[x]]; });
+    return {result, reason};
+  },
 
   load: function (paths, callback, ...args) {
 
     for( let i=0;i<paths.length;i++) {
       if ( paths[i].endsWith('.json') ){
         let name = paths[i].split('/').pop().replace('.json', '');
-        let path = `https://cdn.jsdelivr.net/gh/xulai1001/akdata@${window.AKDATA.akVersion}/resources/gamedata/${paths[i].toLowerCase()}`;
+        let path = `https://cdn.jsdelivr.net/gh/xulai1001/akdata@${window.AKDATA.akdata}/resources/gamedata/${paths[i].toLowerCase()}`;
         
         // custom json data: always use local copy
-        if (paths[i].includes("customdata"))
+        if (!paths[i].includes("excel"))
           path = `../resources/gamedata/${paths[i].toLowerCase()}`;
           
         paths[i] = loadJSON(path, data => AKDATA.Data[name] = data);
@@ -39,19 +47,6 @@ window.AKDATA = {
       }
     });
   },
-/*
-  loadData: function (paths, callback, ...args) {
-    let requests = paths.map(path => {
-      let name = path.split('/').pop().replace('.json', '');
-      path = `${siteInfo.baseurl}/resources/gamedata/${path.toLowerCase()}`;
-      return $.getJSON(path, data => AKDATA.Data[name] = data);
-    });
-    $.when(...requests).then(() => {
-      let result = callback(...args);
-      if (result !== undefined) pmBase.content.show(result);
-    });
-  },
-*/
 
   getLevel: function (phase, level) {
     // {phase: 1, level: 1}

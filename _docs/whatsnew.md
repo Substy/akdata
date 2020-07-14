@@ -5,6 +5,9 @@ order: 4
 category: 工具
 icon: info-circle
 ---
+## 20.07.14
+- 改进了缓存设置
+
 ## 20.07.09
 - [update] 铃兰等
 - [ui] 增加了浏览器兼容性问题提示

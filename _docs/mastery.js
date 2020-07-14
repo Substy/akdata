@@ -112,11 +112,12 @@ function buildVueModel() {
 }
 
 function load() {
-  let version = AKDATA.Data.version;
-  if (version.gamedata != AKDATA.currentVersion || version.akdata != AKDATA.akVersion) {
-    $('#vue_version').text(`有新数据，请点击[清除缓存]更新`);
+  let version = AKDATA.checkVersion();
+  if (!version.result) {
+    $('#vue_version').text(`有新数据，请更新`);
+    console.log(version.reason);
   } else {
-    $("#vue_version").html("程序版本: {{ version.akdata }}, 数据版本: {{ version.gamedata }}");
+    $("#vue_version").html("程序版本: {{ version.akdata }}, 数据版本: {{ version.gamedata }} ({{ version.customdata }})");
     $("#btn_update_data").text("最新版本");
     $("#btn_update_data").attr("class", "btn btn-success");
   }
