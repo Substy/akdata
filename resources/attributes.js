@@ -1428,7 +1428,7 @@ function calculateAttack(charAttr, enemy, raidBlackboard, isSkill, charData, lev
       x >= tb.length ? Math.round(hitDamage * tb[tb.length-1]) : Math.round(hitDamage * tb[x])
     ));
     console.log(dmg);
-    log.write(`单次伤害: ${dmg.splice(0, 6)}, ${dmg[6]} * ${dur.attackCount-6}`);
+    log.write(`单次伤害: ${dmg.slice(0, 6)}, ${dmg[6]} * ${dur.attackCount-6}`);
     damagePool[damageType] = dmg.reduce((x, y) => x + y);
   }
 
