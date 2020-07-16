@@ -15,6 +15,7 @@
     "char_252_bibeak":  { "times": 2, "frame_corr": 1 },
     "char_260_durnar":	{ "damage_type": 1 },
     "char_301_cutter":  { "times": 2 },
+    "char_328_cammou":  { "frame_corr": 1 }, 
     "char_348_ceylon":  { "frame_corr": 1 },
     "char_2013_cerber": { "frame_corr": 1 },
     "char_250_phatom":  { "token": "token_10007_phatom_twin" },
