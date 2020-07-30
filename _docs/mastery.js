@@ -18,7 +18,7 @@ const DefaultAttribute = {
   favor: 200,
   potential: 5,  // 0-5
   skillLevel: 9,  // 0-9
-  options: { cond: true, crit: true, stack: true }
+  options: { cond: true, crit: true, stack: true, token: true }
 };
 const DefaultEnemy = { def: 0, magicResistance: 0, count: 1, hp: 0 };
 

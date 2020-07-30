@@ -66,6 +66,8 @@
         "char_400_weedy":   [ "token", "cannon" ],
         "char_405_absin":   [ "cond" ],
         "char_197_poca":    [ "cond" ],
-        "char_358_lisa":    [ "cond" ]
+        "char_358_lisa":    [ "cond" ],
+        "char_349_chiave":  [ "cond" ],
+        "char_336_folivo":  [ "token" ]
     }
 }
