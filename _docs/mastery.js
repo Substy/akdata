@@ -18,7 +18,7 @@ const DefaultAttribute = {
   favor: 200,
   potential: 5,  // 0-5
   skillLevel: 9,  // 0-9
-  options: { cond: true, crit: true, stack: true, token: true }
+  options: { cond: true, crit: true, stack: true }
 };
 const DefaultEnemy = { def: 0, magicResistance: 0, count: 1, hp: 0 };
 
@@ -339,6 +339,9 @@ function buildChar(charId, skillId, recipe) {
   char.name = db.name;
   char.skillName = skilldb.levels[char.skillLevel].name;
   //console.log(char);
+  var _opts = AKDATA.Data.dps_options.char[charId];
+  if (_opts && _opts.indexOf("token") >= 0)
+    char.options.token = true;
   return char;
 }
 

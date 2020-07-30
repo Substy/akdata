@@ -105,7 +105,7 @@ function calculateDps(char, enemy, raidBuff) {
   displayNames[charId] = charData.name;
   displayNames[char.skillId] = levelData.name;  // add to name cache
 
-  if (char.options.token) {
+  if (char.options.token && (checkSpecs(charId, "token") || checkSpecs(char.skillId, "token")))  {
     log.write("\n");
     log.writeNote("**召唤物dps，非本体**");
     var tokenId = checkSpecs(charId, "token") || checkSpecs(char.skillId, "token");      
