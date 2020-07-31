@@ -1594,6 +1594,12 @@ function calculateAttack(charAttr, enemy, raidBlackboard, isSkill, charData, lev
         damage = finalFrame.atk * bb.projectile_delay_time * (1-emrpct) * ecount;
         pool[1] = damage; damagePool[1] = 0;
         break;
+      case "skchr_beewax_2":
+        if (isSkill) {
+		  damage = finalFrame.atk * bb.atk_scale * (1-emrpct) * ecount;
+		  pool[1] = damage;
+		} 
+		break;
       // 间接治疗
       case "skchr_tiger_2":
         pool[2] += damagePool[1] * bb.heal_scale; break;
