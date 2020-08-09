@@ -1591,7 +1591,7 @@ function calculateAttack(charAttr, enemy, raidBlackboard, isSkill, charData, lev
         break;
       case "skchr_podego_2":
         log.write(`[特殊] ${displayNames[buffName]}: 直接伤害为0 （以上计算无效）, 效果持续${bb.projectile_delay_time}秒`);
-        damage = finalFrame.atk * bb.projectile_delay_time * (1-emrpct) * ecount;
+        damage = finalFrame.atk * bb.projectile_delay_time * (1-emrpct) * enemy.count;
         pool[1] = damage; damagePool[1] = 0;
         break;
       case "skchr_beewax_2":
