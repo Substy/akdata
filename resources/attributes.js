@@ -533,7 +533,7 @@ function applyBuff(charAttr, buffFrm, tag, blackbd, isSkill, isCrit, log, enemy)
         break;
       case "tachr_344_beewax_trait":
         if (isSkill) done = true; break;
-      // ---- 技能 ----
+        // ---- 技能 ----
       case "skchr_swllow_1":
       case "skchr_helage_1":
       case "skchr_helage_2":
@@ -568,11 +568,29 @@ function applyBuff(charAttr, buffFrm, tag, blackbd, isSkill, isCrit, log, enemy)
       case "skchr_shining_2": 
       case "skchr_cgbird_2":
         done = true; break;
+      // 多段暖机
       case "skchr_amgoat_1":
-        buffFrame.atk += basic.atk * blackboard['amgoat_s_1[b].atk'];
-        buffFrame.attackSpeed += blackboard['amgoat_s_1[b].attack_speed'];
-        writeBuff(`按第二次之后计算: atk + ${buffFrame.atk}, attackSpeed + ${buffFrame.attackSpeed}`);
-        done = true; break;
+        if (options.warmup) {
+          blackboard.atk = blackboard['amgoat_s_1[b].atk'];
+          blackboard.attack_speed = blackboard['amgoat_s_1[b].attack_speed'];
+          if (isSkill) log.writeNote("暖机完成");
+        } else {
+          blackboard.attack_speed = blackboard["amgoat_s_1[a].attack_speed"];
+          log.writeNote("首次启动时");
+        }
+        break;
+      case "skchr_thorns_3":
+        if (options.warmup) {
+          blackboard.atk = blackboard["thorns_s_3[b].atk"];
+          blackboard.attack_speed = blackboard["thorns_s_3[b].attack_speed"];
+          if (isSkill) log.writeNote("暖机完成");
+        } else
+          log.writeNote("首次启动时");
+        if (options.ranged_penalty) {
+          buffFrame.atk_scale = 1;
+          writeBuff(`不受距离惩罚`);
+        }
+        break;
       case "skchr_amgoat_2":
         blackboard.atk_scale = blackboard.fk;
         break;
@@ -761,6 +779,12 @@ function applyBuff(charAttr, buffFrm, tag, blackbd, isSkill, isCrit, log, enemy)
     blackboard.attack_speed = 0;
     writeBuff("每秒造成一次伤害/治疗");
   }
+  if (tag == "skchr_thorns_2") {
+    log.writeNote("反击按最小间隔计算");
+    blackboard.base_attack_time = blackboard.cooldown - (basic.baseAttackTime + buffFrame.baseAttackTime);
+    buffFrame.attackSpeed = 0;
+    blackboard.attack_speed = 0;
+  }
 
   if (!done) applyBuffDefault();
   return buffFrame;
@@ -948,9 +972,12 @@ function calcDurations(isSkill, attackTime, attackSpeed, levelData, buffList, bu
     }
     // 技能类型
     if (levelData.description.includes("持续时间无限")) {
-      attackCount = Math.ceil(1800 / attackTime);
-      duration = attackCount * attackTime;
-      tags.push("infinity"); log.writeNote("持续时间无限 (记为1800s)");
+      if (skillId == "skchr_thorns_3" && !options.warmup) {}
+      else {
+        attackCount = Math.ceil(1800 / attackTime);
+        duration = attackCount * attackTime;
+        tags.push("infinity"); log.writeNote("持续时间无限 (记为1800s)");
+      }
     } else if (spData.spType == 8) {
       if (levelData.duration <= 0 && blackboard.duration > 0) {
         // 砾的技能也是落地点火，但是持续时间在blackboard里
@@ -1506,6 +1533,13 @@ function calculateAttack(charAttr, enemy, raidBlackboard, isSkill, charData, lev
           log.write(`[特殊] ${displayNames["skchr_bluep_1"]}: 副目标毒伤 ${damage2} * 3s`);
         }
         pool[1] += total_damage;
+        log.writeNote("毒伤按循环时间计算");
+        break;
+      case "tachr_293_thorns_1":
+        var poison = options.thorns_ranged ? bb["damage[ranged]"] : bb["damage[normal]"];
+        damage = Math.max(poison * (1-emrpct), poison * 0.05) * dur.duration * ecount;
+        pool[1] = damage;
+        if (isSkill) log.writeNote("毒伤按循环时间计算");
         break;
       case "tachr_181_flower_1":
         pool[2] += bb.atk_to_hp_recovery_ratio * finalFrame.atk * dur.duration * enemy.count;
@@ -1603,6 +1637,8 @@ function calculateAttack(charAttr, enemy, raidBlackboard, isSkill, charData, lev
       // 间接治疗
       case "skchr_tiger_2":
         pool[2] += damagePool[1] * bb.heal_scale; break;
+      case "skchr_strong_2":
+        pool[2] += damagePool[0] * bb.scale; break;
       case "skcom_heal_self[1]":
       case "skcom_heal_self[2]":
         damagePool[2] = 0;
@@ -1652,7 +1688,13 @@ function calculateAttack(charAttr, enemy, raidBlackboard, isSkill, charData, lev
     let hpratiosec = bb["hp_recovery_per_sec_by_max_hp_ratio"];
     let hpsec = bb["hp_recovery_per_sec"];
     if (hpratiosec) {
-      if (buffName == "tachr_344_beewax_1" && isSkill) {} else {
+      if (buffName == "tachr_344_beewax_1" && isSkill) {}
+      else if (buffName == "tachr_293_thorns_2") {
+        if (blackboard.id == "skchr_thorns_2" && isSkill) {
+          pool[2] += hpratiosec * finalFrame.maxHp * (dur.duration + dur.stunDuration - 2);
+          log.writeNote("治疗从2秒后开始计算");
+        } else {}
+      } else {
         pool[2] += hpratiosec * finalFrame.maxHp * (dur.duration + dur.stunDuration);
       }
     }
@@ -1662,7 +1704,6 @@ function calculateAttack(charAttr, enemy, raidBlackboard, isSkill, charData, lev
       else
       {
         pool[2] += hpsec * (dur.duration + dur.stunDuration);
-        log.writeNote("可以治疗召唤物");
       }
     }
     // 自身血量百分比相关的治疗/伤害

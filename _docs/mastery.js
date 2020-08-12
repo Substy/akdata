@@ -18,7 +18,7 @@ const DefaultAttribute = {
   favor: 200,
   potential: 5,  // 0-5
   skillLevel: 9,  // 0-9
-  options: { cond: true, crit: true, stack: true }
+  options: { cond: true, crit: true, stack: true, warmup: true }
 };
 const DefaultEnemy = { def: 0, magicResistance: 0, count: 1, hp: 0 };
 
@@ -117,8 +117,8 @@ function load() {
     $('#vue_version').text(`有新数据，请更新`);
     console.log(version.reason);
   } else {
-    $("#vue_version").html("程序版本: {{ version.akdata }}, 数据版本: {{ version.gamedata }} ({{ version.customdata }})");
-    $("#btn_update_data").text("最新版本");
+    $("#vue_version").html("程序版本: {{ version.akdata }}, 数据版本: {{ version.gamedata }} ({{ version.customdata }}), 如有问题请点击");
+    $("#btn_update_data").text("手动刷新");
     $("#btn_update_data").attr("class", "btn btn-success");
   }
   

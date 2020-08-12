@@ -42,8 +42,8 @@ function load() {
     $('#update_prompt').text(`有新数据，请更新`);
     console.log(version.reason);
   } else {
-    $('#update_prompt').text(`程序版本: ${AKDATA.akdata}, 游戏数据版本: ${AKDATA.gamedata} (${AKDATA.customdata})`);
-    $("#btn_update_data").text("最新版本");
+    $('#update_prompt').text(`程序版本: ${AKDATA.akdata}, 游戏数据版本: ${AKDATA.gamedata} (${AKDATA.customdata}), 如有问题请点击`);
+    $("#btn_update_data").text("手动刷新");
     $("#btn_update_data").attr("class", "btn btn-success");
   }
 
