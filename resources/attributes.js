@@ -120,10 +120,23 @@ function calculateDps(char, enemy, raidBuff) {
     log.write(`[团辅] 原本攻击力变为 ${attr.basic.atk} (${prefix}${delta.toFixed(1)})`); 
   }
 
+  var _backup = {
+	basic: {...attr.basic},
+//	enemy: {...enemy},
+//	chr: {...charData},
+//	level: {...levelData}
+  };
+
   log.write(`- **技能**\n`);
   let skillAttack = calculateAttack(attr, enemy, raidBlackboard, true, charData, levelData, log);
   if (!skillAttack) return;
+  
   log.write("----");
+  attr.basic = _backup.basic;
+//  enemy = _backup.enemy;
+//  charData = _backup.chr;
+//  levelData = _backup.level;
+
   log.write(`- **普攻**\n`); 
   let normalAttack = calculateAttack(attr, enemy, raidBlackboard, false, charData, levelData, log);
   if (!normalAttack) return;
@@ -982,6 +995,8 @@ function calcDurations(isSkill, attackTime, attackSpeed, levelData, buffList, bu
       if (levelData.duration <= 0 && blackboard.duration > 0) {
         // 砾的技能也是落地点火，但是持续时间在blackboard里
         levelData.duration = blackboard.duration;
+		duration = blackboard.duration;
+        attackCount = Math.ceil(levelData.duration / attackTime);
       }
       if (levelData.duration > 0) { // 自动点火
         tags.push("auto"); log.write('落地点火');
@@ -1078,7 +1093,7 @@ function calcDurations(isSkill, attackTime, attackSpeed, levelData, buffList, bu
           tags.push("auto");
           log.write(`[特殊] 落地点火 - 取普攻时间=技能持续时间`);
           log.writeNote("取普攻时间=技能持续时间");
-          attackDuration = levelData.duration;
+		  attackDuration = levelData.duration;
           attackCount = Math.ceil(attackDuration / attackTime);
           duration = attackCount * attackTime;
         } else if (checkSpecs(skillId, "passive")) { // 被动

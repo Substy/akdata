@@ -5,6 +5,10 @@ order: 4
 category: 工具
 icon: info-circle
 ---
+## 20.08.17
+- [bugfix] 绝影攻击间隔错误
+- [bugfix] 跃浪击/砾技能时间错误
+
 ## 20.08.12
 - [update] 棘刺等
 - [update] 增加了对毒伤和暖机的说明。棘刺和小羊1的暖机使用统一的选项控制  
