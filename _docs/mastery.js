@@ -217,8 +217,12 @@ function load() {
     methods: {
       changeChar: function(event) {
         this.resultView = calculate(this.charId);
-        $("#mats_table").text("正在计算...");
-        beginCalcMats(this.resultView);
+        if (this.resultView.rhodes) {
+          $("#mats_table").text("集成战略临时干员");
+        } else {
+          $("#mats_table").text("正在计算...");
+          beginCalcMats(this.resultView);
+        }
         this.updateLevelingTable();
       },
       debugPrint: function(obj) {
@@ -402,11 +406,14 @@ function calculate(charId) {
     resultView.mats[k] = [];
     mats[k].forEach(level => {
       var i = {};
-      level.forEach(x => {
-        i[itemdb[x.id].name] = x.count;
-        itemCache[itemdb[x.id].name] = {id: x.id, name: itemdb[x.id].name, rarity: itemdb[x.id].rarity};
-      });
-      resultView.mats[k].push(i);
+      if (level) {
+        level.forEach(x => {
+          i[itemdb[x.id].name] = x.count;
+          itemCache[itemdb[x.id].name] = {id: x.id, name: itemdb[x.id].name, rarity: itemdb[x.id].rarity};
+        });
+        resultView.mats[k].push(i);
+      }
+      else resultView["rhodes"] = true;
     });
   };
 
@@ -448,7 +455,7 @@ function buildChartView(resultView, key) {
     
     if (view.dps[skill]["满潜"].spType != 8) {
       if (line != "") line += "\n";
-      line += `点火时间 ${view.dps[skill]["基准"].s_ssp}s -> ${view.dps[skill]["满潜"].s_ssp}s`;
+      line += `启动技力 ${view.dps[skill]["基准"].s_ssp}s -> ${view.dps[skill]["满潜"].s_ssp}s`;
       console.log(view.dps[skill]["满潜"].spType);
       if (view.dps[skill]["满潜"].s_ssp <= 0)
         line += " （落地点火）";
@@ -520,11 +527,13 @@ function beginCalcMats(resultView) {
   for (var sk in resultView.mats) {
     let level = 7;  // 7->8
     resultView.mats[sk].forEach(m => {
-      (function (_m, _s, _l) {  // closure to bind args to setTimeout
-        setTimeout(function () {
-          queryArkPlanner(_m, matsCallback, {mats: _m, id: resultView.id, skill: _s, level: _l});
-        }, delay);
-      }(m, sk, level));
+      if (Object.keys(m).length > 0) {
+        (function (_m, _s, _l) {  // closure to bind args to setTimeout
+          setTimeout(function () {
+            queryArkPlanner(_m, matsCallback, {mats: _m, id: resultView.id, skill: _s, level: _l});
+          }, delay);
+        }(m, sk, level));
+      }
       level += 1; delay += 300;
     });
   }

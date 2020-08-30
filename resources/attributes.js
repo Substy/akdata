@@ -145,7 +145,6 @@ function calculateDps(char, enemy, raidBuff) {
   globalHps = Math.round((normalAttack.totalHeal + skillAttack.totalHeal) / (normalAttack.dur.duration + skillAttack.dur.duration + normalAttack.dur.stunDuration));
   //console.log(globalDps, globalHps);
   let killTime = 0;
-
   return {
     normal: normalAttack,
     skill: skillAttack,
@@ -373,6 +372,10 @@ function applyBuff(charAttr, buffFrm, tag, blackbd, isSkill, isCrit, log, enemy)
           buffFrame.edef_pene_scale = blackboard[key];
           writeBuff(`无视护甲（最终乘算）: -${blackboard[key]*100}%`);
           break;
+        case "emr_pene":  // 无视魔抗加算值
+          buffFrame.emr_pene += blackboard[key];
+          writeBuff(`无视魔抗（加算）: -${blackboard[key]}`);
+          break;
         case "prob_override": // 计算后的暴击概率
           buffFrame.prob = blackboard[key];
           writeBuff(`概率(计算): ${Math.round(buffFrame.prob*100)}%`);
@@ -389,8 +392,10 @@ function applyBuff(charAttr, buffFrm, tag, blackbd, isSkill, isCrit, log, enemy)
 // 特判
 //----------------------------------------------------------------------------------------
   // 备注信息
-  if (isSkill && checkSpecs(tag, "note"))
+  if (isSkill && !isCrit && checkSpecs(tag, "note")) {
     log.writeNote(checkSpecs(tag, "note"));
+    console.log("here");
+  }
 
   if (checkSpecs(tag, "cond")) { // 触发天赋类
     if (!options.cond) { // 未触发时依然生效的天赋
@@ -450,6 +455,10 @@ function applyBuff(charAttr, buffFrm, tag, blackbd, isSkill, isCrit, log, enemy)
           if (isSkill && skillId == "skchr_lisa_3")
             delete blackboard.damage_scale; // 治疗不计易伤
           break;
+        case "tachr_366_acdrop_1": // 酸糖1: 不在这里计算
+          done = true; break;
+        case "tachr_416_zumama_1":
+          delete blackboard.hp_ratio; break;
       }
     }
   } else if (checkSpecs(tag, "ranged_penalty")) { // 距离惩罚类
@@ -546,12 +555,18 @@ function applyBuff(charAttr, buffFrm, tag, blackbd, isSkill, isCrit, log, enemy)
         break;
       case "tachr_344_beewax_trait":
         if (isSkill) done = true; break;
+      case "tachr_411_tomimi_1":
+        if (!isSkill) done = true; break;
+      case "tachr_509_acast_1":
+        blackboard.emr_pene = blackboard.magic_resist_penetrate_fixed;
+        break;
         // ---- 技能 ----
       case "skchr_swllow_1":
       case "skchr_helage_1":
       case "skchr_helage_2":
       case "skchr_excu_2":
       case "skchr_bpipe_2":
+      case "skchr_acdrop_2":
         buffFrame.times = 2;
         writeBuff(`攻击次数 = ${buffFrame.times}`);
         break;
@@ -679,7 +694,8 @@ function applyBuff(charAttr, buffFrm, tag, blackbd, isSkill, isCrit, log, enemy)
       case "skchr_spot_1":
       case "tachr_193_frostl_1":
       case "skchr_mantic_2":
-      case "skchr_glaze_2": // 攻击间隔延长，但是是加算
+      case "skchr_glaze_2":
+      case "skchr_zumama_2": // 攻击间隔延长，但是是加算
         buffFrame.baseAttackTime += blackboard.base_attack_time;
         writeBuff(`base_attack_time + ${blackboard.base_attack_time}s`);
         blackboard.base_attack_time = 0;
@@ -782,6 +798,14 @@ function applyBuff(charAttr, buffFrm, tag, blackbd, isSkill, isCrit, log, enemy)
         break;
       case "skchr_beewax_2":
         delete blackboard["atk_scale"];
+        break;
+      case "skchr_tomimi_2":
+        blackboard.prob_override = blackboard["attack@tomimi_s_2.prob"] / 3;
+        delete blackboard.base_attack_time;
+        if (isCrit) {
+          blackboard.atk_scale = blackboard["attack@tomimi_s_2.atk_scale"];
+          log.writeNote(`每种状态概率: ${(blackboard.prob_override*100).toFixed(1)}%`);
+        }
         break;
     }
   }
@@ -1357,7 +1381,7 @@ function calculateAttack(charAttr, enemy, raidBlackboard, isSkill, charData, lev
     }
   }
   let edef = Math.max(0, (enemy.def + enemyBuffFrame.edef) * enemyBuffFrame.edef_scale * (1-enemyBuffFrame.edef_pene_scale) - enemyBuffFrame.edef_pene);
-  let emr = Math.max(0, (enemy.magicResistance + enemyBuffFrame.emr) * enemyBuffFrame.emr_scale);
+  let emr = Math.max(0, (enemy.magicResistance + enemyBuffFrame.emr) * enemyBuffFrame.emr_scale - enemyBuffFrame.emr_pene);
   let emrpct = emr / 100;
   let ecount = Math.min(buffFrame.maxTarget, enemy.count);
 
@@ -1425,7 +1449,11 @@ function calculateAttack(charAttr, enemy, raidBlackboard, isSkill, charData, lev
   let move = 0;
 
   function calculateHitDamage(frame, scale) {
-    let minRate = (buffList["tachr_144_red_1"] ? buffList["tachr_144_red_1"].atk_scale : 0.05);
+    let minRate = 0.05;
+    if (buffList["tachr_144_red_1"]) minRate = buffList["tachr_144_red_1"].atk_scale;
+    if (buffList["tachr_366_acdrop_1"]) {
+      minRate = options.cond ? buffList["tachr_366_acdrop_1"].atk_scale_2 : buffList["tachr_366_acdrop_1"].atk_scale;
+    }
     if (damageType == 0)
       ret = Math.max(frame.atk - edef, frame.atk * minRate);
     else if (damageType == 1)
@@ -1645,10 +1673,18 @@ function calculateAttack(charAttr, enemy, raidBlackboard, isSkill, charData, lev
         break;
       case "skchr_beewax_2":
         if (isSkill) {
-		  damage = finalFrame.atk * bb.atk_scale * (1-emrpct) * ecount;
-		  pool[1] = damage;
-		} 
-		break;
+          damage = finalFrame.atk * bb.atk_scale * (1-emrpct) * ecount;
+          pool[1] = damage;
+        } 
+        break;
+      case "skchr_tomimi_2":
+        if (isSkill && options.crit) {
+          damage = Math.max(finalFrame.atk - enemy.def, finalFrame.atk * 0.05);
+          log.write(`[特殊] ${displayNames[buffName]}: 范围伤害 ${damage.toFixed(1)}, 命中 ${dur.critHitCount * (enemy.count-1)}`);
+          log.write(`[特殊] ${displayNames[buffName]}: 总共眩晕 ${(dur.critHitCount * bb["attack@tomimi_s_2.stun"]).toFixed(1)} 秒`)
+          pool[0] += damage * dur.critHitCount * (enemy.count-1);
+        }
+        break;
       // 间接治疗
       case "skchr_tiger_2":
         pool[2] += damagePool[1] * bb.heal_scale; break;
@@ -1747,6 +1783,7 @@ function calculateAttack(charAttr, enemy, raidBlackboard, isSkill, charData, lev
         case "tachr_254_vodfox_1":
         case "tachr_343_tknogi_1":
         case "tachr_405_absin_1":
+        case "tachr_416_zumama_1":
           break;
         case "skchr_gravel_2":
         case "skchr_phatom_1":
@@ -1838,6 +1875,7 @@ function initBuffFrame() {
     edef_scale:1,
     edef_pene:0,
     edef_pene_scale:0,
+    emr_pene:0, // 无视魔抗
     emr:0,
     emr_scale:1,
     atk:0,

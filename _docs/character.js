@@ -31,7 +31,7 @@ function load() {
     let charData = AKDATA.Data.character_table[char];
     if (charData.profession == "TOKEN" || charData.profession == "TRAP") continue;
     let phaseData = charData.phases[0].attributesKeyFrames[0].data;
-    selector[char] = charData.displayNumber + ' ' + charData.name;
+    selector[char] = (charData.displayNumber || "Roguelike")+ ' ' + charData.name;
     body.push([
       charData.displayNumber,
       `<a href="#!/${char}">${charData.name}</a>`,
@@ -220,7 +220,7 @@ function show(hash) {
   }
   ///////////////////////////////////////////////
   let skillLvlupHtml = '';
-  if (charData.phases.length > 1) {
+  if (charData.phases.length > 1 && charData.phases[0].evolveCost) {
     skillLvlupHtml += pmBase.component.create({
       type: 'list',
       card: true,
@@ -233,7 +233,7 @@ function show(hash) {
     });
   }
 
-  if (charData.allSkillLvlup.length > 0) {
+  if (charData.allSkillLvlup.length > 0 && charData.allSkillLvlup[0].lvlUpCost) {
     skillLvlupHtml += pmBase.component.create({
       type: 'list',
       card: true,

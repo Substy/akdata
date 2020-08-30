@@ -5,6 +5,9 @@ order: 4
 category: 工具
 icon: info-circle
 ---
+## 20.08.25-30
+- [update] 森蚺等，30日更新集成战略干员。增加了对无视魔抗的计算
+
 ## 20.08.17
 - [bugfix] 绝影攻击间隔错误
 - [bugfix] 跃浪击/砾技能时间错误

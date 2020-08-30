@@ -519,7 +519,7 @@ function calculate(index) {
   
   // skill dps
   if (s.hps == 0 || s.dps == 0) {
-    var color = (s.dps == 0) ? DamageColors[2] : DamageColors[dps.normal.damageType];                     
+    var color = (s.dps == 0) ? DamageColors[2] : DamageColors[s.damageType];                     
     getElement('s_dps', index).html(Math.round(s.dps || s.hps)).css("color", color);
   } else {
     getElement('s_dps', index).html(`DPS: ${Math.round(s.dps)}, HPS: ${Math.round(s.hps)}`);
