@@ -7,9 +7,9 @@ const useCache = true;
 const cacheBeginTime = new Date(2019, 12, 10).getTime();
 
 window.AKDATA = {
-  akdata: "200830",   // 主程序Tag版本
-  gamedata: "20-08-24-09-47-26-b1935e", // CDN游戏数据版本
-  customdata: "200830", // 额外数据版本
+  akdata: "200924",   // 主程序Tag版本
+  gamedata: "20-09-23-10-12-25-72c56a", // CDN游戏数据版本
+  customdata: "200924", // 额外数据版本
 
   Data: {},
 

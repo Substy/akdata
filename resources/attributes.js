@@ -554,10 +554,13 @@ function applyBuff(charAttr, buffFrm, tag, blackbd, isSkill, isCrit, log, enemy)
         delete blackboard["damage_scale"];
         break;
       case "tachr_344_beewax_trait":
+      case "tachr_388_mint_trait":
+      case "tachr_388_mint_1":
         if (isSkill) done = true; break;
       case "tachr_411_tomimi_1":
         if (!isSkill) done = true; break;
       case "tachr_509_acast_1":
+      case "tachr_350_surtr_1":
         blackboard.emr_pene = blackboard.magic_resist_penetrate_fixed;
         break;
         // ---- 技能 ----
@@ -567,6 +570,7 @@ function applyBuff(charAttr, buffFrm, tag, blackbd, isSkill, isCrit, log, enemy)
       case "skchr_excu_2":
       case "skchr_bpipe_2":
       case "skchr_acdrop_2":
+      case "skchr_spikes_1":
         buffFrame.times = 2;
         writeBuff(`攻击次数 = ${buffFrame.times}`);
         break;
@@ -715,10 +719,11 @@ function applyBuff(charAttr, buffFrm, tag, blackbd, isSkill, isCrit, log, enemy)
         blackboard.base_attack_time *= 2;
         break;
       case "skchr_whitew_2":
+      case "skchr_spikes_2":
         buffFrame.maxTarget = 2;
         writeBuff(`最大目标数 = ${buffFrame.maxTarget}`);
         if (options.ranged_penalty) {
-          buffFrame.atk_scale = 1;
+          buffFrame.atk_scale /= 0.8;
           writeBuff(`不受距离惩罚`);
         }
         break;
@@ -797,6 +802,7 @@ function applyBuff(charAttr, buffFrm, tag, blackbd, isSkill, isCrit, log, enemy)
         delete blackboard["damage_scale"];
         break;
       case "skchr_beewax_2":
+      case "skchr_mint_2":
         delete blackboard["atk_scale"];
         break;
       case "skchr_tomimi_2":
@@ -806,6 +812,15 @@ function applyBuff(charAttr, buffFrm, tag, blackbd, isSkill, isCrit, log, enemy)
           blackboard.atk_scale = blackboard["attack@tomimi_s_2.atk_scale"];
           log.writeNote(`每种状态概率: ${(blackboard.prob_override*100).toFixed(1)}%`);
         }
+        break;
+      case "skchr_surtr_2":
+        if (enemy.count == 1) {
+          blackboard.atk_scale = blackboard["attack@surtr_s_2[critical].atk_scale"];
+          log.writeNote(`对单目标倍率 ${blackboard.atk_scale.toFixed(1)}x`);
+        }
+        break;
+      case "skchr_surtr_3":
+        delete blackboard.hp_ratio;
         break;
     }
   }
@@ -1010,7 +1025,13 @@ function calcDurations(isSkill, attackTime, attackSpeed, levelData, buffList, bu
     // 技能类型
     if (levelData.description.includes("持续时间无限")) {
       if (skillId == "skchr_thorns_3" && !options.warmup) {}
-      else {
+      else if (skillId == "skchr_surtr_3") {
+        var lock_time = buffList["tachr_350_surtr_2"]["surtr_t_2[withdraw].interval"];
+        duration = Math.sqrt(600) + lock_time;
+        attackCount = Math.ceil(duration / attackTime);
+        log.write(`损失100%血量耗时: ${Math.sqrt(600).toFixed(1)}s，锁血时间: ${lock_time}s`);
+        log.writeNote("不治疗最大维持时间");
+      } else {
         attackCount = Math.ceil(1800 / attackTime);
         duration = attackCount * attackTime;
         tags.push("infinity"); log.writeNote("持续时间无限 (记为1800s)");
@@ -1559,6 +1580,8 @@ function calculateAttack(charAttr, enemy, raidBlackboard, isSkill, charData, lev
         case "skchr_aglina_3":
         case "skchr_beewax_1":
         case "skchr_beewax_2":
+        case "skchr_mint_1":
+        case "skchr_mint_2":
           damagePool[1] = 0;
           log.write(`[特殊] ${displayNames[buffName]}: 伤害为0 （以上计算无效）`);
           break;
@@ -1672,6 +1695,7 @@ function calculateAttack(charAttr, enemy, raidBlackboard, isSkill, charData, lev
         pool[1] = damage; damagePool[1] = 0;
         break;
       case "skchr_beewax_2":
+      case "skchr_mint_2":
         if (isSkill) {
           damage = finalFrame.atk * bb.atk_scale * (1-emrpct) * ecount;
           pool[1] = damage;
@@ -1789,7 +1813,10 @@ function calculateAttack(charAttr, enemy, raidBlackboard, isSkill, charData, lev
         case "skchr_phatom_1":
           pool[4] += bb.hp_ratio * finalFrame.maxHp;
           log.write(`[特殊] ${displayNames[buffName]}: 护盾量 ${pool[4]}`);
-          break;          
+          break;
+        case "skchr_surtr_3":
+          pool[4] -= finalFrame.maxHp + 5000;
+          break;    
         default:
           pool[2] += bb.hp_ratio * finalFrame.maxHp * dur.attackCount;
       };
