@@ -390,7 +390,7 @@ function applyBuff(charAttr, buffFrm, tag, blackbd, isSkill, isCrit, log, enemy)
     }
   }
 // 特判
-//----------------------------------------------------------------------------------------
+//------------------------d----------------------------------------------------------------
   // 备注信息
   if (isSkill && !isCrit && checkSpecs(tag, "note")) {
     log.writeNote(checkSpecs(tag, "note"));
@@ -821,6 +821,33 @@ function applyBuff(charAttr, buffFrm, tag, blackbd, isSkill, isCrit, log, enemy)
         break;
       case "skchr_surtr_3":
         delete blackboard.hp_ratio;
+        break;
+      case "tachr_381_bubble_1":
+        delete blackboard.atk;
+        break;
+      case "tachr_265_sophia_1":
+        if (isSkill) {
+          var ts = charAttr.buffList["skill"].talent_scale;
+          if (skillId == "skchr_sophia_1") {
+            blackboard.def = blackboard["sophia_t_1_less.def"] * ts;
+            blackboard.attack_speed = blackboard["sophia_t_1_less.attack_speed"] * ts;
+            writeBuff("1技能 - 自身享受一半增益");
+          } else if (skillId == "skchr_sophia_2") {
+            blackboard.def *= ts;
+            blackboard.attack_speed *= ts;
+            writeBuff("2技能 - 自身享受全部增益");
+          }
+        } else {
+          delete blackboard.def;
+          delete blackboard.attack_speed;
+          writeBuff("非技能期间天赋对自身无效");
+        }
+        break;
+      case "tachr_346_aosta_1":
+        delete blackboard.atk_scale;
+        break;
+      case "skchr_blemsh_1":
+        delete blackboard.heal_scale;
         break;
     }
   }
@@ -1296,6 +1323,11 @@ function calculateAttack(charAttr, enemy, raidBlackboard, isSkill, charData, lev
     buffFrame.attackSpeed += buffList["tachr_367_swllow_1"].attack_speed;
     log.write(`[特殊] ${displayNames["tachr_367_swllow_1"]} - attack_speed + ${buffList["tachr_367_swllow_1"].attack_speed}`);
   }
+  // 泡泡
+  if (isSkill && blackboard.id == "skchr_bubble_2") {
+    buffFrame.atk = basicFrame.def + buffFrame.def - basicFrame.atk;
+    log.write(`[特殊] ${displayNames["skchr_bubble_2"]}: 攻击力以防御计算(${basicFrame.def + buffFrame.def})`);
+  }
   // 连击特判
   if (!isSkill && checkSpecs(charId, "times")) {
     var t = checkSpecs(charId, "times");
@@ -1607,6 +1639,14 @@ function calculateAttack(charAttr, enemy, raidBlackboard, isSkill, charData, lev
         pool[1] = damage;
         if (isSkill) log.writeNote("毒伤按循环时间计算");
         break;
+      case "tachr_346_aosta_1":
+        var poison = finalFrame.atk / buffFrame.atk_scale * bb.atk_scale;
+        if (blackboard.id == "skchr_aosta_2") poison *= blackboard.talent_scale;
+        log.write(`流血伤害/秒: ${poison.toFixed(1)}`);
+        damage = Math.max(poison * (1-emrpct), poison * 0.05) * dur.duration * ecount;
+        pool[1] = damage;
+        if (isSkill) log.writeNote("毒伤按循环时间计算");
+        break;
       case "tachr_181_flower_1":
         pool[2] += bb.atk_to_hp_recovery_ratio * finalFrame.atk * dur.duration * enemy.count;
         if (isSkill) log.writeNote("可以治疗召唤物");
@@ -1673,6 +1713,7 @@ function calculateAttack(charAttr, enemy, raidBlackboard, isSkill, charData, lev
       case "skchr_elysm_2":
       case "skchr_skgoat_2":
       case "skchr_utage_1":
+      case "skchr_snakek_2":
         damagePool[0] = 0; damagePool[1] = 0;
         log.write(`[特殊] ${displayNames[buffName]}: 伤害为0 （以上计算无效）`);
         break;
@@ -1756,6 +1797,24 @@ function calculateAttack(charAttr, enemy, raidBlackboard, isSkill, charData, lev
         log.writeNote("第一秒无治疗效果（待确认）");
         pool[2] += heal;
         damagePool[2] = 0; log.write("[特殊] 直接治疗为0");
+        break;
+      case "skchr_blemsh_1":
+        heal = finalFrame.atk * bb.heal_scale / buffFrame.atk_scale;
+        pool[2] += heal;
+        break;
+      case "skchr_blemsh_2":
+        heal = finalFrame.atk * bb["attack@atk_to_hp_recovery_ratio"] / buffFrame.atk_scale;
+        log.write(`每秒单体治疗: ${heal.toFixed(1)}`);
+        log.writeNote("可以治疗召唤物");
+        pool[2] += heal * dur.duration * enemy.count;
+        break;
+      case "skchr_blemsh_3":
+        damage = finalFrame.atk / buffFrame.atk_scale * bb["attack@blemsh_s_3_extra_dmg[magic].atk_scale"];
+        damage = Math.max(damage * (1-emrpct), damage * 0.05);
+        heal = finalFrame.atk / buffFrame.atk_scale * bb.heal_scale;
+        log.write(`每次攻击额外法伤：${damage.toFixed(1)}，额外治疗: ${heal.toFixed(1)}`);
+        pool[1] += damage * dur.attackCount;
+        pool[2] += heal * dur.attackCount;
         break;
     }; // switch
 

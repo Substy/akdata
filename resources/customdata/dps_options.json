@@ -79,6 +79,8 @@
         "char_415_flint":   [ "cond" ],
         "char_416_zumama":  [ "cond" ],
         "char_511_asnipe":  [ "crit" ],
-        "char_271_spikes":  [ "cond", "ranged_penalty"]
+        "char_271_spikes":  [ "cond", "ranged_penalty"],
+        "char_346_aosta":   [ "cond" ],
+        "char_423_blemsh":  [ "cond" ]
     }
 }

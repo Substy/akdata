@@ -5,6 +5,10 @@ order: 4
 category: 工具
 icon: info-circle
 ---
+## 20.10.15
+- [update] 瑕光等
+- [bugfix] 龟龟2技能开启时不攻击
+
 ## 20.09.24
 - [update] 史尔特尔等。开始开发新版引擎
 
