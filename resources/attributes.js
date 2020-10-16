@@ -1809,10 +1809,10 @@ function calculateAttack(charAttr, enemy, raidBlackboard, isSkill, charData, lev
         pool[2] += heal * dur.duration * enemy.count;
         break;
       case "skchr_blemsh_3":
-        damage = finalFrame.atk / buffFrame.atk_scale * bb["attack@blemsh_s_3_extra_dmg[magic].atk_scale"];
+        damage = finalFrame.atk * bb["attack@blemsh_s_3_extra_dmg[magic].atk_scale"];
         damage = Math.max(damage * (1-emrpct), damage * 0.05);
         heal = finalFrame.atk / buffFrame.atk_scale * bb.heal_scale;
-        log.write(`每次攻击额外法伤：${damage.toFixed(1)}，额外治疗: ${heal.toFixed(1)}`);
+        log.write(`每次攻击额外法伤：${damage.toFixed(1)} （计算天赋加成），额外治疗: ${heal.toFixed(1)}`);
         pool[1] += damage * dur.attackCount;
         pool[2] += heal * dur.attackCount;
         break;
