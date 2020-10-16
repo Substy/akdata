@@ -1761,7 +1761,7 @@ function calculateAttack(charAttr, enemy, raidBlackboard, isSkill, charData, lev
         // console.log(finalFrame);
         pool[2] += bb.heal_scale * finalFrame.maxHp; break;
       case "skchr_nightm_1":
-        pool[2] += damagePool[1] * bb["attack@heal_scale"] * bb["attack@max_target"]; break;
+        pool[2] += damagePool[1] * bb["attack@heal_scale"] * Math.min(enemy.count, bb["attack@max_target"]); break;
       case "skchr_folnic_2":
         pool[2] += bb["attack@heal_scale"] * finalFrame.atk / buffFrame.atk_scale * dur.hitCount; break;
       case "skchr_breeze_2":
