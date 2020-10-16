@@ -5,6 +5,9 @@ order: 4
 category: 工具
 icon: info-circle
 ---
+## 20.10.16
+- [bugfix] 夜魔1技能目标数
+
 ## 20.10.15
 - [update] 瑕光等
 - [bugfix] 龟龟2技能开启时不攻击
