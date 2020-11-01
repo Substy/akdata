@@ -5,6 +5,11 @@ order: 4
 category: 工具
 icon: info-circle
 ---
+## 20.11.01
+- [update] 迷迭香等
+- [bugfix] 移除古米/泥岩的摸摸鱼时间
+- [todo] 暂未更新阿米娅
+
 ## 20.10.16
 - [bugfix] 夜魔1技能目标数
 

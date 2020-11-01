@@ -7,9 +7,9 @@ const useCache = true;
 const cacheBeginTime = new Date(2019, 12, 10).getTime();
 
 window.AKDATA = {
-  akdata: "201015",   // 主程序Tag版本
-  gamedata: "20-10-12-06-54-26-a874dc", // CDN游戏数据版本
-  customdata: "201015", // 额外数据版本
+  akdata: "201101",   // 主程序Tag版本
+  gamedata: "20-10-30-07-01-49-c0b8d2", // CDN游戏数据版本
+  customdata: "201101", // 额外数据版本
 
   Data: {},
 
@@ -28,7 +28,7 @@ window.AKDATA = {
         let path = `https://cdn.jsdelivr.net/gh/xulai1001/akdata@${window.AKDATA.akdata}/resources/gamedata/${paths[i].toLowerCase()}`;
         
         // custom json data: always use local copy
-        if (!paths[i].includes("excel"))    // 本地调试开关
+        //if (!paths[i].includes("excel"))    // 本地调试开关
           path = `../resources/gamedata/${paths[i].toLowerCase()}`;
           
         paths[i] = loadJSON(path, data => AKDATA.Data[name] = data);

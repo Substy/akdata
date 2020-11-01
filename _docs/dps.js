@@ -534,6 +534,8 @@ function calculate(index) {
   // period
   if (dps.normal.dur.stunDuration > 0)
     getElement('period', index).html(`眩晕${dps.normal.dur.stunDuration}s + ${Math.round(dps.normal.dur.duration*100)/100}s + ${Math.round(s.dur.duration*100)/100}s`);
+  else if (dps.skill.dur.prepDuration > 0)
+    getElement('period', index).html(`${Math.round(dps.normal.dur.duration*100)/100}s + 准备${dps.skill.dur.prepDuration}s + ${Math.round(s.dur.duration*100)/100}s`);
   else
     getElement('period', index).html(`${Math.round(dps.normal.dur.duration*100)/100}s + ${Math.round(s.dur.duration*100)/100}s`);
 

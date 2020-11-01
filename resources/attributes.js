@@ -141,8 +141,10 @@ function calculateDps(char, enemy, raidBuff) {
   let normalAttack = calculateAttack(attr, enemy, raidBlackboard, false, charData, levelData, log);
   if (!normalAttack) return;
  
-  globalDps = Math.round((normalAttack.totalDamage + skillAttack.totalDamage) / (normalAttack.dur.duration + skillAttack.dur.duration + normalAttack.dur.stunDuration));
-  globalHps = Math.round((normalAttack.totalHeal + skillAttack.totalHeal) / (normalAttack.dur.duration + skillAttack.dur.duration + normalAttack.dur.stunDuration));
+  globalDps = Math.round((normalAttack.totalDamage + skillAttack.totalDamage) / 
+                         (normalAttack.dur.duration + normalAttack.dur.stunDuration + skillAttack.dur.duration + skillAttack.dur.prepDuration));
+  globalHps = Math.round((normalAttack.totalHeal + skillAttack.totalHeal) /
+                         (normalAttack.dur.duration + normalAttack.dur.stunDuration + skillAttack.dur.duration + skillAttack.dur.prepDuration));
   //console.log(globalDps, globalHps);
   let killTime = 0;
   return {
@@ -216,8 +218,10 @@ function calculateDpsSeries(char, enemy, raidBuff, key, series) {
     let normalAttack = calculateAttack(attr, enemy, raidBlackboard, false, charData, levelData, log);
     if (!normalAttack) return;
 
-    globalDps = Math.round((normalAttack.totalDamage + skillAttack.totalDamage) / (normalAttack.dur.duration + skillAttack.dur.duration + normalAttack.dur.stunDuration));
-    globalHps = Math.round((normalAttack.totalHeal + skillAttack.totalHeal) / (normalAttack.dur.duration + skillAttack.dur.duration + normalAttack.dur.stunDuration));
+    globalDps = Math.round((normalAttack.totalDamage + skillAttack.totalDamage) / 
+                           (normalAttack.dur.duration + normalAttack.dur.stunDuration + skillAttack.dur.duration + skillAttack.dur.prepDuration));
+    globalHps = Math.round((normalAttack.totalHeal + skillAttack.totalHeal) /
+                           (normalAttack.dur.duration + normalAttack.dur.stunDuration + skillAttack.dur.duration + skillAttack.dur.prepDuration));
     results[x] = {
       normal: normalAttack,
       skill: skillAttack,
@@ -394,7 +398,7 @@ function applyBuff(charAttr, buffFrm, tag, blackbd, isSkill, isCrit, log, enemy)
   // 备注信息
   if (isSkill && !isCrit && checkSpecs(tag, "note")) {
     log.writeNote(checkSpecs(tag, "note"));
-    console.log("here");
+    //console.log("here");
   }
 
   if (checkSpecs(tag, "cond")) { // 触发天赋类
@@ -459,6 +463,9 @@ function applyBuff(charAttr, buffFrm, tag, blackbd, isSkill, isCrit, log, enemy)
           done = true; break;
         case "tachr_416_zumama_1":
           delete blackboard.hp_ratio; break;
+        case "tachr_347_jaksel_1":
+          blackboard.attack_speed = blackboard["charge_atk_speed_on_evade.attack_speed"];
+          break;
       }
     }
   } else if (checkSpecs(tag, "ranged_penalty")) { // 距离惩罚类
@@ -518,6 +525,7 @@ function applyBuff(charAttr, buffFrm, tag, blackbd, isSkill, isCrit, log, enemy)
         blackboard.attack_speed = 0;  // 特判已经加了
         break;
       case "tachr_279_excu_1": // 送葬
+      case "tachr_391_rosmon_1":
         blackboard.edef_pene = blackboard["def_penetrate_fixed"];
         break;
       case "tachr_373_lionhd_1":  // 莱恩哈特
@@ -642,6 +650,7 @@ function applyBuff(charAttr, buffFrm, tag, blackbd, isSkill, isCrit, log, enemy)
       case "skchr_asbest_2":
       case "skchr_folnic_2":
       case "skchr_chiave_2":
+      case "skchr_mudrok_2":
         buffFrame.maxTarget = 999;
         writeBuff(`最大目标数 = ${buffFrame.maxTarget}`);
         break;
@@ -672,6 +681,7 @@ function applyBuff(charAttr, buffFrm, tag, blackbd, isSkill, isCrit, log, enemy)
       case "skchr_hpsts_2":
       case "skchr_myrrh_1":
       case "skchr_myrrh_2":
+      case "skchr_whispr_1":
         buffFrame.maxTarget = 2;
         writeBuff(`最大目标数 = ${buffFrame.maxTarget}`);
         break;
@@ -705,12 +715,29 @@ function applyBuff(charAttr, buffFrm, tag, blackbd, isSkill, isCrit, log, enemy)
         blackboard.base_attack_time = 0;
         break;
       case "skchr_brownb_2":  // 攻击间隔缩短，但是是乘算负数
+      case "skchr_whispr_2":
         writeBuff(`base_attack_time: ${blackboard.base_attack_time}x`);
         blackboard.base_attack_time *= basic.baseAttackTime;
+        break;
+      case "skchr_mudrok_3":
+        writeBuff(`base_attack_time: ${blackboard.base_attack_time}x`);
+        blackboard.base_attack_time *= basic.baseAttackTime;
+        buffFrame.maxTarget = basic.blockCnt;
+        break;
+      case "skchr_rosmon_3":
+        writeBuff(`base_attack_time: ${blackboard.base_attack_time}x`);
+        blackboard.base_attack_time *= basic.baseAttackTime;
+        blackboard.edef = -160;
+        if (options.rosmon_double) {
+          blackboard.times = Math.min(enemy.count, 2);
+          log.writeNote(`假设敌人抱团,受到【${blackboard.times}】次攻击`);
+        }
+        log.writeNote("计算token减防效果");
         break;
       case "skchr_aglina_2":  // 攻击间隔缩短，但是是乘算正数
       case "skchr_cerber_2":
       case "skchr_finlpp_2": 
+      case "skchr_jaksel_2":
         writeBuff(`base_attack_time: ${blackboard.base_attack_time}x`);
         blackboard.base_attack_time = (blackboard.base_attack_time - 1) * basic.baseAttackTime;
         break;
@@ -849,6 +876,9 @@ function applyBuff(charAttr, buffFrm, tag, blackbd, isSkill, isCrit, log, enemy)
       case "skchr_blemsh_1":
         delete blackboard.heal_scale;
         break;
+      case "skchr_rosmon_2":
+        delete blackboard["attack@times"];
+        break;
     }
   }
   
@@ -910,6 +940,7 @@ function calcDurations(isSkill, attackTime, attackSpeed, levelData, buffList, bu
   let duration = 0;
   let attackCount = 0;
   let stunDuration = 0;
+  let prepDuration = 0;
   let startSp = 0;
   let rst = checkResetAttack(skillId, blackboard);
 
@@ -1024,9 +1055,17 @@ function calcDurations(isSkill, attackTime, attackSpeed, levelData, buffList, bu
     }
   } else {
 
-  if (isSkill) { 
+  if (isSkill) {
+    
+    // 准备时间
+    if (skillId == "skchr_sunbr_2") {
+      prepDuration = blackboard.disarm;
+    } else if (skillId == "skchr_mudrok_3") {
+      prepDuration = blackboard.sleep;
+    } 
+
     // 快速估算
-    attackCount = Math.ceil(levelData.duration / attackTime);
+    attackCount = Math.ceil((levelData.duration - prepDuration) / attackTime);
     duration = attackCount * attackTime;
     startSp = spData.spCost - spData.initSp;
 
@@ -1038,9 +1077,9 @@ function calcDurations(isSkill, attackTime, attackSpeed, levelData, buffList, bu
     }
     // 重置普攻
     if (rst) {
-      if (duration > levelData.duration && rst != "ogcd")
+      if (duration > (levelData.duration-prepDuration) && rst != "ogcd")
         log.write(`可能重置普攻（覆盖 ${(duration - levelData.duration).toFixed(3)}s）`);
-      duration = levelData.duration;
+      duration = levelData.duration - prepDuration;
       // 抬手时间
       var frameBegin = Math.round((checkSpecs(skillId, "attack_begin") || 12) * 100 / attackSpeed);
       var t = frameBegin / 30;
@@ -1067,7 +1106,7 @@ function calcDurations(isSkill, attackTime, attackSpeed, levelData, buffList, bu
       if (levelData.duration <= 0 && blackboard.duration > 0) {
         // 砾的技能也是落地点火，但是持续时间在blackboard里
         levelData.duration = blackboard.duration;
-		duration = blackboard.duration;
+	     	duration = blackboard.duration;
         attackCount = Math.ceil(levelData.duration / attackTime);
       }
       if (levelData.duration > 0) { // 自动点火
@@ -1285,6 +1324,7 @@ function calcDurations(isSkill, attackTime, attackSpeed, levelData, buffList, bu
     hitCount,
     duration,
     stunDuration,
+    prepDuration,
     tags,
     startSp
   };
@@ -1327,6 +1367,11 @@ function calculateAttack(charAttr, enemy, raidBlackboard, isSkill, charData, lev
   if (isSkill && blackboard.id == "skchr_bubble_2") {
     buffFrame.atk = basicFrame.def + buffFrame.def - basicFrame.atk;
     log.write(`[特殊] ${displayNames["skchr_bubble_2"]}: 攻击力以防御计算(${basicFrame.def + buffFrame.def})`);
+  }
+  // 迷迭香
+  if (charId == "char_391_rosmon") {
+    buffFrame.maxTarget = 999;
+    log.write(`[特殊] ${displayNames[charId]}: maxTarget = 999`);
   }
   // 连击特判
   if (!isSkill && checkSpecs(charId, "times")) {
@@ -1621,6 +1666,7 @@ function calculateAttack(charAttr, enemy, raidBlackboard, isSkill, charData, lev
           if (b=="skill") continue; // 非技能期间，跳过其他技能的额外伤害判定
       }
     }
+    //console.log(buffName);
     switch (buffName) {
       case "tachr_129_bluep_1":
         damage = Math.max(bb.poison_damage * (1-emrpct), bb.poison_damage * 0.05);
@@ -1651,12 +1697,31 @@ function calculateAttack(charAttr, enemy, raidBlackboard, isSkill, charData, lev
         pool[2] += bb.atk_to_hp_recovery_ratio * finalFrame.atk * dur.duration * enemy.count;
         if (isSkill) log.writeNote("可以治疗召唤物");
         break;
+      case "tachr_436_whispr_1":
+        if (options.cond) {
+          pool[2] += bb.atk_to_hp_recovery_ratio * finalFrame.atk * dur.duration * enemy.count;
+          if (isSkill) log.writeNote("天赋可以治疗召唤物");
+        }
+        break;
       case "tachr_188_helage_trait":
       case "tachr_337_utage_trait":
         pool[2] += bb.value * dur.hitCount; break;
       case "tachr_2013_cerber_1":
         damage = bb.atk_scale * edef * Math.max(1-emrpct, 0.05);
         pool[1] += damage * dur.hitCount;
+        break;
+      case "tachr_391_rosmon_trait":
+        var ntimes = 1;
+        if (isSkill && blackboard.id == "skchr_rosmon_2") ntimes = 3;
+
+        var quake_atk = finalFrame.atk / buffFrame.atk_scale * bb["attack@append_atk_scale"];
+
+        var quake_damage = Math.max(quake_atk - edef, quake_atk * 0.05);
+        
+        damage = quake_damage * dur.hitCount * ntimes;
+        log.write(`${displayNames[buffName]}: 余震攻击力 ${quake_atk.toFixed(1)}, 单次伤害 ${quake_damage.toFixed(1)}, 次数 ${ntimes}`);
+        log.write(`${displayNames[buffName]}: 余震命中 ${dur.hitCount * ntimes}, 总伤害 ${damage.toFixed(1)}`);
+        pool[0] += damage;
         break;
       // 技能
       // 伤害类
@@ -1816,6 +1881,12 @@ function calculateAttack(charAttr, enemy, raidBlackboard, isSkill, charData, lev
         pool[1] += damage * dur.attackCount;
         pool[2] += heal * dur.attackCount;
         break;
+      case "skchr_rosmon_1":
+        damage = finalFrame.atk * bb.extra_atk_scale;
+        damage = Math.max(damage * (1-emrpct), damage * 0.05) * dur.hitCount;
+        pool[1] += damage;
+        log.write(`${displayNames[buffName]}: 法术伤害 ${damage.toFixed(1)}`);
+        break;
     }; // switch
 
     // 百分比/固定回血
@@ -1875,6 +1946,9 @@ function calculateAttack(charAttr, enemy, raidBlackboard, isSkill, charData, lev
           break;
         case "skchr_surtr_3":
           pool[4] -= finalFrame.maxHp + 5000;
+          break;
+        case "tachr_311_mudrok_1":
+          pool[2] += bb.hp_ratio * finalFrame.maxHp / bb.interval * (dur.duration + dur.prepDuration);
           break;    
         default:
           pool[2] += bb.hp_ratio * finalFrame.maxHp * dur.attackCount;
@@ -1897,8 +1971,8 @@ function calculateAttack(charAttr, enemy, raidBlackboard, isSkill, charData, lev
   log.write(`总伤害: ${totalDamage.toFixed(2)}`);
   if (totalHeal != 0) log.write(`总治疗: ${totalHeal.toFixed(2)}`);
 
-  let dps = totalDamage / (dur.duration + dur.stunDuration);
-  let hps = totalHeal / (dur.duration + dur.stunDuration);
+  let dps = totalDamage / (dur.duration + dur.stunDuration + dur.prepDuration);
+  let hps = totalHeal / (dur.duration + dur.stunDuration + dur.prepDuration);
   // 均匀化重置普攻时的普攻dps
   if (!isSkill && checkResetAttack(blackboard.id, blackboard)) {
     let d = dur.attackCount * attackTime;
@@ -2008,11 +2082,12 @@ function getAttributes(char, log) { //charId, phase = -1, level = -1
   charData.talents.forEach(talentData => {
     for (let i = talentData.candidates.length - 1; i >= 0; i--) {
       let cd = talentData.candidates[i];
+      //console.log(cd);
       if (char.phase >= cd.unlockCondition.phase && char.level >= cd.unlockCondition.level && 
           char.potentialRank >= cd.requiredPotentialRank) {
         // 找到了当前生效的天赋
         let blackboard = getBlackboard(cd.blackboard);
-        if (!cd.prefabKey) {
+        if (!cd.prefabKey || cd.prefabKey < 0) {
           cd.prefabKey = "trait";  // trait as talent
           cd.name = "特性";
         }
