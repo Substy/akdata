@@ -75,7 +75,7 @@ function queryArkPlanner(mats, callback, ...args) {
     dataType: "json",
     crossDomain: true,  // 跨域
     success: function (result) {
-//      console.log("<-", result, args);
+    //  console.log("<-", result, args);
       callback(result, ...args);
     },
     error: alert
@@ -410,8 +410,9 @@ function calculate(charId) {
       var i = {};
       if (level) {
         level.forEach(x => {
-          i[itemdb[x.id].name] = x.count;
-          itemCache[itemdb[x.id].name] = {id: x.id, name: itemdb[x.id].name, rarity: itemdb[x.id].rarity};
+		  var _n = itemdb[x.id].name.replace(" ", "");
+          i[_n] = x.count;
+          itemCache[_n] = {id: x.id, name: _n, rarity: itemdb[x.id].rarity};
         });
         resultView.mats[k].push(i);
       }

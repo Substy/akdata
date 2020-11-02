@@ -9,6 +9,7 @@ icon: info-circle
 - [update] 阿米娅（近卫 ver）
 - [plot] 增加了坐标轴标题
 - [bugfix] 絮雨talent_scale
+- [bugfix] 新材料名称修正
 
 ## 20.11.01
 - [update] 迷迭香等
