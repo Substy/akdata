@@ -5,6 +5,11 @@ order: 4
 category: 工具
 icon: info-circle
 ---
+## 20.11.02
+- [update] 阿米娅（近卫 ver）
+- [plot] 增加了坐标轴标题
+- [bugfix] 絮雨talent_scale
+
 ## 20.11.01
 - [update] 迷迭香等
 - [bugfix] 移除古米/泥岩的摸摸鱼时间

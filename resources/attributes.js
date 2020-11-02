@@ -1716,7 +1716,10 @@ function calculateAttack(charAttr, enemy, raidBlackboard, isSkill, charData, lev
         break;
       case "tachr_436_whispr_1":
         if (options.cond) {
-          pool[2] += bb.atk_to_hp_recovery_ratio * finalFrame.atk * dur.duration * enemy.count;
+          var ts = (blackboard.id == "skchr_whispr_2" ? blackboard.talent_scale : 1;
+          var hps = bb.atk_to_hp_recovery_ratio * finalFrame.atk * ts;
+          pool[2] += hps * dur.duration * enemy.count;
+          log.write(`天赋hps: ${hps.toFixed(1)}`); 
           if (isSkill) log.writeNote("天赋可以治疗召唤物");
         }
         break;
