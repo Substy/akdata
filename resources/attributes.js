@@ -879,6 +879,21 @@ function applyBuff(charAttr, buffFrm, tag, blackbd, isSkill, isCrit, log, enemy)
       case "skchr_rosmon_2":
         delete blackboard["attack@times"];
         break;
+      case "tachr_1001_amiya2_1":
+        if (isSkill) {
+          blackboard.atk *= charAttr.buffList["skill"].talent_scale;
+          blackboard.def *= charAttr.buffList["skill"].talent_scale;
+        }
+        break;
+      case "skchr_amiya2_2":
+        delete blackboard.times;
+        delete blackboard.atk_scale;
+        if (options.stack) {
+          blackboard.atk = blackboard["amiya2_s_2[kill].atk"] * blackboard["amiya2_s_2[kill].max_stack_cnt"];
+          log.writeNote("斩击伤害全部以叠满计算");
+          log.writeNote("包括前三刀");
+        }
+        break;
     }
   }
   
@@ -1062,7 +1077,9 @@ function calcDurations(isSkill, attackTime, attackSpeed, levelData, buffList, bu
       prepDuration = blackboard.disarm;
     } else if (skillId == "skchr_mudrok_3") {
       prepDuration = blackboard.sleep;
-    } 
+    } else if (skillId == "skchr_amiya2_2") {
+      prepDuration = 3;
+    }
 
     // 快速估算
     attackCount = Math.ceil((levelData.duration - prepDuration) / attackTime);
@@ -1078,7 +1095,7 @@ function calcDurations(isSkill, attackTime, attackSpeed, levelData, buffList, bu
     // 重置普攻
     if (rst) {
       if (duration > (levelData.duration-prepDuration) && rst != "ogcd")
-        log.write(`可能重置普攻（覆盖 ${(duration - levelData.duration).toFixed(3)}s）`);
+        log.write(`可能重置普攻`);
       duration = levelData.duration - prepDuration;
       // 抬手时间
       var frameBegin = Math.round((checkSpecs(skillId, "attack_begin") || 12) * 100 / attackSpeed);
@@ -1183,7 +1200,7 @@ function calcDurations(isSkill, attackTime, attackSpeed, levelData, buffList, bu
     if (rst && rst != "ogcd" && spData.spType != 8) {
       var dd = spData.spCost / (1 + buffFrame.spRecoveryPerSec);
       if (duration > dd)
-        log.write(`可能重置普攻（覆盖 ${(duration-dd).toFixed(3)}s）`);
+        log.write(`可能重置普攻`);
       duration = dd;
       // 抬手时间
       var frameBegin = Math.round((checkSpecs(skillId, "attack_begin") || 12) * 100 / attackSpeed);
@@ -1886,6 +1903,14 @@ function calculateAttack(charAttr, enemy, raidBlackboard, isSkill, charData, lev
         damage = Math.max(damage * (1-emrpct), damage * 0.05) * dur.hitCount;
         pool[1] += damage;
         log.write(`${displayNames[buffName]}: 法术伤害 ${damage.toFixed(1)}`);
+        break;
+      case "skchr_amiya2_2":
+        var arts_atk = finalFrame.atk * bb.atk_scale;
+        var real_atk = finalFrame.atk * bb.atk_scale_2;
+        var arts_dmg = Math.max(arts_atk * (1-emrpct), arts_atk * 0.05);
+        log.write(`[斩击] 法术伤害 ${arts_dmg.toFixed(1)}, 命中 9, 真实伤害 ${real_atk.toFixed(1)}, 命中 1`);
+        pool[1] += arts_dmg * 9;
+        pool[3] += real_atk;
         break;
     }; // switch
 

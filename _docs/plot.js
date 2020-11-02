@@ -19,6 +19,14 @@ const EnemySeries = {
   "count": [...Array(11).keys()]
 };
 
+const LabelNames = {
+  "def": "敌人护甲",
+  "magicResistance": "法术抗性",
+  "count": "敌人数量",
+  "dps":  "平均DPS",
+  "s_dps": "技能DPS"
+};
+
 // build html
 let page_html = `
 <div id="vue_app">  
@@ -202,6 +210,7 @@ function init() {
   $('#update_prompt').text("正在载入角色数据，请耐心等待......");
   AKDATA.load([
     'excel/character_table.json',
+    'excel/char_patch_table.json',
     'excel/skill_table.json',
     '../version.json',
     '../customdata/dps_specialtags.json',
@@ -267,6 +276,7 @@ function load() {
     $("#btn_update_data").text("最新版本");
     $("#btn_update_data").attr("class", "btn btn-success");
   }
+  AKDATA.patchAllChars();
   
   let $dps = $(page_html);
 
@@ -417,9 +427,11 @@ function load() {
       },
       columns: function() {      
         window.chart.load({ columns: this.columns, unload: true });
+        window.chart.axis.labels({ x: LabelNames[this.enemyKey], y: LabelNames[this.chartKey] });
       },
       chartKey: function() {      
         window.chart.load({ columns: this.columns, unload: true });
+        window.chart.axis.labels({x: LabelNames[this.enemyKey], y: LabelNames[this.chartKey]});
       }, 
     }
   });
@@ -433,6 +445,16 @@ function load() {
       columns: [],
     },
     axis: {
+      x: { label: {
+              text: LabelNames[window.vue_app.enemyKey],
+              position: "inner-center"
+           },
+         },
+      y: { label: {
+              text: LabelNames[window.vue_app.chartKey],
+              position: "outer-middle"
+           },
+         }
     },
     grid: {
       x: { show: true },

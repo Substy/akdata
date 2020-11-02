@@ -37,6 +37,8 @@
     "skchr_aglina_3":	{ "attack_begin": 23 },
     "skchr_amgoat_2":   { "keep_debuff": true, "cast_time": 36, "sim": true },
     "skchr_amiya_3":	{ "damage_type": 3 },
+    "skchr_amiya2_1":   { "times": 2 },
+    "skchr_amiya2_2":   { "damage_type": 3, "note": "斩击按3s计算", "reset_attack": true },
     "skchr_asbest_1":   { "damage_type": 1 },
     "skchr_asbest_2":   { "damage_type": 1 },
     "skchr_ayer_1":     { "reset_attack": "false" },

@@ -85,6 +85,7 @@
         "char_346_aosta":   [ "cond" ],
         "char_423_blemsh":  [ "cond" ],
         "char_347_jaksel":  [ "cond" ],
-        "char_436_whispr":  [ "ranged_penalty", "cond" ]
+        "char_436_whispr":  [ "ranged_penalty", "cond" ],
+        "char_1001_amiya2": [ "stack" ]
     }
 }

@@ -12,6 +12,7 @@ const ProfessionNames = {
 function init() {
   AKDATA.load([
     'excel/character_table.json',
+    'excel/char_patch_table.json',
     'excel/skill_table.json',
     'excel/range_table.json',
     'excel/gamedata_const.json',
@@ -26,7 +27,7 @@ function init() {
 function load() {
   let selector = {};
   let body = [];
-
+  AKDATA.patchAllChars();
   for (let char in AKDATA.Data.character_table) {
     let charData = AKDATA.Data.character_table[char];
     if (charData.profession == "TOKEN" || charData.profession == "TRAP") continue;

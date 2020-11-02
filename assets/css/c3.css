@@ -238,3 +238,9 @@
 .c3-drag-zoom .extent {
   fill-opacity: 0.1;
 }
+
+
+/* my */
+.c3-axis-x-label {
+  font: 16px sans-serif;
+}

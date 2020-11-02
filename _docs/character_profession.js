@@ -13,6 +13,7 @@ const ProfessionNames = {
 function init() {
   AKDATA.load([
     'excel/character_table.json',
+    'excel/char_patch_table.json',
     'excel/gacha_table.json',
   ], load);
 }
@@ -20,6 +21,7 @@ function init() {
 function load() {
   let upCharNames = [];
   let nowTime = new Date().getTime() / 1000;
+  AKDATA.patchAllChars();
   /*
   AKDATA.Data.gacha_table.gachaPoolClient
     .filter(x => x.endTime > nowTime)

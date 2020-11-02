@@ -46,6 +46,7 @@ function init() {
   $('#update_prompt').text("正在载入角色数据，请耐心等待......");
   AKDATA.load([
     'excel/character_table.json',
+    'excel/char_patch_table.json',
     'excel/skill_table.json',
     'excel/item_table.json',
     '../version.json',
@@ -121,6 +122,7 @@ function load() {
     $("#btn_update_data").text("手动刷新");
     $("#btn_update_data").attr("class", "btn btn-success");
   }
+  AKDATA.patchAllChars();
   
   // build html
   let html = `
