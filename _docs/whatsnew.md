@@ -5,6 +5,15 @@ order: 4
 category: 工具
 icon: info-circle
 ---
+## 20.11.19
+- [bugfix] 古米2技能时间（实际为40s）增加了对暴击不生效的提示
+- [dps] 瞬发技能的dps解除隐藏
+- [bugfix] 尝试修改更新逻辑
+
+## 20.11.15
+- [bugfix] 锡兰1，阿2天赋
+- [bugfix] 古米2技能时间
+
 ## 20.11.02
 - [update] 阿米娅（近卫 ver）
 - [plot] 增加了坐标轴标题

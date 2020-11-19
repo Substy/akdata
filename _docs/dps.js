@@ -37,16 +37,30 @@ function getElement(classPart, index) {
   return $(`.dps__${classPart}[data-index="${index}"]`);
 }
 
+function getVersionLine() {
+  var version = AKDATA.checkVersion();
+  var remote = `最新版本: ${AKDATA.akdata}, 游戏数据: ${AKDATA.gamedata} (${AKDATA.customdata})`;
+  var local = `当前版本: ${AKDATA.Data.version.akdata}, 游戏数据: ${AKDATA.Data.version.gamedata} (${AKDATA.Data.version.customdata})`;
+  return { result: version.result, remote, local};
+}
+
 function load() {
-  let version = AKDATA.checkVersion();
+  let version = getVersionLine();
   if (!version.result) {
-    $('#update_prompt').text(`有新数据，请更新`);
-    console.log(version.reason);
+    pmBase.component.create({
+      type: 'modal',
+      id: "update_prompt",
+      content: [version.remote, version.local].join("<br>"),
+      width: 800,
+      title: "有新数据，请更新",
+      show: true,
+    });
   } else {
-    $('#update_prompt').text(`程序版本: ${AKDATA.akdata}, 游戏数据版本: ${AKDATA.gamedata} (${AKDATA.customdata}), 如有问题请点击`);
+    $('#update_prompt').text(version.local);
     $("#btn_update_data").text("手动刷新");
     $("#btn_update_data").attr("class", "btn btn-success");
   }
+  console.log(version);
 
   AKDATA.patchAllChars();
 
@@ -546,7 +560,7 @@ function calculate(index) {
   if (s.dur.tags.includes("infinity"))
     getElement('period', index).html(`${Math.round(dps.normal.dur.duration*100)/100}s + 持续时间无限(记为1800s)`);
   if (s.dur.tags.includes("instant"))
-    getElement('s_dps', index).html("瞬发");
+    getElement('s_dps', index).append(" / 瞬发");
   if (s.dur.tags.includes("passive")) {
     getElement('s_damage', index).html("-");
     getElement('g_dps', index).html("-");

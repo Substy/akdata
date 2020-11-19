@@ -33,6 +33,8 @@ function checkChar(char) {
   if (!('phase' in char)) char.phase = charData.phases.length - 1;
   if (!('level' in char)) char.level = charData.phases[char.phase].maxLevel;
   if (!('favor' in char)) char.favor = 200;
+  if (!('skillLevel' in char)) char.skillLevel = 6;
+  if (!('options' in char)) char.options = { cond: true, crit: true, token: false };
   if (!('potentialRank' in char)) char.potentialRank = 5;
 }
 
@@ -628,7 +630,7 @@ function applyBuff(charAttr, buffFrm, tag, blackbd, isSkill, isCrit, log, enemy)
           log.writeNote("首次启动时");
         if (options.ranged_penalty) {
           buffFrame.atk_scale = 1;
-          writeBuff(`不受距离惩罚`);
+          if (isSkill) log.writeNote(`技能不受距离惩罚`);
         }
         break;
       case "skchr_amgoat_2":
@@ -751,7 +753,7 @@ function applyBuff(charAttr, buffFrm, tag, blackbd, isSkill, isCrit, log, enemy)
         writeBuff(`最大目标数 = ${buffFrame.maxTarget}`);
         if (options.ranged_penalty) {
           buffFrame.atk_scale /= 0.8;
-          writeBuff(`不受距离惩罚`);
+          if (isSkill) log.writeNote(`技能不受距离惩罚`);
         }
         break;
       case "skchr_ayer_2":
@@ -763,7 +765,13 @@ function applyBuff(charAttr, buffFrm, tag, blackbd, isSkill, isCrit, log, enemy)
       case "skchr_frostl_1":
         if (options.ranged_penalty) {
           buffFrame.atk_scale = 1;
-          writeBuff(`不受距离惩罚`);
+          if (isSkill) log.writeNote(`技能不受距离惩罚`);
+        }
+        break;
+      case "skchr_ceylon_1":
+        if (options.ranged_penalty) {
+          buffFrame.atk_scale /= 0.7;
+          if (isSkill) log.writeNote(`技能不受距离惩罚`);
         }
         break;
       case "skchr_nightm_1":
@@ -1073,9 +1081,7 @@ function calcDurations(isSkill, attackTime, attackSpeed, levelData, buffList, bu
   if (isSkill) {
     
     // 准备时间
-    if (skillId == "skchr_sunbr_2") {
-      prepDuration = blackboard.disarm;
-    } else if (skillId == "skchr_mudrok_3") {
+    if (skillId == "skchr_mudrok_3") {
       prepDuration = blackboard.sleep;
     } else if (skillId == "skchr_amiya2_2") {
       prepDuration = 3;
@@ -1168,6 +1174,9 @@ function calcDurations(isSkill, attackTime, attackSpeed, levelData, buffList, bu
       attackCount -= 2;
       log.write(`[特殊] ${displayNames["skchr_huang_3"]}: 实际攻击 ${attackCount}段+终结`);
     }
+    if (skillId == "skchr_sunbr_2") { // 古米2准备时间延长技能时间
+      prepDuration = blackboard.disarm;
+    } 
   } else { // 普攻
     // 眩晕处理
     if (skillId == "skchr_fmout_2") {
@@ -1953,7 +1962,7 @@ function calculateAttack(charAttr, enemy, raidBlackboard, isSkill, charData, lev
           pool[2] -= bb.hp_ratio * finalFrame.maxHp * dur.duration; break;
         case "tachr_225_haak_1":
           if (options.crit) {
-            heal = bb.hp_ratio * finalFrame.maxHp;
+            heal = bb.hp_ratio * finalFrame.maxHp * buffFrame.heal_scale;
             log.write(`[特殊] ${displayNames[buffName]}: 治疗 ${heal.toFixed(1)}, 命中 ${dur.critHitCount}`);
             pool[2] += heal * dur.critHitCount; 
           }

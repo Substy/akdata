@@ -7,9 +7,9 @@ const useCache = true;
 const cacheBeginTime = new Date(2019, 12, 10).getTime();
 
 window.AKDATA = {
-  akdata: "201102",   // 主程序Tag版本
-  gamedata: "20-10-30-07-01-49-c0b8d2", // CDN游戏数据版本
-  customdata: "201102", // 额外数据版本
+  akdata: "201119",   // 主程序Tag版本
+  gamedata: "20-11-18-07-49-34-8a90dd", // CDN游戏数据版本
+  customdata: "201119", // 额外数据版本
 
   Data: {},
 
@@ -18,6 +18,11 @@ window.AKDATA = {
     var reason = {};
     ["akdata", "gamedata", "customdata"].forEach(x => { reason[x] = [this.Data.version[x], this[x]]; });
     return {result, reason};
+  },
+
+  reload: function () {
+    localStorage.clear();
+    location.reload();
   },
 
   load: function (paths, callback, ...args) {
@@ -30,7 +35,7 @@ window.AKDATA = {
         // custom json data: always use local copy
         if (!paths[i].includes("excel"))    // 本地调试开关
           path = `../resources/gamedata/${paths[i].toLowerCase()}`;
-          
+        console.log(`Loading -> ${name}`);
         paths[i] = loadJSON(path, data => AKDATA.Data[name] = data);
       }
     }

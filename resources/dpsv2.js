@@ -832,11 +832,13 @@ class DpsState {
         var spData = levelData.spData;
         var duration = 0, attackCount = 0, stunDuration = 0; startSp = 0;
         var isOGCD = (checkSpecs(skillId, "reset_attack") == "ogcd");
+        var skillFlags = {};
 
         this.log.pushKey("rotation");
 
         if (this.flags.skill) {
             // 快速估算
+            skillFlags.skill = true;
             attackCount = Math.ceil(levelData.duration / attackTime);
             duration = attackCount * attackTime;
             startSp = spData.spCost - spData.initSp;
