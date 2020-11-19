@@ -112,16 +112,31 @@ function buildVueModel() {
   };
 }
 
+function showVersion() {
+  AKDATA.checkVersion(function (ok, v) {
+    var remote = `最新版本: ${v.akdata}, 游戏数据: ${v.gamedata} (${v.customdata})`;
+    var local = `当前版本: ${AKDATA.Data.version.akdata}, 游戏数据: ${AKDATA.Data.version.gamedata} (${AKDATA.Data.version.customdata})`;
+    if (!ok) {
+      pmBase.component.create({
+        type: 'modal',
+        id: "update_prompt_modal",
+        content: [remote, local].join("<br>"),
+        width: 800,
+        title: "有新数据，请更新",
+        show: true,
+      });
+      $('#vue_version').html(["有新数据，请更新", remote, local].join("<br>"));
+    } else {
+      $('#vue_version').text(local);
+      $("#btn_update_data").text("手动刷新");
+      $("#btn_update_data").attr("class", "btn btn-success");
+    }
+    console.log(v);
+  });
+}
+
 function load() {
-  let version = AKDATA.checkVersion();
-  if (!version.result) {
-    $('#vue_version').text(`有新数据，请更新`);
-    console.log(version.reason);
-  } else {
-    $("#vue_version").html("程序版本: {{ version.akdata }}, 数据版本: {{ version.gamedata }} ({{ version.customdata }}), 如有问题请点击");
-    $("#btn_update_data").text("手动刷新");
-    $("#btn_update_data").attr("class", "btn btn-success");
-  }
+  showVersion();
   AKDATA.patchAllChars();
   
   // build html

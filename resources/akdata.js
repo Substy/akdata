@@ -7,17 +7,15 @@ const useCache = true;
 const cacheBeginTime = new Date(2019, 12, 10).getTime();
 
 window.AKDATA = {
-  akdata: "201119",   // 主程序Tag版本
-  gamedata: "20-11-18-07-49-34-8a90dd", // CDN游戏数据版本
-  customdata: "201119", // 额外数据版本
+  akdata: "201119", // jsdelivr tag version
 
   Data: {},
 
-  checkVersion: function () {
-    var result = ["akdata", "gamedata", "customdata"].reduce((x, y) => x && (this[y] == this.Data.version[y]), true);
-    var reason = {};
-    ["akdata", "gamedata", "customdata"].forEach(x => { reason[x] = [this.Data.version[x], this[x]]; });
-    return {result, reason};
+  checkVersion: function (callback) {
+    $.getJSON(`../resources/version.json?_=${Math.round(Math.random()*1e8)}`, function(v) {
+      var result = ["akdata", "gamedata", "customdata"].reduce((x, y) => x && (v[y] == window.AKDATA.Data.version[y]), true);
+      callback(result, v);
+    });    
   },
 
   reload: function () {
