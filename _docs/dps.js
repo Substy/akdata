@@ -49,7 +49,7 @@ function load() {
   if (!version.result) {
     pmBase.component.create({
       type: 'modal',
-      id: "update_prompt",
+      id: "update_prompt_modal",
       content: [version.remote, version.local].join("<br>"),
       width: 800,
       title: "有新数据，请更新",
