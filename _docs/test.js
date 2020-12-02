@@ -20,32 +20,31 @@ function init() {
     '../version.json',
     '../customdata/dps_specialtags.json',
     '../customdata/dps_options.json',
-    //'../resources/dpsv2.js',
-    '../resources/attributes.js'
+    '../resources/dps_actions.js',
+    '../resources/dpsv2.js',
+    //'../resources/attributes.js'
   ], load);
 }
 
 function load() {
   AKDATA.patchAllChars();
-  //test_dps();
-  find_skills(x => x.indexOf("instant") >= 0);
+  test_dps();
+  //find_skills(x => x.indexOf("instant") >= 0);
 }
 
 pmBase.hook.on('init', init);
 
 // dpsv2 test
 function test_dps() {
-  var charId = "char_290_vigna";
-  var skillId = 'skchr_vigna_2';
-  var dps = new AKDATA.Dps.DpsState();
-  dps.setChar({ charId, skillId });
-  dps.setEnemy();
-  dps.setRaidBuff();
-  dps.basicFrame = dps.calcBasicFrame();
-  dps.addTalents();
-  dps.test();
+  var charId = "char_185_frncat";
+  var skillId = 'skchr_frncat_2';
+  var dps = new AKDATA.Dps.DpsCalculator();
+  dps.calculateDps({ charId, skillId });
+
+  vue_app.content = `<pre>
+  ${JSON.stringify(dps.summary, null, 2)}
+  </pre>`;
   console.log(dps);
-  vue_app.content = dps.log.toString().replace(new RegExp('\n', "g"), "<br>");
 }
 
 function find_skills(filter) {

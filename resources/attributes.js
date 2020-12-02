@@ -455,6 +455,7 @@ function applyBuff(charAttr, buffFrm, tag, blackbd, isSkill, isCrit, log, enemy)
           delete blackboard.times;
           break;
         case "tachr_197_poca_1": // 早露
+        case "skchr_tiger_1":
           blackboard.edef_pene_scale = blackboard["def_penetrate"];
           break;
         case "tachr_358_lisa_2":  // 铃兰2
@@ -905,12 +906,6 @@ function applyBuff(charAttr, buffFrm, tag, blackbd, isSkill, isCrit, log, enemy)
     }
   }
   
-  if (checkSpecs(tag, "sec")) {
-    blackboard.base_attack_time = 1 - (basic.baseAttackTime + buffFrame.baseAttackTime);
-    buffFrame.attackSpeed = 0;
-    blackboard.attack_speed = 0;
-    writeBuff("每秒造成一次伤害/治疗");
-  }
   if (tag == "skchr_thorns_2") {
     log.writeNote("反击按最小间隔计算");
     blackboard.base_attack_time = blackboard.cooldown - (basic.baseAttackTime + buffFrame.baseAttackTime);
@@ -1450,6 +1445,14 @@ function calculateAttack(charAttr, enemy, raidBlackboard, isSkill, charData, lev
   if (finalFrame.attackSpeed != _spd) {
     finalFrame.attackSpeed = _spd;
     log.writeNote("达到攻速极限");
+  }
+
+  // sec spec
+  if (checkSpecs(blackboard.id, "sec")) {
+    finalFrame.baseAttackTime = 1;
+    finalFrame.attackSpeed = 100;
+    buffFrame.attackSpeed = 0;
+    if (isSkill) log.writeNote("每秒造成一次伤害/治疗");
   }
 
   let realAttackTime = finalFrame.baseAttackTime * 100 / finalFrame.attackSpeed;

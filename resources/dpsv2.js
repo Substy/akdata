@@ -50,7 +50,8 @@ function checkSpecs(tag, spec) {
     return _spec;
 }
 
-function toSigned(x, n=3) { return (x>0 ? "+":"") + x.toFixed(n); }
+// 格式化带符号数字
+function _num(x, n=1) { return (x>0 ? "+":"") + x.toFixed(n); }
 
 function isMasked(tag, key) {
     if (checkSpecs(tag, "masked"))
@@ -152,7 +153,7 @@ class Log {
 
 // ---- 核心模组 ----
 // 扩展的char对象，包括原本char的id/技能等级选项等信息，和从DB中提取的技能名字blackboard等信息。
-class CharAttribute {
+class Character {
     setChar(char) {
         // 设置人物和技能数据
         this.changeCharId(char.charId);
@@ -162,7 +163,7 @@ class CharAttribute {
         this.level = char.level || this.charData.phases[this.phase].maxLevel;
         this.favor = char.favor || 200;
         this.potentialRank = char.potentialRank || 5;
-        this.options = {...char.options};
+        this.options = {}; if (char.options) this.options = {...char.options};
         return this;
     }
 
@@ -191,13 +192,13 @@ class CharAttribute {
     }
 
     clone() {
-        var ret = new CharAttribute();
+        var ret = new Character();
         ret.setChar(this);
         return ret;
     }
 
     explain(log) {
-        log.pushKey("CharAttribute");
+        log.pushKey("Character");
         log.write(`| 角色 | 等级 | 技能 |`);
         log.write(`| :--: | :--: | :--: | `);
         log.write(`| ~${this.charId}~ - **${this.charData.name}**  | 精英 ${this.phase}, 等级 ${this.level},
@@ -229,7 +230,7 @@ class CharAttribute {
         else {
             if (this.charData.profession == "MEDIC")
                 ret.normal = 2;
-            else if (this.charData.description.includes('法术伤害') && !["char_260_durnar", "char_378_asbest"].includes(charId))
+            else if (this.charData.description.includes('法术伤害') && !["char_260_durnar", "char_378_asbest"].includes(this.charId))
                 ret.normal = 1;
         }
         this.damageType = ret;
@@ -245,71 +246,155 @@ class CharAttribute {
     }
 }
 
-function initBuffFrame() {
-    return {
-      atk_scale: 1,
-      def_scale: 1,
-      heal_scale:1,
-      damage_scale: 1,
-      maxTarget: 1,
-      times: 1,
-      edef:0, // 敌人防御/魔抗
-      edef_scale:1,
-      edef_pene:0,
-      edef_pene_scale:0,
-      emr_pene:0, // 无视魔抗
-      emr:0,
-      emr_scale:1,
-      atk:0,
-      def:0,
-      attackSpeed:0,
-      maxHp: 0,
-      baseAttackTime:0,
-      spRecoveryPerSec:0,
-    };
-}
+const InitBuffFrame = {
+    atk_scale:  1,
+    def_scale:  1,
+    heal_scale: 1,
+    damage_scale:   1,
+    maxTarget:  1,
+    times:      1,
+    edef:       0, // 敌人防御/魔抗
+    edef_scale: 1,
+    edef_pene:  0,
+    edef_pene_scale:    0,
+    emr_pene:   0, // 无视魔抗
+    emr:        0,
+    emr_scale:  1,
+    atk:        0,
+    def:        0,
+    attackSpeed:0,
+    maxHp:      0,
+    baseAttackTime: 0,
+    spRecoveryPerSec: 0,
+    minRate:    0.05   // 抛光系数
+};
 
-function cloneBuffFrame(frame) {
-    return {...frame};
+// AttributeFrames 属性面板数据类
+// 包含basicFrame, buffFrame, finalFrame
+// 不包含Character, Rotation和计算方法
+class AttributeFrames {
+    constructor() {
+        this.basicFrame = null; // to be set
+        this.finalFrame = {};
+        this.buffFrame = {...InitBuffFrame};
+        this.applied = {};
+        this.enemy = null;
+        this.finalEnemy = null;
+        this.save = null;
+        this.crit = false;  // 表明是否为crit
+        this.damageType = 0;
+    }
+
+    saveBuffs() {
+        this.save = {
+            buff: {...this.buffFrame},
+            applied: {...this.applied}
+        };
+    }
+
+    restoreBuffs() {
+        this.buffFrame = this.save.buff;
+        this.applied = this.save.applied;
+    }
+    
+    setEnemy(enemy) {
+        if (!this.save) this.saveBuffs();
+        else this.restoreBuffs();
+
+        this.enemy = enemy;
+    }
+
+    calcFinalFrame() {
+        let buffs = this.buffFrame;
+        let final = {...this.basicFrame};
+        // re-calculate finalFrame
+        AttributeKeys.forEach(key => {
+            if (buffs[key]) final[key] += buffs[key];
+        });
+        final.atk_noscale = final.atk;
+        final.atk *= buffs.atk_scale;
+        // todo: heal_scale
+        this.finalFrame = final;
+    }
+
+    calcFinalEnemy() {
+        this.finalEnemy = {
+            def: Math.max(0, (this.enemy.def + this.buffFrame.edef) * this.buffFrame.edef_scale * (1-this.buffFrame.edef_pene_scale) - this.buffFrame.edef_pene),
+            mr:  Math.max(0, (this.enemy.magicResistance + this.buffFrame.emr) * this.buffFrame.emr_scale - this.buffFrame.emr_pene),
+            count: Math.min(this.buffFrame.maxTarget, this.enemy.count)
+        };
+        this.finalEnemy.mrpct = this.finalEnemy.mr / 100;
+    }
+
+    calcHitDamage() {
+        var atk = this.finalFrame.atk;
+        var ret = 0;
+        switch (this.damageType) {
+            case 0:
+                ret = Math.max(atk - this.finalEnemy.def, atk * this.buffFrame.minRate);
+                break;
+            case 1:
+                ret = Math.max(atk * (1 - this.finalEnemy.mrpct), atk * this.buffFrame.minRate);
+                break;
+            default:
+                ret = atk;
+        }
+        if (this.buffFrame.damage_scale != 1) {
+            ret *= this.buffFrame.damage_scale;
+        }
+        return ret;
+    }
 }
 
 // 存放一次计算的所有数据和状态
 class DpsContext {
     constructor() {
         this.log = new Log();
-        this.args = {}; // 需要传递给外部函数的变量，不能作为函数的局部变量，必须放在这里
-        this.flags = {skill: false, crit: false, enemy: false, defer: false};
+        this.retvar = {}; // callSpecial的返回值
+        this.flags = { skill: false, enemy: false, defer: false };
         this.buffList = {}; // 所有buff / buffList["buff"] = { blackboard }
-        this.applied = {};  // 已生效buff / applied["buff"] = true/false
-        this.buffFrame = initBuffFrame();    // 当前计算的buff属性
-        this.basicFrame = {};   // 基础面板
-        this.finalFrame = {};   // 计算buff后的最终面板
+        this.attr = new AttributeFrames();
+        this.critAttr = new AttributeFrames();
+        this.critAttr.crit = true;
         this.attackTime = {};
         this.rotation = {};
         this.hitDamage = 0;
+        this.critHitDamage = 0;
+        this.hitCount = 0;
+        this.critHitCount = 0;
         this.damagePool = [0, 0, 0, 0, 0];
         this.extraDamagePool = [0, 0, 0, 0, 0];
         // other entries will be created on use
     }
 
+    // callSpecial 调用外部函数进行计算
+    // 被调用的函数可以以this访问当前DpsContext，参数列表位于args[]数组
+    // 被调用的函数必须返回对象字典，返回值放在this.retvar
+    callSpecial(buffKey, funcKey, args=null) {
+        var actions = AKDATA.Dps.Actions;
+        if (actions[buffKey] && actions[buffKey][funcKey]) {
+            console.log(`callSpecial ${buffKey}->${funcKey}`);
+            this.retvar = actions[buffKey][funcKey].apply(this, args);    // call
+            console.log(`return =>`, this.retvar);
+        } else this.retvar = false;
+        return this.retvar;
+    }
+
     setChar(char) {
-        this.char = new CharAttribute();
+        this.char = new Character();
         this.char.setChar(char);
         this.char.explain(this.log);
         this.skillId = char.skillId;
-        this.options = char.options;
+        this.options = char.options || {};
     }
 
     setEnemy(enemy=null) {
+        // 设置敌人
         this.enemy = enemy || { def: 0, magicResistance: 0, count: 1};
-        this.flags.enemy = true;    // 更新为enemy已经设置的状态
-        this.updateBuffFrame(); // 让enemy相关的buff生效
-        this.finalEnemy = {
-            def: Math.max(0, (enemy.def + this.buffFrame.edef) * this.buffFrame.edef_scale * (1-this.buffFrame.edef_pene_scale) - this.buffFrame.edef_pene),
-            mr:  Math.max(0, (enemy.magicResistance + this.buffFrame.emr) * this.buffFrame.emr_scale - this.buffFrame.emr_pene),
-            count: Math.min(this.buffFrame.maxTarget, enemy.count)
-        };
-        this.finalEnemy.mrpct = this.finalEnemy.mr / 100;
+        this.flags.enemy = true;
+        this.attr.setEnemy(this.enemy);
+        this.critAttr.setEnemy(this.enemy);
+        this.updateBuffs();
     }
 
     setRaidBuff(rb=null) {
@@ -332,19 +417,6 @@ class DpsContext {
     getDamageType() { 
         if (!this.char.damageType) this.char.getDamageType();
         return this.char.damageType[this.flags.skill ? "skill" : "normal"];
-    }
-
-    // callSpecial 调用外部函数进行计算
-    // 被调用的函数可以访问整个this对象
-    // 被调用的函数必须返回对象字典，返回值会和this.args合并
-    callSpecial(buffKey, funcKey) {
-        var actions = AKDATA.Dps.Actions;
-        if (actions[buffKey] && actions[buffKey][funcKey]) {
-            console.log("callSpecial", buffKey, funcKey);
-            var ret = actions[buffKey][funcKey].apply(this);    // call
-            if (typeof ret === Object) Object.assign(this.args, ret);   // 返回值和this.args合并
-            return ret;
-        } else return false;
     }
 
     // 基础属性计算
@@ -383,16 +455,14 @@ class DpsContext {
         // 计算直接乘算的团辅字段（合约tag）
         if (this.raidBlackboard.base_atk != 0) {
             let delta = basicFrame.atk * this.raidBlackboard.base_atk;
-            let prefix = (delta > 0 ? "+" : "");
             basicFrame.atk = Math.round(basicFrame.atk + delta);
-            this.log.write(`[团辅] 原本攻击力变为 ${basicFrame.atk} (${toSigned(delta, 1)})`);         
+            this.log.write(`[团辅] 原本攻击力变为 ${basicFrame.atk} (${_num(delta)})`);         
         }
 
-        this.basicFrame = basicFrame;
-        return basicFrame;
+        this.basicFrame = this.attr.basicFrame = this.critAttr.basicFrame = basicFrame;
+        this.attr.damageType = this.critAttr.damageType = this.getDamageType();
     }
     
-    // 列出生效的buff
     makeBuffList() {
         // 天赋与特性
         var talents = [...this.char.charData.talents]; // shallow copy
@@ -417,17 +487,15 @@ class DpsContext {
         });
 
         // 技能
-        this.buffList["skill"] = this.char.blackboard;
+        if (this.flags.skill) this.buffList[this.skillId] = this.char.blackboard;
 
         // 团辅
         if (this.options.buff) this.buffList["raidBuff"] = this.raidBlackboard;
     }
 
     // 判断指定buff是否生效。返回true/false
-    checkBuff(buffKey) {
-        if (this.applied[buffKey])
-            return false;   // 防止重算  
-        else if (buffKey == "skill" && !this.flags.skill)
+    checkBuff(attr, buffKey) {
+        if (buffKey == this.skillId && !this.flags.skill)
             return false;   // 非技能时，skill buff不生效
         else if (checkSpecs(buffKey, "enemy") && !this.flags.enemy)
             return false;   // 有enemy标签的buff需要在敌人属性给定后才能计算
@@ -444,14 +512,14 @@ class DpsContext {
         }
         else if (checkSpecs(buffKey, "stack") && !this.options.stack)
             return false;   // stack ~
-        else if (checkSpecs(buffKey, "crit") && !(this.flags.crit && this.options.crit))
-            return false;   // 有crit标签，但是当前状态不是计算暴击时 / 未选择暴击选项时 不生效
+        else if (checkSpecs(buffKey, "crit") && !attr.crit)
+            return false;   // 有crit标签，但是当前状态不是计算暴击时不生效
 
         return true;
     }
 
     writeBuff(text) {
-        var buffKey = this.args.buffKey;
+        var buffKey = this._buffKey;
         let line = [""];
         if (buffKey == this.skillId) line.push("[技能]");
         else if (buffKey == "raidBuff") line.push("[团辅/拐]");
@@ -468,12 +536,11 @@ class DpsContext {
     }
 
     // 默认的applyBuff动作
-    applyBuffDefault() {
-        var buffKey = this.args.buffKey;
-        var bboard = this.args.blackboard;
-        var prefix = 0;
-        var buffFrame = this.buffFrame;
-        var blackboard = {...bboard};   // shallow copy
+    // 为了和calcSpecial兼容, 参数放在this.args里
+    applyBuffDefault(attr, buffKey, blackboard) {
+        var delta = 0;
+        var basicFrame = attr.basicFrame;
+        var buffFrame = attr.buffFrame;
     
         // note
         if (checkSpecs(buffKey, "note"))
@@ -496,7 +563,7 @@ class DpsContext {
         if (checkSpecs(buffKey, "ranged_penalty") && this.options.ranged_penalty) {
             blackboard.atk_scale ||= 1;
             blackboard.atk_scale *= _spec;
-            writeBuff(`远程惩罚: atk_scale = ${blackboard.atk_scale.toFixed(2)} (x${_spec.toFixed(1)})`);
+            this.writeBuff(`远程惩罚: atk_scale = ${blackboard.atk_scale.toFixed(2)} (x${_spec.toFixed(1)})`);
         }
         // stack
         if (blackboard.max_stack_cnt) {
@@ -507,254 +574,257 @@ class DpsContext {
         // max_target spec
         if (checkSpecs(buffKey, "max_target")) {
             buffFrame.maxTarget = (_spec == "all") ? 999 : _spec;
-            writeBuff(`最大目标数: ${buffFrame.maxTarget}`);
+            this.writeBuff(`最大目标数: ${buffFrame.maxTarget}`);
         } else if (this.char.charData.description.includes("阻挡的<@ba.kw>所有敌人") &&
                    buffFrame.maxTarget < this.basicFrame.blockCnt) {
             buffFrame.maxTarget = this.basicFrame.blockCnt;
         } else if (this.char.charData.description.includes("恢复三个"))
             buffFrame.maxTarget = 3;
-        // sec spec
-        if (checkSpecs(buffKey, "sec")) {
-            blackboard.base_attack_time = 1 - (this.basicFrame.baseAttackTime + buffFrame.baseAttackTime);
-            buffFrame.attackSpeed = 0;
-            blackboard.attack_speed = 0;
-            writeBuff("每秒造成一次伤害/治疗");
-        }
+
         // times spec (skill only)
         if (checkSpecs(buffKey, "times"))
             blackboard.times ||= _spec;
+
+        // sec spec 只标记，在calcAttackTime里特判
+        if (checkSpecs(buffKey, "sec") && this.flags.skill) {
+            this.flags.sec = true;
+            this.writeBuff("每秒造成一次伤害/治疗");
+        }
         
+        if (checkSpecs(buffKey, "crit"))
+            this.flags.has_crit = true; // 标记要计算暴击
+
         // original applyBuff
         for (var key in blackboard) {
             switch (key) {
                 case "atk":
                 case "def":
-                    prefix = blackboard[key] > 0 ? "+" : "";
-                    buffFrame[key] += this.basicFrame[key] * blackboard[key];
-                    if (blackboard[key] != 0)
-                        writeBuff(`${key}: ${prefix}${(blackboard[key]*100).toFixed(1)}% (${prefix}${(this.basicFrame[key] * blackboard[key]).toFixed(1)})`);
+                    delta = basicFrame[key] * blackboard[key];
+                    buffFrame[key] += delta;
+                    if (delta != 0)
+                        this.writeBuff(`${key}: ${_num(blackboard[key]*100)}% (${_num(delta)})`);
                     break;
                 case "max_hp":
-                    prefix = blackboard[key] > 0 ? "+" : "";
                     if (Math.abs(blackboard[key]) > 2) { // 加算
                         buffFrame.maxHp += blackboard[key];
-                        writeBuff(`${key}: ${prefix}${blackboard[key]}`);
+                        this.writeBuff(`${key}: ${_num(blackboard[key])}`);
                     } else if (blackboard[key] != 0) { // 乘算
-                        buffFrame.maxHp += this.basicFrame.maxHp * blackboard[key];
-                        writeBuff(`${key}: ${prefix}${(blackboard[key]*100).toFixed(1)}% (${prefix}${(this.basicFrame.maxHp * blackboard[key]).toFixed(1)})`);
+                        delta = basicFrame.maxHp * blackboard[key];
+                        buffFrame.maxHp += delta;
+                        this.writeBuff(`${key}: ${_num(blackboard[key]*100)}% (${_num(delta)})`);
                     }
                     break;
                 case "base_attack_time":
-                    if (blackboard.base_attack_time < 0) { // 攻击间隔缩短 - 加算
+                    if (blackboard.base_attack_time < 0) // 攻击间隔缩短 - 加算
                         buffFrame.baseAttackTime += blackboard.base_attack_time;
-                        writeBuff(`base_attack_time: ${buffFrame.baseAttackTime.toFixed(3)}s`);
-                    } else {  // 攻击间隔延长 - 乘算
+                    else // 攻击间隔延长 - 乘算
                         buffFrame.baseAttackTime += this.basicFrame.baseAttackTime * blackboard.base_attack_time;
-                        writeBuff(`base_attack_time: +${(this.basicFrame.baseAttackTime * blackboard.base_attack_time).toFixed(3)}s`);
-                    }
+                    this.writeBuff(`base_attack_time: ${_num(buffFrame.baseAttackTime, 3)}s`);
                     break;
                 case "attack_speed":
-                    if (blackboard[key] == 0) break;
-                    prefix = blackboard[key] > 0 ? "+" : "";
-                    buffFrame.attackSpeed += blackboard.attack_speed;
-                    writeBuff(`attack_speed: ${prefix}${blackboard.attack_speed}`);
+                    if (blackboard[key] != 0) {
+                        buffFrame.attackSpeed += blackboard.attack_speed;
+                        this.writeBuff(`attack_speed: ${_num(blackboard.attack_speed)}`);
+                    }
                     break;
                 case "sp_recovery_per_sec":
-                    buffFrame.spRecoveryPerSec += blackboard.sp_recovery_per_sec;
-                    if (blackboard[key]>0) writeBuff(`sp: +${buffFrame.spRecoveryPerSec}/s`);
+                    if (blackboard[key] != 0) {
+                        buffFrame.spRecoveryPerSec += blackboard.sp_recovery_per_sec;
+                        this.writeBuff(`sp: ${_num(blackboard[key])}/s`);
+                    }
                     break;
                 case "atk_scale":
                 case "def_scale":
                 case "heal_scale":
                 case "damage_scale":
                     buffFrame[key] *= blackboard[key];
-                    if (blackboard[key] != 1) writeBuff(`${key}: ${blackboard[key].toFixed(2)}x`);
+                    if (blackboard[key] != 1) this.writeBuff(`${key}: ${blackboard[key].toFixed(2)}x`);
                     break;
                 case "attack@atk_scale":
                     buffFrame.atk_scale *= blackboard["attack@atk_scale"];
-                    writeBuff(`atk_scale: ${buffFrame.atk_scale.toFixed(2)}`);
+                    this.writeBuff(`atk_scale: ${buffFrame.atk_scale.toFixed(2)}`);
                     break;
                 case "attack@heal_scale":
                     buffFrame.heal_scale *= blackboard["attack@heal_scale"];
-                    writeBuff(`heal_scale: ${buffFrame.heal_scale.toFixed(2)}`);
+                    this.writeBuff(`heal_scale: ${buffFrame.heal_scale.toFixed(2)}`);
                     break;
                 case "max_target":
                 case "attack@max_target":
                     buffFrame.maxTarget = Math.max(buffFrame.maxTarget, blackboard[key]);
-                    writeBuff(`maxTarget: ${buffFrame.maxTarget}`);
+                    this.writeBuff(`maxTarget: ${buffFrame.maxTarget}`);
                     break;
                 case "times":
                 case "attack@times":
                     buffFrame.times = blackboard[key];
-                    writeBuff(`攻击次数: ${blackboard[key]}`);
+                    this.writeBuff(`攻击次数: ${blackboard[key]}`);
                     break;
                 case "magic_resistance":
-                    if (blackboard[key] < -1) { // 魔抗减算
+                    if (Matha.abs(blackboard[key]) < -1) { // 魔抗减算
                         buffFrame.emr += blackboard[key];
-                        writeBuff(`敌人魔抗: ${blackboard[key]}% (加算)`);
+                        this.writeBuff(`敌人魔抗: ${_num(blackboard[key], 1)}% (加算)`);
                     } else if (blackboard[key] < 0) { // 魔抗乘算
                         buffFrame.emr_scale *= (1+blackboard[key]);
-                        writeBuff(`敌人魔抗: ${(blackboard[key]*100).toFixed(1)}% (乘算)`);
+                        this.writeBuff(`敌人魔抗: ${(blackboard[key]*100).toFixed(1)}% (乘算)`);
                     } // 大于0时为增加自身魔抗，不计算
                     break;
                 case "prob":
-                    if (!blackboard["prob_override"]) {
-                        buffFrame.prob = blackboard[key];
-                        writeBuff(`概率(原始): ${Math.round(buffFrame.prob*100)}%`);
-                    }
+                    buffFrame.prob = blackboard[key];
+                    this.writeBuff(`概率: ${Math.round(buffFrame.prob*100)}%`);
                     break;
                 // 计算值，非原始数据
                 case "edef":  // 减甲加算值（负数）
                     buffFrame.edef += blackboard[key];
-                    writeBuff(`敌人护甲: ${blackboard[key]}`);
+                    this.writeBuff(`敌人护甲: ${blackboard[key]}`);
                     break;
                 case "edef_scale": // 减甲乘算值
                     buffFrame.edef_scale *= (1+blackboard[key]);
-                    writeBuff(`敌人护甲: ${blackboard[key] *100}%`);
+                    this.writeBuff(`敌人护甲: ${blackboard[key] *100}%`);
                     break;
                 case "edef_pene": // 无视护甲加算值
                     buffFrame.edef_pene += blackboard[key];
-                    writeBuff(`无视护甲（最终加算）: -${blackboard[key]}`);
+                    this.writeBuff(`无视护甲（最终加算）: -${blackboard[key]}`);
                     break;
                 case "edef_pene_scale":
                     buffFrame.edef_pene_scale = blackboard[key];
-                    writeBuff(`无视护甲（最终乘算）: -${blackboard[key]*100}%`);
+                    this.writeBuff(`无视护甲（最终乘算）: -${blackboard[key]*100}%`);
                     break;
                 case "emr_pene":  // 无视魔抗加算值
                     buffFrame.emr_pene += blackboard[key];
-                    writeBuff(`无视魔抗（加算）: -${blackboard[key]}`);
-                    break;
-                case "prob_override": // 计算后的暴击概率，有alias无法处理的情况所以保留
-                    buffFrame.prob = blackboard[key];
-                    writeBuff(`概率(计算): ${Math.round(buffFrame.prob*100)}%`);
+                    this.writeBuff(`无视魔抗（加算）: -${blackboard[key]}`);
                     break;
                 case "atk_override":  // 攻击团辅(raidBuff使用)
-                    buffFrame.atk += blackboard[key];
-                    prefix = blackboard[key] > 0 ? "+" : "";
-                    if (blackboard[key] != 0)
-                        writeBuff(`atk(+): ${prefix}${(blackboard[key]*100).toFixed(1)}`);
+                    if (blackboard[key] != 0) {
+                        buffFrame.atk += blackboard[key];
+                        writeBuff(`atk: ${_num(blackboard[key], 1)}`);
+                    }
                     break;
             } // switch
         }
-        this.applied[buffKey] = true;
+        attr.applied[buffKey] = true;
         return buffFrame;
     }
 
 //-------------------------------------------------------------------------------
     // 将{buffKey, bboard}指定的buff属性叠加到当前的buffFrame上
-    applyBuff(buffKey) {
-        if (buffKey == "skill") buffKey = skillId;
-        // 设置callSpecial上下文
-        this.args = {
-            buffKey, 
-            blackboard: {...this.buffList[buffKey]},
-            done: false
-        };
+    applyBuff(attr, buffKey) {
+        var blackboard = {...this.buffList[buffKey]};
+        //if (buffKey == "skill") buffKey = this.skillId;
+        this._buffKey = buffKey;    // writeBuff hack
         // gatekeeper
-        if (checkBuff(buffKey)) {
-            this.log.pushKey("applyBuff");        
-
+        if (!attr.applied[buffKey] && this.checkBuff(attr, buffKey)) {
+            this.log.pushKey("applyBuff");
             // buff计算特判
-            // 必须返回 { done: t/f }
-            this.callSpecial(buffKey, "applyBuff");
+            // 返回 { done: t/f }
+            this.callSpecial(buffKey, "applyBuff", [attr, blackboard]);
             // 调用默认buff计算函数
-            if (!this.args.done) this.applyBuffDefault();
+            if (!this.retvar.done) this.applyBuffDefault(attr, buffKey, blackboard); // 参数都在this.args里
 
-            this.applied[buffKey] = true;
+            attr.applied[buffKey] = true;
             this.log.popKey();
         }
-        return this.buffFrame;
     }
 
-    updateBuffFrame() {
+    _update(attr) {
         for (var b in this.buffList)
-            this.applyBuff(b);
+            this.applyBuff(attr, b);
+        attr.calcFinalFrame();
+        if (this.flags.enemy) attr.calcFinalEnemy();
     }
-
-    calcFinalFrame() {
-        let final = {...this.basicFrame};
-        var buffs = this.buffFrame;
-        AttributeKeys.forEach(key => {
-            if (buffs[key]) final[key] += buffs[key];
-        });
-        final.atk *= buffs.atk_scale;
-        if (this.getDamageType() == 2)
-            final.atk *= buffs.heal_scale;
-        this.finalFrame = final;
-        return final;
+    updateBuffs() {
+        this._update(this.attr);
+        this._update(this.critAttr);
     }
 
     // 计算当前buff下的攻击间隔
     calcAttackTime() {
-        var _spd = Math.min(Math.max(10, buffFrame.attackSpeed), 600);
-        if (buffFrame.attackSpeed != _spd) {
-            buffFrame.attackSpeed = _spd;
-            this.log.write(`攻速超过界限，修正为${_spd}`, "rotation");
-        }
-        var realTime = buffFrame.baseAttackTime * 100 / buffFrame.attackSpeed;
-        // token?
-        var f = Math.round(realTime * _fps);
-        var corr = checkSpecs(this.char.charId, "frame_corr") || 0;
-        if (this.flags.skill) {
-            if (!(checkSpecs(this.char.skillId, "frame_corr") === false))
-                corr = _spec;
-            if (corr) {
-                f += corr;
-                this.log.note(`技能帧数延迟+${corr} (${f}帧)`);
-            }
+        var finalFrame = this.attr.finalFrame;
+        // sec spec
+        if (this.flags.sec) {
+            this.attackTime = {
+                baseAttackTime: 1,
+                attackSpeed: 100,
+                frame: _fps,
+                realTime: 1,
+                frameTime: 1
+            };
         } else {
-            if (corr) {
-                f += corr;
-                this.log.note(`普攻帧数延迟+${corr} (${f}帧)`)
+            var _spd = Math.min(Math.max(10, finalFrame.attackSpeed), 600);
+            if (finalFrame.attackSpeed != _spd) {
+                finalFrame.attackSpeed = _spd;
+                this.log.write(`攻速超过界限，修正为${_spd}`, "rotation");
             }
+            var realTime = finalFrame.baseAttackTime * 100 / finalFrame.attackSpeed;
+            // token?
+            var f = Math.round(realTime * _fps);
+            var corr = checkSpecs(this.char.charId, "frame_corr") || 0;
+            if (this.flags.skill) {
+                if (!(checkSpecs(this.char.skillId, "frame_corr") === false))
+                    corr = _spec;
+                if (corr) {
+                    f += corr;
+                    this.log.note(`技能帧数延迟+${corr} (${f}帧)`);
+                }
+            } else {
+                if (corr) {
+                    f += corr;
+                    this.log.note(`普攻帧数延迟+${corr} (${f}帧)`)
+                }
+            }
+            var frameTime = f / _fps;
+            this.attackTime = {
+                baseAttackTime: finalFrame.baseAttackTime,
+                attackSpeed: finalFrame.attackSpeed,
+                frame: f,
+                realTime,
+                frameTime
+            };
         }
-        var frameTime = f / _fps;
-        this.attackTime = {
-            baseAttackTime: frame.baseAttackTime,
-            attackSpeed: frame.attackSpeed,
-            frame: f,
-            realTime,
-            frameTime
-        };
+
         return this.attackTime;
     }
 
     // 循环计算
     calcRotation() {
-        var buffFrame = this.buffFrame;
+        var buffFrame = this.attr.buffFrame;
         var attackTime = this.attackTime.frameTime;
         var blackboard = this.char.blackboard;
-        var skillId = this.char.skillId;
+        var skillId = this.skillId;
         var levelData = this.char.levelData;
         var spData = levelData.spData;
-        var duration = 0, attackCount = 0, stunDuration = 0; startSp = 0;
+        var duration = 0, attackCount = 0, critAttackCount = 0;
+        var stunDuration = 0, prepDuration = 0;
         var isOGCD = (checkSpecs(skillId, "reset_attack") == "ogcd");
-        var skillFlags = {};
-        // 设置callSpecial上下文
-        this.args = {
-            attackTime,
-            blackboard,
-            levelData,
-            spData,
-            duration, 
-            attackCount,
-            stunDuration,
-            startSp            
-        };
+        var rotationFlags = {}; // 技能类型推断信息
+        var args = {};  // callSpecial参数
 
         this.log.pushKey("Rotation");
 
-        if (this.flags.skill) {
-            // 快速估算
-            skillFlags.skill = true;
-            this.args.attackCount = attackCount = Math.ceil(levelData.duration / attackTime);
-            this.args.duration = duration = attackCount * attackTime;
-            this.args.startSp = startSp = spData.spCost - spData.initSp;
+        // 落地sp特判
+        // 必须返回 { startSp: x }
+        var startSp = spData.spCost - spData.initSp;
+        if (this.callSpecial(skillId, "rotation_startSp"), [{spData, blackboard}])
+            startSp = this.retvar.startSp;
 
-            // 落地sp特判
-            // 必须返回 { startSp: x }
-            if (this.callSpecial(skillId, "rotation_startSp"))
-                startSp = this.args.startSp;
+        if (this.flags.skill) {
+            rotationFlags.skill = true;
+
+            // 准备时间
+            // 返回: { prepDuration: x }
+            if (this.callSpecial(skillId, "skill_prepDuration", [{blackboard}]))
+                prepDuration = this.retvar.prepDuration;
+            
+            // calcSpecial 参数
+            args = {
+                spData, 
+                blackboard,
+                attackTime,
+                prepDuration,
+                buffFrame
+            };
+            
+            // 快速估算            
+            attackCount = Math.ceil(levelData.duration / attackTime);
+            duration = attackCount * attackTime;
             
             // 重置普攻
             if (this.char.canResetAttack()) {            
@@ -774,13 +844,15 @@ class DpsContext {
             }
 
             // 技能循环特判
-            // 必须返回 { duration, attackCount }
-            if (this.callSpecial(skillId, "rotation_skillDuration")) {
-                duration = this.args.duration;
-                attackCount = this.args.attackCount;
+            // 返回 { duration, attackCount, rotationFlags }
+            if (this.callSpecial(skillId, "skill_duration", [args])) {
+                duration = this.retvar.duration;
+                attackCount = this.retvar.attackCount;
+                if (this.retvar.rotationFlags) Object.assign(rotationFlags, this.retvar.rotationFlags);
             } else if (levelData.description.includes("持续时间无限")) {
                 attackCount = Math.ceil(1800 / attackTime);
                 duration = attackCount * attackTime;
+                rotationFlags.warmup = true;
                 this.log.note("持续时间无限 (以1800s为参考计算)");
             } else if (spData.spType == 8) {
                 // 落地点火/被动类技能
@@ -792,15 +864,19 @@ class DpsContext {
                 }
                 // 判断具体类型
                 if (checkSpecs(skillId, "passive")) {
-                    log.write("被动");
+                    this.log.note("被动");
                     attackCount = 1;
                     duration = attackTime;
+                    rotationFlags.passive = true;
                 } else if (levelData.duration > 0) {
-                    log.write("落地点火");
+                    this.log.note("落地点火");
+                    rotationFlags.auto = true;
                 } else { // 摔炮
                     attackCount = 1;
                     duration = 0;
-                    log.write("落地点火+瞬发");
+                    this.log.note("落地点火+瞬发");
+                    rotationFlags.auto = true;
+                    rotationFlags.instant = true;
                 }
             } else if (levelData.duration <= 0) {
                 // 普通瞬发技能
@@ -808,9 +884,11 @@ class DpsContext {
                     // 华法琳2类型
                     duration = blackboard.duration || checkSpecs(skillId, "duration");
                     attackCount = Math.ceil(duration / attackTime);
-                    log.write("瞬发增益效果");
+                    this.log.note("瞬发增益效果");
+                    rotationFlags.instant = true;
                 } else {
-                    log.write("瞬发");
+                    this.log.note("瞬发");
+                    rotationFlags.instant = true;
                     // 如果不是OGCD技能则需要占用一次普攻
                     if (!isOGCD) duration = attackTime;
                     // 技能动画时间处理
@@ -818,20 +896,29 @@ class DpsContext {
                         // 调整技能时间为技能动画时间
                         if (isOGCD || (spData.spType == 1 && duration < _spec/_fps))
                             duration = _spec / _fps;
-                        this.log.write(`技能动画(阻回) ${_spec} 帧`);
                         this.log.note(`技能动画(阻回) ${_spec} 帧`);
                     }
                 }
             } // if levelData.duration
         } else { // 普攻
+            rotationFlags.normal = true;
             // 眩晕处理
             // 利用alias 把不同的晕眩时间字段都统一到stunDuration上，或者特判
             var stunDuration = blackboard.stunDuration || 0;
             // 必须返回 { stunDuration: x }
-            if (this.callSpecial(skillId, "rotation_stunDuration")) {
-                stunDuration = this.args.stunDuration;
+            if (this.callSpecial(skillId, "normal_stunDuration", [{blackboard}])) {
+                stunDuration = this.retvar.stunDuration;
                 if (stunDuration > 0) this.log.write(`眩晕 ${stunDuration}s`);
             }
+
+            // calcSpecial 参数
+            args = {
+                spData, 
+                blackboard,
+                attackTime,
+                stunDuration,
+                buffFrame
+            };
 
             // 根据sp恢复速度估算普攻的最短时间
             let attackDuration = spData.spCost / (1 + buffFrame.spRecoveryPerSec) - stunDuration;
@@ -858,9 +945,10 @@ class DpsContext {
             }
 
             // 技能循环计算插桩. 返回{duration, attackCount}
-            if (this.callSpecial(skillId, "rotation_normalDuration")) {
-                duration = this.args.duration;
-                attackCount = this.args.attackCount;
+            if (this.callSpecial(skillId, "normal_duration", [args])) {
+                duration = this.retvar.duration;
+                attackCount = this.retvar.attackCount;
+                if (this.retvar.rotationFlags) Object.assign(rotationFlags, this.retvar.rotationFlags);
             } else {
                 switch (spData.spType) {
                     case 8: // 被动或落地点火
@@ -871,24 +959,30 @@ class DpsContext {
                         if (checkSpecs(skillId, "passive")) { // 被动
                             attackCount = 10;
                             duration = attackCount * attackTime;
+                            rotationFlags.passive = true;
                             this.log.note("以10次普攻计算");
                         } else if (levelData.duration > 0) {  // 落地点火
                             attackDuration = levelData.duration;
                             attackCount = Math.ceil(attackDuration / attackTime);
                             duration = attackCount * attackTime;
+                            rotationFlags.auto = true;
                             this.log.note("取普攻时间=技能持续时间");
                         } else { // 摔炮
                             attackDuration = 10;
                             attackCount = Math.ceil(attackDuration / attackTime);
                             duration = attackCount * attackTime;
+                            rotationFlags.auto = true;
+                            rotationFlags.instant = true;
                             this.log.note("以10s普攻计算");
                         }
                         break;
                     case 4: // 受击回复
                         this.log.note("受击回复");
+                        rotationFlags.hit = true;
                         break;
                     case 2: // 攻击回复
                         attackCount = spData.spCost;
+                        rotationFlags.attack = true;
                         if (this.char.canResetAttack())
                             duration = (attackCount-1) * attackTime;
                         else
@@ -899,182 +993,195 @@ class DpsContext {
                             attackDuration -= blackboard.duration || checkSpecs(skillId, "duration");
                             attackCount = Math.ceil(attackDuration / attackTime);
                             duration = attackCount * attackTime;
+                            rotationFlags.instant = true;
                         }
                         break;
                 } // switch
             } // else
         } // isSkill
 
+        // 暴击次数计算
+        if (this.flags.has_crit) {
+            buffFrame = this.critAttr.buffFrame;
+            args = {
+                attackCount,
+                duration,
+                buffFrame
+            };
+            // 暴击率特判 返回 { prob }
+            if (this.callSpecial(skillId, "crit_prob", [args]))
+                buffFrame.prob = this.retvar.prob;
+            // 暴击特判 返回 { attackCount, critAttackCount }
+            if (this.callSpecial(skillId, "crit_attackCount", [args])) {
+                attackCount = this.retvar.attackCount;
+                critAttackCount = this.retvar.critAttackCount;
+            } else if (buffFrame.prob > 0) { // 防止误入
+                critAttackCount = attackCount * buffFrame.prob;
+                if (critAttackCount > 1) critAttackCount = Math.floor(critAttackCount);
+                attackCount -= critAttackCount;
+            }
+            if (critAttackCount > 0) rotationFlags.crit = true;
+        }
         this.log.popKey('Rotation');
         this.flags.defer = true;   // 标记rotation已经计算完毕，可以计算deferred buff
 
-        return {
+        this.rotation = {
+            duration,
             attackCount,
-            attackTime,
-            duration, 
+            critAttackCount,
+            prepDuration,  
             stunDuration,
-            startSp
+            startSp,
+            flags: rotationFlags
         };
+        return this.rotation;
     }
 
     calcDamage() {
         this.log.pushKey("Damage");
-        // 伤害公式特判
+        // 伤害公式特判（包含暴击）
         // 返回: { damage: x }
         if (this.callSpecial(this.skillId, "calcDamage"))
-            this.damagePool[this.getDamageType()] = this.args.damage;
+            this.damagePool[this.getDamageType()] = this.retvar.damage;
         else {
             // 单次伤害特判
             // 返回: { hitDamage: x }
-            if (this.callSpecial(this.skillId, "hitDamage"))
-                this.hitDamage = this.args.hitDamage;
-            else {
-                let atk = this.finalFrame.atk;
-                switch (this.getDamageType()) {
-                    case 0:
-                        this.hitDamage = Math.max(atk - this.finalEnemy.def, atk * 0.05);
-                        break;
-                    case 1:
-                        this.hitDamage = Math.max(atk * (1 - this.finalEnemy.mrpct), atk * 0.05);
-                        break;
-                    default:
-                        this.hitDamage = atk;
-                }
-                if (this.hitDamage < atk * 0.05) this.log.write("* 抛光伤害");
-                if (this.buffFrame.damage_scale != 1) {
-                    this.log.write(`damage_scale: ${this.buffFrame.damage_scale.toFixed(2)}x`);
-                    this.hitDamage *= this.buffFrame.damage_scale;
-                }
+            if (this.callSpecial(this.skillId, "hitDamage", [this.attr])) {
+                this.hitDamage = this.retvar.hitDamage;
+                this.callSpecial(this.skillId, "hitDamage", [this.critAttr]);
+                this.critHitDamage = this.retvar.hitDamage;
+            } else {
+                this.hitDamage = this.attr.calcHitDamage();
+                this.critHitDamage = this.critAttr.calcHitDamage();
             }
             // 命中次数特判
-            // 返回: { hitCount : x }
-            if (this.callSpecial(this.skillId, "hitCount"))
-                this.hitCount = this.args.hitCount;
-            else
-                this.hitCount = this.rotation.attackCount * this.buffFrame.times * this.finalEnemy.count;
-            this.damagePool[this.getDamageType()] += this.hitDamage * this.hitCount;
+            // 返回: { hitCount : x, critHitCount: x }
+            if (this.callSpecial(this.skillId, "hitCount")) {
+                this.hitCount = this.retvar.hitCount;
+                this.critHitCount = this.retvar.critHitCount;
+            } else {
+                this.hitCount = this.rotation.attackCount * this.attr.buffFrame.times * this.attr.finalEnemy.count;
+                this.critHitCount = this.rotation.critAttackCount * this.critAttr.buffFrame.times * this.attr.finalEnemy.count;
+            }
+            this.damagePool[this.getDamageType()] += this.hitDamage * this.hitCount + this.critHitDamage * this.critHitCount;
         }
 
         // 额外伤害
         this.extraDamagePool = [0, 0, 0, 0, 0];
         for (var b in this.buffList) {
             let buffKey = b;
-            if (buffKey == "skill") buffKey = buffList[b].id;
-            let bb = buffList[b];
-            this.args = {
+            if (!this.attr.applied[b] && !this.critAttr.applied[b])
+                console.log("??? not applied: ", b);
+            let bb = this.buffList[b];
+            var args = {
                 buffKey,
-                bb,
+                blackboard: bb,
                 hpratiosec: bb.hp_recovery_per_sec_by_max_hp_ratio,
                 hpsec: bb.hp_recovery_per_sec,
-                hpratio: bb.hp_ratio,
-                pool: [0, 0, 0, 0, 0]
+                hpratio: bb.hp_ratio
             };
             // 额外伤害特判
             // 返回: { pool: [x, x, x, x, x] }
-            if (!this.callSpecial(buffKey, "extraDamageOrHeal")) {
+            if (!this.callSpecial(buffKey, "extraDamage", [args])) {
+                this.retvar = { pool: [0, 0, 0, 0, 0]};
                 // 通用判定
-                if (this.args.hpratiosec)
-                    this.args.pool[2] += this.args.hpratiosec * this.finalFrame.maxHp * (this.rotation.duration + this.rotation.stunDuration);
-                if (this.args.hpsec)
-                    this.args.pool[2] += this.args.hpsec * (this.rotation.duration + this.rotation.stunDuration);
-                if (this.args.hpratio)
-                    this.args.pool[2] += this.args.hpratio * this.finalFrame.maxHp * this.rotation.attackCount;
+                if (args.hpratiosec)
+                    this.retvar.pool[2] += args.hpratiosec * this.attr.finalFrame.maxHp * (this.rotation.duration + this.rotation.stunDuration);
+                if (args.hpsec)
+                    this.retvar.pool[2] += args.hpsec * (this.rotation.duration + this.rotation.stunDuration);
+                if (args.hpratio)
+                    this.retvar.pool[2] += args.hpratio * this.attr.finalFrame.maxHp * this.rotation.attackCount;
             }
             let line = [`[额外] ${_names[buffKey]}:`];
-            for (var i=0; i<4; ++i)
-                if (this.args.pool[i] != 0) {
-                    this.extraDamagePool[i] += this.args.pool[i];
-                    line.push(`${DamageTypeText[i]} ${this.args.pool[i].toFixed(1)}`);
+            for (var i=0; i<5; ++i)
+                if (this.retvar.pool[i] != 0) {
+                    this.extraDamagePool[i] += this.retvar.pool[i];
+                    line.push(`${DamageTypeText[i]} ${this.retvar.pool[i].toFixed(1)}`);
                 }
-            this.log.write(line.join(" "));
+            if (line.length>1) this.log.write(line.join(" "));
 
         }
         this.log.popKey();
+    }
+
+    calcDps() {
+        this.totalDamage = [0, 1, 3].reduce((x, y) => x + this.damagePool[y] + this.extraDamagePool[y], 0);
+        this.totalHeal = [2, 4].reduce((x, y) => x + this.damagePool[y] + this.extraDamagePool[y], 0);
+        this.extraDamage = [0, 1, 3].reduce((x, y) => x + this.extraDamagePool[y], 0);
+        this.extraHeal = [2, 4].reduce((x, y) => x + this.extraDamagePool[y], 0);
+      
+        this.log.write(`总伤害: ${this.totalDamage.toFixed(2)}`);
+        if (this.totalHeal != 0) log.write(`总治疗: ${this.totalHeal.toFixed(2)}`);
+      
+        var time = this.rotation.duration + this.rotation.stunDuration + this.rotation.prepDuration;
+        this.dps = this.totalDamage / time;
+        this.hps = this.totalHeal / time;
     }
 }
 
 class DpsCalculator {
     constructor() {        
-        this.states = {};
-        ["normal", "skill", "crit", "crit_skill"].forEach(k => {
-            this.states[x] = new DpsContext();
-        });
-        this.states["skill"].flags["skill"] = true;
-        this.states["crit"].flags["crit"] = true;
-        this.states["crit_skill"].flags["skill"] = true;
-        this.states["crit_skill"].flags["crit"] = true;
+        this.normal = new DpsContext();
+        this.skill = new DpsContext();
+        this.skill.flags.skill = true;
     }
 
-    forEachState(func) {
-        for (var k in this.states) func(this.states[k]);
-    }
-
-    setup(char, enemy=null, raidBuff=null) {
-        this.char = new CharAttribute();
+    setup(char, raidBuff=null) {
+        this.char = new Character();
         this.char.setChar(char);
-        this.enemy = enemy; // 计算过程中再交给具体的state
         this.raidBuff = raidBuff;
-        this.forEachState(st => {
-            st.setChar(char);
-            st.setRaidBuff(raidBuff);
-            st.calcBasicFrame();
-            st.makeBuffList();
+        [this.normal, this.skill].forEach (ctxt => {
+            ctxt.setChar(char);
+            ctxt.setRaidBuff(raidBuff);
+            ctxt.calcBasicFrame();
+            ctxt.makeBuffList();
         });
     }
 
-    calcFinalFrame() {
-        this.forEachState(st => {
-            // 叠加buff
-            st.updateBuffFrame();
-            // 根据当前buffFrame，计算攻击间隔和循环
-            st.calcAttackTime();
-            st.rotation = calcRotation(st);
-            // 叠加延迟计算(defer=True)的buff
-            st.updateBuffFrame();
-            // 计算最终面板
-            st.calcFinalFrame();
+    calcRotation() {
+        [this.normal, this.skill].forEach (ctxt => {
+            ctxt.updateBuffs();
+            ctxt.calcAttackTime();
+            ctxt.calcRotation();
+            ctxt.updateBuffs();
         });
     }
 
-    calcAttackDamage() {
-        this.forEachState(st => {
-            st.setEnemy(this.enemy);
+    applyEnemy(enemy=null) {
+        [this.normal, this.skill].forEach (ctxt => {
+            ctxt.setEnemy(enemy);
         });
     }
 
-    test() {
-        if (checkSpecs(this.char.charId, "note"))
-            this.log.note(_spec);
-        
-        console.log(this.buffList);
-        // 普攻
-        for (var b in this.buffList)
-            applyBuff(this, this.buffFrame, b, this.buffList[b]);
-        console.log("normal", this.buffFrame);
+    calcDps() {
+        [this.normal, this.skill].forEach (ctxt => {
+            ctxt.calcDamage();
+            ctxt.calcDps();
+        });
+        // todo: explain
+    }
 
-        var skillBuffFrame = initBuffFrame();
-        this.flags.skill = true;
-        // 技能
-        for (var b in this.buffList)
-            applyBuff(this, skillBuffFrame, b, this.buffList[b]);
-        console.log("skill", skillBuffFrame);
-        console.log("damageType", this.char.getDamageType());
+    calculateDps(char, enemy=null, raidBuff=null) {
+        this.setup(char, raidBuff);
+        this.calcRotation();
+        this.applyEnemy(enemy);
+        this.calcDps();
+
+        this.summary = {
+            character: this.skill.log.log.Character,
+            buffs: this.skill.buffList,
+            buffsLog: this.skill.log.log.applyBuff,
+            rotation: this.skill.rotation,
+            finalFrame: this.skill.attr.finalFrame,
+            totalDamage: this.skill.log.log.default
+        };
+        this.summary.damages = {};
+        [
+            "hitDamage", "critHitDamage", "hitCount", "critHitCount",
+            "totalDamage", "totalHeal", "damagePool", "extraDamagePool"
+        ].forEach(x => { this.summary.damages[x] = this.skill[x] });
     }
 }
 
-AKDATA.Dps = {
-    Log,
-    DpsState,
-};
-
-AKDATA.Dps.Actions = {
-    "tachr_185_frncat_1": {
-        "applyBuff": function () {
-            this.buffFrame.times = 1 + this.blackboard.prob;
-            this.writeBuff(`攻击次数 x ${this.buffFrame.times}`);
-            this.args.done = true;
-        },
-        "rotation": null,
-        "extradamage": null
-    }
-};
+AKDATA.Dps ||= {};
+Object.assign(AKDATA.Dps, { Log, DpsContext, DpsCalculator });
