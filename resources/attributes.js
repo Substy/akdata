@@ -1448,11 +1448,11 @@ function calculateAttack(charAttr, enemy, raidBlackboard, isSkill, charData, lev
   }
 
   // sec spec
-  if (checkSpecs(blackboard.id, "sec")) {
+  if (checkSpecs(blackboard.id, "sec") && isSkill) {
     finalFrame.baseAttackTime = 1;
     finalFrame.attackSpeed = 100;
     buffFrame.attackSpeed = 0;
-    if (isSkill) log.writeNote("每秒造成一次伤害/治疗");
+    log.writeNote("每秒造成一次伤害/治疗");
   }
 
   let realAttackTime = finalFrame.baseAttackTime * 100 / finalFrame.attackSpeed;
