@@ -1,0 +1,22 @@
+{
+  "name": "akdata",
+  "version": "2.0.0-alpha-1",
+  "description": "Arknights DPS calculator core",
+  "main": "akdata.js",
+  "scripts": {
+    "test": "node test.js"
+  },
+  "repository": {
+    "type": "git",
+    "url": "git+https://github.com/xulai1001/akdata.git"
+  },
+  "keywords": [
+    "Arknights"
+  ],
+  "author": "curran",
+  "license": "CC-BY-NC-SA-4.0",
+  "bugs": {
+    "url": "https://github.com/xulai1001/akdata/issues"
+  },
+  "homepage": "http://viktorlab.cn/akdata/"
+}
