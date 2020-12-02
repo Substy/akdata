@@ -1,12 +1,12 @@
-var actions = require("./dps_actions");
-var AKDATA = require("./loader");
+import * as actions from "./dps_actions.js"
+import * as AKDATA from "./loader.js"
 // ---- utils ----
 // public name cache
-_names = {};
+var _names = {};
 // public checkSpecs()/getBuff() cache
-_spec = false;
-_buff = null;
-_fps = 30;
+var _spec = false;
+var _buff = null;
+var _fps = 30;
 
 const AttributeKeys = [
     'atk',
@@ -804,9 +804,9 @@ class DpsContext {
         // 落地sp特判
         // 必须返回 { startSp: x }
         var startSp = spData.spCost - spData.initSp;
-        if (this.callSpecial(skillId, "rotation_startSp"), [{spData, blackboard}])
+        if (this.callSpecial(skillId, "rotation_startSp", [{spData, blackboard}])) {
             startSp = this.retvar.startSp;
-
+        }
         if (this.flags.skill) {
             rotationFlags.skill = true;
 
@@ -1173,6 +1173,7 @@ class DpsCalculator {
             character: this.skill.log.log.Character,
             buffs: this.skill.buffList,
             buffsLog: this.skill.log.log.applyBuff,
+            attackTime: this.skill.attackTime,
             rotation: this.skill.rotation,
             finalFrame: this.skill.attr.finalFrame,
             totalDamage: this.skill.log.log.default
@@ -1185,6 +1186,6 @@ class DpsCalculator {
     }
 }
 
-exports = module.exports = {
+export{
     Log, DpsContext, DpsCalculator
 };

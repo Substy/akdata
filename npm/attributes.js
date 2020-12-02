@@ -1,4 +1,4 @@
-var AKDATA = require("./loader");
+import * as AKDATA from "./loader.js"
 
 // 获取技能特判标记，存放在dps_specialtags.json中
 function checkSpecs(tag, spec) {
@@ -66,7 +66,7 @@ class NoLog {
 }
 
 // 天赋/技能名字cache
-displayNames = {};
+var displayNames = {};
 
 function calculateDps(char, enemy, raidBuff) {
   let log = new Log();
@@ -145,9 +145,9 @@ function calculateDps(char, enemy, raidBuff) {
   let normalAttack = calculateAttack(attr, enemy, raidBlackboard, false, charData, levelData, log);
   if (!normalAttack) return;
  
-  globalDps = Math.round((normalAttack.totalDamage + skillAttack.totalDamage) / 
+  var globalDps = Math.round((normalAttack.totalDamage + skillAttack.totalDamage) / 
                          (normalAttack.dur.duration + normalAttack.dur.stunDuration + skillAttack.dur.duration + skillAttack.dur.prepDuration));
-  globalHps = Math.round((normalAttack.totalHeal + skillAttack.totalHeal) /
+  var globalHps = Math.round((normalAttack.totalHeal + skillAttack.totalHeal) /
                          (normalAttack.dur.duration + normalAttack.dur.stunDuration + skillAttack.dur.duration + skillAttack.dur.prepDuration));
   //console.log(globalDps, globalHps);
   let killTime = 0;
@@ -1579,6 +1579,7 @@ function calculateAttack(charAttr, enemy, raidBlackboard, isSkill, charData, lev
 
   function calculateHitDamage(frame, scale) {
     let minRate = 0.05;
+    var ret = 0;
     if (buffList["tachr_144_red_1"]) minRate = buffList["tachr_144_red_1"].atk_scale;
     if (buffList["tachr_366_acdrop_1"]) {
       minRate = options.cond ? buffList["tachr_366_acdrop_1"].atk_scale_2 : buffList["tachr_366_acdrop_1"].atk_scale;
@@ -2199,7 +2200,7 @@ function applyPotential(charId, charData, rank, basic) {
   }
 }
 
-module.exports = {
+export {
   getCharAttributes,
   calculateDps,
   calculateDpsSeries
