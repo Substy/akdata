@@ -9,8 +9,7 @@ icon: bug
 
 jQuery: <span id="jquery">Error</span>
 
-<div id="vue">
-</div>
+<div id="vue"></div>
 
 如果不能正常显示，您可以换个浏览器试试。
 

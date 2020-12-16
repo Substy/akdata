@@ -5,6 +5,11 @@ order: 4
 category: 工具
 icon: info-circle
 ---
+## 20.12.16
+- [dpsv2] v2测试版页面开放
+- [issue] 已知问题：原版计算中，多数额外伤害没有计算damage_scale
+- [gamedata] 更新游戏数据，增加了角色头像
+
 ## 20.12.02
 - [dpsv2] 阶段性进展
 - [bugfix] 灼地等每秒计算的技能在叠加攻速团辅时应该仍然以1秒间隔计算

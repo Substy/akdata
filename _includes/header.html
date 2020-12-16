@@ -13,8 +13,8 @@
   <div class="l-header__body">
     <div class="l-header__logo">
       <a href="{{ gameHome | default: "/" | relative_url }}">
-  		  <img src="{{ site.logo | relative_url }}" alt="{{ site.logo }}">
-        <img src="/akdata/logo.png">
+          <div style="width:30%; float:left"><img src="{{ site.logo | relative_url }}" alt="{{ site.logo }}"></div>
+          <div style="width:70%; float:left;"><img src="/akdata/logo.png" style="width:100%; margin-top: 5px;"></div>
   		</a>
     </div>
     <div class="l-header__left">

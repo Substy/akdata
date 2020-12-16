@@ -3,7 +3,7 @@ let ua = navigator.userAgent;
 document.getElementById("user_agent").innerText = ua;
 
 $("#jquery").text($.fn.jquery);
-$("#vue").html("Vue: {{ error }} <br> <div v-html='content'></div>");
+$("#vue").html("Vue: {{ error }} <br> <div v-html='content' class='row'></div>");
 
 let vue_app = new Vue({
   el: "#vue",
@@ -18,7 +18,7 @@ function init() {
     'excel/char_patch_table.json',
     'excel/skill_table.json',
     '../version.json',
-    '../customdata/dps_specialtags.json',
+    '../customdata/dps_specialtags_v2.json',
     '../customdata/dps_options.json',
     '../resources/dps_actions.js',
     '../resources/dpsv2.js',
@@ -28,23 +28,52 @@ function init() {
 
 function load() {
   AKDATA.patchAllChars();
-  test_dps();
+  test_dps_all();
   //find_skills(x => x.indexOf("instant") >= 0);
 }
 
 pmBase.hook.on('init', init);
 
+function card(title, str) {
+  return `
+  <div class="card col-3">
+    <div class="card-header">
+      <div class="card-title mb-0">${title}</div>
+    </div>
+    ${str}
+  </div>`;
+}
+
 // dpsv2 test
 function test_dps() {
-  var charId = "char_185_frncat";
-  var skillId = 'skchr_frncat_2';
+  var ch = "char_126_shotst";
+  var sk = 'skchr_shotst_1';
+  var options = { cond: true };
   var dps = new AKDATA.Dps.DpsCalculator();
-  dps.calculateDps({ charId, skillId });
+  var char = { charId: ch, skillId: sk, options };
+  var enemy = { def: 200, magicResistance: 20, count: 1 };
+  vue_app.content = "";
+  console.log (`-- ${ch} - ${sk}`);
+  dps.calculateDps(char, enemy);
+  vue_app.content += card(`${ch} - ${sk}`, "<pre>" + JSON.stringify(dps.summary, null, 2) + "</pre>");
+}
 
-  vue_app.content = `<pre>
-  ${JSON.stringify(dps.summary, null, 2)}
-  </pre>`;
-  console.log(dps);
+function test_dps_all() {
+  vue_app.content = "";
+    Object.keys(AKDATA.Data.character_table).forEach(ch => {
+    var charData = AKDATA.Data.character_table[ch];
+    charData.skills.map(x => x.skillId).forEach(sk => {
+      var options = { cond: true };
+      var char = { charId: ch, skillId: sk, options };
+      var enemy = { def: 200, magicResistance: 20, count: 1 };
+      var dps = new AKDATA.Dps.DpsCalculator();
+      if (ch.startsWith("char")) { 
+        console.log (`-- ${ch} - ${sk}`);
+        dps.calculateDps(char, enemy);
+        vue_app.content += card(`${ch} - ${sk}`, "<pre>" + JSON.stringify(dps.summary, null, 2) + "</pre>");
+      }
+    });
+  });
 }
 
 function find_skills(filter) {

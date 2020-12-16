@@ -494,9 +494,9 @@ function buildArgs(info, enemy, raidBuff, key) {
   };
   info.options.forEach(x => { char_obj.options[x] = true; });
   let enemy_obj = {
-    def: parseFloat(enemy.def),
-    magicResistance: parseFloat(enemy.magicResistance),
-    count: parseFloat(enemy.count)
+    def: parseFloat(enemy.def) || 0,
+    magicResistance: parseFloat(enemy.magicResistance) || 0 ,
+    count: parseFloat(enemy.count) || 1
   };
   Object.keys(raidBuff).forEach(k => { raidBuff[k] = parseFloat(raidBuff[k]); });
   return {

@@ -54,5 +54,18 @@
 }
 
 .table th {
-    font-weight: 400;
+    font-weight: 600;
+}
+.card-header {
+    padding: 0.5rem 1.5rem!important;
+}
+.card-title {
+    font-weight: 600!important;
+}
+.card-body {
+    padding: 1rem 1.875rem!important;
+}
+
+h5 {
+    font-weight: 600!important;
 }

@@ -64,7 +64,7 @@ class NoLog {
 }
 
 // 天赋/技能名字cache
-displayNames = {};
+var displayNames = {};
 
 function calculateDps(char, enemy, raidBuff) {
   let log = new Log();
@@ -143,9 +143,9 @@ function calculateDps(char, enemy, raidBuff) {
   let normalAttack = calculateAttack(attr, enemy, raidBlackboard, false, charData, levelData, log);
   if (!normalAttack) return;
  
-  globalDps = Math.round((normalAttack.totalDamage + skillAttack.totalDamage) / 
+  var globalDps = Math.round((normalAttack.totalDamage + skillAttack.totalDamage) / 
                          (normalAttack.dur.duration + normalAttack.dur.stunDuration + skillAttack.dur.duration + skillAttack.dur.prepDuration));
-  globalHps = Math.round((normalAttack.totalHeal + skillAttack.totalHeal) /
+  var globalHps = Math.round((normalAttack.totalHeal + skillAttack.totalHeal) /
                          (normalAttack.dur.duration + normalAttack.dur.stunDuration + skillAttack.dur.duration + skillAttack.dur.prepDuration));
   //console.log(globalDps, globalHps);
   let killTime = 0;
@@ -871,6 +871,7 @@ function applyBuff(charAttr, buffFrm, tag, blackbd, isSkill, isCrit, log, enemy)
           } else if (skillId == "skchr_sophia_2") {
             blackboard.def *= ts;
             blackboard.attack_speed *= ts;
+            blackboard.max_target = basic.blockCnt;
             writeBuff("2技能 - 自身享受全部增益");
           }
         } else {
@@ -1272,7 +1273,7 @@ function calcDurations(isSkill, attackTime, attackSpeed, levelData, buffList, bu
       case 1: // 普通，前面已经算过一遍了，这里只特判
         let sp_rate = 1 + buffFrame.spRecoveryPerSec;
         if (buffList["tachr_002_amiya_1"]) { // 情绪吸收
-          attackCount = Math.ceil((spData.spCost - stunDuration) / (buffList["tachr_002_amiya_1"]["amiya_t_1[atk].sp"] + attackTime*sp_rate));
+          attackCount = Math.ceil((spData.spCost - stunDuration*sp_rate) / (buffList["tachr_002_amiya_1"]["amiya_t_1[atk].sp"] + attackTime*sp_rate));
           log.write(`[特殊] ${displayNames["tachr_002_amiya_1"]}: attack sp = ${attackCount * buffList["tachr_002_amiya_1"]["amiya_t_1[atk].sp"]}`);
           duration = attackCount * attackTime;
         } else if (buffList["tachr_134_ifrit_2"]) { // [莱茵回路]. 需要解出攻击次数
@@ -1486,7 +1487,7 @@ function calculateAttack(charAttr, enemy, raidBlackboard, isSkill, charData, lev
   if (isSkill && blackboard.id == "skchr_platnm_2") { // 白金
     let rate = (attackTime - 1) / (buffList["tachr_204_platnm_1"]["attack@max_delta"] - 1);
     // 熔断
-    rate = Math.min(Math.max(rate, 0), buffList["tachr_204_platnm_1"]["attack@max_delta"]);
+    rate = Math.min(Math.max(rate, 0), 1);
     buffFrame.atk_scale = 1 + rate * (buffList["tachr_204_platnm_1"]["attack@max_atk_scale"] - 1);
     finalFrame = getBuffedAttributes(basicFrame, buffFrame); // 重算
     log.write(`[特殊] ${displayNames["tachr_204_platnm_1"]}: atk_scale = ${buffFrame.atk_scale.toFixed(3)} (${(rate*100).toFixed(1)}%蓄力)`);
@@ -1680,7 +1681,7 @@ function calculateAttack(charAttr, enemy, raidBlackboard, isSkill, charData, lev
       switch (buffName) {
         // 伤害
         case "skchr_ethan_1":
-          pool[1] += bb["attack@poison_damage"] * dur.duration * (1-emrpct);
+          pool[1] += bb["attack@poison_damage"] * dur.duration * (1-emrpct) * ecount;
           break;
         case "skchr_aglina_2":
         case "skchr_aglina_3":
