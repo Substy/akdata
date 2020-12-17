@@ -679,11 +679,6 @@ function applyBuff(charAttr, buffFrm, tag, blackbd, isSkill, isCrit, log, enemy)
         buffFrame.maxTarget = 999;
         writeBuff(`最大目标数 = ${buffFrame.maxTarget}`);
         break;
-      case "skchr_kafka_2":
-        buffFrame.maxTarget = 999;
-        delete blackboard.atk_scale;
-        writeBuff(`最大目标数 = ${buffFrame.maxTarget}`);
-        break;
       case "skchr_durnar_2":
         buffFrame.maxTarget = 3;
         writeBuff(`最大目标数 = ${buffFrame.maxTarget}`);
@@ -941,6 +936,9 @@ function applyBuff(charAttr, buffFrm, tag, blackbd, isSkill, isCrit, log, enemy)
       case "tachr_214_kafka_1":
         if (isSkill) applyBuffDefault();
         done = true; break;
+      case "skchr_kafka_2":
+        delete blackboard.atk_scale;
+        break;
       case "skchr_f12yin_2":
         blackboard.def_scale = 1 + blackboard.def;
         delete blackboard.def;

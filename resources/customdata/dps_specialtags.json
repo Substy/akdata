@@ -99,6 +99,7 @@
     "skchr_ifrit_2":    { "cast_time": 39, "sim": true },
     "skchr_ifrit_3":	{ "reset_attack": true, "sec": true, "frame_corr": 0 },
     "skchr_jaksel_2":   { "note": "按最大反击速度计算" },
+    "skchr_kafka_1":    { "reset_attack": true },
     "skchr_kafka_2":    { "reset_attack": true },
     "skchr_lionhd_2":   { "reset_attack": "ogcd", "cast_time": 32 },
     "skchr_mantic_1":	{ "passive": true },
