@@ -86,6 +86,8 @@
         "char_423_blemsh":  [ "cond" ],
         "char_347_jaksel":  [ "cond" ],
         "char_436_whispr":  [ "ranged_penalty", "cond" ],
-        "char_1001_amiya2": [ "stack" ]
+        "char_1001_amiya2": [ "stack" ],
+        "char_440_pinecn":  [ "cond", "warmup" ],
+        "char_264_f12yin":  [ "crit" ]
     }
 }

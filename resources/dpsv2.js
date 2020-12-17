@@ -257,7 +257,7 @@ class Character {
 
 const InitBuffFrame = {
     atk_scale:  1,
-    def_scale:  1,
+    def_scale:  1,// 防御最终乘算数值
     heal_scale: 1,
     damage_scale:   1,
     maxTarget:  1,
@@ -273,6 +273,7 @@ const InitBuffFrame = {
     def:        0,
     attackSpeed:0,
     maxHp:      0,
+    prob:       0,      // 暴击率
     baseAttackTime: 0,
     spRecoveryPerSec: 0,
     minRate:    0.05,   // 抛光系数
@@ -334,6 +335,8 @@ class AttributeFrames {
             final.atk *= buffs.atk_scale;
         // 远程惩罚
         if (!buffs.no_ranged_penalty) final.atk *= buffs.ranged_penalty;
+        // 防御
+        final.def *= buffs.def_scale;
 
         this.finalFrame = final;
     }
@@ -575,10 +578,10 @@ class DpsContext {
         }
         else if (checkSpecs(buffKey, "stack") && !this.options.stack)
             return false;   // stack ~
-        else if (checkSpecs(buffKey, "crit") && !attr.crit)
-            return false;   // 有crit标签，但是当前状态不是计算暴击时不生效
-            // 不暴击依然触发的buff不应该添加crit标签
-
+        else if (checkSpecs(buffKey, "crit")) {
+            this.flags.has_crit = true; // 标记要计算暴击
+            return attr.crit;   // 有crit标签，但是当前状态不是计算暴击时不生效
+        }
         return true;
     }
 
@@ -674,13 +677,10 @@ class DpsContext {
         }
 
         // warmup prompt
-        if (this.options.warmup) this.log.note("多段暖机完成");
+        if (this.options.warmup && checkSpecs(buffKey, "multi_warmup")) this.log.note("多段暖机完成");
 
         // reflect prompt
         if (checkSpecs(buffKey, "reflect")) this.log.note("计算反射伤害，而非DPS");
-        
-        if (checkSpecs(buffKey, "crit"))
-            this.flags.has_crit = true; // 标记要计算暴击
 
         // original applyBuff
         for (var key in blackboard) {
@@ -756,7 +756,7 @@ class DpsContext {
                     } // 大于0时为增加自身魔抗，不计算
                     break;
                 case "prob":
-                    buffFrame.prob = blackboard[key];
+                    buffFrame.prob = Math.max(blackboard[key], buffFrame.prob);
                     this.writeBuff(`概率: ${Math.round(buffFrame.prob*100)}%`);
                     break;
                 // 计算值，非原始数据
@@ -959,6 +959,11 @@ class DpsContext {
                 duration = this.retvar.duration;
                 attackCount = this.retvar.attackCount;
                 if (this.retvar.rotationFlags) Object.assign(rotationFlags, this.retvar.rotationFlags);
+            } else if (checkSpecs(skillId, "toggle")) {
+                attackCount = Math.ceil(30 / attackTime);
+                duration = 30;
+                rotationFlags.toggle = true;
+                this.log.note("切换类技能 (以30s为参考计算)");
             } else if (levelData.description.includes("持续时间无限")) {
                 attackCount = Math.ceil(1800 / attackTime);
                 duration = attackCount * attackTime;
@@ -999,7 +1004,7 @@ class DpsContext {
                 } else {
                     this.log.note("瞬发");
                     rotationFlags.instant = true;
-                    attackCount = 1;
+                    attackCount = 1; duration = 1;
                     // 如果不是OGCD技能则需要占用一次普攻
                     if (!isOGCD) duration = attackTime;
                     // 技能动画时间处理
@@ -1098,7 +1103,12 @@ class DpsContext {
                             attackCount = Math.ceil(attackDuration / attackTime);
                             duration = attackCount * attackTime;
                             rotationFlags.instant = true;
-                        }
+                        } else if (checkSpecs(skillId, "toggle")) {
+                            attackCount = Math.ceil(30 / attackTime);
+                            duration = 30;
+                            rotationFlags.toggle = true;
+                            this.log.note("切换类技能 (以30s为参考计算)");
+                        } 
                         break;
                 } // switch
             } // else
@@ -1331,8 +1341,13 @@ class DpsCalculator {
         if (ret.s_rot.flags.attack) {
             ret.start = this.skill.rotation.startSp;
         }
-        ret.note = [...(ret.s_log.note || []), ...(ret.n_log.note || [])];
-        
+        ret.note = [];
+        if (ret.s_log.note) ret.s_log.note.forEach(x => {
+            if (!ret.note.includes(x)) ret.note.push(x);
+        });
+        if (ret.n_log.note) ret.n_log.note.forEach(x => {
+            if (!ret.note.includes(x)) ret.note.push(x);
+        });
         return ret;
     }
 

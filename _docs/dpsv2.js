@@ -165,8 +165,9 @@ let page_html = `
                   {{ explainChar(x).name }}
                   <button type="button" class="button btn-outline-danger ml-2 rounded" style="font-size: small" @click="delChar(index)">删除</button>
                 </h5>
+                <b>{{ explainChar(x).skillStr }}</b><br>
                 {{ explainChar(x).levelStr }}<br>
-                {{ explainChar(x).skillStr }}<br>
+                
                 <div v-html="explainChar(x).option"></div>
               </div>
             </div>  <!-- media -->
@@ -341,7 +342,7 @@ function load() {
       explainChar: function(char) {
         // { charId, phase: 2, level: 90, potential: 5, skillId: "-", skillLevel: 9, options: [] }
         // console.log(char, char.options);
-        var levelStr = `精${char.phase} ${char.level}级, 潜能${char.potential+1}, `;
+        var levelStr = `精${char.phase} ${char.level}级, 潜能${char.potential+1} `;
         var skillStr = skillDB[char.skillId] ? `${skillDB[char.skillId].levels[0].name} 等级${char.skillLevel+1}` : "";
         var arr = char.options.map(x => optionDB.tags[x].displaytext);
         if (arr.includes("计算团辅"))
@@ -360,14 +361,17 @@ function load() {
         this.details.phase = phases-1;
         this.setPhase();
 
-        var opts = (optionDB.char[this.charId] || []).map(
-          x => ({ tag: x, text: optionDB.tags[x].displaytext })
-        );
+        var opts = [];
+        optionDB.char[this.charId].forEach(x => {
+          if (x != "crit")
+            opts.push({ tag: x, text: optionDB.tags[x].displaytext });
+        });
         opts.push({ tag: "buff", text: "计算团辅"});
         var sel_opts = [];
         opts.forEach(x => {
           if (x.tag != "token") sel_opts.push(x.tag);         
         });
+        sel_opts.push("crit");
         this.opt_options = opts;
         this.details.options = sel_opts;
       },

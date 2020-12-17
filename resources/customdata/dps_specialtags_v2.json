@@ -31,12 +31,13 @@
     "char_242_otter":   { "token": "token_10004_otter_motter", "token_damage_type": "0" },
     "char_400_weedy":   { "token": "token_10009_weedy_cannon" },
     "char_411_tomimi":  { "frame_corr": 1 },
+    "char_451_robin":   { "note": "计算结果调整中", "token": "token_10013_robin_mine" },
     "skchr_absin_2":    { "reset_attack": true },
     "skchr_acdrop_2":   { "reset_attack": true, "times": 2 }, 
     "skchr_aglina_1":   { "reset_attack": true, "attack_begin": 19 },
     "skchr_aglina_2":   { "attack_begin": 10 },
     "skchr_aglina_3":	  { "attack_begin": 23 },
-    "skchr_amgoat_1":   { "alias": [
+    "skchr_amgoat_1":   { "multi_warmup": true, "alias": [
                             { "key": "atk", "option_key": "warmup", "alias_on_true": "amgoat_s_1[b].atk" },
                             { "key": "attack_speed", "option_key": "warmup",
                               "alias_on_true": "amgoat_s_1[b].attack_speed", "alias_on_false": "amgoat_s_1[a].attack_speed" }
@@ -97,6 +98,8 @@
     "skchr_ethan_1":	  { "passive": true },
     "skchr_excu_1":     { "reset_attack": true, "attack_begin": 23, "masked": [ "atk_scale" ] },
     "skchr_excu_2":	    { "attack_begin": 23, "times": 2 },
+    "skchr_f12yin_2":   { "toggle": true, "max_target": 2 }, 
+    "skchr_f12yin_3":   { "times": 2, "alias": [{ "key": "prob", "alias": "talent@prob" }] }, 
     "skchr_finlpp_1":   { "reset_attack": "ogcd", "cast_time": 40, "attack_begin": 17, "no_ranged_penalty": true },
     "skchr_finlpp_2":   { "attack_begin": 11, "frame_corr": 1 },
     "skchr_flint_2":    { "note": "阻挡0，天赋一定触发"},
@@ -125,6 +128,7 @@
     "skchr_ifrit_2":    { "cast_time": 39, "sim": true, "alias": [{ "key": "edef", "alias": "def" }] },
     "skchr_ifrit_3":	  { "reset_attack": true, "sec": true, "frame_corr": 0 },
     "skchr_jaksel_2":   { "note": "按最大反击速度计算" },
+    "skchr_kafka_2":    { "max_target": "aoe", "reset_attack": true, "masked": [ "atk_scale" ] },
     "skchr_lionhd_2":   { "reset_attack": "ogcd", "cast_time": 32 },
     "skchr_liskam_2":   { "alias": [{ "key": "stunDuration", "alias": "stun" }] },
     "skchr_mantic_1":	  { "passive": true },
@@ -157,6 +161,13 @@
     "skchr_peacok_2":   { "cast_time": 45, "frame_corr": -15, "damage_type": "0" },
     "skchr_phatom_2":   { "grad": true },
     "skchr_phatom_3":   { "max_target": "aoe" },
+    "skchr_pinecn_1":   { "reset_attack": "ogcd", "alias": [
+                          {"key": "edef_pene", "alias": "def_penetrate_fixed"}
+                        ] },
+    "skchr_pinecn_2":   { "multi_warmup": true, "reset_attack": true, "note": "特性必定生效", "alias": [
+                            { "key": "atk", "option_key": "warmup",
+                              "alias_on_true": "pinecn_s_2[d].atk", "alias_on_false": "pinecn_s_2[a].atk" }
+                        ] },
     "skchr_poca_3":     { "sec": true},
     "skchr_podego_1":   { "reset_attack": true },
     "skchr_podego_2":   { "reset_attack": "ogcd", "cast_time": 33 },
@@ -192,7 +203,7 @@
     "skchr_surtr_2":    { "enemy": true },
     "skchr_surtr_3":    { "damage_type": 1, "masked": ["hp_ratio"] },
     "skchr_svrash_1":   { "no_ranged_penalty": true },
-    "skchr_svrash_2":   { "no_ranged_penalty": true },
+    "skchr_svrash_2":   { "no_ranged_penalty": true, "toggle": true },
     "skchr_svrash_3":   { "no_ranged_penalty": true },
     "skchr_swire_1":    { "masked": [ "atk" ] },
     "skchr_swllow_1":   { "sim": true, "times": 2 },
@@ -200,7 +211,7 @@
     "skchr_tiger_1":    { "alias": [{"key": "edef_pene_scale", "alias": "def_penetrate"}] },
     "skchr_texas_2":    { "cast_time": 65, "times": 2, "max_target": "aoe" },
     "skchr_thorns_2":   { "reset_attack": true },
-    "skchr_thorns_3":   { "reset_attack": true, "no_ranged_penalty": true, "alias": [
+    "skchr_thorns_3":   { "multi_warmup": true, "reset_attack": true, "no_ranged_penalty": true, "alias": [
                             { "key": "atk", "option_key": "warmup", "alias_on_true": "thorns_s_3[b].atk" },
                             { "key": "attack_speed", "option_key": "warmup", "alias_on_true": "thorns_s_3[b].attack_speed" }
                         ] },
@@ -228,7 +239,7 @@
     "tachr_131_flameb_1":	  { "stack": true },
     "tachr_137_brownb_1":	  { "stack": true },
     "tachr_140_whitew_trait":	{ "ranged_penalty": true },
-    "tachr_145_prove_1":	  { "cond": true, "crit": true, "alias": [{
+    "tachr_145_prove_1":	  { "crit": true, "alias": [{
                               "key": "prob", "option_key": "cond", "alias_on_true": "prob2"  
                             }] },
     "tachr_149_scave_1":	  { "cond": true },
@@ -259,6 +270,7 @@
     "tachr_230_savage_1":	  { "cond": true },
     "tachr_243_waaifu_1":	  { "crit": true },
     "tachr_252_bibeak_1":   { "stack": true },
+    "tachr_264_f12yin_1":   { "crit": true, "masked": ["atk"] },
     "tachr_271_spikes_1":   { "cond": true }, 
     "tachr_272_strong_1":   { "cond": true },   
     "tachr_274_astesi_1":	  { "stack": true },
@@ -308,6 +320,7 @@
     "tachr_423_blemsh_2":   { "cond": true },
     "tachr_436_whispr_trait": { "ranged_penalty": true },
     "tachr_436_whispr_1":   { "cond": true },
+    "tachr_440_pinecn_1":   { "cond": true },
     "tachr_503_rang_1":	    { "cond": true },
     "tachr_509_acast_1":    { "alias": [{ "key": "emr_pene", "alias": "magic_resist_penetrate_fixed" }] },
     "tachr_511_asnipe_1":   { "crit": true }

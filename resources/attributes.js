@@ -421,10 +421,22 @@ function applyBuff(charAttr, buffFrm, tag, blackbd, isSkill, isCrit, log, enemy)
           delete blackboard["heal_scale"];
           applyBuffDefault(); break;
         case "tachr_279_excu_trait":
-          if (isSkill && skillId == "skchr_excu_1") applyBuffDefault();
+          if (isSkill && skillId == "skchr_excu_1") {
+            log.writeNote("技能享受特性加成");
+            applyBuffDefault();
+          }
+          break;
+        case "tachr_440_pinecn_trait":
+          if (isSkill && skillId == "skchr_pinecn_2") {
+            log.writeNote("技能享受特性加成");
+            applyBuffDefault();
+          }
           break;
         case "tachr_113_cqbw_2":  // W: 技能眩晕必定有天赋加成
-          if (isSkill) applyBuffDefault();
+          if (isSkill) {
+            log.writeNote("技能享受天赋加成");
+            applyBuffDefault();
+          }
           break;
       };
       done = true;
@@ -529,6 +541,7 @@ function applyBuff(charAttr, buffFrm, tag, blackbd, isSkill, isCrit, log, enemy)
         break;
       case "tachr_279_excu_1": // 送葬
       case "tachr_391_rosmon_1":
+      case "skchr_pinecn_1":
         blackboard.edef_pene = blackboard["def_penetrate_fixed"];
         break;
       case "tachr_373_lionhd_1":  // 莱恩哈特
@@ -634,6 +647,15 @@ function applyBuff(charAttr, buffFrm, tag, blackbd, isSkill, isCrit, log, enemy)
           if (isSkill) log.writeNote(`技能不受距离惩罚`);
         }
         break;
+      case "skchr_pinecn_2":
+        if (options.warmup) {
+          blackboard.atk = blackboard['pinecn_s_2[d].atk'];
+          if (isSkill) log.writeNote("按攻击力叠满计算");
+        } else {
+          blackboard.atk = blackboard['pinecn_s_2[a].atk'];
+          if (isSkill) log.writeNote("首次启动时");
+        }
+        break;
       case "skchr_amgoat_2":
         blackboard.atk_scale = blackboard.fk;
         break;
@@ -655,6 +677,11 @@ function applyBuff(charAttr, buffFrm, tag, blackbd, isSkill, isCrit, log, enemy)
       case "skchr_chiave_2":
       case "skchr_mudrok_2":
         buffFrame.maxTarget = 999;
+        writeBuff(`最大目标数 = ${buffFrame.maxTarget}`);
+        break;
+      case "skchr_kafka_2":
+        buffFrame.maxTarget = 999;
+        delete blackboard.atk_scale;
         writeBuff(`最大目标数 = ${buffFrame.maxTarget}`);
         break;
       case "skchr_durnar_2":
@@ -761,13 +788,20 @@ function applyBuff(charAttr, buffFrm, tag, blackbd, isSkill, isCrit, log, enemy)
         delete blackboard.atk_scale;  // 断崖2记为额外伤害
       case "skchr_ayer_1":
       case "skchr_svrash_2":
-      case "skchr_svrash_3":
       case "skchr_svrash_1":
       case "skchr_frostl_1":
         if (options.ranged_penalty) {
           buffFrame.atk_scale = 1;
           if (isSkill) log.writeNote(`技能不受距离惩罚`);
         }
+        break;
+      case "skchr_svrash_3":
+        if (options.ranged_penalty) {
+          buffFrame.atk_scale = 1;
+          if (isSkill) log.writeNote(`技能不受距离惩罚`);
+        }
+        blackboard.def_scale = 1 + blackboard.def;
+        delete blackboard.def;
         break;
       case "skchr_ceylon_1":
         if (options.ranged_penalty) {
@@ -903,6 +937,19 @@ function applyBuff(charAttr, buffFrm, tag, blackbd, isSkill, isCrit, log, enemy)
           log.writeNote("斩击伤害全部以叠满计算");
           log.writeNote("包括前三刀");
         }
+        break;
+      case "tachr_214_kafka_1":
+        if (isSkill) applyBuffDefault();
+        done = true; break;
+      case "skchr_f12yin_2":
+        blackboard.def_scale = 1 + blackboard.def;
+        delete blackboard.def;
+        break;
+      case "skchr_f12yin_3":
+        blackboard.prob_override = blackboard["talent@prob"];
+        break;
+      case "tachr_264_f12yin_1":
+        delete blackboard.atk;
         break;
     }
   }
@@ -1108,7 +1155,12 @@ function calcDurations(isSkill, attackTime, attackSpeed, levelData, buffList, bu
       else log.writeNote(`技能前摇: ${t.toFixed(3)}s`);
     }
     // 技能类型
-    if (levelData.description.includes("持续时间无限")) {
+    if (checkSpecs(skillId, "toggle")) {
+      attackCount = Math.ceil(30 / attackTime);
+      duration = 30;
+      tags.push("toggle");
+      log.writeNote("切换类技能 (以30s为参考计算)");
+    } else if (levelData.description.includes("持续时间无限")) {
       if (skillId == "skchr_thorns_3" && !options.warmup) {}
       else if (skillId == "skchr_surtr_3") {
         var lock_time = buffList["tachr_350_surtr_2"]["surtr_t_2[withdraw].interval"];
@@ -1308,6 +1360,11 @@ function calcDurations(isSkill, attackTime, attackSpeed, levelData, buffList, bu
           attackCount = Math.ceil(attackDuration / attackTime);
           duration = attackDuration;
           log.write(`[特殊] ${displayNames["tachr_400_weedy_2"]}: 使用${m+1}个水炮, 充能sp=${m * 6 + c}`);
+        } else if (checkSpecs(skillId, "toggle")) {
+          attackCount = Math.ceil(30 / attackTime);
+          duration = 30;
+          tags.push("toggle");
+          //log.writeNote("切换类技能 (以30s为参考计算)");
         }
         break;
         // todo: cast time
@@ -1927,6 +1984,15 @@ function calculateAttack(charAttr, enemy, raidBlackboard, isSkill, charData, lev
         log.write(`[斩击] 法术伤害 ${arts_dmg.toFixed(1)}, 命中 9, 真实伤害 ${real_atk.toFixed(1)}, 命中 1`);
         pool[1] += arts_dmg * 9;
         pool[3] += real_atk;
+        break;
+      case "skchr_kafka_1":
+        log.write(`[特殊] ${displayNames[buffName]}: 直接伤害为0 （以上计算无效）, 效果持续${bb.duration}秒`);
+        damage = finalFrame.atk * (1-emrpct) * enemy.count;
+        pool[1] = damage; damagePool[1] = 0;
+        break;
+      case "skchr_kafka_2":
+        damage = finalFrame.atk * bb.atk_scale * (1-emrpct) * enemy.count;
+        pool[1] = damage;
         break;
     }; // switch
 

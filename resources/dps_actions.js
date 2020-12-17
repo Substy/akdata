@@ -269,6 +269,13 @@ AKDATA.Dps.Actions = {
         applyBuff: function (_, __) { return { done: !this.options.token }; }
     },
     skchr_elysm_2: { skill_duration: common.noAttack },
+    skchr_f12yin_2: {   
+        applyBuff: function (_, blackboard) {
+            blackboard.def_scale = 1 + blackboard.def;  // 防御为负数，但是是最终乘算
+            delete blackboard.def;
+            return { done: false };
+        }
+    },
     skchr_finlpp_2: { applyBuff: common.baseAttackTimeMultiply },
     skchr_folivo_1: {
         applyBuff: function (_, __) { return { done: !this.options.token }; }
@@ -328,6 +335,13 @@ AKDATA.Dps.Actions = {
         }
     },
     skchr_jaksel_2: { applyBuff: common.baseAttackTimeMultiply },
+    skchr_kafka_1: {
+        skill_duration: function(args) { return { duration: args.blackboard.duration, attackCount: 0}; },
+        extraDamage: function(args) { return this.attr.calcDamagePool(args.finalFrame.atk, args.enemy.count); }
+    },
+    skchr_kafka_2: {
+        extraDamage: function(args) { return this.attr.calcDamagePool(args.finalFrame.atk * args.blackboard.atk_scale, args.enemy.count); }
+    },
     skchr_lisa_3: {
         skill_duration: common.noAttack,
         extraDamage: function(args) { // HoT
@@ -453,6 +467,13 @@ AKDATA.Dps.Actions = {
         extraDamage: function(args) {
             var heal = this.damagePool[0] * args.blackboard.scale;
             return { pool: [0, 0, heal, 0, 0] };
+        }
+    },
+    skchr_svrash_3: {   
+        applyBuff: function (_, blackboard) {
+            blackboard.def_scale = 1 + blackboard.def;  // 防御为负数，但是是最终乘算
+            delete blackboard.def;
+            return { done: false };
         }
     },
     skchr_sunbr_2: {
@@ -788,6 +809,7 @@ AKDATA.Dps.Actions = {
             return { done: false };
         }
     },
+    tachr_214_kafka_1: { applyBuff: function (_, __) { return { done: !this.flags.skill }; } },
     tachr_215_mantic_1: { // defer: rotation计算后再判定
         applyBuff: function (_, blackboard) {
             return { done: !(this.rotation.attackTime >= blackboard.delay) }; 
@@ -1059,6 +1081,15 @@ AKDATA.Dps.Actions = {
             } else this.log.note("假设天赋一直生效");
             this.log.note("天赋可以治疗召唤物");
             return { pool: [0, 0, total, 0, 0] };
+        }
+    },
+    tachr_440_pinecn_trait: {
+        applyBuff: function (_, __) {
+            if (this.options.cond || 
+                (this.flags.skill && this.skillId == "skchr_pinecn_2"))
+                return { done: false }; // 勾选触发 或者2技能期间生效
+            else
+                return { done: true };
         }
     },
 };
