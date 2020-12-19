@@ -941,6 +941,7 @@ function applyBuff(charAttr, buffFrm, tag, blackbd, isSkill, isCrit, log, enemy)
         break;
       case "skchr_f12yin_2":
         blackboard.def_scale = 1 + blackboard.def;
+        buffFrame.maxTarget = 2;
         delete blackboard.def;
         break;
       case "skchr_f12yin_3":

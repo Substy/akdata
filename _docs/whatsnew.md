@@ -5,6 +5,10 @@ order: 4
 category: 工具
 icon: info-circle
 ---
+## 20.12.20
+- [temp] 补充新干员临时头像
+- [bugfix] v1山2技能目标数
+
 ## 20.12.17
 - [update] 更新：山等
 - [dps] 优化了切换类技能的循环计算方式
