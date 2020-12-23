@@ -1,5 +1,6 @@
 #encoding: utf-8
-import json, urllib.request, os, sys, time
+import json, urllib.request, os, sys, time, random
+from fake_useragent import UserAgent
 
 gamedata_path = "../../resources/gamedata/excel"
 f = open(gamedata_path + "/character_table.json", "r", encoding="utf-8")
@@ -11,10 +12,12 @@ total = len(names)
 success = 0
 skip = 0
 error = 0
+fua = UserAgent()
 
 for ch in names:
     filename = "char/%s.png" % ch
     url = "https://andata.somedata.top/dataX/char/profile/%s.png" % ch
+    headers = { "User-Agent": fua.random, "Referer": "arknights-data.oss-cn-beijing.aliyuncs.com" }
     sys.stdout.write("%s ..." % ch)
     if (os.path.exists(filename)):
         print("skipped")

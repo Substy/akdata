@@ -950,6 +950,9 @@ function applyBuff(charAttr, buffFrm, tag, blackbd, isSkill, isCrit, log, enemy)
       case "tachr_264_f12yin_1":
         delete blackboard.atk;
         break;
+      case "tachr_264_f12yin_2":
+        delete blackboard.prob;
+        break;
     }
   }
   
