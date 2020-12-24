@@ -216,6 +216,7 @@ let page_html = `
             </div>
           </div> <!-- v-for -->
     </div>
+    请点击上方的蓝色“+”加号添加干员
   </div> <!-- card -->
     
   <!--

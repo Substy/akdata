@@ -5,8 +5,9 @@ order: 4
 category: 工具
 icon: info-circle
 ---
-## 20.12.23
+## 20.12.23-24
 - [bugfix-v1] 山暴击率
+- [customdata] 添加近卫阿米娅和42的抬手数据
 
 ## 20.12.20
 - [temp] 补充新干员临时头像
