@@ -19,5 +19,9 @@
   "bugs": {
     "url": "https://github.com/xulai1001/akdata/issues"
   },
-  "homepage": "http://viktorlab.cn/akdata/"
+  "homepage": "http://viktorlab.cn/akdata/",
+  "dependencies": {
+    "@babel/cli": "^7.12.10",
+    "@babel/core": "^7.12.10"
+  }
 }

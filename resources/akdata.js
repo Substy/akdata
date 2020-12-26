@@ -1,4 +1,4 @@
-﻿const stringRegex = /<@(.+?)>(.+?)<\/>/g;
+const stringRegex = /<@(.+?)>(.+?)<\/>/g;
 const variableRegex = /{(\-)*(.+?)(?:\:(.+?))?}/g;
 
 let CacheList = null;
