@@ -45,3 +45,6 @@ defaults:
       type: "docs"
     values:
       layout: "page"
+
+exclude:
+  - npm

@@ -5,8 +5,9 @@ order: 4
 category: 工具
 icon: info-circle
 ---
-## 20.12.23-24
+## 20.12.23-27
 - [bugfix-v1] 山暴击率
+- [dpsv2] 修正js依赖问题，干员头像升级(由PRTS Wiki提供数据支持)，现在手机可以看到结果了。
 - [customdata] 添加近卫阿米娅和42的抬手数据
 
 ## 20.12.20

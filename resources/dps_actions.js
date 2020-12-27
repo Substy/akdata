@@ -1,7 +1,7 @@
 // 格式化带符号数字
 function _num(x, n=1) { return (x>0 ? "+":"") + x.toFixed(n); }
 
-AKDATA.Dps ||= {};
+if (!AKDATA.Dps) AKDATA.Dps = {};
 
 var common = {
     baseAttackTimeAddition: function (attr, blackboard) {

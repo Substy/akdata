@@ -21,8 +21,8 @@ function init() {
     '../version.json',
     '../customdata/dps_specialtags_v2.json',
     '../customdata/dps_options.json',
-    '../resources/dps_actions.js',
-    '../resources/dpsv2.js'
+    '../resources/dpsv2.js',
+    '../resources/dps_actions.js'
   ], load);
 }
 
