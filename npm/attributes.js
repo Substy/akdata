@@ -423,10 +423,22 @@ function applyBuff(charAttr, buffFrm, tag, blackbd, isSkill, isCrit, log, enemy)
           delete blackboard["heal_scale"];
           applyBuffDefault(); break;
         case "tachr_279_excu_trait":
-          if (isSkill && skillId == "skchr_excu_1") applyBuffDefault();
+          if (isSkill && skillId == "skchr_excu_1") {
+            log.writeNote("技能享受特性加成");
+            applyBuffDefault();
+          }
+          break;
+        case "tachr_440_pinecn_trait":
+          if (isSkill && skillId == "skchr_pinecn_2") {
+            log.writeNote("技能享受特性加成");
+            applyBuffDefault();
+          }
           break;
         case "tachr_113_cqbw_2":  // W: 技能眩晕必定有天赋加成
-          if (isSkill) applyBuffDefault();
+          if (isSkill) {
+            log.writeNote("技能享受天赋加成");
+            applyBuffDefault();
+          }
           break;
       };
       done = true;
@@ -531,6 +543,7 @@ function applyBuff(charAttr, buffFrm, tag, blackbd, isSkill, isCrit, log, enemy)
         break;
       case "tachr_279_excu_1": // 送葬
       case "tachr_391_rosmon_1":
+      case "skchr_pinecn_1":
         blackboard.edef_pene = blackboard["def_penetrate_fixed"];
         break;
       case "tachr_373_lionhd_1":  // 莱恩哈特
@@ -634,6 +647,15 @@ function applyBuff(charAttr, buffFrm, tag, blackbd, isSkill, isCrit, log, enemy)
         if (options.ranged_penalty) {
           buffFrame.atk_scale = 1;
           if (isSkill) log.writeNote(`技能不受距离惩罚`);
+        }
+        break;
+      case "skchr_pinecn_2":
+        if (options.warmup) {
+          blackboard.atk = blackboard['pinecn_s_2[d].atk'];
+          if (isSkill) log.writeNote("按攻击力叠满计算");
+        } else {
+          blackboard.atk = blackboard['pinecn_s_2[a].atk'];
+          if (isSkill) log.writeNote("首次启动时");
         }
         break;
       case "skchr_amgoat_2":
@@ -763,13 +785,20 @@ function applyBuff(charAttr, buffFrm, tag, blackbd, isSkill, isCrit, log, enemy)
         delete blackboard.atk_scale;  // 断崖2记为额外伤害
       case "skchr_ayer_1":
       case "skchr_svrash_2":
-      case "skchr_svrash_3":
       case "skchr_svrash_1":
       case "skchr_frostl_1":
         if (options.ranged_penalty) {
           buffFrame.atk_scale = 1;
           if (isSkill) log.writeNote(`技能不受距离惩罚`);
         }
+        break;
+      case "skchr_svrash_3":
+        if (options.ranged_penalty) {
+          buffFrame.atk_scale = 1;
+          if (isSkill) log.writeNote(`技能不受距离惩罚`);
+        }
+        blackboard.def_scale = 1 + blackboard.def;
+        delete blackboard.def;
         break;
       case "skchr_ceylon_1":
         if (options.ranged_penalty) {
@@ -873,6 +902,7 @@ function applyBuff(charAttr, buffFrm, tag, blackbd, isSkill, isCrit, log, enemy)
           } else if (skillId == "skchr_sophia_2") {
             blackboard.def *= ts;
             blackboard.attack_speed *= ts;
+            blackboard.max_target = basic.blockCnt;
             writeBuff("2技能 - 自身享受全部增益");
           }
         } else {
@@ -904,6 +934,26 @@ function applyBuff(charAttr, buffFrm, tag, blackbd, isSkill, isCrit, log, enemy)
           log.writeNote("斩击伤害全部以叠满计算");
           log.writeNote("包括前三刀");
         }
+        break;
+      case "tachr_214_kafka_1":
+        if (isSkill) applyBuffDefault();
+        done = true; break;
+      case "skchr_kafka_2":
+        delete blackboard.atk_scale;
+        break;
+      case "skchr_f12yin_2":
+        blackboard.def_scale = 1 + blackboard.def;
+        buffFrame.maxTarget = 2;
+        delete blackboard.def;
+        break;
+      case "skchr_f12yin_3":
+        blackboard.prob_override = blackboard["talent@prob"];
+        break;
+      case "tachr_264_f12yin_1":
+        delete blackboard.atk;
+        break;
+      case "tachr_264_f12yin_2":
+        delete blackboard.prob;
         break;
     }
   }
@@ -1081,7 +1131,9 @@ function calcDurations(isSkill, attackTime, attackSpeed, levelData, buffList, bu
     if (skillId == "skchr_mudrok_3") {
       prepDuration = blackboard.sleep;
     } else if (skillId == "skchr_amiya2_2") {
-      prepDuration = 3;
+      prepDuration = 3.33;
+    } else if (skillId == "skchr_surtr_3") {
+      prepDuration = 0.67;
     }
 
     // 快速估算
@@ -1109,7 +1161,12 @@ function calcDurations(isSkill, attackTime, attackSpeed, levelData, buffList, bu
       else log.writeNote(`技能前摇: ${t.toFixed(3)}s`);
     }
     // 技能类型
-    if (levelData.description.includes("持续时间无限")) {
+    if (checkSpecs(skillId, "toggle")) {
+      attackCount = Math.ceil(30 / attackTime);
+      duration = 30;
+      tags.push("toggle");
+      log.writeNote("切换类技能 (以30s为参考计算)");
+    } else if (levelData.description.includes("持续时间无限")) {
       if (skillId == "skchr_thorns_3" && !options.warmup) {}
       else if (skillId == "skchr_surtr_3") {
         var lock_time = buffList["tachr_350_surtr_2"]["surtr_t_2[withdraw].interval"];
@@ -1274,7 +1331,7 @@ function calcDurations(isSkill, attackTime, attackSpeed, levelData, buffList, bu
       case 1: // 普通，前面已经算过一遍了，这里只特判
         let sp_rate = 1 + buffFrame.spRecoveryPerSec;
         if (buffList["tachr_002_amiya_1"]) { // 情绪吸收
-          attackCount = Math.ceil((spData.spCost - stunDuration) / (buffList["tachr_002_amiya_1"]["amiya_t_1[atk].sp"] + attackTime*sp_rate));
+          attackCount = Math.ceil((spData.spCost - stunDuration*sp_rate) / (buffList["tachr_002_amiya_1"]["amiya_t_1[atk].sp"] + attackTime*sp_rate));
           log.write(`[特殊] ${displayNames["tachr_002_amiya_1"]}: attack sp = ${attackCount * buffList["tachr_002_amiya_1"]["amiya_t_1[atk].sp"]}`);
           duration = attackCount * attackTime;
         } else if (buffList["tachr_134_ifrit_2"]) { // [莱茵回路]. 需要解出攻击次数
@@ -1309,6 +1366,11 @@ function calcDurations(isSkill, attackTime, attackSpeed, levelData, buffList, bu
           attackCount = Math.ceil(attackDuration / attackTime);
           duration = attackDuration;
           log.write(`[特殊] ${displayNames["tachr_400_weedy_2"]}: 使用${m+1}个水炮, 充能sp=${m * 6 + c}`);
+        } else if (checkSpecs(skillId, "toggle")) {
+          attackCount = Math.ceil(30 / attackTime);
+          duration = 30;
+          tags.push("toggle");
+          //log.writeNote("切换类技能 (以30s为参考计算)");
         }
         break;
         // todo: cast time
@@ -1488,7 +1550,7 @@ function calculateAttack(charAttr, enemy, raidBlackboard, isSkill, charData, lev
   if (isSkill && blackboard.id == "skchr_platnm_2") { // 白金
     let rate = (attackTime - 1) / (buffList["tachr_204_platnm_1"]["attack@max_delta"] - 1);
     // 熔断
-    rate = Math.min(Math.max(rate, 0), buffList["tachr_204_platnm_1"]["attack@max_delta"]);
+    rate = Math.min(Math.max(rate, 0), 1);
     buffFrame.atk_scale = 1 + rate * (buffList["tachr_204_platnm_1"]["attack@max_atk_scale"] - 1);
     finalFrame = getBuffedAttributes(basicFrame, buffFrame); // 重算
     log.write(`[特殊] ${displayNames["tachr_204_platnm_1"]}: atk_scale = ${buffFrame.atk_scale.toFixed(3)} (${(rate*100).toFixed(1)}%蓄力)`);
@@ -1578,8 +1640,7 @@ function calculateAttack(charAttr, enemy, raidBlackboard, isSkill, charData, lev
   let move = 0;
 
   function calculateHitDamage(frame, scale) {
-    let minRate = 0.05;
-    var ret = 0;
+    let minRate = 0.05, ret = 0;
     if (buffList["tachr_144_red_1"]) minRate = buffList["tachr_144_red_1"].atk_scale;
     if (buffList["tachr_366_acdrop_1"]) {
       minRate = options.cond ? buffList["tachr_366_acdrop_1"].atk_scale_2 : buffList["tachr_366_acdrop_1"].atk_scale;
@@ -1683,7 +1744,7 @@ function calculateAttack(charAttr, enemy, raidBlackboard, isSkill, charData, lev
       switch (buffName) {
         // 伤害
         case "skchr_ethan_1":
-          pool[1] += bb["attack@poison_damage"] * dur.duration * (1-emrpct);
+          pool[1] += bb["attack@poison_damage"] * dur.duration * (1-emrpct) * ecount;
           break;
         case "skchr_aglina_2":
         case "skchr_aglina_3":
@@ -1929,6 +1990,15 @@ function calculateAttack(charAttr, enemy, raidBlackboard, isSkill, charData, lev
         log.write(`[斩击] 法术伤害 ${arts_dmg.toFixed(1)}, 命中 9, 真实伤害 ${real_atk.toFixed(1)}, 命中 1`);
         pool[1] += arts_dmg * 9;
         pool[3] += real_atk;
+        break;
+      case "skchr_kafka_1":
+        log.write(`[特殊] ${displayNames[buffName]}: 直接伤害为0 （以上计算无效）, 效果持续${bb.duration}秒`);
+        damage = finalFrame.atk * (1-emrpct) * enemy.count;
+        pool[1] = damage; damagePool[1] = 0;
+        break;
+      case "skchr_kafka_2":
+        damage = finalFrame.atk * bb.atk_scale * (1-emrpct) * enemy.count;
+        pool[1] = damage;
         break;
     }; // switch
 

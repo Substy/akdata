@@ -19,6 +19,7 @@ export function loadExcel(key, base) {
 loadJSON("./version.json", "version");
 loadData("dps_options");
 loadData("dps_specialtags");
+loadData("dps_specialtags_v2");
 
 export function loadGameData(basepath) {
   loadExcel("character_table", basepath);

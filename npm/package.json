@@ -1,7 +1,7 @@
 {
   "name": "akdata",
   "type": "module",
-  "version": "2.0.1-alpha",
+  "version": "2.0.2-2",
   "description": "Arknights DPS calculator core",
   "main": "akdata.js",
   "scripts": {
@@ -19,9 +19,5 @@
   "bugs": {
     "url": "https://github.com/xulai1001/akdata/issues"
   },
-  "homepage": "http://viktorlab.cn/akdata/",
-  "dependencies": {
-    "@babel/cli": "^7.12.10",
-    "@babel/core": "^7.12.10"
-  }
+  "homepage": "http://viktorlab.cn/akdata/"
 }

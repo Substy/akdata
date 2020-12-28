@@ -1638,7 +1638,7 @@ function calculateAttack(charAttr, enemy, raidBlackboard, isSkill, charData, lev
   let move = 0;
 
   function calculateHitDamage(frame, scale) {
-    let minRate = 0.05;
+    let minRate = 0.05, ret = 0;
     if (buffList["tachr_144_red_1"]) minRate = buffList["tachr_144_red_1"].atk_scale;
     if (buffList["tachr_366_acdrop_1"]) {
       minRate = options.cond ? buffList["tachr_366_acdrop_1"].atk_scale_2 : buffList["tachr_366_acdrop_1"].atk_scale;

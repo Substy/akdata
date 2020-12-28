@@ -409,7 +409,7 @@ class DpsContext {
     // 被调用的函数可以以this访问当前DpsContext，参数列表位于args[]数组
     // 被调用的函数必须返回对象字典，返回值放在this.retvar
     callSpecial(buffKey, funcKey, args=null) {
-        var actions = AKDATA.Dps.Actions;
+        var actions = AKDATA.Dps.Actions;   // npm需要注释掉该行
         if (actions[buffKey] && actions[buffKey][funcKey]) {
             console.log(`callSpecial ${buffKey}->${funcKey}`);
             this.retvar = actions[buffKey][funcKey].apply(this, args);    // call
