@@ -1,5 +1,35 @@
 {
   "basicInfo": {
+    "act15d5": {
+      "id": "act15d5",
+      "type": "MINISTORY",
+      "name": "此地之外",
+      "startTime": 1609833600,
+      "endTime": 1610395199,
+      "rewardEndTime": 1610654399,
+      "displayOnHome": true,
+      "hasStage": true,
+      "actTopBarColor": null,
+      "actTopBarText": null,
+      "templateShopId": "shop_act15d5",
+      "medalGroupId": null,
+      "isReplicate": false
+    },
+    "act15d1": {
+      "id": "act15d1",
+      "type": "CHECKIN_ONLY",
+      "name": "跨年限时登录活动",
+      "startTime": 1608753600,
+      "endTime": 1609963199,
+      "rewardEndTime": 1609963199,
+      "displayOnHome": false,
+      "hasStage": false,
+      "actTopBarColor": "f92946",
+      "actTopBarText": "跨年限时登录活动",
+      "templateShopId": null,
+      "medalGroupId": null,
+      "isReplicate": false
+    },
     "act15d0": {
       "id": "act15d0",
       "type": "TYPE_ACT9D0",
@@ -587,6 +617,7 @@
     }
   },
   "zoneToActivity": {
+    "act15d5_zone1": "act15d5",
     "act15d0_zone1": "act15d0",
     "act15d0_zone2": "act15d0",
     "act14d7_zone1": "act14d7",
@@ -11676,6 +11707,173 @@
       }
     },
     "CHECKIN_ONLY": {
+      "act15d1": {
+        "checkInList": {
+          "0": {
+            "itemList": [
+              {
+                "id": "furni_act15d0_stool_01",
+                "count": 1,
+                "type": "FURN"
+              },
+              {
+                "id": "4001",
+                "count": 30000,
+                "type": "GOLD"
+              }
+            ],
+            "order": 1,
+            "color": 1
+          },
+          "1": {
+            "itemList": [
+              {
+                "id": "furni_act15d0_snowman_01",
+                "count": 1,
+                "type": "FURN"
+              },
+              {
+                "id": "ap_supply_lt_100",
+                "count": 2,
+                "type": "AP_SUPPLY"
+              }
+            ],
+            "order": 2,
+            "color": 1
+          },
+          "2": {
+            "itemList": [
+              {
+                "id": "4003",
+                "count": 200,
+                "type": "DIAMOND_SHD"
+              },
+              {
+                "id": "3003",
+                "count": 25,
+                "type": "MATERIAL"
+              }
+            ],
+            "order": 3,
+            "color": 0
+          },
+          "3": {
+            "itemList": [
+              {
+                "id": "4002",
+                "count": 1,
+                "type": "DIAMOND"
+              },
+              {
+                "id": "2004",
+                "count": 10,
+                "type": "CARD_EXP"
+              }
+            ],
+            "order": 4,
+            "color": 0
+          },
+          "4": {
+            "itemList": [
+              {
+                "id": "ap_supply_lt_100",
+                "count": 2,
+                "type": "AP_SUPPLY"
+              },
+              {
+                "id": "3302",
+                "count": 15,
+                "type": "MATERIAL"
+              }
+            ],
+            "order": 5,
+            "color": 0
+          },
+          "5": {
+            "itemList": [
+              {
+                "id": "4003",
+                "count": 200,
+                "type": "DIAMOND_SHD"
+              },
+              {
+                "id": "7001",
+                "count": 5,
+                "type": "TKT_RECRUIT"
+              }
+            ],
+            "order": 6,
+            "color": 0
+          },
+          "6": {
+            "itemList": [
+              {
+                "id": "32001",
+                "count": 1,
+                "type": "MATERIAL"
+              },
+              {
+                "id": "4001",
+                "count": 30000,
+                "type": "GOLD"
+              }
+            ],
+            "order": 7,
+            "color": 0
+          },
+          "7": {
+            "itemList": [
+              {
+                "id": "furni_act15d0_carpet_01",
+                "count": 1,
+                "type": "FURN"
+              },
+              {
+                "id": "ap_supply_lt_100",
+                "count": 2,
+                "type": "AP_SUPPLY"
+              }
+            ],
+            "order": 8,
+            "color": 1
+          },
+          "8": {
+            "itemList": [
+              {
+                "id": "char_253_greyy@epoque#8",
+                "count": 1,
+                "type": "CHAR_SKIN"
+              },
+              {
+                "id": "2004",
+                "count": 15,
+                "type": "CARD_EXP"
+              }
+            ],
+            "order": 9,
+            "color": 1
+          },
+          "9": {
+            "itemList": [
+              {
+                "id": "7003",
+                "count": 1,
+                "type": "TKT_GACHA"
+              },
+              {
+                "id": "7002",
+                "count": 5,
+                "type": "TKT_INST_FIN"
+              }
+            ],
+            "order": 10,
+            "color": 0
+          }
+        },
+        "apSupplyOutOfDateDict": {
+          "ap_supply_lt_100": 1610567999
+        }
+      },
       "act14d0d1": {
         "checkInList": {
           "0": {
@@ -27009,6 +27207,37 @@
       }
     },
     "MINISTORY": {
+      "act15d5": {
+        "tokenItemId": "act15d5_token_postcard",
+        "zoneDescList": {
+          "act15d5_zone1": {
+            "zoneId": "act15d5_zone1",
+            "unlockText": "完成主线关卡1-10解锁"
+          }
+        },
+        "favorUpList": {},
+        "extraDropZoneList": [
+          "main_0",
+          "main_1",
+          "main_2",
+          "main_3",
+          "main_4",
+          "main_5",
+          "main_6",
+          "main_7",
+          "main_8",
+          "weekly_1",
+          "weekly_2",
+          "weekly_3",
+          "weekly_4",
+          "weekly_5",
+          "weekly_6",
+          "weekly_7",
+          "weekly_8",
+          "weekly_9",
+          "act15d5_zone1"
+        ]
+      },
       "act13d0": {
         "tokenItemId": "act13d0_token_dial",
         "zoneDescList": {
@@ -27900,6 +28129,9 @@
     }
   },
   "activityItems": {
+    "act15d5": [
+      "act15d5_token_postcard"
+    ],
     "act15d0": [
       "act15d0_token_ironSheet"
     ],
@@ -28030,6 +28262,10 @@
       1587441600,
       1588316400,
       1589486399
+    ],
+    "act15d5": [
+      1609833600,
+      1610395199
     ],
     "act13d0": [
       1600920000,

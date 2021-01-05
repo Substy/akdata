@@ -380,10 +380,11 @@ function updateOptions(charId, index) {
     
   if (opts.char[charId]) {
     for (var t of opts.char[charId]) {
+      let checked = opts.tags[t].off ? "" : "checked";
       let html_bool = `
       <div class="form-check">
         <label class="form-check-label" data-toggle="tooltip" data-placement="right" title="${opts.tags[t].explain}">
-          <input class="form-check-input dps__${t}" type="checkbox" value="" data-index="${index}" checked>
+          <input class="form-check-input dps__${t}" type="checkbox" value="" data-index="${index}" ${checked}>
             ${opts.tags[t].displaytext}
         </label> </div>`;
       html += html_bool;

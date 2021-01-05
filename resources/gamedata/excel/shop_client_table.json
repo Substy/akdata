@@ -2377,6 +2377,126 @@
         "id": "tag_78",
         "text": "回头要是被我查出来哪个坏蛋替换了设计方案我一定——啊。嗨，博士，新家具有兴趣了解一下吗？"
       }
+    },
+    {
+      "tagId": "tag_79",
+      "displayType": "block_1",
+      "tagName": "罗德岛新年寻访组合包",
+      "itemTag": "DEADLINE",
+      "orderNum": 1,
+      "startDatetime": 1609444800,
+      "endDatetime": 1610654399,
+      "groupList": [
+        {
+          "recommendGroup": [
+            1
+          ],
+          "dataList": [
+            {
+              "imgId": "tag79_a",
+              "slotIndex": 0,
+              "cmd": "GIFTPACKAGE",
+              "param1": "GP_NpOne_2_NpOne_2_v1",
+              "param2": null,
+              "skinId": ""
+            }
+          ]
+        }
+      ],
+      "tagWord": {
+        "id": "tag_79",
+        "text": "新年大促销开始咯，不要错过哦。"
+      }
+    },
+    {
+      "tagId": "tag_80",
+      "displayType": "block_1",
+      "tagName": "罗德岛新年组合包",
+      "itemTag": "DEADLINE",
+      "orderNum": 2,
+      "startDatetime": 1609444800,
+      "endDatetime": 1610654399,
+      "groupList": [
+        {
+          "recommendGroup": [
+            1
+          ],
+          "dataList": [
+            {
+              "imgId": "tag80_a",
+              "slotIndex": 0,
+              "cmd": "GIFTPACKAGE",
+              "param1": "GP_Once_14",
+              "param2": null,
+              "skinId": ""
+            }
+          ]
+        }
+      ],
+      "tagWord": {
+        "id": "tag_80",
+        "text": "新年大促销开始咯，不要错过哦。"
+      }
+    },
+    {
+      "tagId": "tag_81",
+      "displayType": "block_1",
+      "tagName": "寒武纪/II",
+      "itemTag": "DEADLINE",
+      "orderNum": 3,
+      "startDatetime": 1609833600,
+      "endDatetime": 1610999999,
+      "groupList": [
+        {
+          "recommendGroup": [
+            1
+          ],
+          "dataList": [
+            {
+              "imgId": "tag81_a",
+              "slotIndex": 0,
+              "cmd": "SKINSHOP",
+              "param1": null,
+              "param2": null,
+              "skinId": null
+            }
+          ]
+        }
+      ],
+      "tagWord": {
+        "id": "tag_81",
+        "text": "寒武纪终于上新啦！现在购买设计师亲自送货上门哦，开玩笑的。"
+      }
+    },
+    {
+      "tagId": "tag_82",
+      "displayType": "block_1",
+      "tagName": "凝思庭",
+      "itemTag": "DEADLINE",
+      "orderNum": 4,
+      "startDatetime": 1609833600,
+      "endDatetime": 1610999999,
+      "groupList": [
+        {
+          "recommendGroup": [
+            1
+          ],
+          "dataList": [
+            {
+              "imgId": "tag82_a",
+              "slotIndex": 0,
+              "cmd": "FURNSHOP",
+              "param1": "village_2021",
+              "param2": null,
+              "skinId": ""
+            }
+          ]
+        }
+      ],
+      "tagWord": {
+        "id": "tag_82",
+        "text": "看上去简简单单，所有细节精雕细琢，文月小姐的审美品味还真不错。"
+      }
     }
   ],
   "creditUnlockGroup": {
@@ -3932,6 +4052,76 @@
           "param1": "prison_2020",
           "skinId": "",
           "furniId": "prison_2020"
+        }
+      ]
+    },
+    {
+      "items": [
+        {
+          "spriteId": "shop_NpOne_2",
+          "startTime": 1609444800,
+          "endTime": 1610654399,
+          "cmd": "GIFTPACKAGE",
+          "param1": "GP_NpOne_2_NpOne_2_v1",
+          "skinId": "",
+          "furniId": ""
+        }
+      ]
+    },
+    {
+      "items": [
+        {
+          "spriteId": "shop_Once_14",
+          "startTime": 1609444800,
+          "endTime": 1610654399,
+          "cmd": "GIFTPACKAGE",
+          "param1": "GP_Once_14",
+          "skinId": "",
+          "furniId": ""
+        }
+      ]
+    },
+    {
+      "items": [
+        {
+          "spriteId": "shop_bibeak_winter#2",
+          "startTime": 1609833600,
+          "endTime": 1610999999,
+          "cmd": "SKINSHOP",
+          "param1": "SS_char_252_bibeak@winter#2",
+          "skinId": "char_252_bibeak@winter#2",
+          "furniId": ""
+        },
+        {
+          "spriteId": "shop_spikes_winter#2",
+          "startTime": 1609833600,
+          "endTime": 1610999999,
+          "cmd": "SKINSHOP",
+          "param1": "SS_char_271_spikes@winter#2",
+          "skinId": "char_271_spikes@winter#2",
+          "furniId": ""
+        },
+        {
+          "spriteId": "shop_gravel_winter#2",
+          "startTime": 1609833600,
+          "endTime": 1610999999,
+          "cmd": "SKINSHOP",
+          "param1": "SS_char_237_gravel@winter#2",
+          "skinId": "char_237_gravel@winter#2",
+          "furniId": ""
+        }
+      ]
+    },
+    {
+      "items": [
+        {
+          "spriteId": "shop_village_2021",
+          "startTime": 1609833600,
+          "endTime": 1610999999,
+          "cmd": "FURNSHOP",
+          "param1": "village_2021",
+          "skinId": "",
+          "furniId": "village_2021"
         }
       ]
     },

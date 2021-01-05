@@ -1148,7 +1148,7 @@ class DpsContext {
             prepDuration,  
             stunDuration,
             totalDuration: total,
-            startSp,
+            startSp,    // 距离点火还差多少sp，不是初始有多少sp
             flags: rotationFlags
         };
         return this.rotation;
@@ -1247,6 +1247,73 @@ class DpsContext {
       
         this.dps = this.totalDamage / this.rotation.totalDuration;
         this.hps = this.totalHeal / this.rotation.totalDuration;
+    }
+}
+
+class RotationSimulator {
+    constructor(ctxt) {
+        this.ctxt = ctxt;
+        this.skillId = ctxt.skillId;
+        this.rotation = ctxt.rotation;
+        this.blackboard = ctxt.char.blackboard;
+        this.buffFrame = ctxt.attr.buffFrame;
+        this.attackTime = ctxt.attackTime;
+        this.levelData = ctxt.char.levelData;
+        this.spData = this.levelData.spData;
+        this.isOGCD = (checkSpecs(ctxt.skillId, "reset_attack") == "ogcd");
+        this.args = {};
+        this.retvar = {};  // callSpecial参数
+    }
+
+    setup(duration) {
+        this.events = {};   // 事件队列 { 405: ["attack"] }
+        this.last = {};     // 上一次动作时间 { "attack": 400 }
+        this.t = 0;         // 时间/sp以帧计算。下同
+        this.simDuration = duration * _fps;
+        this.finished = false;
+
+        this.sp = (this.spData.spCost - this.rotation.startSp) * _fps;  // 当前sp
+        this.spCost = this.spData.spCost * _fps;
+        this.maxSp = this.spData.spCost * _fps;    // 最大sp（不能超过）
+        if (this.blackboard.ct) this.maxSp *= this.blackboard.ct;
+
+        // 技能动画时间(简略)，默认为普攻时间
+        this.castTime = this.attackTime.frame;
+        if (checkSpecs(this.skillId, "cast_time"))  // 固定抬手时间,有数据
+            this.castTime = _spec;
+        else if (checkSpecs(this.skillId, "cast_bat"))  // 随攻速缩放的抬手时间,有数据
+            this.castTime = _spec * 100 / this.attackTime.attackSpeed;
+        // 一次技能攻击占用的时间，包括攻击间隔
+        this.skillTime = Math.max(this.castTime, this.attackTime.frame);
+    }
+
+    timeSince(act) {
+        if (!this.last[act]) this.last[act] = -999;
+        return this.t - this.last[act];
+    }
+
+    addEvent(key, frame_delta=0) {
+        var t = this.t + frame_delta;
+        if (!this.events[t]) this.events[t] = [];
+        this.events[t].push(key);
+    }
+
+    run() {
+        this.addEvent("deploy");
+        while (this.t <= this.simDuration) {
+            if (this.events[this.t])
+                this.events[this.t].forEach(e => {
+                    this[e]();  // 按名字调用具体动作
+                    this.last[e] = this.t;
+                });
+            this.t += 1;
+        }
+    }
+
+    // events
+    // pseudo event. will call attack() or skill() then
+    attack_or_skill() {
+        if (this.sp < this.spCost) attack(); else skill();        
     }
 }
 
