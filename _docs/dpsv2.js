@@ -283,11 +283,12 @@ function showVersion() {
   AKDATA.checkVersion(function (ok, v) {
     var remote = `最新版本: ${v.akdata}, 游戏数据: ${v.gamedata} (${v.customdata})`;
     var local = `当前版本: ${AKDATA.Data.version.akdata}, 游戏数据: ${AKDATA.Data.version.gamedata} (${AKDATA.Data.version.customdata})`;
+    var whatsnew = "<a href='/akdata/whatsnew'>更新日志</a>";
     if (!ok) {
       pmBase.component.create({
         type: 'modal',
         id: "update_prompt_modal",
-        content: [remote, local].join("<br>"),
+        content: [remote, local, whatsnew].join("<br>"),
         width: 800,
         title: "有新数据，请更新",
         show: true,

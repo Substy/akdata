@@ -1052,6 +1052,7 @@ function calcDurations(isSkill, attackTime, attackSpeed, levelData, buffList, bu
       "skill": "+",
       "ifrit": "",
       "archet": "",
+      "chen": "",
       "recover_sp": "\\*",
       "recover_overflow": "x",
       "reset_animation": "\\*",
@@ -1076,7 +1077,7 @@ function calcDurations(isSkill, attackTime, attackSpeed, levelData, buffList, bu
       sp = (buffList["tachr_180_amgoat_2"].sp_min + buffList["tachr_180_amgoat_2"].sp_max) / 2 * fps;
     else if (buffList["tachr_222_bpipe_2"])
       sp = buffList["tachr_222_bpipe_2"].sp * fps;
-    last["ifrit"] = last["archet"] = 1; // 落地即开始计算 记为1帧
+    last["ifrit"] = last["archet"] = last["chen"] = 1; // 落地即开始计算 记为1帧
     startSp = spData.spCost - sp / fps;
 
     // sp barrier
@@ -1122,13 +1123,16 @@ function calcDurations(isSkill, attackTime, attackSpeed, levelData, buffList, bu
         action("ifrit");
         extra_sp = buffList["tachr_134_ifrit_2"].sp;
       }
-      // 兰登战术
-      if (buffList["tachr_332_archet_1"] && time_since("archet") >= buffList["tachr_332_archet_1"].interval * fps) {
+      // 兰登战术/呵斥
+      let intv_archet = (buffList["tachr_332_archet_1"] ? buffList["tachr_332_archet_1"].interval : 2.5);
+      let intv_chen = buffList["tachr_010_chen_1"] ? buffList["tachr_010_chen_1"].interval : 4;
+      if ((buffList["tachr_332_archet_1"] || options.archet) && time_since("archet") >= intv_archet * fps) {
         action("archet");
-        extra_sp = buffList["tachr_332_archet_1"].sp;
-      } else if (options.archet && time_since("archet") >= 2.5 * fps) {  // 选项-兰登战术
-        action("archet");
-        extra_sp = 1;
+        extra_sp += 1;
+      }
+      if ((buffList["tachr_010_chen_1"] || options.chen) && time_since("chen") >= intv_chen * fps) {
+        action("chen");
+        extra_sp += 1;
       }
       if (time_since("skill") >= cast_time && extra_sp > 0) {
         sp += extra_sp * fps;
@@ -1156,14 +1160,16 @@ function calcDurations(isSkill, attackTime, attackSpeed, levelData, buffList, bu
       });
       log.write(`[模拟] 时间轴: `);
       log.write(`${line_str}`);
-      log.write(`( \-: 普攻, \+: 技能, \\*: 特殊, x: sp溢出 )`)
+      log.write(`( \-: 普攻, \+: 技能, \\*: 充能, x: sp溢出 )`)
       
       if (total.ifrit)
         log.write(`[模拟] 莱茵回路(\\*): 触发 ${total.recover_sp} / ${total.ifrit} 次, sp + ${buffList["tachr_134_ifrit_2"].sp * total.recover_sp}`);
       if (total.archet)
-        log.write(`[模拟] 兰登战术(\\*): 触发 ${total.recover_sp} / ${total.archet} 次, sp + ${total.recover_sp}`);
+        log.write(`[模拟] 兰登战术: 触发 ${total.archet} 次`);
+      if (total.chen)
+        log.write(`[模拟] 呵斥: 触发 ${total.chen} 次`);
       if (total.recover_overflow)
-        log.write(`[模拟] sp恢复溢出 ${total.recover_overflow} 次`);
+        log.write(`[模拟] sp恢复成功 ${total.recover_sp} 次, 溢出 ${total.recover_overflow} 次, 其余为技能期间无法恢复sp`);
       if (total.reset_animation)
         log.write(`[模拟] 取消攻击间隔(\\*) ${total.reset_animation} 次`);
     }
@@ -1352,26 +1358,39 @@ function calcDurations(isSkill, attackTime, attackSpeed, levelData, buffList, bu
       case 2: // 攻击恢复
         log.write(`攻击回复`);
         attackCount = spData.spCost;
-        if (buffList["tachr_010_chen_1"]) { // 呵斥 
-          attackCount = Math.ceil(spData.spCost / (1 + attackTime / buffList["tachr_010_chen_1"].interval));
-          let sp = Math.floor(attackCount * attackTime / buffList["tachr_010_chen_1"].interval);
-          log.write(`[特殊] ${displayNames["tachr_010_chen_1"]}: sp = ${sp}, attack_count = ${attackCount}`);
-        } else if (buffList["tachr_332_archet_1"]) { // 兰登 
-          attackCount = Math.ceil(spData.spCost / (1 + attackTime / buffList["tachr_332_archet_1"].interval));
-          let sp = Math.floor(attackCount * attackTime / buffList["tachr_332_archet_1"].interval);
-          log.write(`[特殊] ${displayNames["tachr_332_archet_1"]}: sp = ${sp}, attack_count = ${attackCount}`);
-        } else if (buffList["tachr_301_cutter_1"]) { // 刻刀  
-          let p = buffList["tachr_301_cutter_1"].prob;
-          if (skillId == "skchr_cutter_1") {
-            attackCount = Math.ceil((spData.spCost - p) / (1+p*2));
-            log.write(`[特殊] ${displayNames["skchr_cutter_1"]}: 额外判定1次天赋`);   
-            log.write(`[特殊] ${displayNames["tachr_301_cutter_1"]}: sp = ${((attackCount*2+1) * p).toFixed(2)}, attack_count = ${attackCount}`);
-           } else {
-            attackCount = Math.ceil(spData.spCost / (1+p*2));
-            log.write(`[特殊] ${displayNames["tachr_301_cutter_1"]}: sp = ${(attackCount*2*p).toFixed(2)}, attack_count = ${attackCount}`);
+
+        let intv_chen = buffList["tachr_010_chen_1"] ? buffList["tachr_010_chen_1"].interval : 4;
+        let intv_archet = buffList["tachr_332_archet_1"] ? buffList["tachr_332_archet_1"].interval : 2.5;
+        let extra_sp = 0, next = true;
+
+        // 枚举所需的最少攻击次数
+        while (attackCount > 0 && next) {
+          duration = attackCount * attackTime;
+          extra_sp = 0;
+          if (buffList["tachr_010_chen_1"] || options.chen)
+            extra_sp += Math.floor(duration / intv_chen);
+          if (buffList["tachr_332_archet_1"] || options.archet)
+            extra_sp += Math.floor(duration / intv_archet);
+          if (buffList["tachr_301_cutter_1"]) {
+            let p = buffList["tachr_301_cutter_1"].prob;
+            extra_sp += (skillId == "skchr_cutter_1" ? (attackCount*2+1)*p : attackCount*2*p); 
           }
+          next = (attackCount + extra_sp >= spData.spCost);
+          if (next) attackCount -= 1;
         }
+        if (!next) attackCount += 1;
         duration = attackCount * attackTime;
+        let line = [];
+        if (buffList["tachr_010_chen_1"] || options.chen)
+          line.push(`呵斥触发 ${Math.floor(duration / intv_chen)} 次`);
+        if (buffList["tachr_332_archet_1"] || options.archet)
+          line.push(`兰登战术触发 ${Math.floor(duration / intv_archet)} 次`);
+        if (buffList["tachr_301_cutter_1"]) {
+          let p = buffList["tachr_301_cutter_1"].prob;
+          let _n = ( skillId == "skchr_cutter_1" ? (attackCount*2+1)*p : attackCount*2*p )
+          line.push(`光蚀刻痕触发 ${_n.toFixed(2)} 次`);
+        }
+        if (line.length > 0) log.write(`[特殊] ${line.join(", ")}`);
         if (rst) {
           duration -= attackTime;
         }
