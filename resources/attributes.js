@@ -1168,8 +1168,8 @@ function calcDurations(isSkill, attackTime, attackSpeed, levelData, buffList, bu
         log.write(`[模拟] 兰登战术: 触发 ${total.archet} 次`);
       if (total.chen)
         log.write(`[模拟] 呵斥: 触发 ${total.chen} 次`);
-      if (total.recover_overflow)
-        log.write(`[模拟] sp恢复成功 ${total.recover_sp} 次, 溢出 ${total.recover_overflow} 次, 其余为技能期间无法恢复sp`);
+      if (total.recover_sp)
+        log.write(`[模拟] sp恢复成功 ${total.recover_sp} 次, 溢出 ${total.recover_overflow || 0} 次, 其余为技能期间无法恢复sp`);
       if (total.reset_animation)
         log.write(`[模拟] 取消攻击间隔(\\*) ${total.reset_animation} 次`);
     }

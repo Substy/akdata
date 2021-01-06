@@ -16,6 +16,7 @@
     },
     "char" : {
         "char_503_rang" : [ "cond" ],
+        "char_103_angel": [ "archet", "chen" ],
         "char_126_shotst" : [ "cond", "archet", "chen" ],
         "char_129_bluep": [ "archet", "chen" ],
         "char_133_mm": [ "archet", "chen" ],

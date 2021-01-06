@@ -42,6 +42,7 @@
     "skchr_amiya_3":	{ "damage_type": 3 },
     "skchr_amiya2_1":   { "times": 2 },
     "skchr_amiya2_2":   { "damage_type": 3, "note": "斩击为100帧", "reset_attack": true, "attack_begin": 12 },
+    "skchr_angel_1":    { "sim": true },
     "skchr_archet_1":   { "sim": true },
     "skchr_asbest_1":   { "damage_type": 1 },
     "skchr_asbest_2":   { "damage_type": 1 },
