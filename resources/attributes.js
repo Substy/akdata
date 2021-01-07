@@ -1605,11 +1605,7 @@ function calculateAttack(charAttr, enemy, raidBlackboard, isSkill, charData, lev
       log.writeNote(`普攻额外帧数 ${prefix}${corr}`);
     }
   }
- // if (charId == "char_204_platnm") {
- //   frame = Math.ceil(frame);
- //   if (isSkill) log.writeNote("帧数进一（非舍入）");  // 存疑。先不加
- // } else 
-    frame = Math.round(frame);  // 最后再舍入
+  frame = Math.round(frame);  // 最后再舍入
   let frameAttackTime = frame / fps;
   let attackTime = frameAttackTime;
 
@@ -1639,7 +1635,8 @@ function calculateAttack(charAttr, enemy, raidBlackboard, isSkill, charData, lev
     }
   }
   let edef = Math.max(0, (enemy.def + enemyBuffFrame.edef) * enemyBuffFrame.edef_scale * (1-enemyBuffFrame.edef_pene_scale) - enemyBuffFrame.edef_pene);
-  let emr = Math.max(0, (enemy.magicResistance + enemyBuffFrame.emr) * enemyBuffFrame.emr_scale - enemyBuffFrame.emr_pene);
+  let emr = Math.min((enemy.magicResistance + enemyBuffFrame.emr) * enemyBuffFrame.emr_scale, 100);
+  emr = Math.max(emr - enemyBuffFrame.emr_pene, 0);
   let emrpct = emr / 100;
   let ecount = Math.min(buffFrame.maxTarget, enemy.count);
 
