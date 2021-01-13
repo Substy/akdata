@@ -745,7 +745,8 @@ function applyBuff(charAttr, buffFrm, tag, blackbd, isSkill, isCrit, log, enemy)
       case "tachr_193_frostl_1":
       case "skchr_mantic_2":
       case "skchr_glaze_2":
-      case "skchr_zumama_2": // 攻击间隔延长，但是是加算
+      case "skchr_zumama_2":
+      case "skchr_shwaz_3": // 攻击间隔延长，但是是加算
         buffFrame.baseAttackTime += blackboard.base_attack_time;
         writeBuff(`base_attack_time + ${blackboard.base_attack_time}s`);
         blackboard.base_attack_time = 0;

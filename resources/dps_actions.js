@@ -460,6 +460,7 @@ AKDATA.Dps.Actions = {
                 this.hitCount, 4);
         }
     },
+    skchr_shwaz_3: { applyBuff: common.baseAttackTimeAddition },
     skchr_skgoat_2: { skill_duration: common.noAttack },
     skchr_snakek: { skill_duration: common.noAttack },
     skchr_spot_1: { applyBuff: common.baseAttackTimeAddition },
