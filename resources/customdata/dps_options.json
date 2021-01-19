@@ -95,6 +95,7 @@
         "char_440_pinecn":  [ "cond", "warmup" ],
         "char_264_f12yin":  [ "crit" ],
         "char_452_bstalk":  [ "cond", "token" ],
-        "char_332_archet":  [ "chen" ]
+        "char_332_archet":  [ "chen" ],
+        "char_402_tuye":    [ "cond" ]
     }
 }

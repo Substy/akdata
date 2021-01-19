@@ -487,6 +487,9 @@ function applyBuff(charAttr, buffFrm, tag, blackbd, isSkill, isCrit, log, enemy)
             log.writeNote("特性对召唤物无效");
           }
           break;
+        case "tachr_402_tuye_1":
+          blackboard.heal_scale = blackboard.heal_scale_2;
+          break;
       }
     }
   } else if (checkSpecs(tag, "ranged_penalty")) { // 距离惩罚类
@@ -972,6 +975,11 @@ function applyBuff(charAttr, buffFrm, tag, blackbd, isSkill, isCrit, log, enemy)
       case "tachr_338_iris_trait":
       case "tachr_338_iris_1":
         done = true; break;
+      case "skchr_tuye_1":
+      case "skchr_tuye_2":
+        delete blackboard.heal_scale;
+        delete blackboard.atk_scale;
+      break;
     }
   }
   
@@ -1219,7 +1227,11 @@ function calcDurations(isSkill, attackTime, attackSpeed, levelData, buffList, bu
       log.writeNote("切换类技能 (以30s为参考计算)");
     } else if (levelData.description.includes("持续时间无限")) {
       if (skillId == "skchr_thorns_3" && !options.warmup) {}
-      else if (skillId == "skchr_surtr_3") {
+      else if (skillId == "skchr_tuye_2") {
+        log.writeNote("取技能时间=暖机时间");
+        duration = spData.spCost / (1 + buffFrame.spRecoveryPerSec);
+        attackCount = Math.ceil(duration / attackTime);
+      } else if (skillId == "skchr_surtr_3") {
         var lock_time = buffList["tachr_350_surtr_2"]["surtr_t_2[withdraw].interval"];
         duration = Math.sqrt(600) + lock_time;
         attackCount = Math.ceil(duration / attackTime);
@@ -2029,6 +2041,7 @@ function calculateAttack(charAttr, enemy, raidBlackboard, isSkill, charData, lev
         pool[2] += heal * enemy.count;
         break;
       case "skchr_shining_2":
+      case "skchr_tuye_1":
         heal = finalFrame.atk * bb.atk_scale;
         log.write(`[特殊] ${displayNames[buffName]}: 护盾量 ${heal}`);
         pool[4] += heal;
@@ -2087,6 +2100,12 @@ function calculateAttack(charAttr, enemy, raidBlackboard, isSkill, charData, lev
       case "skchr_kafka_2":
         damage = finalFrame.atk * bb.atk_scale * (1-emrpct) * enemy.count;
         pool[1] = damage;
+        break;
+      case "skchr_tuye_2":
+        pool[2] = finalFrame.atk * bb.heal_scale;
+        log.write(`[特殊] ${displayNames[buffName]}: 瞬间治疗 ${pool[2].toFixed(1)}, 最多3次`);
+        log.writeNote(`瞬间治疗量 ${pool[2].toFixed(1)}`);
+        pool[2] *= 3;
         break;
     }; // switch
 
