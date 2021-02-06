@@ -94,7 +94,7 @@ function createPhaseTable(charData) {
     x[1](charData.phases[0].attributesKeyFrames[0].data, charData.phases[0].attributesKeyFrames[1].data),
     charData.phases[1] ? x[1](charData.phases[1].attributesKeyFrames[0].data, charData.phases[1].attributesKeyFrames[1].data) : '',
     charData.phases[2] ? x[1](charData.phases[2].attributesKeyFrames[0].data, charData.phases[2].attributesKeyFrames[1].data) : '',
-    charData.favorKeyFrames ? x[1](charData.favorKeyFrames[0].data, charData.favorKeyFrames[1].data) : '',
+    (charData.favorKeyFrames && charData.profession != "TOKEN") ? x[1](charData.favorKeyFrames[0].data, charData.favorKeyFrames[1].data) : '',
   ]);
 
   let rangeRow = [];

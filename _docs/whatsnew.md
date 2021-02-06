@@ -5,6 +5,12 @@ order: 4
 category: 工具
 icon: info-circle
 ---
+## 21.02.06
+- [update] 夕等
+- [dpsv2] 暂时隐藏v2入口。坑填好再补上
+- [bugfix] 推王2技能目标数
+- [bug] 已知问题：夕1技能召唤物dps不准确。以2/3技能的为准
+
 ## 21.01.19
 - [update] 图耶
 

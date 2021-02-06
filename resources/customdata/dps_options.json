@@ -96,6 +96,9 @@
         "char_264_f12yin":  [ "crit" ],
         "char_452_bstalk":  [ "cond", "token" ],
         "char_332_archet":  [ "chen" ],
-        "char_402_tuye":    [ "cond" ]
+        "char_402_tuye":    [ "cond" ],
+        "char_362_saga":    [ "cond" ],
+        "char_2015_dusk":   [ "stack", "token", "cond" ],
+        "char_455_nothin":  [ "cond"]
     }
 }

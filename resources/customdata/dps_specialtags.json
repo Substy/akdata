@@ -26,6 +26,7 @@
     "char_348_ceylon":  { "frame_corr": 1 },
     "char_358_lisa":	{ "frame_corr": 1 },
     "char_2013_cerber": { "frame_corr": 1 },
+    "char_2015_dusk":   { "token": "token_10015_dusk_drgn" },
     "char_250_phatom":  { "token": "token_10007_phatom_twin" },
     "char_110_deepcl":  { "token": "token_10001_deepcl_tentac", "token_damage_type": "0" },
     "char_242_otter":   { "token": "token_10004_otter_motter", "token_damage_type": "0" },
@@ -82,6 +83,7 @@
     "skchr_demkni_1":   { "frame_corr": -1 },
     "skchr_demkni_2":   { "frame_corr": 0 },
     "skchr_demkni_3":	{ "sec": true, "frame_corr": 0 },
+    "skchr_dusk_1":     { "sim": true, "cast_time": 87 },
     "skchr_estell_2":	{ "damage_type": "0"},
     "skchr_ethan_1":	{ "passive": true },
     "skchr_excu_1":     { "reset_attack": true, "attack_begin": 23 },
@@ -110,6 +112,7 @@
     "skchr_kafka_1":    { "reset_attack": true },
     "skchr_kafka_2":    { "reset_attack": true },
     "skchr_kroos_1":    { "sim": true },
+    "skchr_lava2_2":    { "sec": true, "note": "不重叠部分伤害减半" },
     "skchr_lionhd_2":   { "reset_attack": "ogcd", "cast_time": 32 },
     "skchr_mantic_1":	{ "passive": true },
     "skchr_mantic_2":	{ "attack_begin": 36, "frame_corr": 1 },
@@ -144,6 +147,7 @@
     "skchr_rope_1":     { "cast_time": 50 },
     "skchr_rope_2":     { "cast_time": 50 },
     "skchr_rosmon_1":   { "damage_type": "0", "sim": true, "note": "1技能动画时间待测试", "cast_time": 31 },
+    "skchr_saga_2":     { "sim": true, "note": "动画时间待测试" },
     "skchr_sddrag_2":	{ "damage_type": "0" },
     "skchr_shining_2":  { "cast_time": 77, "sim": true },
     "skchr_silent_2":   { "instant_buff": true, "duration": 15, "note": "召唤类技能，结果无意义" },
@@ -253,5 +257,6 @@
     "tachr_440_pinecn_1":   { "cond": true },
     "tachr_452_bstalk_trait":   { "cond": true },
     "tachr_503_rang_1":	{ "cond": true },
-    "tachr_511_asnipe_1":   { "crit": true }
+    "tachr_511_asnipe_1":   { "crit": true },
+    "tachr_2015_dusk_1":    { "stack": true }
 }
