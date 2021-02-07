@@ -642,9 +642,12 @@ function applyBuff(charAttr, buffFrm, tag, blackbd, isSkill, isCrit, log, enemy)
         break;
       case "skchr_lava2_1":  // sp炎熔1
         delete blackboard["attack@max_target"];
+        buffFrame.times = Math.min(2, enemy.count);
+        log.writeNote(`按全中计算`);
+        break;
       case "skchr_lava2_2":
         buffFrame.times = 2;
-        log.writeNote(`按全中计算`);
+        log.writeNote(`按火圈叠加计算`);
         break;
       case "skchr_slbell_1":  // 不结算的技能
       case "skchr_shining_2": 

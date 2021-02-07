@@ -32,7 +32,7 @@ window.AKDATA = {
         
         // custom json data: always use local copy
         if (!paths[i].includes("excel"))    // 本地调试开关
-          path = `../resources/gamedata/${paths[i].toLowerCase()}`;
+          path = `../resources/gamedata/${paths[i].toLowerCase()}?_=${Math.round(Math.random()*1e8)}`;
         console.log(`Loading -> ${name}`);
         paths[i] = loadJSON(path, data => AKDATA.Data[name] = data);
       }
