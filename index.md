@@ -9,4 +9,5 @@ title: Arknights DPS - 明日方舟数据分析工具
 
 <div>
     <button type="button" class="btn btn-primary" onclick="localStorage.clear();">更新数据</button>
+    <a href="whatsnew"><button type="button" class="btn btn-info">更新日志</button></a>
 </div>

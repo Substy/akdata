@@ -2,7 +2,7 @@
 title: 测试页
 withjs: true
 order: 5
-category: 工具
+category: 其他页面
 icon: bug
 ---
 浏览器: <span id="user_agent">userAgent</span>

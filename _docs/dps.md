@@ -9,4 +9,5 @@ icon: calculator
 如果不能正常显示，您可以换个浏览器试试。<br>这里可以进行详细检测：<http://ruanyf.github.io/es-checker/index.cn.html>
 </span>
 <button id="btn_update_data" type="button" class="btn btn-primary" onclick="AKDATA.reload();">更新数据</button>
+<button id="btn_report" type="button" class="btn btn-info">问题反馈</button>
 

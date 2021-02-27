@@ -1366,7 +1366,7 @@ class DpsCalculator {
         this.calcRotation();
         this.applyEnemy(enemy);
         this.calcDps();
-        this.summary = this.explainGlossary();
+      //  this.summary = this.explain();
     }
 
     explain() {
@@ -1377,6 +1377,10 @@ class DpsCalculator {
 
             s_dps : this.skill.dps,  // i.e. s_dps : s_dmg / s_dur
             s_hps : this.skill.hps,
+            s_hit : this.skill.hitDamage,
+            s_hitc: this.skill.hitCount,
+            s_hitcc:this.skill.critHitCount,
+            s_chit: this.skill.critHitDamage,
             s_dmg : this.skill.totalDamage,
             s_heal: this.skill.totalHeal,
             s_atk:  this.skill.attr.finalFrame.atk,
@@ -1391,6 +1395,10 @@ class DpsCalculator {
  
             n_dps : this.normal.dps,
             n_hps : this.normal.hps,
+            n_hit : this.normal.hitDamage,
+            n_hitc: this.normal.hitCount,
+            n_hitcc:this.normal.critHitCount,
+            n_chit: this.normal.critHitDamage,
             n_dmg : this.normal.totalDamage,
             n_heal: this.normal.totalHeal,
             n_atk:  this.normal.attr.finalFrame.atk,
@@ -1419,6 +1427,54 @@ class DpsCalculator {
     }
 
     // 调试用
+    explainLog() {
+        var e = this.explain();
+        var lines = [];
+        var typeText = ["物理", "法术", "治疗", "真实", "护盾"];
+        lines.push("## 角色");
+        lines.push(...e.s_log.Character);
+        lines.push("## 技能-Buff计算");
+        lines.push(...e.s_log.applyBuff);
+        lines.push("## 技能-最终属性");
+        lines.push(`攻击类型: ${typeText[e.s_type]}`)
+        lines.push(`攻击力（含倍率）: ${e.s_atk.toFixed(1)}`);
+        lines.push(`**单次伤害（DPH）: ${e.s_hit.toFixed(1)}**`);
+        if (e.s_rot.critAttackCount > 0) {
+            lines.push(`[暴击]攻击力: ${this.skill.critAttr.finalFrame.atk.toFixed(1)}`);
+            lines.push(`**[暴击]DPH: ${e.s_chit.toFixed(1)}**`);
+        }
+        lines.push(`攻击间隔（基础）: ${e.s_time.baseAttackTime.toFixed(3)} s`);
+        lines.push(`攻击速度: ${e.s_time.attackSpeed.toFixed(1)} %`);
+        lines.push(`攻击间隔（最终）: ${e.s_time.realTime.toFixed(3)} s`);
+        lines.push(`**攻击间隔（帧对齐）: ${e.s_time.frameTime.toFixed(3)} s, ${e.s_time.frame} 帧**`);
+        lines.push("## 技能-敌人最终属性");
+        lines.push(`防御: ${e.s_enemy.def}, 法抗: ${e.s_enemy.mr}, 数量: ${e.s_enemy.count}`);
+        if (e.s_rot.critAttackCount > 0) {
+            let em = this.skill.critAttr.finalEnemy;
+            lines.push(`[暴击] 防御: ${em.def}, 法抗: ${em.mr}, 数量: ${em.count}`);
+        }
+
+        lines.push("## 技能-循环相关");
+        lines.push(`攻击次数: ${e.s_rot.totalAttackCount} (暴击 ${e.s_rot.critAttackCount})`);
+        lines.push(`命中: ${e.s_hitc} (+暴击 ${e.s_hitcc})`);
+        lines.push(`持续时间 ${e.s_rot.totalDuration.toFixed(3)} s (准备 ${e.prep} s, 眩晕 ${e.stun} s)`);
+        lines.push(`启动技力需求: ${e.s_rot.startSp}, ${e.start.toFixed(3)} s`);
+        if (e.s_log.Rotation) lines.push(...e.s_log.Rotation);
+
+        lines.push("## 技能-伤害计算");
+        lines.push("| |物理|法术|治疗|真伤|护盾|");
+        lines.push("| :--: | :--: | :--: | :--: | :--: | :--: |");
+        lines.push(`|直接|${e.s_pool.direct.join("|")}|`);
+        lines.push(`|额外|${e.s_pool.extra.join("|")}|`);
+        lines.push("");
+        lines.push("## 注记");
+        lines.push(...e.s_log.Damage, ...e.note);
+
+        var ret = lines.join("\n").replace(/_/g, "\\_").replace(/- /g, "");
+        //console.log(ret);
+        return ret;
+    }
+    /*
     explainGlossary() {
         var glossary = {
             g_dps : "平均 - DPS",
@@ -1458,6 +1514,7 @@ class DpsCalculator {
         Object.keys(e).forEach( k => { ret[glossary[k]] = e[k]; });
         return ret; 
     }
+    */
 }
 
 

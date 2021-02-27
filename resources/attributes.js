@@ -2276,6 +2276,7 @@ function calculateAttack(charAttr, enemy, raidBlackboard, isSkill, charData, lev
     damagePool,
     extraDamagePool,
     attackTime,
+    frame,
     attackCount: dur.attackCount, 
     spType: levelData.spData.spType,
   };

@@ -61,8 +61,25 @@ function showVersion() {
   });
 }
 
+function showReport() {
+  var text = `
+  - <a href="https://bbs.nga.cn/read.php?tid=20083034" target="_blank">NGA帖子</a><br>
+  - <a href="https://bbs.nga.cn/nuke.php?func=message#to=37501424" target="_blank">私信作者</a><br>
+  - <a href="https://github.com/xulai1001/akdata/issues" target="_blank">Github Issue</a><br>
+  感谢您的热心反馈！`;
+  pmBase.component.create({
+    type: 'modal',
+    id: "modal_report",
+    content: text,
+    width: 800,
+    title: "您可以通过以下途径反馈遇到的问题:",
+    show: true,
+  });
+}
+
 function load() {
   showVersion();
+  $("#btn_report").click(showReport);
   AKDATA.patchAllChars();
 
   var charId_hash = window.location.hash.replace("#", "");
@@ -103,6 +120,7 @@ function load() {
     <tr class="dps__row-favor"> <th>信赖</th> </tr>
     <tr class="dps__row-skill"> <th>技能</th> </tr>
     <tr class="dps__row-option"> <th>选项</th> </tr>
+    <tr class="dps__row-prts"> <th>PRTS干员页面</th> </tr>
   </tbody>
   <tbody>
     <tr class="dps__row-period"> 
@@ -115,6 +133,8 @@ function load() {
     <tr class="dps__row-s_dps"> <th>技能DPS</th> </tr>
     <tr class="dps__row-n_dps"> <th>普攻</th> </tr>
     <tr class="dps__row-g_dps"> <th>平均</th> </tr>
+    <tr class="dps__row-s_att"> <th>技能攻击间隔</th> </tr>
+    <tr class="dps__row-n_att"> <th>普攻攻击间隔</th> </tr>
     <tr class="dps__row-s_diff"> <th>技能总伤害提升% <i class="fas fa-info-circle pull-right" data-toggle="tooltip" data-placement="right" title="对比首列 +/-%"></i></th> </tr>
     <tr class="dps__row-g_diff"> <th>平均DPS提升% <i class="fas fa-info-circle pull-right" data-toggle="tooltip" data-placement="right" title="对比首列 +/-%"></i></th> </tr>
   </tbody>
@@ -196,13 +216,16 @@ function load() {
     $dps.find('.dps__row-s_dps').append(`<td><div class="dps__s_dps font-weight-bold" data-index="${i}"></div></td>`);
     $dps.find('.dps__row-n_dps').append(`<td><div class="dps__n_dps" data-index="${i}"></div></td>`);
     $dps.find('.dps__row-g_dps').append(`<td><div class="dps__g_dps font-weight-bold" data-index="${i}"></div></td>`);
+    $dps.find('.dps__row-s_att').append(`<td><div class="dps__s_att font-weight-bold" data-index="${i}"></div></td>`);
+    $dps.find('.dps__row-n_att').append(`<td><div class="dps__n_att" data-index="${i}"></div></td>`);
     $dps.find('.dps__row-s_diff').append(`<td><div class="dps__s_diff " data-index="${i}"></div></td>`);
     $dps.find('.dps__row-g_diff').append(`<td><div class="dps__g_diff " data-index="${i}"></div></td>`);
    // $dps.find('.dps__row-e_time').append(`<td><div class="dps__e_time" data-index="${i}"></div></td>`);
     $dps.find('.dps__row-s_damage').append(`<td><div class="dps__s_damage" data-index="${i}"></div></td>`);
     $dps.find('.dps__row-period').append(`<td><div class="dps__period" data-index="${i}"></div></td>`);
     $dps.find('.dps__row-results').append(`<td><a class="dps__results" data-index="${i}" href="#">[点击显示]</a></td>`);
-    $dps.find('.dps__row-note').append(`<td><div class="dps__note" data-index="${i}"></div></td>`);  
+    $dps.find('.dps__row-note').append(`<td><div class="dps__note" data-index="${i}"></div></td>`);
+    $dps.find('.dps__row-prts').append(`<td></td>`);  
     $dps.find('.dps__row-option').append(`<td></td>`);
     $dps.find('.dps__row-damagepool').append(`<td><a class="dps__damagepool" data-index="${i}" href="#">[点击显示]</a></td>`);
     $dps.find('.dps__row-potentialrank').append(`<td><select class="form-control form-control-sm dps__potentialrank" data-index="${i}">${[0,1,2,3,4,5].map(x=>`<option value="${x}">${x+1}</option>`).join('')}</select></td>`);
@@ -361,6 +384,7 @@ function updateChar(charId, index) {
   setSelectValue('skilllevel', index, skillLevel);
 
   updateOptions(charId, index);
+  $(`.dps__row-prts td:nth-child(${index+2})`).html(`<a href="http://prts.wiki/w/${charData.name}#.E6.8A.80.E8.83.BD" target="_blank">点击打开</a>`);
 
   Characters[index] = {
     charId,
@@ -588,6 +612,11 @@ function calculate(index) {
     getElement('g_dps', index).html(`DPS: ${dps.globalDps.toFixed(1)}, HPS: ${dps.globalHps.toFixed(1)}`);
 //  getElement('e_time', index).html(dps.killTime ?  `${Math.ceil(dps.killTime)}秒` : '-');
   getElement("note", index).html(dps.note.replace(/\n/g,'<br>').replace(/ /g,'&nbsp;'));
+
+  // attack time
+  getElement("s_att", index).text(`${dps.skill.attackTime.toFixed(3)} s / ${dps.skill.frame} 帧`);
+  getElement("n_att", index).text(`${dps.normal.attackTime.toFixed(3)} s / ${dps.normal.frame} 帧`);
+  console.log(dps);
 }
 
 function calculateAll() {

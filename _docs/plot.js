@@ -290,8 +290,25 @@ function showVersion() {
   });
 }
 
+function showReport() {
+  var text = `
+  - <a href="https://bbs.nga.cn/read.php?tid=20083034" target="_blank">NGA帖子</a><br>
+  - <a href="https://bbs.nga.cn/nuke.php?func=message#to=37501424" target="_blank">私信作者</a><br>
+  - <a href="https://github.com/xulai1001/akdata/issues" target="_blank">Github Issue</a><br>
+  感谢您的热心反馈！`;
+  pmBase.component.create({
+    type: 'modal',
+    id: "modal_report",
+    content: text,
+    width: 800,
+    title: "您可以通过以下途径反馈遇到的问题:",
+    show: true,
+  });
+}
+
 function load() {
   showVersion();
+  $("#btn_report").click(showReport);
   AKDATA.patchAllChars();
   
   let $dps = $(page_html);

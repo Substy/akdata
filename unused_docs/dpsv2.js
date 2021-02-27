@@ -1,4 +1,4 @@
-const ProfessionNames = {
+  const ProfessionNames = {
   "PIONEER": "先锋",
   "WARRIOR": "近卫",
   "SNIPER": "狙击",
@@ -48,10 +48,10 @@ let page_html = `
         添加
         <span class="float-right pl-4">
           <button class="button btn-primary" type="button" data-toggle="collapse" data-target="#tbl_enemy" aria-expanded="false" aria-controls="tbl_enemy">
-            敌人属性设置
+            <strong>敌人属性（点击展开）</strong>
           </button>
           <button class="button btn-primary" type="button" data-toggle="collapse" data-target="#tbl_raidBuff" aria-expanded="false" aria-controls="tbl_raidBuff">
-            团队Buff设置
+            <strong>团队Buff（点击展开）</strong>
           </button>
         </span>
       </div>
@@ -157,7 +157,7 @@ let page_html = `
     </div>
     <div id="plot_list" class="collapse show">
       <div class="card-body row">
-          <div class="form-inline mb-2 mt-2" style="width: 100%" v-for="(x, index) in plotList">
+          <div class="form-inline mb-4 mt-2" style="width: 100%" v-for="(x, index) in plotList">
             <div class="media" style="width: 22%">
               <img class="media-object rounded mr-2" style="width: 35%" :src="charImgUrl(x.charId)">
               <div class="media-body">
@@ -177,12 +177,9 @@ let page_html = `
                   <th>{{ getResult(x).g_dps_title }}</th>
                   <th>{{ getResult(x).s_dps_title }}</th>
                   <th>{{ getResult(x).n_dps_title }}</th>
+                  <th>{{ getResult(x).s_hit_title }}</th>
                   <th>{{ getResult(x).s_dmg_title }}</th>
-                  <th>技能攻击</th>               
-                  <th>循环周期</th>
-                  <th>攻击间隔</th> 
-                  <th>启动时间</th>
-                  <th>计算过程</th>
+                  
                 </tr>
                 <tr>
                   <td><h5><font :color="getResult(x).s_color">
@@ -195,21 +192,33 @@ let page_html = `
                     <span v-html="getResult(x).n_dps_text"></span>
                   </font></h5></td>
                   <td><h5><font :color="getResult(x).s_color">
-                    <span v-html="getResult(x).s_dmg_text"></span>
+                    <span v-html="getResult(x).s_hit_text"></span>
                   </font></h5></td>
+                  <td><h5><font :color="getResult(x).s_color">
+                    <span v-html="getResult(x).s_dmg_text"></span>
+                  </font></h5></td>                  
+                </tr>
+                <tr>
+                  <th>技能攻击力</th>
+                  <th>攻击间隔</th>               
+                  <th>循环周期</th>                   
+                  <th>启动时间</th>
+                  <th>计算过程（技能）</th>
+                </tr>
+                <tr>
                   <td><font :color="getResult(x).s_color">
                     <span v-html="getResult(x).s_atk_text"></span>
                   </font></td>
-                  <td><span v-html="getResult(x).period_text"></span></td>
                   <td>
                     <h5>{{ getResult(x).s_time.frameTime.toFixed(3) }} s</h5>
                     {{ getResult(x).s_time.frame }} 帧
                   </td>
+                  <td><span v-html="getResult(x).period_text"></span></td>
                   <td>
                     <h5>{{ getResult(x).start.toFixed(1) }} s</h5>
                     {{ getResult(x).s_rot.startSp }} sp
                   </td>
-                  <td><a href="#" @click="showDetail(x)">点击显示</a></td>
+                  <td><a href="#" @click="showDetail(x)"><b>点击显示</b></a></td>
                 </tr>
               </tbody></table>
               <div v-if="getResult(x).note.length>0" class="ml-4">说明：<span v-html="getResult(x).note.join('; ')"></span></div>
@@ -427,7 +436,8 @@ function load() {
             ret.g_dps_title = "平均DPS";
             ret.s_dps_title = "技能DPS";
             ret.n_dps_title = "普攻DPS";
-            ret.s_dmg_title = "技能伤害";
+            ret.s_hit_title = "技能DPH";
+            ret.s_dmg_title = "技能总伤害";
             ret.g_dps_text = Math.round(ret.g_dps);
             ret.s_dps_text = Math.round(ret.s_dps);
             ret.n_dps_text = Math.round(ret.n_dps);
@@ -445,7 +455,8 @@ function load() {
               ret.n_dps_title = (ret.n_dps == 0 ? "普攻HPS" : "普攻DPS/HPS");
               ret.n_dps_text = (ret.n_dps == 0 ? Math.round(ret.n_hps) : `DPS: ${Math.round(ret.n_dps)}<br>HPS: ${Math.round(ret.n_hps)}`);
 
-              ret.s_dmg_title = (ret.s_dmg == 0 ? "技能治疗" : "技能伤害/治疗");
+              ret.s_hit_title = (ret.s_dmg == 0 ? "技能单次治疗" : "技能DPH");
+              ret.s_dmg_title = (ret.s_dmg == 0 ? "技能总治疗" : "技能伤害/治疗");
               ret.s_dmg_text = (ret.s_dmg == 0 ? Math.round(ret.s_heal) : `伤害: ${Math.round(ret.s_dmg)}<br>治疗: ${Math.round(ret.s_heal)}`);
             }
             
@@ -459,6 +470,8 @@ function load() {
             if (ret.s_rot.flags.instant)
               ret.period_text += "<br>瞬发";
             ret.period_text += `<br>普攻: ${ret.n_rot.duration.toFixed(1)} s`;
+            ret.period_text += `<br>普攻命中: ${Math.round(ret.n_hitc + ret.n_hitcc)}`;
+            
             if (ret.n_rot.flags.attack)
               ret.period_text += `<br>(${ret.n_rot.totalAttackCount} 次攻击)`;
             else if (ret.n_rot.flags.hit)
@@ -466,12 +479,13 @@ function load() {
             if (ret.prep > 0) ret.period_text += `<br>准备: ${ret.prep} s`;
             if (ret.stun > 0) ret.period_text += `<br>晕眩: ${ret.stun} s`;
 
-            ret.s_atk_text = `攻击力: ${Math.round(ret.s_atk)}<br>攻击次数: ${ret.s_rot.totalAttackCount}`;
+            ret.s_hit_text = `${Math.round(ret.s_hit)}`;
             if (ret.s_rot.critAttackCount > 0)
-              ret.s_atk_text += `<br>暴击: ${ret.s_rot.critAttackCount}`;
-            ret.n_atk_text = `攻击力: ${Math.round(ret.n_atk)}<br>攻击次数: ${ret.n_rot.totalAttackCount}`;
-            if (ret.n_rot.critAttackCount > 0)
-              ret.n_atk_text += `<br>暴击: ${ret.n_rot.critAttackCount}`;
+              ret.s_hit_text += `<br>暴击: ${Math.round(ret.s_chit)}`;
+
+            ret.s_atk_text = `攻击力: ${Math.round(ret.s_atk)}<br>攻击 ${ret.s_rot.attackCount} 次, 命中 ${Math.round(ret.s_hitc)}`;
+            if (ret.s_rot.critAttackCount > 0)
+              ret.s_atk_text += `<br>暴击: ${Math.round(calc.skill.critAttr.finalFrame.atk)}<br>攻击 ${ret.s_rot.critAttackCount} 次, 命中 ${Math.round(ret.s_hitcc)}`;
           }
         });
       },
@@ -488,7 +502,7 @@ function load() {
         pmBase.component.create({
           type: 'modal',
           id: `detail_${hash}`,
-          content: `<pre>${this.debugPrint(this.calcCache[hash].explainGlossary())}</pre>`,
+          content:  markdown.makeHtml(this.calcCache[hash].explainLog()).replace("table", 'table class="table"'),
           width: 650,
           title: x.charId + " - " + x.skillId,
           show: true
