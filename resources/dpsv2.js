@@ -910,6 +910,10 @@ class DpsContext {
         var args = {};  // callSpecial参数
 
         this.log.pushKey("Rotation");
+
+        if (checkSpecs(this.skillId, "sim"))
+            this.log.note("v2暂未加入模拟功能，只进行简单计算");
+            
         // 点火时间（落地还差多少sp启动）
         // 必须返回 { startSp: x }
         var startSp = spData.spCost - spData.initSp;

@@ -99,6 +99,9 @@
         "char_402_tuye":    [ "cond" ],
         "char_362_saga":    [ "cond" ],
         "char_2015_dusk":   [ "stack", "token", "cond" ],
-        "char_455_nothin":  [ "cond"]
+        "char_455_nothin":  [ "cond"],
+        "char_456_ash":     [ "cond" ],
+        "char_457_blitz":   [ "cond" ],
+        "char_459_tachak":  [ "crit" ]
     }
 }

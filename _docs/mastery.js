@@ -88,8 +88,14 @@ function buildVueModel() {
   
   // select char list
   let charList = {};
+  let new_list = [];
+  AKDATA.new_op.forEach(id => {
+    new_list.push({"name": AKDATA.Data.character_table[id].name, "id": id});
+  });
+  charList["新干员"] = new_list;
+
   Object.keys(ProfessionNames).forEach(key => {
-    var opts = [];
+    let opts = [];
     for (let id in AKDATA.Data.character_table) {
       let data = AKDATA.Data.character_table[id];
       if (data.profession == key && data.phases.length > 2)

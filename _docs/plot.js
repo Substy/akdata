@@ -235,6 +235,12 @@ function buildVueModel() {
   skillDB = AKDATA.Data.skill_table;
   optionDB = AKDATA.Data.dps_options;
 
+  let new_list = [];
+  AKDATA.new_op.forEach(id => {
+    new_list.push({"name": charDB[id].name, "charId": id});
+  });
+  charList["新干员"] = new_list;
+
   Object.keys(ProfessionNames).forEach(key => {
     var arr = [];
     for (let charId in charDB) {

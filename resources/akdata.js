@@ -7,9 +7,11 @@ const useCache = true;
 const cacheBeginTime = new Date(2019, 12, 10).getTime();
 
 window.AKDATA = {
-  akdata: "210206", // jsdelivr tag version
+  akdata: "210309", // jsdelivr tag version
 
   Data: {},
+
+  new_op: ["char_456_ash", "char_457_blitz", "char_458_rfrost", "char_459_tachak"],
 
   checkVersion: function (callback) {
     $.getJSON(`../resources/version.json?_=${Math.round(Math.random()*1e8)}`, function(v) {

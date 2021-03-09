@@ -91,6 +91,13 @@ function load() {
   let toCopy = '';
   selectOptions += `<option value="">-</option>`;
 
+  selectOptions += "<optgroup label='新干员'>";
+  AKDATA.new_op.forEach(id => {
+    let charData = AKDATA.Data.character_table[id];
+    selectOptions += `<option value="${id}">${charData.name}</option>`;
+  });
+  selectOptions += `</optgroup">`;
+
   Object.keys(ProfessionNames).forEach(key => {
     selectOptions += `<optgroup label="${ProfessionNames[key]}">`;
     for (let charId in AKDATA.Data.character_table) {

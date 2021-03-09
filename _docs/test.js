@@ -28,7 +28,7 @@ function init() {
 
 function load() {
   AKDATA.patchAllChars();
-  test_dps_all();
+  //test_dps_all();
   //find_skills(x => x.indexOf("instant") >= 0);
 }
 
