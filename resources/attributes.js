@@ -1259,12 +1259,15 @@ function calcDurations(isSkill, attackTime, attackSpeed, levelData, buffList, bu
   if (isSkill) {
     
     // 准备时间
-    if (skillId == "skchr_mudrok_3") {
-      prepDuration = blackboard.sleep;
-    } else if (skillId == "skchr_amiya2_2") {
-      prepDuration = 3.33;
-    } else if (skillId == "skchr_surtr_3") {
-      prepDuration = 0.67;
+    switch (skillId) {
+      case "skchr_mudrok_3":
+        prepDuration = blackboard.sleep; break;
+      case "skchr_amiya2_2":
+        prepDuration = 3.33; break;
+      case "skchr_surtr_3":
+        prepDuration = 0.67; break;
+      case "skchr_ash_2":
+        prepDuration = 1; break;
     }
 
     // 快速估算

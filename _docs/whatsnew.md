@@ -5,6 +5,9 @@ order: 4
 category: 工具
 icon: info-circle
 ---
+## 21.03.18
+- [bugfix] 修正战车2技能帧数
+
 ## 21.03.09
 - [dps] 新干员-Ash等
 

@@ -173,7 +173,7 @@
     "skchr_swllow_1":   { "sim": true },
     "skchr_swllow_2":   { "reset_attack": true, "attack_begin": 2 },
     "skchr_tachak_1":   { "times": 2, "note": "未计算无视防御效果" },
-    "skchr_tachak_2":   { "times": 2, "frame_corr": 1, "note": "理论间隔5.8帧（实际损失20%输出）" },
+    "skchr_tachak_2":   { "times": 2 },
     "skchr_texas_2":    { "cast_time": 65 },
     "skchr_thorns_2":   { "reset_attack": true },
     "skchr_thorns_3":   { "reset_attack": true },
