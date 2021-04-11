@@ -1736,9 +1736,12 @@ function calculateAttack(charAttr, enemy, raidBlackboard, isSkill, charData, lev
 
   // 平均化惊蛰伤害
   if (charId == 'char_306_leizi' && !(isSkill && blackboard.id == "skchr_leizi_2")) {
-    buffFrame.damage_scale = 1 - 0.125 * (ecount-1);
-    finalFrame.atk *= buffFrame.damage_scale;
-    log.write(`[特殊] 惊蛰: 平均伤害 ${buffFrame.damage_scale.toFixed(2)}x`);
+    var scale = 1, tot = 1;
+    for (var i=0; i<ecount-1; ++i) {
+        scale *= 0.75; tot += scale;
+    }
+    buffFrame.damage_scale *= tot / ecount;
+    log.write(`[特殊] 惊蛰: 平均倍率 ${(tot / ecount).toFixed(2)}x`);
   }
 
   // 计算攻击次数和持续时间
