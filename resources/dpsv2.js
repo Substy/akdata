@@ -97,7 +97,7 @@ function getAliasedBlackboard(buffKey, blackboard, options) {
                 if (ret[a.alias]) delete ret[a.alias];
             }
         });
-        console.log("Raw/Aliased", blackboard, ret);
+      //  console.log("Raw/Aliased", blackboard, ret);
         return ret;
     } else return blackboard;
 }
@@ -201,13 +201,8 @@ class Character {
 
     explain(log) {
         log.pushKey("Character");
-        //log.write(`| 角色 | 等级 | 技能 |`);
-        //log.write(`| :--: | :--: | :--: | `);
-        //log.write(`| ~${this.charId}~ - **${this.charData.name}**  | 精英 ${this.phase}, 等级 ${this.level},
-        //                              潜能 ${this.potentialRank+1} | ${this.skillName}, 等级 ${this.skillLevel+1} |`);
-        log.write(`${this.charId} - ${this.charData.name}`);
-        log.write(`精英 ${this.phase}, 等级 ${this.level}, 潜能 ${this.potentialRank+1}`);
-        log.write(`${this.skillName}, 等级 ${this.skillLevel+1}`);
+        log.write(`角色: ${this.charData.name} / ${this.charId}, 精英 ${this.phase}, 等级 ${this.level}, 潜能 ${this.potentialRank+1}`);
+        log.write(`技能: ${this.skillName} / ${this.skillId}, 等级 ${this.skillLevel+1}`);
         log.popKey();
     }
 
@@ -247,11 +242,10 @@ class Character {
     } // getDamageType
 
     canResetAttack() {
-        return (checkSpecs(this.skillId, "reset_attack") != false || 
-            ["base_attack_time", "attack@max_target", "max_target"].some(
-                x => this.blackboard[x] != null
-            )
-        );
+        if (checkSpecs(this.skillId, "reset_attack") != null)
+            return _spec;
+        else 
+            return ["base_attack_time", "attack@max_target", "max_target"].some(x => this.blackboard[x] != null);
     }
 }
 
@@ -410,6 +404,7 @@ class DpsContext {
     // 被调用的函数必须返回对象字典，返回值放在this.retvar
     callSpecial(buffKey, funcKey, args=null) {
         var actions = AKDATA.Dps.Actions;   // npm需要注释掉该行
+        //console.log("here", buffKey);
         if (actions[buffKey] && actions[buffKey][funcKey]) {
             console.log(`callSpecial ${buffKey}->${funcKey}`);
             this.retvar = actions[buffKey][funcKey].apply(this, args);    // call
@@ -433,6 +428,7 @@ class DpsContext {
                 // 设置buffKey/blackboard
                 args.buffKey = b;
                 args.blackboard = this.buffList[b];
+                //console.log(buffKey, funcKey, args);
                 // 调用并合并结果
                 r = this.callSpecial(b, funcKey, [args]);
                 if (r) {
@@ -1461,9 +1457,16 @@ class DpsCalculator {
         lines.push("## 技能-循环相关");
         lines.push(`攻击次数: ${e.s_rot.totalAttackCount} (暴击 ${e.s_rot.critAttackCount})`);
         lines.push(`命中: ${e.s_hitc} (+暴击 ${e.s_hitcc})`);
-        lines.push(`持续时间 ${e.s_rot.totalDuration.toFixed(3)} s (准备 ${e.prep} s, 眩晕 ${e.stun} s)`);
+        lines.push(`持续时间 ${e.s_rot.totalDuration.toFixed(3)} s (准备 ${e.prep} s)`);
         lines.push(`启动技力需求: ${e.s_rot.startSp}, ${e.start.toFixed(3)} s`);
         if (e.s_log.Rotation) lines.push(...e.s_log.Rotation);
+
+        lines.push("## 普攻-循环相关");
+        lines.push(`攻击次数: ${e.n_rot.totalAttackCount} (暴击 ${e.n_rot.critAttackCount})`);
+        lines.push(`命中: ${e.n_hitc} (+暴击 ${e.n_hitcc})`);
+        lines.push(`持续时间 ${e.n_rot.totalDuration.toFixed(3)} s (眩晕 ${e.stun} s)`);
+        if (e.n_log.Rotation) lines.push(...e.n_log.Rotation);
+
 
         lines.push("## 技能-伤害计算");
         lines.push("| |物理|法术|治疗|真伤|护盾|");

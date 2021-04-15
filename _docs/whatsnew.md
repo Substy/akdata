@@ -5,6 +5,9 @@ order: 4
 category: 工具
 icon: info-circle
 ---
+## 21.04.15
+- [update] 异客等
+
 ## 21.04.11
 - [bugfix] 修正了惊蛰的弹射公式。以前将倍率计算了两次。现在改为正确的连续乘算
 

@@ -202,8 +202,8 @@ let page_html = `
                   <th>技能攻击力</th>
                   <th>攻击间隔</th>               
                   <th>循环周期</th>                   
-                  <th>启动时间</th>
-                  <th>计算过程（技能）</th>
+                  <th>启动时间（不计天赋）</th>
+                  <th>计算过程</th>
                 </tr>
                 <tr>
                   <td><font :color="getResult(x).s_color">
@@ -373,10 +373,12 @@ function load() {
         this.setPhase();
 
         var opts = [];
-        optionDB.char[this.charId].forEach(x => {
-          if (x != "crit")
-            opts.push({ tag: x, text: optionDB.tags[x].displaytext });
-        });
+        if (optionDB.char[this.charId]) {
+          optionDB.char[this.charId].forEach(x => {
+            if (x != "crit")
+              opts.push({ tag: x, text: optionDB.tags[x].displaytext });
+          });
+        }
         opts.push({ tag: "buff", text: "计算团辅"});
         var sel_opts = [];
         opts.forEach(x => {
@@ -504,7 +506,7 @@ function load() {
           id: `detail_${hash}`,
           content:  markdown.makeHtml(this.calcCache[hash].explainLog()).replace("table", 'table class="table"'),
           width: 650,
-          title: x.charId + " - " + x.skillId,
+          title: "伤害计算过程与详细数据",
           show: true
         });
       }

@@ -497,6 +497,9 @@ function applyBuff(charAttr, buffFrm, tag, blackbd, isSkill, isCrit, log, enemy)
           if (isSkill && skillId == "skchr_blitz_2")
             blackboard.atk_scale *= charAttr.buffList.skill.talent_scale;
           break;
+        case "tachr_472_pasngr_1":
+          blackboard.damage_scale = blackboard["pasngr_t_1[enhance].damage_scale"];
+          break;
       }
     }
   } else if (checkSpecs(tag, "ranged_penalty")) { // 距离惩罚类
@@ -780,6 +783,7 @@ function applyBuff(charAttr, buffFrm, tag, blackbd, isSkill, isCrit, log, enemy)
         break;
       case "skchr_brownb_2":  // 攻击间隔缩短，但是是乘算负数
       case "skchr_whispr_2":
+      case "skchr_pasngr_2":
         writeBuff(`base_attack_time: ${blackboard.base_attack_time}x`);
         blackboard.base_attack_time *= basic.baseAttackTime;
         break;
@@ -1051,6 +1055,12 @@ function applyBuff(charAttr, buffFrm, tag, blackbd, isSkill, isCrit, log, enemy)
         writeBuff(`base_attack_time: ${blackboard.base_attack_time}x`);
         blackboard.base_attack_time *= basic.baseAttackTime;
         if (!isCrit) delete blackboard.atk_scale;
+        break;
+      case "skchr_pasngr_3":
+        done = true; break;
+      case "skchr_toddi_1":
+        blackboard.edef_scale = blackboard.def;
+        delete blackboard.def;
         break;
     }
   }
@@ -1344,11 +1354,15 @@ function calcDurations(isSkill, attackTime, attackSpeed, levelData, buffList, bu
       if (checkSpecs(skillId, "instant_buff")) { // 瞬发的有持续时间的buff，例如血浆
         duration = blackboard.duration || checkSpecs(skillId, "duration");
         attackCount = Math.ceil(duration / attackTime);
-        tags.push("instant", "buff"); log.write("瞬发增益效果");
+        tags.push("instant", "buff"); log.writeNote("瞬发Buff，技能周期为Buff持续时间");
       } else if (skillId == "skchr_ash_2") {
         attackCount = 31;
         duration = attackTime * attackCount;
         log.write(`[特殊] ${displayNames["skchr_ash_2"]}: 攻击 31 次`);
+      } else if (skillId == "skchr_toddi_2") {
+        attackCount = 10;
+        duration = attackTime * attackCount;
+        log.write(`[特殊] ${displayNames["skchr_toddi_2"]}: 攻击 10 次`);
       } else { // 普通瞬发
         attackCount = 1;
         // 不占用普攻的瞬发技能，持续时间等于动画时间。否则持续时间为一次普攻间隔
@@ -1509,6 +1523,7 @@ function calcDurations(isSkill, attackTime, attackSpeed, levelData, buffList, bu
           attackDuration -= blackboard.duration || checkSpecs(skillId, "duration");
           attackCount = Math.ceil(attackDuration / attackTime);
           duration = attackCount * attackTime;
+          log.writeNote("瞬发Buff，技能周期为Buff持续时间");
         } else if (buffList["tachr_400_weedy_2"] && options.cannon) { // 水炮充能，持续20s/cd35s
           let m = Math.floor(spData.spCost / 55);
           let a = m * 6 + m * 55 * sp_rate; // 前m个水炮充能+自然恢复的sp量
@@ -1734,14 +1749,16 @@ function calculateAttack(charAttr, enemy, raidBlackboard, isSkill, charData, lev
   let emrpct = emr / 100;
   let ecount = Math.min(buffFrame.maxTarget, enemy.count);
 
-  // 平均化惊蛰伤害
-  if (charId == 'char_306_leizi' && !(isSkill && blackboard.id == "skchr_leizi_2")) {
-    var scale = 1, tot = 1;
+  // 平均化惊蛰/异客伤害
+  if ((charId == 'char_306_leizi' || charId == "char_472_pasngr") &&
+      !(isSkill && blackboard.id == "skchr_leizi_2")) {
+    let scale = 1, tot = 1, sks = [1];
     for (var i=0; i<ecount-1; ++i) {
-        scale *= 0.75; tot += scale;
+        scale *= 0.8; tot += scale; sks.push(scale);
     }
+    log.write(`[特殊] 电法: 原本伤害倍率: ${buffFrame.damage_scale.toFixed(2)}`);
     buffFrame.damage_scale *= tot / ecount;
-    log.write(`[特殊] 惊蛰: 平均倍率 ${(tot / ecount).toFixed(2)}x`);
+    log.write(`[特殊] 电法: 连锁倍率: ${sks.map(x => x.toFixed(2))}, 平均伤害倍率 ${buffFrame.damage_scale.toFixed(2)}x`);
   }
 
   // 计算攻击次数和持续时间
@@ -2039,6 +2056,7 @@ function calculateAttack(charAttr, enemy, raidBlackboard, isSkill, charData, lev
         log.write(`[特殊] ${displayNames[buffName]}: 伤害为0 （以上计算无效）`);
         break;
       case "skchr_silent_2":
+      case "skchr_zebra_1":
         damagePool[2] = 0;
         log.write(`[特殊] ${displayNames[buffName]}: 治疗为0 （以上计算无效）`);
         break;
@@ -2119,6 +2137,18 @@ function calculateAttack(charAttr, enemy, raidBlackboard, isSkill, charData, lev
         damage = Math.max(atk * (1-emrpct), atk * 0.05);
         pool[1] += damage * bb.projectile_delay_time * enemy.count;
         log.write(`[特殊] ${displayNames[buffName]}: 燃烧伤害 ${damage.toFixed(1)}, 命中 ${bb.projectile_delay_time * enemy.count}`);
+        break;
+      case "skchr_pasngr_3":
+        atk = finalFrame.atk * bb.atk_scale;
+        damage = Math.max(atk * (1-emrpct), atk * 0.05) * buffFrame.damage_scale;
+        pool[1] += damage * ecount * 8;
+        log.write(`[特殊] ${displayNames[buffName]}: 雷击区域伤害 ${damage.toFixed(1)} (平均倍率 ${buffFrame.damage_scale.toFixed(2)}), 命中 ${8 * ecount}`);
+        break;
+      case "skchr_toddi_2":
+        atk = finalFrame.atk / bb["attack@atk_scale"] * bb["attack@splash_atk_scale"];
+        damage = Math.max(atk - enemy.def, atk * 0.05);
+        pool[0] += damage * enemy.count * dur.hitCount;
+        log.write(`[特殊] ${displayNames[buffName]}: 爆炸伤害 ${damage.toFixed(1)}, 命中 ${enemy.count * dur.hitCount}`);
         break;
       // 间接治疗
       case "skchr_tiger_2":
@@ -2276,6 +2306,7 @@ function calculateAttack(charAttr, enemy, raidBlackboard, isSkill, charData, lev
         case "tachr_416_zumama_1":
         case "tachr_362_saga_2":
         case "skchr_dusk_2":
+        case "tachr_472_pasngr_1":
           break;
         case "skchr_gravel_2":
         case "skchr_phatom_1":

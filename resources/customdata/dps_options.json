@@ -102,6 +102,8 @@
         "char_455_nothin":  [ "cond"],
         "char_456_ash":     [ "cond" ],
         "char_457_blitz":   [ "cond" ],
-        "char_459_tachak":  [ "crit" ]
+        "char_459_tachak":  [ "crit" ],
+        "char_472_pasngr":  [ "cond" ],
+        "char_363_toddi":   [ "cond" ]
     }
 }

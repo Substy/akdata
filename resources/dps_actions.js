@@ -45,6 +45,23 @@ var common = {
     },
     noExtra: function (args) {
         return { pool: [0, 0, 0, 0, 0] };
+    },
+    attackSpInterval: function (args) {
+        // 呵斥
+        // spCost = attackCount + floor(attackCount * attackTime / interval)
+        // => spCost / (1+attackTime/interval) < [attackCount] < (spCost+1) / (1+attackTime/interval)
+        // 直接取ceil
+        console.log("here", args);
+        var attackCount = Math.ceil(args.spData.spCost / 
+            (1 + args.attackTime / args.blackboard.interval));
+        var sp = Math.floor(attackCount * args.attackTime / args.blackboard.interval);
+        var duration = attackCount * args.attackTime;
+        this.log.write(`[特殊] 天赋恢复sp: sp + ${sp}`);
+        this.log.note(`天赋回复 ${sp}sp`);
+        return {
+            attackCount, duration, 
+            rotationFlags: { attack: true }
+        };
     }
 };
 
@@ -628,23 +645,7 @@ AKDATA.Dps.Actions = {
             return { duration, attackCount };
         }
     },
-    tachr_010_chen_1: {
-        normal_duration: function (args) {
-            // 呵斥
-            // spCost = attackCount + floor(attackCount * attackTime / interval)
-            // => spCost / (1+attackTime/interval) < [attackCount] < (spCost+1) / (1+attackTime/interval)
-            // 直接取ceil
-            var attackCount = Math.ceil(args.spData.spCost / 
-                (1 + args.attackTime / args.blackboard.interval));
-            var sp = Math.floor(attackCount * args.attackTime / args.blackboard.interval);
-            var duration = attackCount * args.attackTime;
-            this.log.write(`[特殊] ${_names["tachr_010_chen_1"]}: sp = ${sp}, attack_count = ${attackCount}`);
-            return {
-                attackCount, duration, 
-                rotationFlags: { attack: true }
-            };
-        }
-    },
+    tachr_010_chen_1: { normal_duration: common.attackSpInterval },
     tachr_017_huang_1: { extraDamage: common.noExtra },
     tachr_1001_amiya2_1: {   
         applyBuff: function (attr, blackboard) {
@@ -949,6 +950,7 @@ AKDATA.Dps.Actions = {
                 this.rotation.totalDuration / args.blackboard.interval, 2);
         }
     },
+    tachr_332_archet_1: { normal_duration: common.attackSpInterval },
     tachr_337_utage_trait: {
         extraDamage: function(args) { // 攻回
             return this.attr.calcDamagePool(args.blackboard.value, this.hitCount, 2);
