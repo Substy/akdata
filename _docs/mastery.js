@@ -42,6 +42,13 @@ const LevelingCost = {4: [2391, 9], 5: [3699, 13], 6: [5874, 21] };
 
 let itemCache = {};
 
+function checkSpecs(tag, spec) {
+  let specs = AKDATA.Data.dps_specialtags;
+  if ((tag in specs) && (spec in specs[tag]))
+    return specs[tag][spec];
+  else return false;
+}
+
 function init() {
   $('#update_prompt').text("正在载入角色数据，请耐心等待......");
   AKDATA.load([
@@ -385,8 +392,9 @@ function buildChar(charId, skillId, recipe) {
   char.skillName = skilldb.levels[char.skillLevel].name;
   //console.log(char);
   var _opts = AKDATA.Data.dps_options.char[charId];
-//  if (_opts && _opts.indexOf("token") >= 0)
-//    char.options.token = true;
+  if (checkSpecs(charId, "use_token_for_mastery") || checkSpecs(skillId, "use_token_for_mastery"))
+    char.options.token = true;
+  else char.options.token = false;
   return char;
 }
 

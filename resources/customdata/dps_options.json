@@ -92,6 +92,7 @@
         "char_347_jaksel":  [ "cond" ],
         "char_436_whispr":  [ "ranged_penalty", "cond" ],
         "char_1001_amiya2": [ "stack" ],
+        "char_1012_skadi2": [ "cond" ],
         "char_440_pinecn":  [ "cond", "warmup" ],
         "char_264_f12yin":  [ "crit" ],
         "char_452_bstalk":  [ "cond", "token" ],
@@ -104,6 +105,9 @@
         "char_457_blitz":   [ "cond" ],
         "char_459_tachak":  [ "crit" ],
         "char_472_pasngr":  [ "cond" ],
-        "char_363_toddi":   [ "cond" ]
+        "char_363_toddi":   [ "cond" ],
+        "char_003_kalts":   [ "token" ],
+        "char_474_glady":   [ "cond" ],
+        "char_475_akafyu" : [ "stack" ]
     }
 }
