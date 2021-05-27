@@ -1,16 +1,3 @@
-const ProfessionNames = {
-  "PIONEER": "先锋",
-  "WARRIOR": "近卫",
-  "SNIPER": "狙击",
-  "TANK": "重装",
-  "MEDIC": "医疗",
-  "SUPPORT": "辅助",
-  "CASTER": "术师",
-  "SPECIAL": "特种",
-//  "TOKEN": "召唤物",
-//  "TRAP": "装置",
-};
-
 function init() {
   $('#update_prompt').text("正在载入角色数据，请耐心等待......");
   AKDATA.load([
@@ -26,6 +13,8 @@ function init() {
 
 const charColumnCount = $(document).width() <= 1400 ? 2 : 4;
 const Characters = new Array(charColumnCount);
+
+let excludeChars = [];
 
 let markdown = new window.showdown.Converter();
 markdown.setOption("simpleLineBreaks", true);
@@ -84,7 +73,7 @@ function load() {
 
   var charId_hash = window.location.hash.replace("#", "");
   console.log(charId_hash);
-
+/*
   let selectOptions = '';
   let charFinalData = [];
 
@@ -113,6 +102,13 @@ function load() {
 
   if (toCopy) window.toCopy = toCopy;
   // copy(toCopy);
+*/
+
+  for (let charId in AKDATA.Data.character_table) {
+    let charData = AKDATA.Data.character_table[charId];
+    if (charData.skills.length == 0) excludeChars.push(charId);
+  }
+
 
   let html = `
 <div class="card mb-2">
@@ -204,12 +200,26 @@ function load() {
   for (let i = 0; i < charColumnCount; i++) {
     $dps.find('.dps__row-select').append(`<td>
       <div class="input-group">
-        <select class="form-control dps__char" data-index="${i}">${selectOptions}</select>
-        <div class="input-group-append">
-          <button class="btn btn-outline-secondary dps__goto" data-index="${i}" type="button"><i class="fas fa-search"></i></button>
-        </div>
+        <table style="table-layout: fixed; width: 100%"> <tr>
+          <td rowspan="3" style="padding: 0; width: 50%">
+            <img class="img_char" data-index="${i}" src="/akdata/assets/images/char/char_504_rguard.png" height="96px"></img>
+            <div class="txt_char" style="font-weight:600; text-align: center; width: 96px" data-index="${i}">-</div>
+          </td>
+          <td style="padding: 0"><button class="dps__char_sel btn btn-primary p-2" style="float:right" data-index="${i}">
+            选择干员<i class="fa fa-ellipsis-h"></i></button></td>
+        </tr>
+        <tr>
+          <td style="padding: 0">
+            <button class="btn btn-outline-secondary dps__goto p-2" style="float:right" data-index="${i}" type="button">
+              详细属性<i class="fa fa-info-circle"></i>
+            </button>
+          </td>
+        </tr>
+        <tr>
+          <td style="padding: 0"><button class="dps__copy btn btn-outline-info p-2" style="float:right" data-index="${i}">复制到右侧</button></td>
+        </tr></table>
       </div>
-      <a class="dps__copy" data-index="${i}" href="#">[复制到右侧]</a>
+      
     </td>`);
 
     $dps.find('.dps__row-level').append(`<td><div class="container"><div class="form-group row mb-0"><select class="form-control form-control-sm col-7 dps__phase" data-index="${i}"></select><select class="form-control form-control-sm col-5 dps__level" data-index="${i}"></select></div></div></td>`);
@@ -247,7 +257,7 @@ function load() {
   $('.dps__potentialrank').val(5);
   $('.dps__favor').val(100);
 
-  $('.dps__char').change(chooseChar);
+ // $('.dps__char').change(chooseChar);
   $('.dps__phase').change(choosePhase);
   $('.dps__level').change(chooseLevel);
   $('.dps__skill, .dps__skilllevel, .dps__potentialrank, .dps__favor').change(chooseSkill);
@@ -258,10 +268,26 @@ function load() {
   $('.dps__damagepool').click(showDamage);
   $('.dps__goto').click(goto);
   $('.dps__copy').click(copyChar);
+  $('.dps__char_sel').click(showSelectChar);
+  $('.img_char').click(showSelectChar);
+  
 
-  if (charId_hash.length > 0)
-    $(".dps__char:eq(0)").val(charId_hash);
-    updateChar(charId_hash, 0);
+  if (charId_hash.length > 0) selectChar(charId_hash, 0);
+  
+}
+
+function selectChar(charId, i) {
+  var name = AKDATA.Data.character_table[charId].name;
+  $(`.txt_char:eq(${i})`).text(name);
+  $(`.img_char:eq(${i})`).attr("src", `/akdata/assets/images/char/${charId}.png`);
+  updateChar(charId, i);
+}
+
+function showSelectChar() {
+  let __this=$(this);
+  let index = ~~__this.data("index");
+  AKDATA.selectCharCallback = function (id) { selectChar(id, index); }
+  AKDATA.showSelectCharDialog(excludeChars);
 }
 
 function goto() {
@@ -446,8 +472,9 @@ function copyChar() {
   let charId = Characters[index].charId;
   while (index < charColumnCount-1) {
     ++index;
-    updateChar(charId, index);
-    setSelectValue("char", index, charId);
+   // updateChar(charId, index);
+   // setSelectValue("char", index, charId);
+   selectChar(charId, index);
   }
 }
 

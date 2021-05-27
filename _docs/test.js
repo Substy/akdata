@@ -3,11 +3,11 @@ let ua = navigator.userAgent;
 document.getElementById("user_agent").innerText = ua;
 
 $("#jquery").text($.fn.jquery);
-$("#vue").html("Vue: {{ error }} <br> <div v-html='content' class='row'></div>");
+$("#vue").html("Vue: {{ error }} <br> <div v-html='content' class='row'></div> <br> {{ char }}");
 
 let vue_app = new Vue({
   el: "#vue",
-  data: { error: Vue.version, content: "test content" }
+  data: { error: Vue.version, content: "test content", char: "" }
 });
 
 // AKDATA load test
@@ -30,6 +30,8 @@ function load() {
   AKDATA.patchAllChars();
   //test_dps_all();
   //find_skills(x => x.indexOf("instant") >= 0);
+  AKDATA.showSelectCharDialog();
+  AKDATA.selectCharCallback = function (id) { vue_app.char = id; };
 }
 
 pmBase.hook.on('init', init);

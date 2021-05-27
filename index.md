@@ -4,7 +4,7 @@
 # See: https://jekyllrb.com/docs/themes/#overriding-theme-defaults
 layout: home
 collection: docs
-title: Arknights DPS - 明日方舟数据分析工具
+title: Arknights DPS - 明日方舟DPS计算器
 ---
 
 <div>

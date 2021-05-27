@@ -13,6 +13,19 @@ window.AKDATA = {
 
   new_op: ["char_1012_skadi2", "char_003_kalts", "char_474_glady", "char_475_akafyu"],
 
+  professionNames: {
+    "PIONEER": "先锋",
+    "WARRIOR": "近卫",
+    "SNIPER": "狙击",
+    "TANK": "重装",
+    "MEDIC": "医疗",
+    "SUPPORT": "辅助",
+    "CASTER": "术师",
+    "SPECIAL": "特种",
+  //  "TOKEN": "召唤物",
+  //  "TRAP": "装置",
+  },
+
   checkVersion: function (callback) {
     $.getJSON(`../resources/version.json?_=${Math.round(Math.random()*1e8)}`, function(v) {
       var result = ["akdata", "gamedata", "customdata"].reduce((x, y) => x && (v[y] == window.AKDATA.Data.version[y]), true);
@@ -121,6 +134,52 @@ window.AKDATA = {
   patchAllChars: function() {
     AKDATA.patchChar("char_1001_amiya2", "char_1001_amiya2", "（近卫 Ver.）");
   },
+
+  selChar: "",
+
+  showSelectCharDialog: function(excludeChars=[]) {
+    let charPools = {"新干员": []};
+    AKDATA.new_op.forEach(x => {
+      let d = AKDATA.Data.character_table[x];
+      charPools["新干员"].push({"name": d.name, "id": x, "rarity": d.rarity});
+    });
+
+    Object.entries(AKDATA.Data.character_table).forEach( ([charId, charData]) => {
+      if (!excludeChars.includes(charId)) {
+        let profKey = AKDATA.professionNames[charData.profession];
+        if (profKey) {
+          if (!charPools[profKey]) charPools[profKey] = [];
+          charPools[profKey].push({"name": charData.name, "id": charId, "rarity": charData.rarity});
+        }
+      } 
+    });
+   // console.log(charPools);
+
+    let html = "";
+    Object.keys(charPools).forEach(k => {
+      let entry = `<h2>${k}</h2>`;
+      charPools[k].sort((a, b) => b.rarity - a.rarity).forEach(x => {
+        entry += `<a class="btn-outline-light p-2" href="#" onclick="AKDATA.selectChar('${x.id}')" role="button">${x.name}</a>`;
+      });
+      html += entry;
+    });
+
+    pmBase.component.create({
+      type: 'modal',
+      id: "select_char_dialog",
+      content: html,
+      width: 600,
+      title: "选择角色",
+      show: true,
+    });
+  },
+
+  selectChar: function(id) {
+    AKDATA.selChar = id;
+    $("#select_char_dialog").modal("hide");
+    if (AKDATA.selectCharCallback) AKDATA.selectCharCallback(id);
+  },
+  selectCharCallback: null,
 
   formatString: function (string, small = false, params = null, deleteItem = false) {
     string = string || '';

@@ -5,6 +5,9 @@ order: 4
 category: 工具
 icon: info-circle
 ---
+## 21.05.27
+- [dps] 新版选人菜单测试
+
 ## 21.05.02 2周年版本
 - [update] 浊心斯卡蒂等
 - [mastery] 专精收益计算器可以对特定技能按照召唤物计算收益
