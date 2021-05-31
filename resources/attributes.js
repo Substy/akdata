@@ -1343,12 +1343,7 @@ function calcDurations(isSkill, attackTime, attackSpeed, levelData, buffList, bu
       else log.writeNote(`技能前摇: ${t.toFixed(3)}s`);
     }
     // 技能类型
-    if (checkSpecs(skillId, "toggle")) {
-      attackCount = Math.ceil(30 / attackTime);
-      duration = 30;
-      tags.push("toggle");
-      log.writeNote("切换类技能 (以30s为参考计算)");
-    } else if (levelData.description.includes("持续时间无限")) {
+    if (levelData.description.includes("持续时间无限") || checkSpecs(skillId, "toggle")) {
       if (skillId == "skchr_thorns_3" && !options.warmup) {}
       else if (skillId == "skchr_tuye_2") {
         log.writeNote("取技能时间=暖机时间");
@@ -1363,7 +1358,11 @@ function calcDurations(isSkill, attackTime, attackSpeed, levelData, buffList, bu
       } else {
         attackCount = Math.ceil(1800 / attackTime);
         duration = attackCount * attackTime;
-        tags.push("infinity"); log.writeNote("持续时间无限 (记为1800s)");
+        if (checkSpecs(skillId, "toggle")) {
+          log.writeNote("切换类技能 (记为1800s)"); tags.push("toggle");
+        } else {
+          log.writeNote("持续时间无限 (记为1800s)"); tags.push("infinity");
+        }
       }
     } else if (spData.spType == 8) {
       if (levelData.duration <= 0 && blackboard.duration > 0) {
@@ -1582,11 +1581,6 @@ function calcDurations(isSkill, attackTime, attackSpeed, levelData, buffList, bu
           attackCount = Math.ceil(attackDuration / attackTime);
           duration = attackDuration;
           log.write(`[特殊] ${displayNames["tachr_400_weedy_2"]}: 使用${m+1}个水炮, 充能sp=${m * 6 + c}`);
-        } else if (checkSpecs(skillId, "toggle")) {
-          attackCount = Math.ceil(30 / attackTime);
-          duration = 30;
-          tags.push("toggle");
-          //log.writeNote("切换类技能 (以30s为参考计算)");
         }
         break;
         // todo: cast time

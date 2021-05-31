@@ -202,21 +202,23 @@ function load() {
       <div class="input-group">
         <table style="table-layout: fixed; width: 100%"> <tr>
           <td rowspan="3" style="padding: 0; width: 50%">
-            <img class="img_char" data-index="${i}" src="/akdata/assets/images/char/char_504_rguard.png" height="96px"></img>
-            <div class="txt_char" style="font-weight:600; text-align: center; width: 96px" data-index="${i}">-</div>
+            <figure class="figure">
+              <img class="img_char figure-img" style="max-width: 75%; height: auto" data-index="${i}" src="/akdata/assets/images/char/char_504_rguard.png"></img>
+              <figcaption class="figure-caption txt_char" style="max-width: 75%; font-weight:600; font-size: 1vw; color: #000; text-align: center;" data-index="${i}">-</figcaption>
+            </figure>
           </td>
-          <td style="padding: 0"><button class="dps__char_sel btn btn-primary p-2" style="float:right" data-index="${i}">
+          <td style="padding: 0"><button class="dps__char_sel btn btn-primary p-2 visible-desktop" style="float:right" data-index="${i}">
             选择干员<i class="fa fa-ellipsis-h"></i></button></td>
         </tr>
         <tr>
           <td style="padding: 0">
-            <button class="btn btn-outline-secondary dps__goto p-2" style="float:right" data-index="${i}" type="button">
+            <button class="btn btn-outline-secondary dps__goto p-2 visible-desktop" style="float:right" data-index="${i}" type="button">
               详细属性<i class="fa fa-info-circle"></i>
             </button>
           </td>
         </tr>
         <tr>
-          <td style="padding: 0"><button class="dps__copy btn btn-outline-info p-2" style="float:right" data-index="${i}">复制到右侧</button></td>
+          <td style="padding: 0"><button class="dps__copy btn btn-outline-info p-2 visible-desktop" style="float:right" data-index="${i}">复制到右侧</button></td>
         </tr></table>
       </div>
       

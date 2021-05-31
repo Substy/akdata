@@ -46,7 +46,7 @@ window.AKDATA = {
         let path = `https://cdn.jsdelivr.net/gh/xulai1001/akdata@${window.AKDATA.akdata}/resources/gamedata/${paths[i].toLowerCase()}`;
         
         // custom json data: always use local copy
-        if (!paths[i].includes("excel"))    // 本地调试开关
+        // if (!paths[i].includes("excel"))    // 本地调试开关
           path = `../resources/gamedata/${paths[i].toLowerCase()}?_=${Math.round(Math.random()*1e8)}`;
         console.log(`Loading -> ${name}`);
         paths[i] = loadJSON(path, data => AKDATA.Data[name] = data);
@@ -156,7 +156,7 @@ window.AKDATA = {
    // console.log(charPools);
 
     let html = "";
-    Object.keys(charPools).forEach(k => {
+    ["新干员", ...Object.values(AKDATA.professionNames)].forEach(k => {
       let entry = `<h2>${k}</h2>`;
       charPools[k].sort((a, b) => b.rarity - a.rarity).forEach(x => {
         entry += `<a class="btn-outline-light p-2" href="#" onclick="AKDATA.selectChar('${x.id}')" role="button">${x.name}</a>`;

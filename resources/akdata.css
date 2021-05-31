@@ -73,3 +73,9 @@ h5 {
 strong {
     font-weight: 600!important;
 }
+
+.img_char {
+    /*    box-shadow: 3px 3px 7px -1px rgb(0 0 0 / 85%); */
+        border-radius: 5px;
+}
+    
