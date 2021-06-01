@@ -7,11 +7,11 @@ const useCache = true;
 const cacheBeginTime = new Date(2019, 12, 10).getTime();
 
 window.AKDATA = {
-  akdata: "210502", // jsdelivr tag version
+  akdata: "210601", // jsdelivr tag version
 
   Data: {},
 
-  new_op: ["char_1012_skadi2", "char_003_kalts", "char_474_glady", "char_475_akafyu"],
+  new_op: ["char_426_billro", "char_478_kirara", "char_369_bena", "char_469_indigo"],
 
   professionNames: {
     "PIONEER": "先锋",
@@ -46,7 +46,7 @@ window.AKDATA = {
         let path = `https://cdn.jsdelivr.net/gh/xulai1001/akdata@${window.AKDATA.akdata}/resources/gamedata/${paths[i].toLowerCase()}`;
         
         // custom json data: always use local copy
-        // if (!paths[i].includes("excel"))    // 本地调试开关
+        if (!paths[i].includes("excel"))    // 本地调试开关
           path = `../resources/gamedata/${paths[i].toLowerCase()}?_=${Math.round(Math.random()*1e8)}`;
         console.log(`Loading -> ${name}`);
         paths[i] = loadJSON(path, data => AKDATA.Data[name] = data);

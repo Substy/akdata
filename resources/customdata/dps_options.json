@@ -12,7 +12,8 @@
         "thorns_ranged":  { "type": "bool", "displaytext": "远程敌人", "explain": "对远程敌人毒伤翻倍" },
         "rosmon_double":  { "type": "bool", "displaytext": "双剑重叠", "explain": "3技能2把剑同时命中同一目标", "off": true },
         "archet":  { "type": "bool", "displaytext": "兰登战术(团辅)", "explain": "攻回技能每2.5s恢复1sp", "off": true },
-        "chen":  { "type": "bool", "displaytext": "呵斥(团辅)", "explain": "攻回技能每4s恢复1sp", "off": true }
+        "chen":  { "type": "bool", "displaytext": "呵斥(团辅)", "explain": "攻回技能每4s恢复1sp", "off": true },
+        "charge":  { "type": "bool", "displaytext": "蓄力", "explain": "积攒2层技能再释放" }
     },
     "char" : {
         "char_503_rang" : [ "cond" ],
@@ -108,6 +109,9 @@
         "char_363_toddi":   [ "cond" ],
         "char_003_kalts":   [ "token" ],
         "char_474_glady":   [ "cond" ],
-        "char_475_akafyu" : [ "stack" ]
+        "char_475_akafyu" : [ "stack" ],
+        "char_478_kirara":  [ "cond" ],
+        "char_469_indigo":  [ "cond" ],
+        "char_426_billro":  [ "charge" ]
     }
 }

@@ -25,6 +25,12 @@ const CostStages = [
   { potential: 5, desc: "满潜" }
 ];
 
+const ChartKeys = {
+  dps: "平均DPS/HPS",
+  s_dps: "技能DPS/HPS",
+  s_dmg: "技能总伤害/治疗"
+};
+
 const LevelingCost = {4: [2391, 9], 5: [3699, 13], 6: [5874, 21] };
 
 let itemCache = {};
@@ -121,7 +127,8 @@ function buildVueModel() {
     jobs: 0,
     test: "",
     img_char: "/akdata/assets/images/char/char_504_rguard.png",
-    txt_char: "请选择"
+    txt_char: "请选择",
+    txt_gain_title: "提升率分布图 - 平均DPS"
   };
 }
 
@@ -214,7 +221,7 @@ function load() {
 
   <div class="card mb-2 col-12">
     <div class="card-header">
-      <div class="card-title mb-0">提升率分布图</div>
+      <div class="card-title mb-0">{{ txt_gain_title }}</div>
     </div>
     <div id="pie_chart" class="row">
     </div>
@@ -305,7 +312,7 @@ function load() {
         updateCostPlot(costResult, this.chartKey);
 */
         for (var sk in rv.cost) {
-          matsView[sk] = {title: rv.skill[sk] || `精英化材料(不包含红票/龙门币)`};
+          matsView[sk] = {title: rv.skill[sk] || `精英化材料(不含龙门币)`};
           matsView[sk].list = [];
           let base_lv = sk.includes("elite") ? 0 : 7;
           for (i=0; i<rv.mats[sk].length; ++i) {
@@ -328,7 +335,7 @@ function load() {
             type: 'list',
             card: true,
             title: `${matsView[sk].title}`,
-            header: ['等级', '素材', "等效绿票"],
+            header: ['等级', '素材', "绿票"],
             list: matsView[sk].list
           });
         }
@@ -374,6 +381,7 @@ function load() {
         let pv = buildPieView(cv);
         plotPie(pv);
         updatePlot(cv);
+        this.txt_gain_title = `提升率分布图 - ${ChartKeys[_new]}`;
       },
 
     }
