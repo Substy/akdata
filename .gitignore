@@ -4,3 +4,6 @@ _site/
 .jekyll-metadata
 *.bat
 Gemfile.lock
+assets/images/char/*
+assets/images/skin/*
+assets/images/skin2/*
