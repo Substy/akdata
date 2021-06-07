@@ -1115,6 +1115,16 @@ function applyBuff(charAttr, buffFrm, tag, blackbd, isSkill, isCrit, log, enemy)
       case "skchr_tiger_1":
       case "skchr_bena_1":
         blackboard.edef_pene_scale = blackboard["def_penetrate"];
+        if (options.annie) {
+          log.writeNote("替身-安妮模式");
+          done = true;
+        }
+        break;
+      case "skchr_bena_2":
+        if (options.annie) {
+          log.writeNote("替身-安妮模式");
+          done = true;
+        }
         break;
       case "skchr_billro_2":
         if (!options.charge) {
@@ -1144,6 +1154,8 @@ function extractDamageType(charData, chr, isSkill, skillDesc, skillBlackboard, o
     ret = 2;
   else if (["char_1012_skadi2", "char_101_sora"].includes(charId)) {
     ret = 2;
+  } else if (options.annie) {
+    ret = 1;
   } else if (charData.description.includes('法术伤害') && !["char_260_durnar", "char_378_asbest"].includes(charId)) {
     ret = 1;
   }
@@ -1447,6 +1459,10 @@ function calcDurations(isSkill, attackTime, attackSpeed, levelData, buffList, bu
       attackCount = 6;
       attackTime = 1.5;
       log.writeNote("[特殊] 持续9秒，第7次拖拽无伤害");
+    } else if (options.annie) {
+      duration = 20;
+      attackCount = Math.ceil(duration / attackTime);
+      log.write("安妮模式 - 持续20s");
     }
     // 特判
     if (skillId == "skchr_huang_3") {
@@ -2008,6 +2024,12 @@ function calculateAttack(charAttr, enemy, raidBlackboard, isSkill, charData, lev
           damagePool[1] = 0;
           log.write(`[特殊] ${displayNames[buffName]}: 伤害为0 （以上计算无效）`);
           break;
+        case "skchr_bena_1":
+        case "skchr_bena_2":
+          if (options.annie && !isSkill) {
+            damagePool[0] = 0; damagePool[1] = 0;
+          }
+          break;
         default:
           if (b=="skill") continue; // 非技能期间，跳过其他技能的额外伤害判定
       }
@@ -2422,8 +2444,10 @@ function calculateAttack(charAttr, enemy, raidBlackboard, isSkill, charData, lev
           }
           break;
         case "skchr_bena_2":
-          pool[2] -= bb.hp_ratio * dur.attackCount * finalFrame.maxHp;
-          log.writeNote(`每次攻击生命流失 ${(bb.hp_ratio * finalFrame.maxHp).toFixed(1)}`);
+          if (!options.annie) {
+            pool[2] -= bb.hp_ratio * dur.attackCount * finalFrame.maxHp;
+            log.writeNote(`每次攻击生命流失 ${(bb.hp_ratio * finalFrame.maxHp).toFixed(1)}`);
+          }
           break;
         case "tachr_017_huang_1":
         case "skchr_ccheal_1":

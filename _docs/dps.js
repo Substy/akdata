@@ -133,8 +133,8 @@ function load() {
       </th></tr>
     <tr class="dps__row-s_atk"> <th>技能攻击力 <i class="fas fa-info-circle pull-right" data-toggle="tooltip" data-placement="right" title="角色攻击力（计算技能倍数）"></i></th> </tr>
     <tr class="dps__row-s_damage"> <th>技能总伤害 <i class="fas fa-info-circle pull-right" data-toggle="tooltip" data-placement="right" title="单次伤害 x 命中数"></i></th> </tr>
-    <tr class="dps__row-s_dps"> <th><font color="blue"><span>技能DPS(均摊)</span></font><i class="fas fa-info-circle pull-right" data-toggle="tooltip" data-placement="right" title="技能总伤害 / 持续时间（包括罚站时间）"></i></th></tr>
-    <tr class="dps__row-a_dps"> <th><font color="silver"><span>技能DPS(攻击)</span></font><i class="fas fa-info-circle pull-right" data-toggle="tooltip" data-placement="right" title="技能单次伤害 / 攻击间隔，不考虑攻击力变化和暴击"></i></th></tr>
+    <tr class="dps__row-s_dps"> <th><font color="blue"><span>技能DPS</span></font><i class="fas fa-info-circle pull-right" data-toggle="tooltip" data-placement="right" title="技能总伤害 / 持续时间（包括罚站时间）"></i></th></tr>
+  <!--  <tr class="dps__row-a_dps"> <th><font color="silver"><span>技能DPS(攻击)</span></font><i class="fas fa-info-circle pull-right" data-toggle="tooltip" data-placement="right" title="技能单次伤害 / 攻击间隔，不考虑攻击力变化和暴击"></i></th></tr> -->
     <tr class="dps__row-n_dps"> <th>普攻</th> </tr>
     <tr class="dps__row-g_dps"> <th>平均</th> </tr>
     <tr class="dps__row-s_att"> <th>技能攻击间隔</th> </tr>

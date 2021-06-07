@@ -1,19 +1,20 @@
 {
     "tags" : {
         "crit" : { "type" : "bool", "displaytext" : "计算暴击/概率触发", "explain": "计算时考虑暴击和概率触发的期望" },
-        "cond" : { "type" : "bool", "displaytext" : "触发天赋", "explain": "计算满足天赋条件时的dps（一部分天赋在未满足条件时依然生效）" },
+        "cond" : { "type" : "bool", "displaytext" : "触发天赋", "explain": "计算满足天赋、或者某些条件时的dps（一部分天赋在未满足条件时依然生效）" },
         "ranged_penalty" : { "type" : "bool", "displaytext" : "距离惩罚", "explain": "计算远卫/广域奶的远程攻击系数惩罚（一部分技能不受惩罚）", "off": true },
         "token" : { "type" : "bool", "displaytext" : "计算召唤物数据", "explain": "勾选时表示召唤物dps，否则为本体", "off": true },
         "stack" : { "type" : "bool", "displaytext" : "被动叠满", "explain": "按天赋叠满层数计算" },
         "noblock" : { "type" : "bool", "displaytext" : "未阻挡", "explain": "自身未阻挡敌人" },
-        "cannon":  { "type": "bool", "displaytext": "水炮充能", "explain": "模拟温蒂水炮的充能情况" },
-        "buff":  { "type": "bool", "displaytext": "计算团辅", "explain": "加算页面下方填写的团辅增益" },
+        "cannon":  { "type": "bool", "displaytext": "水炮充能", "explain": "温蒂-计算技能周期时考虑水炮的充能" },
+        "buff":  { "type": "bool", "displaytext": "计算团辅", "explain": "加算页面下方[团辅]行内填写的属性增益" },
         "warmup":  { "type": "bool", "displaytext": "多段暖机完成", "explain": "勾选计算特定技能开启第二次和以后的效果，否则计算第一次启动效果" },
-        "thorns_ranged":  { "type": "bool", "displaytext": "远程敌人", "explain": "对远程敌人毒伤翻倍" },
-        "rosmon_double":  { "type": "bool", "displaytext": "双剑重叠", "explain": "3技能2把剑同时命中同一目标", "off": true },
-        "archet":  { "type": "bool", "displaytext": "兰登战术(团辅)", "explain": "攻回技能每2.5s恢复1sp", "off": true },
-        "chen":  { "type": "bool", "displaytext": "呵斥(团辅)", "explain": "攻回技能每4s恢复1sp", "off": true },
-        "charge":  { "type": "bool", "displaytext": "蓄力", "explain": "积攒2层技能再释放" }
+        "thorns_ranged":  { "type": "bool", "displaytext": "远程敌人", "explain": "棘刺-对远程敌人毒伤翻倍" },
+        "rosmon_double":  { "type": "bool", "displaytext": "双剑重叠", "explain": "迷迭香-3技能2把剑同时命中同一目标", "off": true },
+        "archet":  { "type": "bool", "displaytext": "兰登战术", "explain": "空弦在场时，攻回技能每2.5s恢复1sp", "off": true },
+        "chen":  { "type": "bool", "displaytext": "呵斥(团辅)", "explain": "陈在场时，攻回技能每4s恢复1sp", "off": true },
+        "charge":  { "type": "bool", "displaytext": "蓄力", "explain": "卡涅利安-积攒2层技能再释放" },
+        "annie": { "type": "bool", "displaytext": "替身", "explain": "贝娜-显示替身数据", "off": true }
     },
     "char" : {
         "char_503_rang" : [ "cond" ],
@@ -110,8 +111,9 @@
         "char_003_kalts":   [ "token" ],
         "char_474_glady":   [ "cond" ],
         "char_475_akafyu" : [ "stack" ],
-        "char_478_kirara":  [ "cond" ],
+        "char_478_kirara":  [ "cond", "chen" ],
         "char_469_indigo":  [ "cond" ],
-        "char_426_billro":  [ "charge" ]
+        "char_426_billro":  [ "charge" ],
+        "char_369_bena":  [ "annie" ]
     }
 }
