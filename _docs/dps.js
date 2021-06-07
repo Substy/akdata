@@ -117,7 +117,7 @@ function load() {
   </div>
   <table class="table dps" style="table-layout:fixed;">
   <tbody>
-    <tr class="dps__row-select" style="width:20%;"> <th style="width:200px;">干员</th> </tr>
+    <tr class="dps__row-select" style="width:20%;"> <th style="width:240px;">干员</th> </tr>
     <tr class="dps__row-level"> <th>等级</th> </tr>
     <tr class="dps__row-potentialrank"> <th>潜能</th> </tr>
     <tr class="dps__row-favor"> <th>信赖</th> </tr>
@@ -133,7 +133,8 @@ function load() {
       </th></tr>
     <tr class="dps__row-s_atk"> <th>技能攻击力 <i class="fas fa-info-circle pull-right" data-toggle="tooltip" data-placement="right" title="角色攻击力（计算技能倍数）"></i></th> </tr>
     <tr class="dps__row-s_damage"> <th>技能总伤害 <i class="fas fa-info-circle pull-right" data-toggle="tooltip" data-placement="right" title="单次伤害 x 命中数"></i></th> </tr>
-    <tr class="dps__row-s_dps"> <th>技能DPS</th> </tr>
+    <tr class="dps__row-s_dps"> <th><font color="blue"><span>技能DPS(均摊)</span></font><i class="fas fa-info-circle pull-right" data-toggle="tooltip" data-placement="right" title="技能总伤害 / 持续时间（包括罚站时间）"></i></th></tr>
+    <tr class="dps__row-a_dps"> <th><font color="silver"><span>技能DPS(攻击)</span></font><i class="fas fa-info-circle pull-right" data-toggle="tooltip" data-placement="right" title="技能单次伤害 / 攻击间隔，不考虑攻击力变化和暴击"></i></th></tr>
     <tr class="dps__row-n_dps"> <th>普攻</th> </tr>
     <tr class="dps__row-g_dps"> <th>平均</th> </tr>
     <tr class="dps__row-s_att"> <th>技能攻击间隔</th> </tr>
@@ -233,6 +234,7 @@ function load() {
     $dps.find('.dps__row-s_atk').append(`<td><div class="dps__s_atk" data-index="${i}"></div></td>`);
 
     $dps.find('.dps__row-s_dps').append(`<td><div class="dps__s_dps font-weight-bold" data-index="${i}"></div></td>`);
+    $dps.find('.dps__row-a_dps').append(`<td><div class="dps__a_dps font-weight-bold" data-index="${i}"></div></td>`);
     $dps.find('.dps__row-n_dps').append(`<td><div class="dps__n_dps" data-index="${i}"></div></td>`);
     $dps.find('.dps__row-g_dps').append(`<td><div class="dps__g_dps font-weight-bold" data-index="${i}"></div></td>`);
     $dps.find('.dps__row-s_att').append(`<td><div class="dps__s_att font-weight-bold" data-index="${i}"></div></td>`);
@@ -308,8 +310,8 @@ function showDetail() {
   pmBase.component.create({
     type: 'modal',
     id: Characters[index].charId,
-    content: markdown.makeHtml(Characters[index].dps.log).replace("table", 'table class="table"'),
-    width: 650,
+    content: markdown.makeHtml(Characters[index].dps.log).replace(/table/g, 'table class="table"'),
+    width: 750,
     title: name + " - " + Characters[index].dps.skillName,
     show: true,
   });
@@ -565,7 +567,8 @@ function calculate(index) {
   let line = `${s.hitDamage.toFixed(2)} * ${s.dur.hitCount}`;
   if (s.damageType != 2) {
     $(".dps__row-s_damage th").text("技能总伤害");
-    $(".dps__row-s_dps th").text("技能DPS");
+    $("dps__row-s_dps span").text("技能DPS(均摊)");
+    $("dps__row-a_dps span").text("技能DPS(攻击)");
     var skillDamage = s.totalDamage;    
     if (s.critDamage > 0) line += ` + ${s.critDamage.toFixed(2)} * ${s.dur.critHitCount}`;
     if (s.extraDamage > 0) line += ` + ${s.extraDamage.toFixed(2)}`;
@@ -579,7 +582,8 @@ function calculate(index) {
     }
   } else {
     $(".dps__row-s_damage th").text("技能总治疗");
-    $(".dps__row-s_dps th").text("技能HPS");
+    $("dps__row-s_dps span").text("技能HPS(均摊)");
+    $("dps__row-a_dps span").text("技能HPS(攻击)");
     var skillDamage = s.totalHeal;
     if (s.extraHeal > 0) line += ` + ${s.extraHeal.toFixed(2)}`;
     var tmp = s.hitDamage * s.dur.hitCount + s.extraHeal;
@@ -597,18 +601,24 @@ function calculate(index) {
   getElement('g_diff', index).text((gdiff*100).toFixed(1));
   
   // skill dps
-  if (s.hps == 0 || s.dps == 0) {
-    var color = (s.dps == 0) ? DamageColors[2] : DamageColors[s.damageType];                     
+  var color = (s.dps == 0) ? DamageColors[2] : DamageColors[s.damageType];  
+  if (s.hps == 0 || s.dps == 0) {                       
     getElement('s_dps', index).html(Math.round(s.dps || s.hps)).css("color", color);
   } else {
-    getElement('s_dps', index).html(`DPS: ${Math.round(s.dps)}, HPS: ${Math.round(s.hps)}`);
+    getElement('s_dps', index).html(`DPS: ${Math.round(s.dps)}, HPS: ${Math.round(s.hps)}`).css("color", color);
+  }
+  // attack dps
+  if (s.attackTime > 0) {
+    getElement('a_dps', index).html(Math.round(s.hitDamage / s.attackTime)).css("color", color);
+  } else {
+    getElement('a_dps', index).text("瞬发");
   }
   // normal dps
   if (dps.normal.hps == 0 || dps.normal.dps == 0) {
-    var color = (dps.normal.dps == 0) ? DamageColors[2] : DamageColors[dps.normal.damageType];
+    color = (dps.normal.dps == 0) ? DamageColors[2] : DamageColors[dps.normal.damageType];
     getElement('n_dps', index).html(Math.round(dps.normal.dps || dps.normal.hps)).css("color", color);
   } else {
-    getElement('n_dps', index).html(`DPS: ${Math.round(dps.normal.dps)}, HPS: ${Math.round(dps.normal.hps)}`);
+    getElement('n_dps', index).html(`DPS: ${Math.round(dps.normal.dps)}, HPS: ${Math.round(dps.normal.hps)}`).css("color", color);
   }
   // period
   if (dps.normal.dur.stunDuration > 0)

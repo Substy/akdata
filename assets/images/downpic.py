@@ -41,18 +41,20 @@ for ch in sorted(names):
     filename = "char/%s.png" % ch
     url = "https://andata.somedata.top/dataX/char/profile/%s.png" % ch
 
-    sys.stdout.write("%s -> %s ..." % (ch, filename))
     result = save(filename, url)
-    print(result)
     if result == "ok":
+        sys.stdout.write("%s -> %s ..." % (ch, filename))
+        print(result)
         success += 1
     elif result == "skipped":
         skip += 1
     elif result == "error":
+        sys.stdout.write("%s -> %s ..." % (ch, filename))
+        print(result)
         error += 1
-print("total %d, success %d, skip %d, error %d" % (total, success, skip, error))
+print("total %d, success %d, skip %d, error %d\n" % (total, success, skip, error))
 success = skip = error = 0
-total = len(skindb.keys())
+total = len(skindb["charSkins"].keys())
 
 for sk in sorted(skindb["charSkins"].keys()):
     if sk.endswith("#1") and not ("@" in sk):
@@ -60,16 +62,18 @@ for sk in sorted(skindb["charSkins"].keys()):
     filename = "skin/%s.png" % sk
     filename2 = "skin2/%s.png" % sk
     avatar = skindb["charSkins"][sk]["avatarId"]
-    url = "https://andata.somedata.top/dataX/char/halfPic/%s.png" % avatar.replace("#", "%23")
+    url = "https://andata.somedata.top/dataX/char/halfPic/%s.png?x-oss-process=style/small-test" % avatar.replace("#", "%23")
     url2 = "https://andata.somedata.top/dataX/char/profile/%s.png" % avatar.replace("#", "%23")
-    sys.stdout.write("%s -> %s ..." % (sk, filename))
     result = save(filename, url, False)
     save(filename2, url2, False)
-    print(result)
     if result == "ok":
+        sys.stdout.write("%s -> %s ..." % (sk, filename))
+        print(result)
         success += 1
     elif result == "skipped":
         skip += 1
     elif result == "error":
+        sys.stdout.write("%s -> %s ..." % (sk, filename))
+        print(result)        
         error += 1
 print("total %d, success %d, skip %d, error %d" % (total, success, skip, error))
