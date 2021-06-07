@@ -1363,7 +1363,7 @@ function calcDurations(isSkill, attackTime, attackSpeed, levelData, buffList, bu
         log.write(`可能重置普攻`);
       duration = levelData.duration - prepDuration;
       // 抬手时间
-      var frameBegin = Math.round((checkSpecs(skillId, "attack_begin") || 12) * 100 / attackSpeed);
+      var frameBegin = Math.round((checkSpecs(skillId, "attack_begin") || 12));
       var t = frameBegin / 30;
       attackCount = Math.ceil((duration - t) / attackTime);
       log.write(`技能前摇: ${t.toFixed(3)}s, ${frameBegin} 帧`);
@@ -1491,7 +1491,7 @@ function calcDurations(isSkill, attackTime, attackSpeed, levelData, buffList, bu
         log.write(`可能重置普攻`);
       duration = dd;
       // 抬手时间
-      var frameBegin = Math.round((checkSpecs(skillId, "attack_begin") || 12) * 100 / attackSpeed);
+      var frameBegin = Math.round((checkSpecs(skillId, "attack_begin") || 12));
       var t = frameBegin / 30;
       attackCount = Math.ceil((duration - t) / attackTime);
       log.write(`技能前摇: ${t.toFixed(3)}s, ${frameBegin} 帧`);
@@ -1773,19 +1773,23 @@ function calculateAttack(charAttr, enemy, raidBlackboard, isSkill, charData, lev
  //   log.write("*** token不计算自身攻速，以最终攻击间隔数据为准 ***");
  // }
   let frame = realAttackTime * fps; 
-  frame = Math.round(frame); // 舍入成帧数
   // 额外帧数补偿 https://bbs.nga.cn/read.php?tid=20555008
   let corr = checkSpecs(charId, "frame_corr") || 0;
   let corr_s = checkSpecs(blackboard.id, "frame_corr");
   if ((!(corr_s === false)) && isSkill) corr = corr_s;
   if (corr != 0) {
-    frame += corr;
-    var prefix = (corr>0 ? "+":"");  
+    let real_frame = Math.ceil(frame); // 有误差时，不舍入而取上界，并增加补正值(一般为1)
+    real_frame += corr;
+    var prefix = (corr>0 ? "+":"");
     if (isSkill) {
-      log.writeNote(`技能攻击间隔${prefix}${corr}帧`);
+      log.write(`[补帧判定(测试)] 技能理论 ${Math.round(frame)} 帧 / 实际 ${real_frame} 帧`);
+      log.writeNote("考虑帧数补正(参见计算过程)");
     } else {
-      log.writeNote(`普攻攻击间隔${prefix}${corr}帧`);
+      log.write(`[补帧判定(测试)] 普攻理论 ${Math.round(frame)} 帧 / 实际 ${real_frame} 帧`);
     }
+    frame = real_frame;
+  } else {
+    frame = Math.round(frame); // 无误差时，舍入成帧数
   }
   let frameAttackTime = frame / fps;
   let attackTime = frameAttackTime;
@@ -1863,13 +1867,14 @@ function calculateAttack(charAttr, enemy, raidBlackboard, isSkill, charData, lev
   let atk_line = `(${basicFrame.atk.toFixed(1)} + ${buffFrame.atk.toFixed(1)}) * ${buffFrame.atk_scale.toFixed(2)}`;
   // if (buffFrame.damage_scale != 1) { atk_line += ` * ${buffFrame.damage_scale.toFixed(2)}`; }
   log.write(`攻击力 / 倍率:  ${finalFrame.atk.toFixed(2)} = ${atk_line}`);
-  log.write(`攻速: ${finalFrame.attackSpeed} %`);
   log.write(`攻击间隔: ${finalFrame.baseAttackTime.toFixed(3)} s`);
-  if (corr != 0) {
-    var prefix = (corr>0?"+":"");
-    log.write(`动画帧数<攻击间隔，帧数补偿 ${prefix}${corr} (${frame} 帧)`);
+  log.write(`攻速: ${finalFrame.attackSpeed} %`);
+  log.write(`最终攻击间隔: ${(realAttackTime * 30).toFixed(2)} 帧, ${realAttackTime.toFixed(3)} s`);
+  if (corr!=0) {
+    log.write(`**帧数补正后攻击间隔(测试): ${frame} 帧, ${frameAttackTime.toFixed(3)} s**`);
+  } else {
+    log.write(`**帧对齐攻击间隔: ${frame} 帧, ${frameAttackTime.toFixed(3)} s**`);
   }
-  log.write(`最终攻击间隔 / 舍入到帧: ${realAttackTime.toFixed(3)} s (${frame} 帧, ${frameAttackTime.toFixed(3)} s)`);
   if (edef != enemy.def)
     log.write(`敌人防御: ${edef.toFixed(1)} (${(edef-enemy.def).toFixed(1)})`);
   if (emr != enemy.magicResistance) {
@@ -2516,7 +2521,7 @@ function calculateGradDamage(_) { // _ -> args
     let n = Math.floor(_.dur.duration);
     let atk_by_sec = [...Array(n+1).keys()].map(x => _.finalFrame.atk - range * x / n);
     // 抬手时间
-    let atk_begin = Math.round((checkSpecs(_.skillId, "attack_begin") || 12) * 100 / _.finalFrame.attackSpeed) / 30;
+    let atk_begin = Math.round((checkSpecs(_.skillId, "attack_begin") || 12)) / 30;
     let atk_timing = _seq.map(i => atk_begin + _.attackTime * i);
 
     dmg_table = atk_timing.map(x => atk_by_sec[Math.floor(x)] * _.buffFrame.damage_scale);
@@ -2533,7 +2538,7 @@ function calculateGradDamage(_) { // _ -> args
     // rate = (x-1)/(n-1), thus t=0, x=n, rate=1; t=(n-1), x=1, rate=0
     let atk_by_sec = [...Array(n+1).keys()].reverse().map(x => _.finalFrame.atk - range * (x-1) / (n-1));
     // 抬手时间
-    let atk_begin = Math.round((checkSpecs(_.skillId, "attack_begin") || 12) * 100 / _.finalFrame.attackSpeed) / 30;
+    let atk_begin = Math.round((checkSpecs(_.skillId, "attack_begin") || 12)) / 30;
     let atk_timing = _seq.map(i => atk_begin + _.attackTime * i);
     // damage_scale
     let sc = [1.2, 1.4, 1.6, 1.8, 2];
