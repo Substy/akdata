@@ -16,7 +16,7 @@ skip = 0
 error = 0
 fua = UserAgent()
 
-os.system("pause")
+# os.system("pause")
 
 def save(fname, url, dry_run=False):
     if (os.path.exists(fname)):
@@ -62,7 +62,7 @@ for sk in sorted(skindb["charSkins"].keys()):
     filename = "skin/%s.png" % sk
     filename2 = "skin2/%s.png" % sk
     avatar = skindb["charSkins"][sk]["avatarId"]
-    url = "https://andata.somedata.top/dataX/char/halfPic/%s.png?x-oss-process=style/small-test" % avatar.replace("#", "%23")
+    url = "https://andata.somedata.top/dataX/char/halfPic/%s.png" % avatar.replace("#", "%23")
     url2 = "https://andata.somedata.top/dataX/char/profile/%s.png" % avatar.replace("#", "%23")
     result = save(filename, url, False)
     save(filename2, url2, False)

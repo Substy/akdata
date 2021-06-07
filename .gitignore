@@ -7,3 +7,5 @@ Gemfile.lock
 assets/images/char/*
 assets/images/skin/*
 assets/images/skin2/*
+*/__pycache__/*
+*.pyc
