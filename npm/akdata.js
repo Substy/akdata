@@ -1,6 +1,6 @@
 import * as loader from "./loader.js";
-import * as Dps from "./dpsv2.js";
-import * as Actions from "./dps_actions.js";
+//import * as Dps from "./dpsv2.js";
+//import * as Actions from "./dps_actions.js";
 import * as Attributes from "./attributes.js";
 
 export const GameDataRoot = "../resources/gamedata";
@@ -23,4 +23,5 @@ var professionNames = {
   //  "TRAP": "装置",
 };
 
-export { _d as Data, Dps, Actions, Attributes, new_op, professionNames };
+// export { _d as Data, Dps, Actions, Attributes, new_op, professionNames };
+export { _d as Data, Attributes, new_op, professionNames };

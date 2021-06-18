@@ -1,9 +1,10 @@
 {
   "name": "akdata",
   "type": "module",
-  "version": "2.1.0",
+  "version": "2.1.1",
   "description": "Arknights DPS calculator core",
   "main": "akdata.js",
+  "types": "akdata.d.ts",
   "scripts": {
     "test": "node test.js"
   },
