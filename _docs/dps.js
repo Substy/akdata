@@ -52,8 +52,8 @@ function showVersion() {
 
 function showReport() {
   var text = `
-  - <a href="https://bbs.nga.cn/read.php?tid=20083034" target="_blank">NGA帖子</a><br>
-  - <a href="https://bbs.nga.cn/nuke.php?func=message#to=37501424" target="_blank">私信作者</a><br>
+  - <a href="https://mew.fun/n/akmastery" target="_blank">Mew据点</a><br>
+  - <a href="https://space.bilibili.com/274013" target="_blank">私信作者（B站）</a><br>
   - <a href="https://github.com/xulai1001/akdata/issues" target="_blank">Github Issue</a><br>
   感谢您的热心反馈！`;
   pmBase.component.create({

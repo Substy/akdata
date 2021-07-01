@@ -88,25 +88,6 @@ function queryArkPlanner(mats, callback, ...args) {
 function buildVueModel() {
   let version = AKDATA.Data.version;
   
-  // select char list
-  /*
-  let charList = {};
-  let new_list = [];
-  AKDATA.new_op.forEach(id => {
-    new_list.push({"name": AKDATA.Data.character_table[id].name, "id": id});
-  });
-  charList["新干员"] = new_list;
-
-  Object.keys(ProfessionNames).forEach(key => {
-    let opts = [];
-    for (let id in AKDATA.Data.character_table) {
-      let data = AKDATA.Data.character_table[id];
-      if (data.profession == key && data.phases.length > 2)
-        opts.push({"name": data.name, "id": id});
-    }
-    charList[ProfessionNames[key]] = opts;
-  });
-  */
   // exclude list
   var excludeList = [];
   for (let id in AKDATA.Data.character_table) {
@@ -128,7 +109,9 @@ function buildVueModel() {
     test: "",
     img_char: "/akdata/assets/images/char/char_504_rguard.png",
     txt_char: "请选择",
-    txt_gain_title: "提升率分布图 - 平均DPS"
+    txt_gain_title: "提升率分布图 - 平均DPS",
+    hash_args: "",
+    jsonResult: {}
   };
 }
 
@@ -158,8 +141,8 @@ function showVersion() {
 
 function showReport() {
   var text = `
-  - <a href="https://bbs.nga.cn/read.php?tid=20083034" target="_blank">NGA帖子</a><br>
-  - <a href="https://bbs.nga.cn/nuke.php?func=message#to=37501424" target="_blank">私信作者</a><br>
+  - <a href="https://mew.fun/n/akmastery" target="_blank">Mew据点</a><br>
+  - <a href="https://space.bilibili.com/274013" target="_blank">私信作者（B站）</a><br>
   - <a href="https://github.com/xulai1001/akdata/issues" target="_blank">Github Issue</a><br>
   感谢您的热心反馈！`;
   pmBase.component.create({
@@ -226,15 +209,16 @@ function load() {
     <div id="pie_chart" class="row">
     </div>
   </div>    
-  <!--
-  <div class="card mb-2">
+
+  <div class="card mb-2 col-12">
     <div class="card-header">
-      <div class="card-title mb-0">调试信息</div>
+      <a class="card-title mb-0" data-toggle="collapse" data-target="#txt_json">JSON数据（点击展开）</a>
     </div>
-    <pre>{{ debugPrint(test) }}</pre>
-    <div id="_post"></div>
+    <div id="txt_json" class="col-10 collapse">
+      <pre style="white-space: pre-wrap; word-wrap: break-word;">{{ JSON.stringify(jsonResult) }}</pre>
+    </div>
   </div>
--->
+
 </div>`;
   let $dps = $(html);
 
@@ -305,7 +289,7 @@ function load() {
       updateMats: function() {
         let matsView = {};
         let rv = this.resultView;
-        let i = 0;
+        let i = 0, tot = 0;
 
         /*let costResult = calculateCost(this.charId, pr, this.resultView);
         //this.test = costResult;
@@ -314,6 +298,7 @@ function load() {
         for (var sk in rv.cost) {
           matsView[sk] = {title: rv.skill[sk] || `精英化材料(不含龙门币)`};
           matsView[sk].list = [];
+          tot = 0;  
           let base_lv = sk.includes("elite") ? 0 : 7;
           for (i=0; i<rv.mats[sk].length; ++i) {
             var items = Object.keys(rv.mats[sk][i]).map(x => 
@@ -325,8 +310,12 @@ function load() {
               Math.round(rv.cost[sk][i]),
     //          this.recom[sk][lv-7]
             ]);
+            tot += Math.round(rv.cost[sk][i]);
           }
+          console.log(rv.skill[sk], tot);
         }
+
+
 
         // this.test = matsView;
         let matsHtml = "";
@@ -366,6 +355,7 @@ function load() {
             list: [result]
           });
         $("#level_table").html(html);
+        this.jsonResult["levelUpGain"] = {gain, gain_pct};
       }
     },
     watch: {
@@ -375,6 +365,7 @@ function load() {
         let pv = buildPieView(cv);
         plotPie(pv);
         this.updateMats()
+        Object.assign(this.jsonResult, buildJsonView(this, cv, pv));
       },
       chartKey: function(_new, _old) {
         let cv = buildChartView(this.resultView, _new);
@@ -387,6 +378,16 @@ function load() {
     }
   });
 
+  window.vue_app.hash_args = window.location.hash.replace("#", "").split("/");
+  var args = window.vue_app.hash_args;
+  console.log("args:", args);
+  if (args[0]) {
+    window.vue_app.charId = args[0]; window.vue_app.changeChar();
+  }
+  if (args[1] && Object.keys(ChartKeys).includes(args[1])) {
+    window.vue_app.chartKey = args[1];
+  }
+  
 }
 
 function buildChar(charId, skillId, recipe) {
@@ -552,7 +553,7 @@ function buildChartView(resultView, key) {
     notes.push({x: x, y: 20, content: line});
     x+=1;
   }
-  console.log(columns, groups, skill_names, notes);
+  //console.log(columns, groups, skill_names, notes);
 
   return { columns, groups, skill_names, notes };
 }
@@ -658,152 +659,15 @@ function plotPie(pieView) {
   });
 }
 
-/*
-function calculateCost(charId, masteryCost, resultView) {
-  let result = {};
-  let db = AKDATA.Data.character_table[charId];
-  let costdb = AKDATA.Data.leveling_cost;
-  var perLevelSanity = costdb.map((x, idx) => (idx==0) ? 0 : x - costdb[idx-1]);
-
-  let recipe = DefaultAttribute;
-  let enemy = DefaultEnemy;
-  let stages = [];
-  let raidBuff = { atk: 0, atkpct: 0, ats: 0, cdr: 0, base_atk: 0, damage_scale: 0 };
-
-  var chartView = buildChartView(resultView, "s_dps");
-  var i=0;
-  // calculate dps for each recipe case.
-  db.skills.forEach(skill => {
-    var entry = [];
-    stages = [...CostStages];
-    // calculate efficiency. base: 0, level: 1, m1:2, m2:3, m3:4, skill:i+1
-    var base = chartView.columns[0][i+1];
-    var mc = masteryCost[skill.skillId];
-    var perLevelGain = chartView.columns[1][i+1] / base / (db.rarity * 10 + 39);  // per level dps gain rate
-    var mg = [2, 3, 4].map(x => chartView.columns[x][i+1] / base);  // mastery dps gain rate
-    mg[1] += mg[0];
-    mg[2] += mg[1]; // accumulate
-
-    var perLevelEffInv = perLevelSanity.map(x => x / perLevelGain);  // inverse of efficiency
-    var masteryEffInv = [mc[7].cost, mc[7].cost + mc[8].cost, mc[7].cost + mc[8].cost + mc[9].cost].map((x, idx) => x / mg[idx]);
-    var recom = masteryEffInv.map(x => perLevelEffInv.findIndex(y => y > x)).map(x => (x <= 0) ? (db.rarity*10+40) : x);
-    recom[2] = Math.min(80, recom[2]);
-    recom[1] = Math.min(recom[1]+5, recom[2]);  // tweak result
-    recom[0] = Math.min(recom[0]+5, recom[1]);
-    // console.log(perLevelEffInv, masteryEffInv);
-    //console.log(recom);
-    window.vue_app.recom[skill.skillId] = recom;
-
-    // set stages
-    var j=1;
-    for (var k=0; k<3; ++k) {
-   //   if (k==0 || recom[k] > recom[k-1]) {
-   //     stages.splice(j, 0, { level: recom[k], desc: `2${recom[k]}${k+7}` }); ++j;
-   //   }
-      stages.splice(j, 0, { level: recom[k], skillLevel: k+7, desc: `2${recom[k]}${k+8}` }); ++j;
-    }
-    if (recom[2] < 60)
-      stages.splice(j, 0, {level: 60, desc: "26010"}); ++j;
-
-    //console.log(stages);
-    // calculate stage dps
-    stages.forEach(st => {
-      var item = {};
-      if (!(st.level == 80 && db.rarity < 5)) {
-        $.extend(recipe, st);
-        var ch = buildChar(charId, skill.skillId, recipe);
-        ch.dps = AKDATA.attributes.calculateDps(ch, enemy, raidBuff);
-        
-        item = {
-          desc: st.desc,
-          dps: ch.dps.globalDps,
-          hps: ch.dps.globalHps,
-          s_dps: ch.dps.skill.dps,
-          s_hps: ch.dps.skill.hps,
-          s_dmg: ch.dps.skill.totalDamage,
-          s_heal: ch.dps.skill.totalHeal,
-          levelingCost: costdb[ch.level - 1],
-          damageType: ch.dps.skill.damageType,
-          skillName: ch.skillName
-        };
-
-        let mcost = 0, slv = ch.skillLevel;
-        while (slv > 6) {
-          mcost += masteryCost[skill.skillId][slv].cost;
-          --slv;
-        }
-        item.masteryCost = mcost;
-        
-        entry.push(item);
-      }
-    });
-    result[skill.skillId] = entry;
-    i+=1;
-  });
-  return result;
+function buildJsonView(app, chartView, pieView) {
+  return {
+    args: { charId: app.charId, chartKey: app.chartKey },
+    mats: app.resultView.mats,
+    cost: app.resultView.cost,
+    base: chartView.columns[0],
+    gain: pieView,
+    notes: chartView.notes
+  }
 }
 
-function updateCostPlot(result, chartKey) {
-  $("#cost_chart").html("");
-  var idx = 1;
-  Object.keys(result).forEach(key => {
-    var idstr = `skill_${idx}`;
-    $("#cost_chart").append(`
-<div class="col-md-6">
-  <p class="text-center"><b>${result[key][0].skillName} - DPS提升与理智消耗</b></p>
-  <div id="${idstr}"></div>
-</div>`);
-    var ck = chartKey;
-    if (result[key][0].damageType == 2) ck = HealKeys[chartKey];
-    let x_arr = result[key].map(x => x.desc);
-    let dps_arr = result[key].map(x => x[ck]);
-    let cost_arr = result[key].map(x => x.masteryCost + x.levelingCost);
-    $(`#${idstr}`).append(window.vue_app.debugPrint({x_arr, dps_arr, cost_arr}));
-    window.chart[idstr] = c3.generate({
-      bindto: `#${idstr}`,
-      size: { height: 400 },
-      data: {
-        columns: [
-          ["dps", ...dps_arr],
-          ["理智消耗", ...cost_arr]
-        ],
-        axes: {
-          dps: "y",
-          "理智消耗": "y2"
-        }
-      },
-      axis: {
-        x: {
-          type: "category",
-          categories: x_arr,
-        },
-        y: {
-          min: dps_arr[0],
-          padding: 0,
-          label: { text: chartKey, position: 'outer-middle' }
-        },
-        y2: {
-          show: true, 
-          min: 0,
-         // max: cost_arr[cost_arr.length-1], 
-          padding: 0, 
-          label: { text: "理智消耗", position: 'outer-middle' }
-        }
-      },
-      tooltip: {
-        format: { value: function(value, ratio, id) {
-          if (id == "dps") return `${value.toFixed(1)} (${(value * 100 / dps_arr[dps_arr.length-1]).toFixed(1)}%)`;
-          else return Math.round(value);
-        } }
-      },
-      grid: {
-        y: { show: true }
-      },
-      zoom: { enabled: false },
-    });
-
-    ++idx;
-  });
-}
-*/
 pmBase.hook.on('init', init);

@@ -5,6 +5,10 @@ order: 4
 category: 工具
 icon: info-circle
 ---
+## 21.07.01
+- 专精收益计算器：增加了json输出和hashtag处理
+- dps图表：增加了json输出，改用新版选人画面
+
 ## 21.06.16
 - 将标题图修改为cdn获取（没有cdn寸步难行……）
 

@@ -67,15 +67,11 @@ let page_html = `
     <table class="table" style="table-layout:fixed">
       <tbody>
         <tr>
-          <td><b>角色</b>
-            <select class="form-control" v-model="charId" @change="setChar">
-              <option value="-">-</option>
-              <optgroup v-for="(v, k) in charList" :label="k">
-                <option v-for="char in v" :value="char.charId">
-                  {{ char.name }}
-                </option>
-              </optgroup> 
-            </select>
+          <td align="center">
+          <figure class="figure">
+            <img class="img_char figure-img" style="max-width: 70%; height: auto;" :src="img_char" @click="selChar"></img>
+            <figcaption class="figure-caption" style="max-width: 70%; font-weight:600; font-size: 1vw; color: #000; text-align: center; text-weight: 600">{{ txt_char }}</figcaption>
+          </figure>
           </td>
         <td><b>精英</b>
           <select id="sel_phase" class="form-control" v-model="details.phase" @change="setPhase">
@@ -189,21 +185,16 @@ let page_html = `
       </div>
     </div> <!-- card-body -->
   </div> <!-- card -->
-  <!--
-  <div class="card mb-2">
-    <div class="card-header">
-      <div class="card-title mb-0">调试信息</div>
-    </div>
-    <pre>{{ resultCache }}</pre>
-    <pre>{{ chartKey }}</pre>
-    <pre>{{ raidBuff }}</pre>
-    <pre>{{ enemy }}</pre>
 
-    ------
-    已添加的干员
-    <pre>{{ plotList.map(x => explainChar(x)) }}</pre>
+  <div class="card mt-2 col-12">
+    <div class="card-header">
+      <a class="card-title mb-0" data-toggle="collapse" data-target="#txt_json">JSON数据（点击展开）</a>
+    </div>
+    <div id="txt_json" class="collapse col-10">
+      <pre style="white-space: pre-wrap; word-wrap: break-word; overflow:auto">{{ JSON.stringify(jsonResult) }}</pre>
+    </div>
   </div>
-  -->
+
 </div>`;
 
 function init() {
@@ -229,31 +220,23 @@ var charDB, skillDB, optionDB;
 // 载入vue需要的数据
 function buildVueModel() {
   let version = AKDATA.Data.version;
-  let charList = {}; // 选人菜单内容
   let plotList = [];  // 图表里的人物信息
   charDB = AKDATA.Data.character_table;
   skillDB = AKDATA.Data.skill_table;
   optionDB = AKDATA.Data.dps_options;
 
-  let new_list = [];
-  AKDATA.new_op.forEach(id => {
-    new_list.push({"name": charDB[id].name, "charId": id});
-  });
-  charList["新干员"] = new_list;
-
-  Object.keys(ProfessionNames).forEach(key => {
-    var arr = [];
-    for (let charId in charDB) {
-        var char = charDB[charId];
-        if (char.profession == key) arr.push({"name": char.name, "charId": charId});
+  // exclude list
+  var excludeList = [];
+  for (let id in AKDATA.Data.character_table) {
+    let data = AKDATA.Data.character_table[id];
+      if (!data.skills || data.skills.length == 0)
+        excludeList.push(id);
     }
-    charList[ProfessionNames[key]] = arr;
-  });
 
   return {
     version,
-    charList,
     plotList,
+    excludeList,
     opt_phase: [], // 下拉框选项
     opt_level: [],
     opt_pot: [0, 1, 2, 3, 4, 5],
@@ -269,6 +252,9 @@ function buildVueModel() {
     raidBuff: { atk: 0, atkpct: 0, ats: 0, cdr: 0, base_atk: 0, damage_scale: 0},
     resultCache: {},
     chartView: [],
+    img_char: "/akdata/assets/images/char/char_504_rguard.png",
+    txt_char: "请选择",
+    jsonResult: {}
   };
 }
 
@@ -298,8 +284,8 @@ function showVersion() {
 
 function showReport() {
   var text = `
-  - <a href="https://bbs.nga.cn/read.php?tid=20083034" target="_blank">NGA帖子</a><br>
-  - <a href="https://bbs.nga.cn/nuke.php?func=message#to=37501424" target="_blank">私信作者</a><br>
+  - <a href="https://mew.fun/n/akmastery" target="_blank">Mew据点</a><br>
+  - <a href="https://space.bilibili.com/274013" target="_blank">私信作者（B站）</a><br>
   - <a href="https://github.com/xulai1001/akdata/issues" target="_blank">Github Issue</a><br>
   感谢您的热心反馈！`;
   pmBase.component.create({
@@ -359,8 +345,14 @@ function load() {
         var optionStr = char.options.map(x => optionDB.tags[x].displaytext).join("/");
         return { name: charDB[char.charId].name, text: levelStr + skillStr, option: optionStr }
       },
+      selChar: function(event) {
+        AKDATA.selectCharCallback = function (id) { window.vue_app.charId = id; window.vue_app.setChar(); }
+        AKDATA.showSelectCharDialog(this.excludeList);
+      },
       setChar: function(event) {
         let phases = charDB[this.charId].phases.length;
+        this.txt_char = charDB[this.charId].name;
+        this.img_char = `/akdata/assets/images/char/${this.charId}.png`;
         this.opt_phase = [...Array(phases).keys()];
         this.details.phase = phases-1;
         this.setPhase();
@@ -413,7 +405,7 @@ function load() {
           Object.keys(x).forEach(k => {
             d[k] = {
               dps: x[k].globalDps,
-              s_dps: x[k].skill.dps
+              s_dps: Math.round(x[k].skill.dps * 100)/100
             };
           });
           return d;
@@ -457,6 +449,10 @@ function load() {
           var values = Object.keys(this.chartView[i]).map(k => this.chartView[i][k][this.chartKey]);
           cols.push([title, ...values]);
         }
+        this.jsonResult = {
+          chars: this.plotList,
+          args: {enemyKey: this.enemyKey, chartKey: this.chartKey}, 
+          result: cols};
         return cols;
       },
     },

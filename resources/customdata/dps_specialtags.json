@@ -59,7 +59,7 @@
     "skchr_beewax_2":   { "reset_attack": true },
     "skchr_bena_2":     { "note": "不治疗最多攻击25次" },
     "skchr_bibeak_1":   { "times": 2, "damage_type":"0" },
-    "skchr_bibeak_2":	{ "cast_time": 22, "attack_begin": 9, "reset_attack": "ogcd" },
+    "skchr_bibeak_2":	{ "cast_time": 23, "attack_begin": 9, "reset_attack": "ogcd" },
     "skchr_billro_1":   { "reset_attack": true },
     "skchr_billro_2":   { "reset_attack": true, "attack_begin": 12, "frame_corr": "0" },
     "skchr_billro_3":   { "grad": true, "reset_attack": true, "attack_begin": 10 },
