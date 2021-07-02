@@ -519,6 +519,14 @@ function applyBuff(charAttr, buffFrm, tag, blackbd, isSkill, isCrit, log, enemy)
           log.writeNote("有深海猎人");
           blackboard.atk = blackboard["skadi2_t_2[atk][2].atk"];
           break;
+        case "tachr_485_pallas_1":
+          if (isSkill && skillId == "skchr_pallas_3" && options.pallas) {
+            log.writeNote("第一天赋被3技能覆盖");
+            done = true;
+          } else {
+            blackboard.atk = blackboard["peak_performance.atk"];
+          }
+          break;
       }
     }
   } else if (checkSpecs(tag, "ranged_penalty")) { // 距离惩罚类
@@ -1129,6 +1137,18 @@ function applyBuff(charAttr, buffFrm, tag, blackbd, isSkill, isCrit, log, enemy)
       case "skchr_billro_2":
         if (!options.charge) {
           delete blackboard.atk;
+        }
+        break;
+      case "tachr_485_pallas_trait":
+      case "tachr_308_swire_trait":
+      case "tachr_265_sophia_trait":
+      case "tachr_130_doberm_trait":
+        if (!options.noblock) 
+          done = true; break;
+      case "skchr_pallas_3":
+        if (options.pallas) {
+          blackboard.def = blackboard["attack@def"];
+          blackboard.atk += blackboard["attack@peak_performance.atk"];
         }
         break;
     }
@@ -2077,7 +2097,10 @@ function calculateAttack(charAttr, enemy, raidBlackboard, isSkill, charData, lev
       case "tachr_188_helage_trait":
       case "tachr_337_utage_trait":
       case "tachr_475_akafyu_trait":
-        pool[2] += bb.value * dur.hitCount; break;
+      case "tachr_485_pallas_2":
+        pool[2] += bb.value * dur.hitCount;
+        log.writeNote("可以治疗召唤物/绝食单位");
+        break;
       case "tachr_2013_cerber_1":
         damage = bb.atk_scale * edef * Math.max(1-emrpct, 0.05);
         pool[1] += damage * dur.hitCount;

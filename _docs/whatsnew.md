@@ -5,7 +5,9 @@ order: 4
 category: 工具
 icon: info-circle
 ---
-## 21.07.01
+## 21.07.01-02
+- [update] 帕拉斯
+- [update] 更新了支援近卫的特性
 - 专精收益计算器：增加了json输出和hashtag处理
 - dps图表：增加了json输出，改用新版选人画面
 

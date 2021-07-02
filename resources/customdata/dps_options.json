@@ -5,7 +5,7 @@
         "ranged_penalty" : { "type" : "bool", "displaytext" : "距离惩罚", "explain": "计算远卫/广域奶的远程攻击系数惩罚（一部分技能不受惩罚）", "off": true },
         "token" : { "type" : "bool", "displaytext" : "计算召唤物数据", "explain": "勾选时表示召唤物dps，否则为本体", "off": true },
         "stack" : { "type" : "bool", "displaytext" : "被动叠满", "explain": "按天赋叠满层数计算" },
-        "noblock" : { "type" : "bool", "displaytext" : "未阻挡", "explain": "自身未阻挡敌人" },
+        "noblock" : { "type" : "bool", "displaytext" : "未阻挡", "explain": "自身未阻挡敌人，或敌人未被阻挡" },
         "cannon":  { "type": "bool", "displaytext": "水炮充能", "explain": "温蒂-计算技能周期时考虑水炮的充能" },
         "buff":  { "type": "bool", "displaytext": "计算团辅", "explain": "加算页面下方[团辅]行内填写的属性增益" },
         "warmup":  { "type": "bool", "displaytext": "多段暖机完成", "explain": "勾选计算特定技能开启第二次和以后的效果，否则计算第一次启动效果" },
@@ -14,7 +14,8 @@
         "archet":  { "type": "bool", "displaytext": "兰登战术", "explain": "空弦在场时，攻回技能每2.5s恢复1sp", "off": true },
         "chen":  { "type": "bool", "displaytext": "呵斥(团辅)", "explain": "陈在场时，攻回技能每4s恢复1sp", "off": true },
         "charge":  { "type": "bool", "displaytext": "蓄力", "explain": "卡涅利安-积攒2层技能再释放" },
-        "annie": { "type": "bool", "displaytext": "替身", "explain": "贝娜-显示替身数据", "off": true }
+        "annie": { "type": "bool", "displaytext": "替身", "explain": "贝娜-显示替身数据", "off": true },
+        "pallas": { "type": "bool", "displaytext": "加成自身", "explain": "帕拉斯-3技能加成自己的情况", "off": true }
     },
     "char" : {
         "char_503_rang" : [ "cond" ],
@@ -114,6 +115,10 @@
         "char_478_kirara":  [ "cond", "chen" ],
         "char_469_indigo":  [ "cond" ],
         "char_426_billro":  [ "charge" ],
-        "char_369_bena":  [ "annie" ]
+        "char_369_bena":  [ "annie" ],
+        "char_485_pallas": [ "cond", "noblock", "pallas", "chen" ],
+        "char_308_swire":   [ "noblock" ],
+        "char_130_doberm":  [ "noblock" ],
+        "char_265_sophia":  [ "noblock" ]
     }
 }
