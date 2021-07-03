@@ -11,7 +11,7 @@ window.AKDATA = {
 
   Data: {},
 
-  new_op: ["char_426_billro", "char_478_kirara", "char_369_bena", "char_469_indigo"],
+  new_op: ["char_485_pallas"],
 
   professionNames: {
     "PIONEER": "先锋",
