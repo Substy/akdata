@@ -28,11 +28,9 @@
     document.documentElement.className += ' js-module';
   </script>
 
-{%- if jekyll.environment == 'production' -%}
-  {%- include google-analytics.html -%}
-  {%- include baidu-analytics.html -%}
-{%- endif -%}
+  <link rel="shortcut icon" href="/akdata/favicon.ico">
 
+  {%- include baidu-analytics.html -%}
 {%- for url in site.data.config.css -%}
   {% if url contains "://" %}
     {% assign disturl = url %}
@@ -90,7 +88,7 @@
       name: "{{page.name}}",
       collection: "{{page.collection}}",
       category: "{{page.category}}",
-      dir: "{{page.dir}}",
+      dir: "{{page.dir}}"
     };
   </script>
 {{site.tags.TAG}}

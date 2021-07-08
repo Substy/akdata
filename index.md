@@ -4,9 +4,10 @@
 # See: https://jekyllrb.com/docs/themes/#overriding-theme-defaults
 layout: home
 collection: docs
+title: Arknights DPS - 明日方舟DPS计算器
 ---
 
-无法刷新请点击以下按钮：
 <div>
-    <button type="button" class="btn btn-primary" onclick="localStorage.clear();">清除缓存</button>
+    <button type="button" class="btn btn-primary" onclick="localStorage.clear();">更新数据</button>
+    <a href="whatsnew"><button type="button" class="btn btn-info">更新日志</button></a>
 </div>

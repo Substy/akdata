@@ -1,8 +1,8 @@
 ---
-title: 干员
+title: 干员数据
 withjs: true
 withcss: true
 order: 1
-category: 资料
+category: 其他页面
 icon: users
 ---

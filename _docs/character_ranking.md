@@ -1,7 +1,9 @@
 ---
-title: 排行榜
+title: DPS数据表格
 withjs: true
-order: 1.3
-category: 资料
+order: 1
+category: 其他页面
 icon: random
 ---
+- 一个简单的dps汇总表格，收集了基于**计算器默认参数**（触发所有天赋、被动）的计算结果。
+- 数据没有进行任何清洗核对，请使用者自行判断。**最终结果以计算器页面为准**

@@ -3,3 +3,10 @@ _site/
 .jekyll-cache/
 .jekyll-metadata
 *.bat
+Gemfile.lock
+assets/images/char/
+assets/images/skin*/
+assets/images/prts/
+*/__pycache__/*
+*.pyc
+*/build/*

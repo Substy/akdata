@@ -1,12 +1,31 @@
-{%- if jekyll.environment == 'production' and site.analytics.baidu -%}
+{%- if site.analytics.baidu -%}
 <script>
-    var _baId = '{{ site.analytics.baidu }}';
-    var _hmt = _hmt || [];
-    (function() {
-      var hm = document.createElement("script");
-      hm.src = "//hm.baidu.com/hm.js?" + _baId;
-      var s = document.getElementsByTagName("script")[0];
-      s.parentNode.insertBefore(hm, s);
-    })();
+  var _hmt = _hmt || [];
+  (function() {
+    /*
+    var scripts = [
+      "https://hm.baidu.com/hm.js?4158ba36cc7a19f9ba8a547fa33b69da",
+      "https://cdn.jsdelivr.net/npm/vue/dist/vue.js",
+      "https://d3js.org/d3.v5.min.js",
+      "https://cdn.jsdelivr.net/npm/c3@0.7.15/c3.min.js",
+    ];
+    var styles = [
+      "/akdata/assets/css/c3.css"
+    ]
+    var s = document.getElementsByTagName('HEAD').item(0);
+    scripts.forEach(x => {
+      var sc = document.createElement("script");
+      sc.src = x;
+      s.appendChild(sc);
+    }); 
+    styles.forEach(x => {
+      var st = document.createElement("link");
+      st.href = x;
+      st.rel = "stylesheet";
+      st.type = "text/css";
+      s.appendChild(st);
+    })
+    */
+  })();
 </script>
 {%- endif -%}

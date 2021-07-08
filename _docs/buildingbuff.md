@@ -1,7 +1,7 @@
 ---
 title: 后勤技能
 withjs: true
-order: 4
-category: 基建
+order: 3
+category: 资料
 icon: hard-hat
 ---

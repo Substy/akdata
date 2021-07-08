@@ -12,6 +12,7 @@ const ProfessionNames = {
 function init() {
   AKDATA.load([
     'excel/character_table.json',
+    'excel/char_patch_table.json',
     'excel/skill_table.json',
     'excel/range_table.json',
     'excel/gamedata_const.json',
@@ -26,12 +27,12 @@ function init() {
 function load() {
   let selector = {};
   let body = [];
-
+  AKDATA.patchAllChars();
   for (let char in AKDATA.Data.character_table) {
     let charData = AKDATA.Data.character_table[char];
     if (charData.profession == "TOKEN" || charData.profession == "TRAP") continue;
     let phaseData = charData.phases[0].attributesKeyFrames[0].data;
-    selector[char] = charData.displayNumber + ' ' + charData.name;
+    selector[char] = (charData.displayNumber || "Roguelike")+ ' ' + charData.name;
     body.push([
       charData.displayNumber,
       `<a href="#!/${char}">${charData.name}</a>`,
@@ -93,7 +94,7 @@ function createPhaseTable(charData) {
     x[1](charData.phases[0].attributesKeyFrames[0].data, charData.phases[0].attributesKeyFrames[1].data),
     charData.phases[1] ? x[1](charData.phases[1].attributesKeyFrames[0].data, charData.phases[1].attributesKeyFrames[1].data) : '',
     charData.phases[2] ? x[1](charData.phases[2].attributesKeyFrames[0].data, charData.phases[2].attributesKeyFrames[1].data) : '',
-    charData.favorKeyFrames ? x[1](charData.favorKeyFrames[0].data, charData.favorKeyFrames[1].data) : '',
+    (charData.favorKeyFrames && charData.profession != "TOKEN") ? x[1](charData.favorKeyFrames[0].data, charData.favorKeyFrames[1].data) : '',
   ]);
 
   let rangeRow = [];
@@ -220,7 +221,7 @@ function show(hash) {
   }
   ///////////////////////////////////////////////
   let skillLvlupHtml = '';
-  if (charData.phases.length > 1) {
+  if (charData.phases.length > 1 && charData.phases[0].evolveCost) {
     skillLvlupHtml += pmBase.component.create({
       type: 'list',
       card: true,
@@ -233,7 +234,7 @@ function show(hash) {
     });
   }
 
-  if (charData.allSkillLvlup.length > 0) {
+  if (charData.allSkillLvlup.length > 0 && charData.allSkillLvlup[0].lvlUpCost) {
     skillLvlupHtml += pmBase.component.create({
       type: 'list',
       card: true,

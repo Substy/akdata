@@ -4,14 +4,17 @@ layout: default
 
 <div class="l-main__body">
     <div class="l-page">
-      <div class="l-page__header">
+      <div class="l-page__header form-inline">
         <h1 class="l-page__title">
           <a href="{{page.url | relative_url }}">{{ page.title}}</a>
         </h1>
-        <hr>
+        <div class="l-content ml-4" style="margin-top: 16px">
+          {{ content }}
+        </div>
       </div>
+      <hr style="width:100%; color: rgba(0, 0, 0, 0.3)" class="m-0">
       <div class="l-page__body">
-        <div class="l-content">{{ content }}</div>
+        
         <div class="l-dynamic"></div>
       </div>
       <div class="l-page__footer">

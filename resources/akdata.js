@@ -7,15 +7,48 @@ const useCache = true;
 const cacheBeginTime = new Date(2019, 12, 10).getTime();
 
 window.AKDATA = {
+  akdata: "210702", // jsdelivr tag version
+
   Data: {},
+
+  new_op: ["char_485_pallas"],
+
+  professionNames: {
+    "PIONEER": "先锋",
+    "WARRIOR": "近卫",
+    "SNIPER": "狙击",
+    "TANK": "重装",
+    "MEDIC": "医疗",
+    "SUPPORT": "辅助",
+    "CASTER": "术师",
+    "SPECIAL": "特种",
+  //  "TOKEN": "召唤物",
+  //  "TRAP": "装置",
+  },
+
+  checkVersion: function (callback) {
+    $.getJSON(`../resources/version.json?_=${Math.round(Math.random()*1e8)}`, function(v) {
+      var result = ["akdata", "gamedata", "customdata"].reduce((x, y) => x && (v[y] == window.AKDATA.Data.version[y]), true);
+      callback(result, v);
+    });    
+  },
+
+  reload: function () {
+    localStorage.clear();
+    location.reload();
+  },
 
   load: function (paths, callback, ...args) {
 
     for( let i=0;i<paths.length;i++) {
       if ( paths[i].endsWith('.json') ){
         let name = paths[i].split('/').pop().replace('.json', '');
-        let path = `${siteInfo.baseurl}/resources/gamedata/${paths[i].toLowerCase()}`;
-        //paths[i] =  $.getJSON(path, data => AKDATA.Data[name] = data);
+        let path = `https://cdn.jsdelivr.net/gh/xulai1001/akdata@${window.AKDATA.akdata}/resources/gamedata/${paths[i].toLowerCase()}`;
+        
+        // custom json data: always use local copy
+        if (!(paths[i].includes("excel") || paths[i].includes("levels")))    // excel/levels使用cdn数据 其他使用本地数据
+          path = `../resources/gamedata/${paths[i].toLowerCase()}?_=${Math.round(Math.random()*1e8)}`;
+        console.log(`Loading -> ${name}`);
         paths[i] = loadJSON(path, data => AKDATA.Data[name] = data);
       }
     }
@@ -32,19 +65,6 @@ window.AKDATA = {
       }
     });
   },
-/*
-  loadData: function (paths, callback, ...args) {
-    let requests = paths.map(path => {
-      let name = path.split('/').pop().replace('.json', '');
-      path = `${siteInfo.baseurl}/resources/gamedata/${path.toLowerCase()}`;
-      return $.getJSON(path, data => AKDATA.Data[name] = data);
-    });
-    $.when(...requests).then(() => {
-      let result = callback(...args);
-      if (result !== undefined) pmBase.content.show(result);
-    });
-  },
-*/
 
   getLevel: function (phase, level) {
     // {phase: 1, level: 1}
@@ -102,6 +122,64 @@ window.AKDATA = {
     }
     return s;
   },
+
+  patchChar: function (charId, patchId, suffix) {
+    if (!AKDATA.Data.character_table[charId]) {
+      AKDATA.Data.character_table[charId] = AKDATA.Data.char_patch_table["patchChars"][patchId];
+      AKDATA.Data.character_table[charId].name += suffix;
+      console.log("patch char", charId, AKDATA.Data.character_table[charId]);
+    }
+  },
+
+  patchAllChars: function() {
+    AKDATA.patchChar("char_1001_amiya2", "char_1001_amiya2", "（近卫 Ver.）");
+  },
+
+  selChar: "",
+
+  showSelectCharDialog: function(excludeChars=[]) {
+    let charPools = {"新干员": []};
+    AKDATA.new_op.forEach(x => {
+      let d = AKDATA.Data.character_table[x];
+      charPools["新干员"].push({"name": d.name, "id": x, "rarity": d.rarity});
+    });
+
+    Object.entries(AKDATA.Data.character_table).forEach( ([charId, charData]) => {
+      if (!excludeChars.includes(charId)) {
+        let profKey = AKDATA.professionNames[charData.profession];
+        if (profKey) {
+          if (!charPools[profKey]) charPools[profKey] = [];
+          charPools[profKey].push({"name": charData.name, "id": charId, "rarity": charData.rarity});
+        }
+      } 
+    });
+   // console.log(charPools);
+
+    let html = "";
+    ["新干员", ...Object.values(AKDATA.professionNames)].forEach(k => {
+      let entry = `<h2>${k}</h2>`;
+      charPools[k].sort((a, b) => b.rarity - a.rarity).forEach(x => {
+        entry += `<a class="btn-outline-light p-2" href="#" onclick="AKDATA.selectChar('${x.id}')" role="button">${x.name}</a>`;
+      });
+      html += entry;
+    });
+
+    pmBase.component.create({
+      type: 'modal',
+      id: "select_char_dialog",
+      content: html,
+      width: 600,
+      title: "选择角色",
+      show: true,
+    });
+  },
+
+  selectChar: function(id) {
+    AKDATA.selChar = id;
+    $("#select_char_dialog").modal("hide");
+    if (AKDATA.selectCharCallback) AKDATA.selectCharCallback(id);
+  },
+  selectCharCallback: null,
 
   formatString: function (string, small = false, params = null, deleteItem = false) {
     string = string || '';

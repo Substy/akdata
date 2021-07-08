@@ -1,6 +1,7 @@
 function init() {
   AKDATA.load([
     'excel/character_table.json',
+    'excel/char_patch_table.json',
     'excel/building_data.json',
     'excel/gamedata_const.json',
   ], load);
@@ -10,6 +11,7 @@ function load() {
   let buffs = AKDATA.Data.building_data.buffs;
   let rooms = AKDATA.Data.building_data.rooms;
 
+  AKDATA.patchAllChars();
   let charList = {};
   Object.values(AKDATA.Data.building_data.chars).map( charData => {
     charData.buffChar.flatMap(x=>x.buffData).map( buffData=> {

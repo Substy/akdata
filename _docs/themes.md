@@ -1,7 +1,7 @@
 ---
 title: 家具主题
 withjs: true
-order: 2
-category: 基建
+order: 6
+category: 资料
 icon: home
 ---
