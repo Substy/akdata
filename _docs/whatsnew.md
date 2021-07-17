@@ -5,6 +5,9 @@ order: 4
 category: 工具
 icon: info-circle
 ---
+## 21.07.18
+- [dps] 更新动画帧数查看功能（测试）
+
 ## 21.07.01-02
 - [update] 帕拉斯
 - [update] 更新了支援近卫的特性

@@ -4,9 +4,11 @@ function init() {
     'excel/character_table.json',
     'excel/char_patch_table.json',
     'excel/skill_table.json',
+    'excel/skin_table.json',
     '../version.json',
     '../customdata/dps_specialtags.json',
     '../customdata/dps_options.json',
+    '../customdata/dps_anim.json',
     '../resources/attributes.js'
   ], load);
 }
@@ -144,6 +146,7 @@ function load() {
   </tbody>
   <tbody class="">
     <tr class="dps__row-damagepool"> <th>伤害表<i class="fas fa-info-circle pull-right" data-toggle="tooltip" title="详细的伤害表格"></i></th></tr>
+    <tr class="dps__row-anim"> <th>动画帧数(测试)</th></tr>
     <tr class="dps__row-results"> <th>计算过程</th> </tr>
     <tr class="dps__row-note"> <th>说明</th> </tr>
   </tbody>
@@ -249,6 +252,7 @@ function load() {
     $dps.find('.dps__row-prts').append(`<td></td>`);  
     $dps.find('.dps__row-option').append(`<td></td>`);
     $dps.find('.dps__row-damagepool').append(`<td><a class="dps__damagepool" data-index="${i}" href="#">[点击显示]</a></td>`);
+    $dps.find('.dps__row-anim').append(`<td><a class="dps__anim" data-index="${i}" href="#">[点击显示]</a></td>`);
     $dps.find('.dps__row-potentialrank').append(`<td><select class="form-control form-control-sm dps__potentialrank" data-index="${i}">${[0,1,2,3,4,5].map(x=>`<option value="${x}">${x+1}</option>`).join('')}</select></td>`);
     $dps.find('.dps__row-favor').append(`<td><select class="form-control form-control-sm dps__favor" data-index="${i}">${Object.keys(new Array(51).fill(0)).map(x=>`<option value="${x*2}">${x*2}</option>`).join('')}</select></td>`);
   }
@@ -270,6 +274,7 @@ function load() {
 
   $('.dps__results').click(showDetail);
   $('.dps__damagepool').click(showDamage);
+  $('.dps__anim').click(showAnim);
   $('.dps__goto').click(goto);
   $('.dps__copy').click(copyChar);
   $('.dps__char_sel').click(showSelectChar);
@@ -374,6 +379,75 @@ function showDamage() {
     });
   }
   return false;
+}
+
+function showAnim() {
+  let $this = $(this);
+  let index = ~~$this.data('index');
+  
+  let charId = Characters[index].charId;
+  let name = AKDATA.Data.character_table[charId].name;
+  let animdb = AKDATA.Data.dps_anim;
+  let skindb = AKDATA.Data.skin_table["charSkins"];
+
+  let skins = Object.keys(animdb).filter(x => x.startsWith(charId));
+  let skinNames = skins.map(x => {
+    let db_name = x.replace(`${charId}_`, `${charId}@`);
+    return skindb[db_name] ? skindb[db_name].displaySkin.skinName : "原皮"
+  });
+  let headers = ["动作", ...skinNames];
+  let h = {};
+  skins.forEach(sk => {
+    Object.keys(animdb[sk]).forEach(key => {
+      h[key] = true;
+     });
+  })
+  let line_headers = Object.keys(h);
+  let rows = [];
+  
+  line_headers.forEach(key => {
+    let r = [key];
+    skins.forEach(sk => {
+      let item = animdb[sk][key];
+      if (!item) {
+        r.push("");
+      } else if (item.duration) {
+        let d = item.duration;
+        let n = Object.keys(item).filter(x => x!="duration")[0];
+        r.push(`动画: ${d} <br> 判定[${n}]: ${item[n]}`);
+      } else {
+        r.push(item);
+      }
+    });
+    rows.push(r);
+  });
+
+  let table = pmBase.component.create({
+    type: 'list',
+    header: headers,
+    list: rows,
+    sortable: true,
+    card: false,
+  });
+
+  let html = `  
+${table}
+<b>说明: </b><br>
+- 此处显示的是动画本身的默认帧数 <br>
+- 实际游戏的动画帧数会根据攻击间隔和攻速变化。 <br>
+- <b>如果攻击动画帧数小于理论攻击间隔0.5帧以上，实际攻击间隔会比理论值大1-2帧</b>（参见计算过程） <br>
+- 目前这里显示的帧数没有加入DPS计算。DPS计算中使用的是以前手动收集的帧数。今后会使用这里显示的帧数进行更精确的计算
+`;
+
+  pmBase.component.create({
+    type: 'modal',
+    id: `${charId}_anim`,
+    content: html,
+    width: 850,
+    title: `${name} - 动画帧数（测试）`,
+    show: true,
+  });
+
 }
 
 function setSelectValue(name, index, value) {
