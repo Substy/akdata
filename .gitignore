@@ -10,3 +10,4 @@ assets/images/prts/
 */__pycache__/*
 *.pyc
 */build/*
+resources/gamedata/story
