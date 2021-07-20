@@ -2107,7 +2107,6 @@ function calculateAttack(charAttr, enemy, raidBlackboard, isSkill, charData, lev
       case "tachr_475_akafyu_trait":
       case "tachr_485_pallas_2":
         pool[2] += bb.value * dur.hitCount;
-        log.writeNote("可以治疗召唤物/绝食单位");
         break;
       case "tachr_2013_cerber_1":
         damage = bb.atk_scale * edef * Math.max(1-emrpct, 0.05);
