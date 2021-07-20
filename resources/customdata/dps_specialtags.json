@@ -1,6 +1,7 @@
 {
     "char_003_kalts":   { "token": "token_10002_kalts_mon3tr", "token_damage_type": "0", "note": "不计算m3自爆和熔毁伤害", "frame_corr": 1 },
     "char_010_chen":    { "times": 2},
+    "char_109_fmout":   { "frame_corr": 1 },
     "char_113_cqbw":    { "frame_corr": 1 },
     "char_117_myrrh":   { "frame_corr": 1 },
     "char_118_yuki":    { "frame_corr": 1 },
@@ -15,6 +16,7 @@
     "char_202_demkni":	{ "damage_type": 2, "frame_corr": 1 },
     "char_218_cuttle":  { "frame_corr": 1 },
     "char_219_meteo":   { "frame_corr": 1 },
+    "char_230_savage":  { "note": "潜能3-6无计算结果" }, 
     "char_252_bibeak":  { "times": 2, "frame_corr": 1 },
     "char_258_podego":  { "frame_corr": 1 },
     "char_260_durnar":	{ "damage_type": 1 },

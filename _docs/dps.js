@@ -433,10 +433,10 @@ function showAnim() {
   let html = `  
 ${table}
 <b>说明: </b><br>
-- 此处显示的是动画本身的默认帧数 <br>
-- 实际游戏的动画帧数会根据攻击间隔和攻速变化。 <br>
+- <b>帧数数据来源为解包，目前暂未加入DPS计算，如果计算结果与这里显示的不一致，应以这里为准</b> <br>
+- 此处列出动画的默认帧数，游戏中的实际帧数会根据攻击间隔和攻速变化。<br>
+- 【判定】指触发攻击事件的帧数，而非命中的帧数。远程攻击的投射物/特效还要经过一段时间才能命中目标<br>
 - <b>如果攻击动画帧数小于理论攻击间隔0.5帧以上，实际攻击间隔会比理论值大1-2帧</b>（参见计算过程） <br>
-- 目前这里显示的帧数没有加入DPS计算。DPS计算中使用的是以前手动收集的帧数。今后会使用这里显示的帧数进行更精确的计算
 `;
 
   pmBase.component.create({
@@ -507,6 +507,7 @@ function updateChar(charId, index) {
 
 function updateOptions(charId, index) {
   let opts = AKDATA.Data.dps_options;
+  let charData = AKDATA.Data.character_table[charId];
   let html = `    
   <div class="form-check">
     <label class="form-check-label" data-toggle="tooltip" data-placement="right" title="${opts.tags['buff'].explain}">
@@ -517,11 +518,35 @@ function updateOptions(charId, index) {
   if (opts.char[charId]) {
     for (var t of opts.char[charId]) {
       let checked = opts.tags[t].off ? "" : "checked";
+      let text = opts.tags[t].displaytext;
+      let tooltip = opts.tags[t].explain;
+
+      if (t == "cond" && opts.cond_info[charId]) {
+        let which = opts.cond_info[charId];
+        let talent = null;
+        if (typeof(which) == "number")
+          talent = charData.talents[which-1];
+        else if (which == "trait")
+          talent = charData.trait;
+        else if (which.text) {
+          text = "触发 - " + which.text;
+          tooltip = which.tooltip;
+        }
+
+        if (talent) {
+          text = "触发 - " + talent.candidates[0].name;
+          if (which == "trait") {
+            text = "触发 - 特性";
+          }
+          console.log(text);
+        }
+      }
+
       let html_bool = `
       <div class="form-check">
-        <label class="form-check-label" data-toggle="tooltip" data-placement="right" title="${opts.tags[t].explain}">
+        <label class="form-check-label" data-toggle="tooltip" data-placement="right" title="${tooltip}">
           <input class="form-check-input dps__${t}" type="checkbox" value="" data-index="${index}" ${checked}>
-            ${opts.tags[t].displaytext}
+            ${text}
         </label> </div>`;
       html += html_bool;
     }
@@ -577,9 +602,15 @@ function chooseLevel() {
   let $this = $(this);
   let index = ~~$this.data('index');
   let level = ~~$this.val();
+  let pot_elem = getElement('potentialrank', index);
+
+  // 暴行
+  if (Characters[index].charId == "char_230_savage" && ~~(pot_elem.val()) > 1) {
+    pot_elem.val(1);
+  }
 
   Characters[index].level = level;
-  Characters[index].potentialRank = ~~(getElement('potentialrank', index).val());
+  Characters[index].potentialRank = ~~(pot_elem.val());
   Characters[index].favor = ~~(getElement('favor', index).val());
 
   calculate(index);

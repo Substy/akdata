@@ -794,6 +794,12 @@ function applyBuff(charAttr, buffFrm, tag, blackbd, isSkill, isCrit, log, enemy)
           blackboard.def = 0;
         }
         break;
+      case "skchr_otter_2":
+        if (options.token) {
+          log.writeNote("结果无意义，应去掉召唤物选项");
+          done = true;
+        }
+        break;
       case "skchr_kalts_2":
         if (options.token) {
           delete blackboard.attack_speed;
@@ -1401,6 +1407,8 @@ function calcDurations(isSkill, attackTime, attackSpeed, levelData, buffList, bu
       log.write(`技能前摇: ${t.toFixed(3)}s, ${frameBegin} 帧`);
       if (!checkSpecs(skillId, "attack_begin")) log.write("（待实测）");
       else log.writeNote(`技能前摇: ${t.toFixed(3)}s`);
+      if (spData.spType == 2)
+        log.writeNote("不考虑普攻穿插技能");
     }
     // 技能类型
     if (levelData.description.includes("持续时间无限") || checkSpecs(skillId, "toggle")) {
@@ -1603,7 +1611,7 @@ function calcDurations(isSkill, attackTime, attackSpeed, levelData, buffList, bu
         }
         if (line.length > 0) log.write(`[特殊] ${line.join(", ")}`);
         if (rst) {
-          duration -= attackTime;
+          // duration -= attackTime;
         }
         break;
       case 1: // 普通，前面已经算过一遍了，这里只特判
@@ -2155,8 +2163,8 @@ function calculateAttack(charAttr, enemy, raidBlackboard, isSkill, charData, lev
       case "skchr_bibeak_1":
         if (enemy.count > 1) {
           damage = finalFrame.atk * (1 - emrpct);
-          pool[1] += damage * (enemy.count - 1);
-          log.write(`[特殊] ${displayNames[buffName]}: 法术伤害 = ${damage.toFixed(1)}, 命中 ${(enemy.count-1)}`);
+          pool[1] += damage;
+          log.write(`[特殊] ${displayNames[buffName]}: 法术伤害 = ${damage.toFixed(1)}`);
         }
         break;
       case "skchr_ayer_2":
