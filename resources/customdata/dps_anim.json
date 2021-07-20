@@ -2004,6 +2004,22 @@
     "Skill_Start": 48,
     "Start": 36
   },
+  "char_180_amgoat_summer#5": {
+    "Attack": {
+      "duration": 36,
+      "OnAttack": 20
+    },
+    "Default": 0,
+    "Idle": 108,
+    "Start": {
+      "duration": 36,
+      "OnStart": 25
+    },
+    "Die": 33,
+    "Skill_End": 60,
+    "Skill_Loop": 36,
+    "Skill_Start": 48
+  },
   "char_181_flower": {
     "Attack": {
       "duration": 90,
@@ -4297,6 +4313,32 @@
       "OnStart": 25
     }
   },
+  "char_291_aglina_summer#5": {
+    "Attack": {
+      "duration": 40,
+      "OnAttack": 19
+    },
+    "Charge Idle": 240,
+    "Default": 0,
+    "Die": 30,
+    "Idle": 120,
+    "Skill1_Begin": 15,
+    "Skill1_End": 15,
+    "Skill1_Loop": {
+      "duration": 56,
+      "OnAttack": 49
+    },
+    "Skill2_Begin": 15,
+    "Skill2_End": 15,
+    "Skill2_Loop": {
+      "duration": 56,
+      "OnAttack": 49
+    },
+    "Start": {
+      "duration": 30,
+      "OnStart": 25
+    }
+  },
   "char_293_thorns": {
     "Attack_1": {
       "duration": 36,
@@ -5705,6 +5747,28 @@
     }
   },
   "char_411_tomimi": {
+    "Attack": {
+      "duration": 48,
+      "OnAttack": 17
+    },
+    "Default": 0,
+    "Die": 30,
+    "Idle": 240,
+    "Skill_2_Loop": {
+      "duration": 90,
+      "OnAttack": 20
+    },
+    "Skill_Idle": 240,
+    "Skill_Loop": {
+      "duration": 24,
+      "OnAttack": 12
+    },
+    "Start": {
+      "duration": 30,
+      "OnStart": 11
+    }
+  },
+  "char_411_tomimi_summer#5": {
     "Attack": {
       "duration": 48,
       "OnAttack": 17
