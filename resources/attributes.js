@@ -1812,10 +1812,7 @@ function calculateAttack(charAttr, enemy, raidBlackboard, isSkill, charData, lev
   }
 
   let realAttackTime = finalFrame.baseAttackTime * 100 / finalFrame.attackSpeed;
- // if (options.token && blackboard.id != "skchr_mgllan_2") {
- //   realAttackTime = basicFrame.baseAttackTime; // token不计算攻速影响
- //   log.write("*** token不计算自身攻速，以最终攻击间隔数据为准 ***");
- // }
+
   let frame = realAttackTime * fps; 
   // 额外帧数补偿 https://bbs.nga.cn/read.php?tid=20555008
   let corr = checkSpecs(charId, "frame_corr") || 0;
@@ -1837,6 +1834,8 @@ function calculateAttack(charAttr, enemy, raidBlackboard, isSkill, charData, lev
   }
   let frameAttackTime = frame / fps;
   let attackTime = frameAttackTime;
+
+  calculateAnimation(charId, blackboard.id, isSkill, realAttackTime, finalFrame.attackSpeed, log);
 
   // 根据最终攻击间隔，重算攻击力
   if (isSkill && blackboard.id == "skchr_platnm_2") { // 白金
@@ -2826,6 +2825,122 @@ function applyPotential(charId, charData, rank, basic) {
 
     basic[key] += value;
   }
+}
+
+function calculateAnimation(charId, skillId, isSkill, attackTime, attackSpeed, log) {
+  var _fps = 30;
+  var charData = AKDATA.Data.character_table[charId];
+  var animData = AKDATA.Data.dps_anim[charId];
+  var animKey = "Attack";
+  var attackKey = checkSpecs(charId, "anim_key") || "Attack";
+  var tags = [];
+  var count = 0;  // animKeys中出现的最大技能编号
+
+  // 推断animKey
+  if (!isSkill)
+    animKey = attackKey;
+  else {
+    animKey = checkSpecs(skillId, "anim_key");
+    if (!animKey) {
+      // 首先，取得技能号
+      let skIndex = ~~skillId.split("_")[2];
+      let skCount = charData.skills.length;
+      // 取得可能描述技能动画时间的animKeys
+      let candidates = Object.keys(animData).filter(k => 
+        typeof(animData[k].OnAttack) == "number" &&
+        k.includes("Skill") && !k.includes("Begin") && !k.includes("End")
+      );
+      if (typeof(animData.Skill) == "number") candidates.push("Skill");
+      // 分析
+      if (candidates.length == 0)
+        animKey = attackKey;  // 没有合适的技能动画，则使用普攻
+      else {
+        candidates.forEach(k => {
+          k.split("_").forEach(t => {
+            let value = parseInt(t, 10) || t;
+            if (!tags.includes(value)) tags.push(value);
+            if (value > count) count = value;
+          })
+        });
+        // 例子：如果有3个技能但是animKeys最大为skill2说明skill2对应3技能
+        // 否则skill3对应3技能
+        if (skCount > count) skIndex -= 1;
+        // 选择最终animKey
+        if (skIndex == 0 || count == 0) {
+          animKey = candidates.find(k => k.includes("Skill"));
+        } else {
+          animKey = candidates.find(k => k.includes(skIndex));
+        }
+        if (!animKey) animKey = attackKey;
+      }
+      console.log( { animKey, animData, candidates, count, skIndex } );
+    }
+  }
+
+  // 帧数算法. 258yyds
+  var attackFrame = attackTime * _fps;  // 理论攻击间隔 换算为帧
+  var realAttackFrame = Math.round(attackFrame);  // 实际攻击间隔，后面会调整
+  var realAttackTime = realAttackFrame / _fps;
+  var animFrame = 0, eventFrame = -1;  // 原本动画帧数，判定帧数
+  var scale = 1;
+  var scaledAnimFrame = 0; // 缩放后的动画帧数
+  var preDelay = 0, postDelay = 0;
+
+  log.write("**【动画计算测试，目前结果有误差，不用于后续计算】**");
+
+  if (!animKey || !animData[animKey])
+    log.write("暂无帧数数据，保持原结果不变");
+  else {
+    var specKey = isSkill ? skillId : charId;
+    if (typeof(animData[animKey]) == "number") {
+      // 没有OnAttack，一般是瞬发或者不攻击的技能
+      animFrame = animData[animKey];
+    } else {
+      animFrame = animData[animKey].duration;
+      eventFrame = animData[animKey].OnAttack;
+      // 计算缩放比例
+      // 动画拉伸幅度最大值设为1(但有的不是1)
+      scale = Math.max(Math.min(attackFrame / animFrame, 1), 0.1);
+    }
+    if (checkSpecs(specKey, "anim_noscale") || eventFrame < 0) {
+      log.writeNote("动画不随攻速变化");
+      scale = 1;
+    }
+
+    if (eventFrame >= 0) {
+      // 计算前后摇。后摇至少1帧
+      preDelay = Math.max(Math.ceil(eventFrame * scale), 1);   // preDelay 即 scaled eventFrame
+      postDelay = Math.max(Math.round(animFrame * scale - preDelay), 1);
+      scaledAnimFrame = preDelay + postDelay; 
+    } else
+      scaledAnimFrame = animFrame;
+
+    log.write(`理论攻击间隔: ${attackTime.toFixed(3)}s, ${attackFrame.toFixed(1)} 帧. 攻速 ${Math.round(attackSpeed)}%`);
+    log.write(`原本动画时间: ${animKey} - ${animFrame} 帧, 抬手 ${eventFrame} 帧`);
+    log.write(`缩放系数: ${scale.toFixed(2)}`);
+    log.write(`缩放后动画时间: ${scaledAnimFrame} 帧, 抬手 ${preDelay} 帧`);
+
+    // 帧数补正
+    // checkSpecs(specKey, "reset_cd_strategy") == "ceil" ? 
+    if (attackFrame - scaledAnimFrame > 0.5) {
+      log.write("[补正] 动画时间 < 攻击间隔-0.5帧: 理论攻击帧数向上取整且+1");
+      realAttackFrame = Math.ceil(attackFrame) + 1;
+    } else {
+      log.write("[补正] 四舍五入");
+      realAttackFrame = Math.max(scaledAnimFrame, Math.round(attackFrame));
+    }
+    
+    realAttackTime = realAttackFrame / _fps;
+    log.write(`实际攻击间隔: ${realAttackTime.toFixed(3)}s, ${realAttackFrame} 帧`);
+  }
+
+  return {
+    realAttackTime,
+    realAttackFrame,
+    preDelay,
+    postDelay,
+    scaledAnimFrame
+  };
 }
 
 AKDATA.attributes = {

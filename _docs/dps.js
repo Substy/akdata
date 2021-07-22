@@ -621,19 +621,19 @@ const DamageColors = ['black','blue','limegreen','gold','aqua'];
 function calculate(index) {
   let char = Characters[index];
   let enemy = {
-    def: ~~$('.dps__enemy-def').val(),
-    magicResistance: ~~$('.dps__enemy-mr').val(),
-    count: ~~$('.dps__enemy-count').val(),
+    def: parseFloat($('.dps__enemy-def').val()),
+    magicResistance: parseFloat($('.dps__enemy-mr').val()),
+    count: $('.dps__enemy-count').val(),
   //  hp: ~~$('.dps__enemy-hp').val(),
     hp: 0,
   };
   let raidBuff = {
-    atk: ~~$('.dps__buff-atk').val(),
-    atkpct: ~~$('.dps__buff-atkpct').val(),
-    ats: ~~$('.dps__buff-ats').val(),
-    cdr: ~~$('.dps__buff-cdr').val(),
-    base_atk: ~~$('.dps__buff-batk').val(),
-    damage_scale: ~~$('.dps__buff-scale').val(),
+    atk: parseFloat($('.dps__buff-atk').val()),
+    atkpct: parseFloat($('.dps__buff-atkpct').val()),
+    ats: parseFloat($('.dps__buff-ats').val()),
+    cdr: parseFloat($('.dps__buff-cdr').val()),
+    base_atk: parseFloat($('.dps__buff-batk').val()),
+    damage_scale: parseFloat($('.dps__buff-scale').val()),
   };
   //console.log(raidBuff);
 
