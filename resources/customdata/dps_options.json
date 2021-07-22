@@ -69,7 +69,8 @@
         "char_474_glady":   2,
         "char_478_kirara":  1,
         "char_469_indigo":  { "text": "[s2]束缚", "tooltip": "勾选表示2技能对束缚敌人的毒伤" },
-        "char_485_pallas":  1
+        "char_485_pallas":  1,
+        "char_391_rosmon":  { "text": "[s3]战术装置减防", "tooltip": "勾选表示敌人被战术装置阻挡，防御-160" }
     },
     "char" : {
         "char_103_angel": [ "archet", "chen" ],
@@ -137,7 +138,7 @@
         "char_272_strong":  [ "cond" ],
         "char_293_thorns":  [ "ranged_penalty", "warmup", "thorns_ranged"],
         "char_366_acdrop":  [ "cond" ],
-        "char_391_rosmon":  [ "rosmon_double", "archet", "chen"],
+        "char_391_rosmon":  [ "cond", "rosmon_double", "archet", "chen"],
         "char_411_tomimi":  [ "crit" ],
         "char_415_flint":   [ "cond" ],
         "char_416_zumama":  [ "cond" ],

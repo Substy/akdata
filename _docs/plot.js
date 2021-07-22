@@ -206,6 +206,7 @@ function init() {
     '../version.json',
     '../customdata/dps_specialtags.json',
     '../customdata/dps_options.json',
+    '../customdata/dps_anim.json',
     '../resources/attributes.js',
   ], load);
 };

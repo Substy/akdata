@@ -853,12 +853,14 @@ function applyBuff(charAttr, buffFrm, tag, blackbd, isSkill, isCrit, log, enemy)
       case "skchr_rosmon_3":
         writeBuff(`base_attack_time: ${blackboard.base_attack_time}x`);
         blackboard.base_attack_time *= basic.baseAttackTime;
-        blackboard.edef = -160;
-        if (options.rosmon_double) {
-          blackboard.times = Math.min(enemy.count, 2);
-          log.writeNote(`假设敌人抱团,受到【${blackboard.times}】次攻击`);
+        if (options.cond) {
+            blackboard.edef = -160;
+            log.writeNote("计算战术装置阻挡减防");
         }
-        log.writeNote("计算token减防效果");
+        if (options.rosmon_double) {
+          blackboard.times = 2;
+          log.writeNote(`按2次攻击都命中所有敌人计算`);
+        }
         break;
       case "skchr_aglina_2":  // 攻击间隔缩短，但是是乘算正数
       case "skchr_cerber_2":

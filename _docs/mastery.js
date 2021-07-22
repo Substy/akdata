@@ -54,7 +54,8 @@ function init() {
     '../customdata/dps_options.json',
     '../customdata/leveling_cost.json',
     '../resources/attributes.js',
-    '../customdata/green.json'
+    '../customdata/green.json',
+    '../customdata/dps_anim.json'
   ], load);
 }
 
