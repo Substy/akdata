@@ -499,6 +499,29 @@
       "OnAttack": 14
     }
   },
+  "char_107_liskam": {
+    "Attack_Begin": 10,
+    "Attack_End": 10,
+    "Attack_Loop": {
+      "duration": 36,
+      "OnAttack": 1
+    },
+    "Default": 0,
+    "Die": 30,
+    "Idle": 60,
+    "Skill": {
+      "duration": 26,
+      "OnAttack": 6
+    },
+    "Skill_Down": {
+      "duration": 26,
+      "OnAttack": 10
+    },
+    "Start": {
+      "duration": 30,
+      "OnStart": 6
+    }
+  },
   "char_107_liskam_nian#2": {
     "Attack_Begin": 10,
     "Attack_End": 10,

@@ -55,7 +55,8 @@ function init() {
     '../customdata/leveling_cost.json',
     '../resources/attributes.js',
     '../customdata/green.json',
-    '../customdata/dps_anim.json'
+    '../customdata/dps_anim.json',
+    '../customdata/subclass.json'
   ], load);
 }
 
@@ -174,11 +175,18 @@ function load() {
     </tbody>
     </table>
   </div>
-  <div class="card mb-2 col-lg-9 col-md-12">
+  <div class="card mb-2 col-lg-6 col-md-12">
     <div class="card-header">
       <div class="card-title mb-0">升级收益（精2 1级~满级）</div>
     </div>
     <div id="level_table" style="font-size: 1.2vw"></div>
+  </div>
+  <div class="card mb-2 col-lg-3 col-md-6">
+    <div class="card-header">
+      <div class="card-title mb-0">子职业模板分析</div>
+    </div>
+    <div id="subclass"></div>
+    <div style="text-align: center">（百分比为和参考干员的属性相似度）</div>
   </div>
   <div class="card mb-2 col-12">
     <div class="card-header">
@@ -316,8 +324,6 @@ function load() {
           console.log(rv.skill[sk], tot);
         }
 
-
-
         // this.test = matsView;
         let matsHtml = "";
         for (var sk in matsView) {
@@ -343,20 +349,31 @@ function load() {
         var gain_pct = [(a1.maxHp - a0.maxHp)/a0.maxHp, (a1.atk - a0.atk)/a0.atk, (a1.def - a0.def)/a0.def];
         var gain = [(a1.maxHp - a0.maxHp), (a1.atk - a0.atk), (a1.def - a0.def)];
         var result = [0, 1, 2].map(x => `+${Math.round(gain[x])} (+${(gain_pct[x]*100).toFixed(1)}%)`);
-       // result.push(...LevelingCost[db.rarity + 1]);
-        //console.log(result);
-        //console.log(ch0, ch1);
-        //console.log(a0, a1);
+        result.push(`${a0.baseAttackTime.toFixed(3)} s`);
 
         let html = pmBase.component.create({
             type: 'list',
             card: false,
             title: `升级属性提升（精二1级->满级）`,
-            header: ['HP', '攻击力', '防御力'],
+            header: ['HP', '攻击力', '防御力', '基础攻击间隔'],
             list: [result]
           });
         $("#level_table").html(html);
         this.jsonResult["levelUpGain"] = {gain, gain_pct};
+
+        // 模板分析
+        var scalar = [...gain_pct.map(x => x*100), a0.baseAttackTime * 1000];
+        var sc_result = calcSubClass(scalar, db.profession);
+        this.jsonResult["subclass"] = { result: sc_result.view, scalar };
+
+        var chart = c3.generate({
+          bindto: "#subclass",
+          size: { height: 180 },
+          data: {
+            type: "gauge",
+            columns: sc_result.view
+          }
+        });
       }
     },
     watch: {
@@ -401,6 +418,9 @@ function buildChar(charId, skillId, recipe) {
     skillLevel: recipe.skillLevel,
     options: recipe.options
   };
+
+  if (charId == "char_230_savage")
+    char.potentialRank = Math.min(char.potentialRank, 1);
 
   let db = AKDATA.Data.character_table[charId];
   let skilldb = AKDATA.Data.skill_table[skillId];
@@ -669,6 +689,49 @@ function buildJsonView(app, chartView, pieView) {
     gain: pieView,
     notes: chartView.notes
   }
+}
+
+function _dist(x, y) {
+  var d = 0;
+  for (var i=0; i<x.length; i+=1) {
+    d += (x[i] - y[i]) * (x[i] - y[i]);
+  }
+  return Math.sqrt(d);
+}
+
+function calcSubClass(x, prof) {
+  var sub_db = AKDATA.Data.subclass;
+  var dists = Object.keys(sub_db).filter(
+    k => sub_db[k].prof == prof).map(
+    k => [k, _dist(x, sub_db[k].feat)]).sort(
+      (x, y) => x[1] - y[1]
+    );
+  var d_1 = dists.map(x => 1 / (x[1] + 0.0001));
+  var s = d_1.reduce((sum, x) => sum + x);
+  var rate = dists.map((x, index) => [x[0], d_1[index] / s]);
+  console.log(rate);
+  var view = [];
+  var groups = [];
+  var patterns = [ "#4169e1", "#ff7f50", "#ffd700", "#dc143c", "#ee82ee", "#e6e6fa" ];
+  s = 1;
+  rate.forEach(x => {
+    if (x[1] >= 0.1) {
+      view.push([x[0], (x[1]*100).toFixed(2)]);
+      groups.push(x[0]);
+      s -= x[1];
+    }
+  });
+  var pats = patterns.slice(0, view.length);
+  /*
+  if (s>0) {
+    view.push(["其他", (s*100).toFixed(2)]);
+    groups.push("其他");
+    pats.push("#cccccc");
+  }*/
+
+  return {
+    rate, view, groups, pats
+  };
 }
 
 pmBase.hook.on('init', init);
