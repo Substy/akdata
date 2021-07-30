@@ -5,6 +5,9 @@ order: 4
 category: 工具
 icon: info-circle
 ---
+## 21.07.30
+- [mastery] 新增了官方子职业名称分类
+
 ## 21.07.27
 - [mastery] 新增了对子职业的分析测试
 - [dps] 帧数计算部分调整中
