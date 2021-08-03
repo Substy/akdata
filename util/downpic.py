@@ -1,8 +1,8 @@
 #encoding: utf-8
 import json, urllib.request, os, sys, time, random
-from fake_useragent import UserAgent
 
-gamedata_path = "../../resources/gamedata/excel"
+gamedata_path = "../resources/gamedata/excel"
+workpath = "../assets/images/"
 f = open(gamedata_path + "/character_table.json", "r", encoding="utf-8")
 skinf = open(gamedata_path + "/skin_table.json", "r", encoding="utf-8")
 chardb = json.load(f)
@@ -14,11 +14,11 @@ total = len(names)
 success = 0
 skip = 0
 error = 0
-fua = UserAgent()
 
 # os.system("pause")
 
 def save(fname, url, dry_run=False):
+    fname = workpath + fname
     if (os.path.exists(fname)):
         return "skipped"
     else:
@@ -26,7 +26,7 @@ def save(fname, url, dry_run=False):
             sys.stdout.write(url + "...")
             if not dry_run:
                 req = urllib.request.Request(url)
-                req.add_header("User-Agent", fua.random)
+                req.add_header("User-Agent", "Mozilla/5.0 (Windows NT 10.0; Win64; x64) AppleWebKit/537.36 (KHTML, like Gecko) Chrome/92.0.4515.131 Safari/537.36")
                 req.add_header("Referer", "https://www.kokodayo.fun/")
                 
                 img = urllib.request.urlopen(req).read()

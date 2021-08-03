@@ -102,6 +102,8 @@ function calculateDps(char, enemy, raidBuff) {
   let charId = char.charId;
   let charData = AKDATA.Data.character_table[charId];
   let skillData = AKDATA.Data.skill_table[char.skillId];
+  let equipData = {};
+  if (char.equipId) equipData = AKDATA.Data.uniequip_table["equipDict"][char.equipId];
   if (char.skillLevel == -1) char.skillLevel = skillData.levels.length - 1;
 
   let levelData = skillData.levels[char.skillLevel];
@@ -113,10 +115,9 @@ function calculateDps(char, enemy, raidBuff) {
   attr.buffList["skill"] = blackboard;
 
   console.log(charData.name, levelData.name);
-  log.write(`| 角色 | 等级 | 技能 |`);
-  log.write(`| :--: | :--: | :--: | `);
-  log.write(`| ~${charId}~ - **${charData.name}**  | 精英 ${char.phase}, 等级 ${char.level}, 潜能 ${char.potentialRank+1} | ${levelData.name}, 等级 ${char.skillLevel+1} |`);
-
+  log.write(`| 角色 | 等级 | 技能 | 模组 |`);
+  log.write(`| :--: | :--: | :--: | :--: |`);
+  log.write(`| ~${charId}~ - **${charData.name}**  | 精英 ${char.phase}, 等级 ${char.level}, 潜能 ${char.potentialRank+1} | ${levelData.name}, 等级 ${char.skillLevel+1} | ${equipData.uniEquipName} |`);
   displayNames[charId] = charData.name;
   displayNames[char.skillId] = levelData.name;  // add to name cache
 
@@ -1150,6 +1151,13 @@ function applyBuff(charAttr, buffFrm, tag, blackbd, isSkill, isCrit, log, enemy)
       case "tachr_485_pallas_trait":
       case "tachr_308_swire_trait":
       case "tachr_265_sophia_trait":
+        if (!options.noblock) 
+          done = true;
+        else if (basic.equip_blackboard.atk_scale) {
+          blackboard.atk_scale = basic.equip_blackboard.atk_scale;
+          writeBuff(`模组倍率覆盖: ${blackboard.atk_scale}x`);
+        }
+        break;
       case "tachr_130_doberm_trait":
         if (!options.noblock) 
           done = true; break;
@@ -2739,7 +2747,7 @@ function getAttributes(char, log) { //charId, phase = -1, level = -1
   let attributesKeyFrames = {};
   let buffs = initBuffFrame();
   let buffList = {};
-  //console.log(charData);
+  log.write("**【基础属性计算】**")
   // 计算基础属性，包括等级和潜能
   if (char.level == charData.phases[char.phase].maxLevel) {
     attributesKeyFrames = Object.assign(attributesKeyFrames, phaseData.attributesKeyFrames[1].data);
@@ -2756,8 +2764,11 @@ function getAttributes(char, log) { //charId, phase = -1, level = -1
       buffs[key] = 0;
     });
   }
-  // console.log(attributesKeyFrames);
-  applyPotential(char.charId, charData, char.potentialRank, attributesKeyFrames);
+
+  // 计算潜能和模组
+  applyPotential(char.charId, charData, char.potentialRank, attributesKeyFrames, log);
+  if (char.equipId)
+    applyEquip(char, attributesKeyFrames, log);
 
   // 计算天赋/特性，记为Buff
   if (charData.trait && !charData.has_trait) {
@@ -2832,7 +2843,7 @@ let PotentialAttributeTypeList = {
   21: "respawnTime",
 };
 
-function applyPotential(charId, charData, rank, basic) {
+function applyPotential(charId, charData, rank, basic, log) {
   if (!charData.potentialRanks || charData.potentialRanks.length == 0) return;
   for (let i = 0; i < rank; i++) {
     let potentialData = charData.potentialRanks[i];
@@ -2842,7 +2853,61 @@ function applyPotential(charId, charData, rank, basic) {
     let value = y.value;
 
     basic[key] += value;
+    if (value>0) {
+      log.write(`潜能 ${i+2}: ${key} ${basic[key]-value} -> ${basic[key]}`);
+    }
   }
+}
+
+function applyEquip(char, basic, log) {
+  var equipId = char.equipId;
+  var bedb = AKDATA.Data.battle_equip_table;
+  var phase = 0;  // 默认取第一个
+  var cand = 0;
+  var blackboard = {};
+  var attr = {};
+
+  if (equipId && bedb[equipId]) {
+    var item = bedb[equipId].phases[phase];
+    attr = getBlackboard(item.attributeBlackboard);
+
+    if (item.tokenAttributeBlackboard) {
+      var tb = {};
+      Object.keys(item.tokenAttributeBlackboard).forEach(tok => {
+        tb[tok] = getBlackboard(item.tokenAttributeBlackboard[tok]);
+      })
+      Object.assign(blackboard, tb);
+    }
+
+    item.parts.forEach(pt => {
+      let talentBundle = pt.addOrOverrideTalentDataBundle;
+      let traitBundle = pt.overrideTraitDataBundle;
+      // 天赋变更
+      if (talentBundle && talentBundle.candidates) {
+        // 目前只有杜宾一个人
+        let entry = talentBundle.candidates[cand];
+        Object.assign(blackboard, getBlackboard(entry.blackboard));
+      }
+      // 特性变更
+      if (traitBundle && traitBundle.candidates) {
+        let entry = traitBundle.candidates[cand];
+        Object.assign(blackboard, getBlackboard(entry.blackboard));
+      }
+      
+    });
+  }
+  console.log(attr, blackboard);
+  var attrKeys = {
+    max_hp: "maxHp",
+    atk: "atk",
+    def: "def"
+  };
+
+  Object.keys(attr).forEach(x => {
+    basic[attrKeys[x]] += attr[x];
+    if (attr[x]!=0) log.write(`模组: ${attrKeys[x]} ${basic[attrKeys[x]]-attr[x]} -> ${basic[attrKeys[x]]}`);
+  });  
+  basic.equip_blackboard = blackboard; // 处理过的模组面板放在这里
 }
 
 function calculateAnimation(charId, skillId, isSkill, attackTime, attackSpeed, log) {

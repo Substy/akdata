@@ -13,6 +13,8 @@ function init() {
   AKDATA.load([
     'excel/character_table.json',
     'excel/skill_table.json',
+    'excel/uniequip_table.json',
+    'excel/battle_equip_table.json',
     '../version.json',
     '../customdata/dps_specialtags.json',
     '../customdata/dps_options.json',

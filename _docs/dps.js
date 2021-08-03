@@ -5,6 +5,8 @@ function init() {
     'excel/char_patch_table.json',
     'excel/skill_table.json',
     'excel/skin_table.json',
+    'excel/uniequip_table.json',
+    'excel/battle_equip_table.json',
     '../version.json',
     '../customdata/dps_specialtags.json',
     '../customdata/dps_options.json',
@@ -123,6 +125,7 @@ function load() {
     <tr class="dps__row-level"> <th>等级</th> </tr>
     <tr class="dps__row-potentialrank"> <th>潜能</th> </tr>
     <tr class="dps__row-favor"> <th>信赖</th> </tr>
+    <tr class="dps__row-equip"> <th>模组</th> </tr>
     <tr class="dps__row-skill"> <th>技能</th> </tr>
     <tr class="dps__row-option"> <th>选项</th> </tr>
     <tr class="dps__row-prts"> <th>PRTS干员页面</th> </tr>
@@ -146,8 +149,8 @@ function load() {
   </tbody>
   <tbody class="">
     <tr class="dps__row-damagepool"> <th>伤害表<i class="fas fa-info-circle pull-right" data-toggle="tooltip" title="详细的伤害表格"></i></th></tr>
-    <tr class="dps__row-anim"> <th>动画帧数(测试)</th></tr>
-    <tr class="dps__row-results"> <th>计算过程</th> </tr>
+    <tr class="dps__row-anim"> <th>动画帧数</th></tr>
+    <tr class="dps__row-results"> <th>计算过程(用于验算)</th> </tr>
     <tr class="dps__row-note"> <th>说明</th> </tr>
   </tbody>
   </table>
@@ -255,6 +258,7 @@ function load() {
     $dps.find('.dps__row-anim').append(`<td><a class="dps__anim" data-index="${i}" href="#">[点击显示]</a></td>`);
     $dps.find('.dps__row-potentialrank').append(`<td><select class="form-control form-control-sm dps__potentialrank" data-index="${i}">${[0,1,2,3,4,5].map(x=>`<option value="${x}">${x+1}</option>`).join('')}</select></td>`);
     $dps.find('.dps__row-favor').append(`<td><select class="form-control form-control-sm dps__favor" data-index="${i}">${Object.keys(new Array(51).fill(0)).map(x=>`<option value="${x*2}">${x*2}</option>`).join('')}</select></td>`);
+    $dps.find('.dps__row-equip').append(`<td><select class="form-control form-control-sm dps__equip" data-index="${i}"></select></td>`);
   }
 
   pmBase.content.build({
@@ -268,6 +272,7 @@ function load() {
  // $('.dps__char').change(chooseChar);
   $('.dps__phase').change(choosePhase);
   $('.dps__level').change(chooseLevel);
+  $('.dps__equip').change(chooseEquip);
   $('.dps__skill, .dps__skilllevel, .dps__potentialrank, .dps__favor').change(chooseSkill);
   $('.dps__enemy-def, .dps__enemy-mr, .dps__enemy-count, .dps__enemy-hp').change(calculateAll);
   $('.dps__buff-atk, .dps__buff-atkpct, .dps__buff-ats, .dps__buff-cdr, .dps__buff-batk, .dps__buff-scale').change(calculateAll);
@@ -434,7 +439,7 @@ function showAnim() {
 ${table}
 <b>说明: </b><br>
 - <b>帧数数据来源为解包，目前暂未加入DPS计算，如果计算结果与这里显示的不一致，应以这里为准</b> <br>
-- 此处列出动画的默认帧数，游戏中的实际帧数可能会缩放，缩放后应与理论攻击间隔相同。<br>
+- 此处列出动画的默认帧数，游戏中的实际帧数可能会根据内部设定进行<b>缩放</b><br>
 - 【判定】指触发攻击事件的帧数，而非命中的帧数。远程攻击的投射物/特效还要经过一段时间才能命中目标<br>
 - <b>如果计算缩放后的动画帧数小于理论攻击间隔0.5帧以上，实际攻击间隔会比理论值大1-2帧</b>（参见计算过程） <br>
 `;
@@ -444,7 +449,7 @@ ${table}
     id: `${charId}_anim`,
     content: html,
     width: 850,
-    title: `${name} - 动画帧数（测试）`,
+    title: `${name} - 动画帧数`,
     show: true,
   });
 
@@ -497,10 +502,27 @@ function updateChar(charId, index) {
   updateOptions(charId, index);
   $(`.dps__row-prts td:nth-child(${index+2})`).html(`<a href="http://prts.wiki/w/${charData.name}#.E6.8A.80.E8.83.BD" target="_blank">点击打开</a>`);
 
+  // equip
+  let edb = AKDATA.Data.uniequip_table;
+  let equips = [];
+  Object.keys(edb["equipDict"]).forEach(key => {
+    let item = edb["equipDict"][key];
+    if (item.charId == charId)
+      equips.push({ id: key, name: item.uniEquipName });
+  });
+  let equipHtml = equips.map(e => `<option value="${e.id}">${e.name}</option>`).join();
+  getElement("equip", index).html(equipHtml);
+  let equipId = "";
+  if (equips.length > 0) {
+    equipId = equips[equips.length-1].id;
+    setSelectValue('equip', index, equipId);
+  }
+
   Characters[index] = {
     charId,
     skillId,
     skillLevel,
+    equipId
   };
   $phase.change();
 }
@@ -614,6 +636,16 @@ function chooseLevel() {
   Characters[index].favor = ~~(getElement('favor', index).val());
 
   calculate(index);
+}
+
+function chooseEquip() {
+  let $this = $(this);
+  let index = ~~$this.data('index');
+  let eid = $this.val();
+
+  Characters[index].equipId = eid;
+  if (index == 0) calculateAll();
+  else calculate(index);
 }
 
 const DamageColors = ['black','blue','limegreen','gold','aqua'];

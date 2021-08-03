@@ -11,7 +11,7 @@ window.AKDATA = {
 
   Data: {},
 
-  new_op: ["char_485_pallas"],
+  new_op: ["char_1013_chen2", "char_437_mizuki", "char_421_crow", "char_486_takila"],
 
   professionNames: {
     "PIONEER": "先锋",
@@ -46,7 +46,7 @@ window.AKDATA = {
         let path = `https://cdn.jsdelivr.net/gh/xulai1001/akdata@${window.AKDATA.akdata}/resources/gamedata/${paths[i].toLowerCase()}`;
         
         // custom json data: always use local copy
-        if (!(paths[i].includes("excel") || paths[i].includes("levels")))    // excel/levels使用cdn数据 其他使用本地数据
+        //if (!(paths[i].includes("excel") || paths[i].includes("levels")))    // excel/levels使用cdn数据 其他使用本地数据
           path = `../resources/gamedata/${paths[i].toLowerCase()}?_=${Math.round(Math.random()*1e8)}`;
         console.log(`Loading -> ${name}`);
         paths[i] = loadJSON(path, data => AKDATA.Data[name] = data);

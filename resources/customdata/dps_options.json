@@ -13,9 +13,10 @@
         "rosmon_double":  { "type": "bool", "displaytext": "双剑重叠", "explain": "迷迭香-3技能2把剑同时命中同一目标", "off": true },
         "archet":  { "type": "bool", "displaytext": "兰登战术", "explain": "空弦在场时，攻回技能每2.5s恢复1sp", "off": true },
         "chen":  { "type": "bool", "displaytext": "呵斥(团辅)", "explain": "陈在场时，攻回技能每4s恢复1sp", "off": true },
-        "charge":  { "type": "bool", "displaytext": "蓄力", "explain": "卡涅利安-积攒2层技能再释放" },
+        "charge":  { "type": "bool", "displaytext": "蓄力", "explain": "积攒2层技能再释放" },
         "annie": { "type": "bool", "displaytext": "替身", "explain": "贝娜-显示替身数据", "off": true },
-        "pallas": { "type": "bool", "displaytext": "加成自身", "explain": "帕拉斯-3技能加成自己的情况", "off": true }
+        "pallas": { "type": "bool", "displaytext": "加成自身", "explain": "帕拉斯-3技能加成自己的情况", "off": true },
+        "water": { "type": "bool", "displaytext": "水地形", "explain": "假日威龙陈-水地形", "off": true }
     },
     "cond_info": {
         "char_126_shotst": 1,
@@ -70,7 +71,10 @@
         "char_478_kirara":  1,
         "char_469_indigo":  { "text": "[s2]束缚", "tooltip": "勾选表示2技能对束缚敌人的毒伤" },
         "char_485_pallas":  1,
-        "char_391_rosmon":  { "text": "[s3]战术装置减防", "tooltip": "勾选表示敌人被战术装置阻挡，防御-160" }
+        "char_391_rosmon":  { "text": "[s3]战术装置减防", "tooltip": "勾选表示敌人被战术装置阻挡，防御-160" },
+        "char_421_crow":    { "text": "[s2]半血敌人", "tooltip": "勾选表示2技能攻击半血敌人" },
+        "char_1013_chen2":  "trait",
+        "char_437_mizuki":  2
     },
     "char" : {
         "char_103_angel": [ "archet", "chen" ],
@@ -173,6 +177,10 @@
         "char_485_pallas": [ "cond", "noblock", "pallas", "chen" ],
         "char_308_swire":   [ "noblock" ],
         "char_130_doberm":  [ "noblock" ],
-        "char_265_sophia":  [ "noblock" ]
+        "char_265_sophia":  [ "noblock" ],
+        "char_486_takila":  [ "stack", "charge" ],
+        "char_421_crow":    [ "stack", "cond" ],
+        "char_1013_chen2":  [ "cond", "charge", "archet", "water" ],
+        "char_437_mizuki": [ "cond" ]
     }
 }
