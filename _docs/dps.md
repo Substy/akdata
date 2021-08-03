@@ -1,5 +1,5 @@
 ---
-title: DPS计算器
+title: DPS计算器（21.08.03 模组前备份版本）
 withjs: true
 order: 1
 category: 工具
