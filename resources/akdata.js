@@ -7,7 +7,7 @@ const useCache = true;
 const cacheBeginTime = new Date(2019, 12, 10).getTime();
 
 window.AKDATA = {
-  akdata: "210727", // jsdelivr tag version
+  akdata: "210805", // jsdelivr tag version
 
   Data: {},
 
@@ -46,7 +46,7 @@ window.AKDATA = {
         let path = `https://cdn.jsdelivr.net/gh/xulai1001/akdata@${window.AKDATA.akdata}/resources/gamedata/${paths[i].toLowerCase()}`;
         
         // custom json data: always use local copy
-        //if (!(paths[i].includes("excel") || paths[i].includes("levels")))    // excel/levels使用cdn数据 其他使用本地数据
+        if (!(paths[i].includes("excel") || paths[i].includes("levels")))    // excel/levels使用cdn数据 其他使用本地数据
           path = `../resources/gamedata/${paths[i].toLowerCase()}?_=${Math.round(Math.random()*1e8)}`;
         console.log(`Loading -> ${name}`);
         paths[i] = loadJSON(path, data => AKDATA.Data[name] = data);

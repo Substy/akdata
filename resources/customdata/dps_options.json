@@ -178,7 +178,7 @@
         "char_308_swire":   [ "noblock" ],
         "char_130_doberm":  [ "noblock" ],
         "char_265_sophia":  [ "noblock" ],
-        "char_486_takila":  [ "stack", "charge" ],
+        "char_486_takila":  [ "charge" ],
         "char_421_crow":    [ "stack", "cond" ],
         "char_1013_chen2":  [ "cond", "charge", "archet", "water" ],
         "char_437_mizuki": [ "cond" ]
