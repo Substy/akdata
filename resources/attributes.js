@@ -1940,7 +1940,7 @@ function calculateAttack(charAttr, enemy, raidBlackboard, isSkill, charData, lev
       !(isSkill && blackboard.id == "skchr_leizi_2")) {
     let scale = 1, tot = 1, sks = [1];
     for (var i=0; i<ecount-1; ++i) {
-        scale *= 0.8; tot += scale; sks.push(scale);
+        scale *= 0.85; tot += scale; sks.push(scale);
     }
     log.write(`[特殊] 电法: 原本伤害倍率: ${buffFrame.damage_scale.toFixed(2)}`);
     buffFrame.damage_scale *= tot / ecount;
