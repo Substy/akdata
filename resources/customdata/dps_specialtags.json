@@ -206,7 +206,7 @@
     "skchr_swllow_2":   { "reset_attack": true, "attack_begin": 2 },
     "skchr_tachak_1":   { "times": 2, "note": "未计算无视防御效果" },
     "skchr_tachak_2":   { "times": 2 },
-    "skchr_takila_1":   { "reset_attack": true },
+    "skchr_takila_1":   { "reset_attack": true, "charge": true },
     "skchr_takila_2":   { "reset_attack": true, "charge": true },
     "skchr_texas_2":    { "cast_time": 65, "anim_key": "Skill", "anim_cast": true, "anim_max_scale": 1 },
     "skchr_thorns_2":   { "reset_attack": true },

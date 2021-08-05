@@ -1193,6 +1193,9 @@ function applyBuff(charAttr, buffFrm, tag, blackbd, isSkill, isCrit, log, enemy)
       case "skchr_chen2_1":
         delete blackboard.atk_scale;
         break;
+      case "tachr_1013_chen2_1":
+        blackboard.prob_override = blackboard["spareshot_chen.prob"];
+        break;
       case "tachr_1013_chen2_2":
         blackboard.attack_speed = blackboard["chen2_t_2[common].attack_speed"];
         if (options.water)
