@@ -1451,8 +1451,10 @@ function calcDurations(isSkill, attackTime, attackSpeed, levelData, buffList, bu
       log.write(`技能前摇: ${t.toFixed(3)}s, ${frameBegin} 帧`);
       if (!checkSpecs(skillId, "attack_begin")) log.write("（待实测）");
       else log.writeNote(`技能前摇: ${t.toFixed(3)}s`);
-      if (spData.spType == 2)
-        log.writeNote("不考虑普攻穿插技能");
+      if (spData.spType == 2) {
+        log.writeNote("考虑普攻穿插技能");
+        duration -= attackTime;
+      }
     }
     // 技能类型
     if (levelData.description.includes("持续时间无限") || checkSpecs(skillId, "toggle")) {
@@ -1515,6 +1517,7 @@ function calcDurations(isSkill, attackTime, attackSpeed, levelData, buffList, bu
         log.write(`弹药类技能: ${displayNames[skillId]}: 攻击 ${mag} 次`);
         attackCount = mag;
         duration = attackTime * attackCount;
+        if (rst) duration -= attackTime;
       } else { // 普通瞬发
         attackCount = 1;
         // 不占用普攻的瞬发技能，持续时间等于动画时间。否则持续时间为一次普攻间隔
@@ -1680,7 +1683,7 @@ function calcDurations(isSkill, attackTime, attackSpeed, levelData, buffList, bu
         }
         if (line.length > 0) log.write(`[特殊] ${line.join(", ")}`);
         if (rst) {
-          // duration -= attackTime;
+          duration -= attackTime;
         }
         break;
       case 1: // 普通，前面已经算过一遍了，这里只特判
@@ -2226,8 +2229,8 @@ function calculateAttack(charAttr, enemy, raidBlackboard, isSkill, charData, lev
         pool[3] += bb.value * move * ecount;
         break;
       case "skchr_huang_3":
-        let finishAtk = basicFrame.atk * (1 + bb.atk) * bb.damage_by_atk_scale;
-        damage = Math.max(finishAtk - enemy.def, finishAtk * 0.05);
+        let finishAtk = finalFrame.atk * bb.damage_by_atk_scale;
+        damage = Math.max(finishAtk - enemy.def, finishAtk * 0.05) * buffFrame.damage_scale;
         log.write(`[特殊] ${displayNames[buffName]}: 终结伤害 = ${damage.toFixed(1)}, 命中 ${ecount}`);
         pool[0] += damage * ecount;
         break;
