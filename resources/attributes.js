@@ -103,7 +103,7 @@ function calculateDps(char, enemy, raidBuff) {
   let charData = AKDATA.Data.character_table[charId];
   let skillData = AKDATA.Data.skill_table[char.skillId];
   let equipData = {};
-  if (char.equipId) equipData = AKDATA.Data.uniequip_table["equipDict"][char.equipId];
+  if (char.equipId && char.equipId.length > 0) equipData = AKDATA.Data.uniequip_table["equipDict"][char.equipId];
   if (char.skillLevel == -1) char.skillLevel = skillData.levels.length - 1;
 
   let levelData = skillData.levels[char.skillLevel];

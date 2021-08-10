@@ -6,9 +6,9 @@ import requests
 halfdict ={}
 icondict ={}
 
-working_path = "./"
-icon_dir = "./prts_icon"
-half_dir = "./prts_half"
+working_path = "../resources/gamedata/excel"
+icon_dir = "../assets/images/prts/prts_icon"
+half_dir = "../assets/images/prts/prts_half"
 
 os.makedirs(icon_dir, exist_ok=True)
 os.makedirs(half_dir, exist_ok=True)
@@ -331,10 +331,10 @@ def update_config():
     if new == gacha_data:
         return 0
     gacha_data = new
-    with open(os.path.join(working_path, "config.json"), "w", encoding="utf-8") as f:
-        print("写入 config.json ...")
-        f.write(json.dumps(gacha_data, indent=2, ensure_ascii=False))
-    return 1
+#    with open(os.path.join(working_path, "config.json"), "w", encoding="utf-8") as f:
+#        print("写入 config.json ...")
+#        f.write(json.dumps(gacha_data, indent=2, ensure_ascii=False))
+#    return 1
 
 
 if __name__ == "__main__":

@@ -4,7 +4,8 @@ const DefaultAttribute = {
   level: "max",
   favor: 200,
   potential: 5,  // 0-5
-  skillLevel: 9,  // 0-9
+  skillLevel: 9,  // 0-9,
+  equip: false,
   options: { cond: true, crit: true, stack: true, warmup: true, charge: true}
 };
 const DefaultEnemy = { def: 0, magicResistance: 0, count: 1, hp: 0 };
@@ -15,6 +16,7 @@ const Stages = {
   "专1": { skillLevel: 7, desc: "满级 潜能1 专精1" },
   "专2": { skillLevel: 8, desc: "满级 潜能1 专精2" },
   "专3": { skillLevel: 9, desc: "满级 潜能1 专精3" },
+  "模组": { equip: true },
   "满潜": { potential: 5, desc: "满级 满潜 专精3"},
 };
 
@@ -342,7 +344,7 @@ function load() {
       },
       updateLevelingTable: function () {
         var db = AKDATA.Data.character_table[this.charId];
-        var r = DefaultAttribute; $.extend(r, Stages["基准"]);
+        var r = {}; $.extend(r, DefaultAttribute); $.extend(r, Stages["基准"]);
         var ch0 = buildChar(this.charId, db.skills[0].skillId, r);
         r.level = "max";
         var ch1 = buildChar(this.charId, db.skills[0].skillId, r);
@@ -438,13 +440,27 @@ function buildChar(charId, skillId, recipe) {
   if (checkSpecs(charId, "use_token_for_mastery") || checkSpecs(skillId, "use_token_for_mastery"))
     char.options.token = true;
   else char.options.token = false;
+
+  // 模组
+  if (recipe.equip) {
+    let edb = AKDATA.Data.uniequip_table["equipDict"];
+    let equips = Object.keys(edb).filter(x => edb[x].charId == charId && edb[x].unlockLevel > 0);
+    // console.log(equips);
+    if (equips.length > 0) {
+      let eid = equips[equips.length - 1];
+      char.equipId = eid;
+      char.equipName = edb[eid].uniEquipName;
+      console.log(`equip -> ${eid} ${char.equipName}`);
+    }
+  }
+
   return char;
 }
 
 function calculate(charId) {
   let db = AKDATA.Data.character_table[charId];
   let itemdb = AKDATA.Data.item_table.items;
-  let recipe = DefaultAttribute;
+  let recipe = {};
   let enemy = DefaultEnemy;
   let stages = Stages;
   let raidBuff = { atk: 0, atkpct: 0, ats: 0, cdr: 0, base_atk: 0, damage_scale: 0 };
@@ -453,6 +469,8 @@ function calculate(charId) {
   // calculate dps for each recipe case.
   db.skills.forEach(skill => {
     var entry = {};
+    recipe = {}; $.extend(recipe, DefaultAttribute);
+    console.log(recipe);
     for (let st in stages) {
       $.extend(recipe, stages[st]);
       var ch = buildChar(charId, skill.skillId, recipe);
@@ -613,7 +631,7 @@ function plot(chartView) {
     },
     zoom: { enabled: false },
     color: {
-      pattern: [ "#cccccc", "#4169e1", "#ff7f50", "#ffd700", "#dc143c", "#ee82ee", "#e6e6fa" ]
+      pattern: [ "#cccccc", "#4169e1", "#ff7f50", "#ffd700", "#dc143c", "#ba55d3", "#eea0ee"]
     }
   });
 
@@ -671,7 +689,7 @@ function plotPie(pieView) {
       },
       zoom: { enabled: false },
       color: {
-        pattern: ["#4169e1", "#ff7f50", "#ffd700", "#dc143c", "#ee82ee", "#e6e6fa" ]
+        pattern: ["#4169e1", "#ff7f50", "#ffd700", "#dc143c", "#ba55d3", "#eea0ee"]
       },
       title: sk
     });

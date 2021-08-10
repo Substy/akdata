@@ -368,11 +368,11 @@ function showCallback(levelId) {
     let dropList = {
       type: 'list',
       header: ['道具', '掉落类型', '掉落概率'],
-      list: stageData.stageDropInfo.displayDetailRewards.map(x => [
-        AKDATA.getItem(x.type, x.id),
-        dropTypes[x.dropType],
-        x.occPercent,
-      ]),
+      list: stageData.stageDropInfo.displayDetailRewards.map(x => {
+        let it = x.id;
+        try { it = AKDATA.getItem(x.type, x.id); } catch { }
+        return [ it, dropTypes[x.dropType], x.occPercent ];
+      }),
       card:true,
     };
     htmlDrop = pmBase.component.create(dropList);

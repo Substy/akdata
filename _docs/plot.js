@@ -98,6 +98,11 @@ let page_html = `
             <option v-for="x in opt_skillLv" :value="x">{{ x+1 }}</option>
           </select>
         </td>
+        <td><b>模组</b>
+          <select id="sel_equip" class="form-control" v-model="details.equipId">
+            <option v-for="x in opt_equip" :value="x.id">{{ x.name }}</option>
+          </select>
+        </td>
         <td><b>条件</b><br>
           <label class="form-check-label" style="margin-left: 30px" v-for="opt in opt_options">
             <input class="form-check-input" type="checkbox" checked :value="opt.tag" :id="opt.tag" v-model="details.options">
@@ -123,7 +128,7 @@ let page_html = `
               {{ explainChar(x).name }}
               <button type="button" class="btn btn-outline-danger float-right" @click="delChar(index)">删除</button>
             </b></p>
-            <p class="card-text"> {{ explainChar(x).text }} </p>
+            <p class="card-text" v-html="explainChar(x).text"> </p>
             <p class="card-text"> {{ explainChar(x).option }} </p>
           </div>
         </div>
@@ -218,7 +223,7 @@ function getHashCode(obj) {
   return str.split("").reduce(function(a, b) {a=((a<<5)-a)+b.charCodeAt(0); return a&a}, 0);
 }
 
-var charDB, skillDB, optionDB;
+var charDB, skillDB, optionDB, equipDB;
 
 // 载入vue需要的数据
 function buildVueModel() {
@@ -227,6 +232,7 @@ function buildVueModel() {
   charDB = AKDATA.Data.character_table;
   skillDB = AKDATA.Data.skill_table;
   optionDB = AKDATA.Data.dps_options;
+  equipDB = AKDATA.Data.uniequip_table["equipDict"];
 
   // exclude list
   var excludeList = [];
@@ -246,11 +252,12 @@ function buildVueModel() {
     opt_skill: [],
     opt_skillLv: [],
     opt_options: [],
+    opt_equip: [],
     charId: "-",
     chartKey: "dps",
     enemyKey: "def",
     test: {},
-    details: { phase: 2, level: 90, potential: 5, skillId: "-", skillLevel: 9, favor: 200, options: [] },
+    details: { phase: 2, level: 90, potential: 5, skillId: "-", skillLevel: 9, favor: 200, options: [], equipId: "" },
     enemy: { def: 0, magicResistance: 0, count: 1 },
     raidBuff: { atk: 0, atkpct: 0, ats: 0, cdr: 0, base_atk: 0, damage_scale: 0},
     resultCache: {},
@@ -345,8 +352,9 @@ function load() {
         // console.log(char, char.options);
         var levelStr = `精${char.phase} ${char.level}级, 潜能${char.potential+1}, `;
         var skillStr = skillDB[char.skillId] ? `${skillDB[char.skillId].levels[0].name} 等级${char.skillLevel+1}` : "";
+        var equipStr = (char.equipId.length>0) ? equipDB[char.equipId].uniEquipName + "<br>" : "";
         var optionStr = char.options.map(x => optionDB.tags[x].displaytext).join("/");
-        return { name: charDB[char.charId].name, text: levelStr + skillStr, option: optionStr }
+        return { name: charDB[char.charId].name, text: levelStr + equipStr + skillStr, option: optionStr }
       },
       selChar: function(event) {
         AKDATA.selectCharCallback = function (id) { window.vue_app.charId = id; window.vue_app.setChar(); }
@@ -370,6 +378,10 @@ function load() {
         });
         this.opt_options = opts;
         this.details.options = sel_opts;
+        
+        var equips = Object.keys(equipDB).filter(x => equipDB[x].charId == this.charId);
+        this.opt_equip = equips.map(x => ({ id: x, name: equipDB[x].uniEquipName }));
+        this.details.equipId = (equips.length > 0) ? equips[equips.length-1] : "";
       },
       setPhase: function(event) {
         let maxLv = charDB[this.charId].phases[this.details.phase].maxLevel;
@@ -513,7 +525,8 @@ function buildArgs(info, enemy, raidBuff, key) {
     favor: info.favor,
     potentialRank: info.potential,
     skillLevel: info.skillLevel,
-    options: {}
+    options: {},
+    equipId: info.equipId
   };
   info.options.forEach(x => { char_obj.options[x] = true; });
   let enemy_obj = {
