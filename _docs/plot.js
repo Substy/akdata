@@ -20,11 +20,12 @@ const EnemySeries = {
 };
 
 const LabelNames = {
-  "def": "敌人护甲",
-  "magicResistance": "法术抗性",
-  "count": "敌人数量",
+  "def": "防御",
+  "magicResistance": "法抗",
+  "count": "数量",
   "dps":  "平均DPS",
-  "s_dps": "技能DPS"
+  "s_dps": "技能DPS",
+  "s_dmg": "技能总伤害"
 };
 
 // build html
@@ -34,9 +35,9 @@ let page_html = `
     <div class="card-header">
       <b>DPS曲线</b>
       <span class="float-right">
-        <span class="mx-2"><b>变量</b></span>
+        <span class="mx-2"><b>敌人变量</b></span>
         <input type="radio" id="btn_def" value="def" v-model="enemyKey">
-        <label for="btn_def">敌人护甲</label>
+        <label for="btn_def">防御</label>
         <input type="radio" id="btn_emr" value="magicResistance" v-model="enemyKey">
         <label for="btn_avg">法抗</label>
         <input type="radio" id="btn_count" value="count" v-model="enemyKey">
@@ -46,6 +47,8 @@ let page_html = `
         <label for="btn_avg">平均dps</label>
         <input type="radio" id="btn_skill" value="s_dps" v-model="chartKey">
         <label for="btn_avg">技能dps</label>
+        <input type="radio" id="btn_dmg" value="s_dmg" v-model="chartKey">
+        <label for="btn_avg">技能总伤害</label>
       </span>
     </div>
     <div class="card-body">
@@ -349,12 +352,19 @@ function load() {
       },
       explainChar: function(char) {
         // { charId, phase: 2, level: 90, potential: 5, skillId: "-", skillLevel: 9, options: [] }
-        // console.log(char, char.options);
         var levelStr = `精${char.phase} ${char.level}级, 潜能${char.potential+1}, `;
         var skillStr = skillDB[char.skillId] ? `${skillDB[char.skillId].levels[0].name} 等级${char.skillLevel+1}` : "";
         var equipStr = (char.equipId.length>0) ? equipDB[char.equipId].uniEquipName + "<br>" : "";
         var optionStr = char.options.map(x => optionDB.tags[x].displaytext).join("/");
         return { name: charDB[char.charId].name, text: levelStr + equipStr + skillStr, option: optionStr }
+      },
+      explainArgs: function() {
+        // enemy: { def: 0, magicResistance: 0, count: 1 },
+        var line = `${LabelNames[this.enemyKey]} `;
+        if (this.enemy.def) line += `/ 防御 ${this.enemy.def}`;
+        if (this.enemy.magicResistance) line += `/ 法抗 ${this.enemy.magicResistance}`;
+        if (this.enemy.count > 1) line += `/ ${this.enemy.count} 目标`;
+        return line;
       },
       selChar: function(event) {
         AKDATA.selectCharCallback = function (id) { window.vue_app.charId = id; window.vue_app.setChar(); }
@@ -420,7 +430,8 @@ function load() {
           Object.keys(x).forEach(k => {
             d[k] = {
               dps: x[k].globalDps,
-              s_dps: Math.round(x[k].skill.dps * 100)/100
+              s_dps: Math.round(x[k].skill.dps * 100)/100,
+              s_dmg: Math.round(x[k].skill.totalDamage * 100)/100
             };
           });
           return d;
@@ -476,12 +487,19 @@ function load() {
         this.buildChartView();
       },
       columns: function() {      
-        window.chart.load({ columns: this.columns, unload: true });
-        window.chart.axis.labels({ x: LabelNames[this.enemyKey], y: LabelNames[this.chartKey] });
+        window.chart.load({
+          columns: this.columns,
+          unload: true
+        });
+        window.chart.axis.labels({ x: this.explainArgs(), y: LabelNames[this.chartKey] });
       },
-      chartKey: function() {      
-        window.chart.load({ columns: this.columns, unload: true });
-        window.chart.axis.labels({x: LabelNames[this.enemyKey], y: LabelNames[this.chartKey]});
+      chartKey: function() {  
+        this.buildChartView();
+        window.chart.load({
+          columns: this.columns,
+          unload: true
+        });
+        window.chart.axis.labels({x: this.explainArgs(), y: LabelNames[this.chartKey]});
       }, 
     }
   });
