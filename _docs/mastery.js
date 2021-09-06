@@ -309,7 +309,7 @@ function load() {
         updateCostPlot(costResult, this.chartKey);
 */
         for (var sk in rv.cost) {
-          matsView[sk] = {title: rv.skill[sk] || `精英化材料(不含龙门币)`};
+          matsView[sk] = {title: rv.skill[sk] || `精英化/模组材料(不含龙门币)`};
           matsView[sk].list = [];
           tot = 0;  
           let base_lv = sk.includes("elite") ? 0 : 7;
@@ -317,12 +317,10 @@ function load() {
             var items = Object.keys(rv.mats[sk][i]).map(x => 
               AKDATA.getItemBadge("MATERIAL", itemCache[x].id, rv.mats[sk][i][x])
             );
-            matsView[sk].list.push([
-              `${base_lv + i} <i class="fas fa-angle-right"></i> ${base_lv + i + 1}`,
-              items,
-              Math.round(rv.cost[sk][i]),
-    //          this.recom[sk][lv-7]
-            ]);
+            let lineTitle = `${base_lv + i} <i class="fas fa-angle-right"></i> ${base_lv + i + 1}`;
+            if (sk.includes("elite") && i==2) // 专武材料，非等级
+              lineTitle = rv.equipName;
+            matsView[sk].list.push([ lineTitle, items, Math.round(rv.cost[sk][i]) ]);
             tot += Math.round(rv.cost[sk][i]);
           }
           console.log(rv.skill[sk], tot);
@@ -450,6 +448,7 @@ function buildChar(charId, skillId, recipe) {
       let eid = equips[equips.length - 1];
       char.equipId = eid;
       char.equipName = edb[eid].uniEquipName;
+      window.vue_app.equipId = eid;
       console.log(`equip -> ${eid} ${char.equipName}`);
     }
   }
@@ -460,11 +459,13 @@ function buildChar(charId, skillId, recipe) {
 function calculate(charId) {
   let db = AKDATA.Data.character_table[charId];
   let itemdb = AKDATA.Data.item_table.items;
+  let edb = AKDATA.Data.uniequip_table["equipDict"];
   let recipe = {};
   let enemy = DefaultEnemy;
   let stages = Stages;
   let raidBuff = { atk: 0, atkpct: 0, ats: 0, cdr: 0, base_atk: 0, damage_scale: 0 };
   let result = {}, mats = {};
+  let equipId = null, equipName = null;
 
   // calculate dps for each recipe case.
   db.skills.forEach(skill => {
@@ -476,6 +477,9 @@ function calculate(charId) {
       var ch = buildChar(charId, skill.skillId, recipe);
       ch.dps = AKDATA.attributes.calculateDps(ch, enemy, raidBuff);
       entry[st] = ch;
+      if (ch.equipId) {
+        equipId = ch.equipId; equipName = ch.equipName;
+      }
     };
     result[skill.skillId] = entry;
 
@@ -489,6 +493,8 @@ function calculate(charId) {
   let resultView = {
     id: charId,
     name: db.name,
+    equipId,
+    equipName,
     skill: {},
     stages: stages,
     dps: {},
@@ -542,6 +548,18 @@ function calculate(charId) {
       resultView.mats[`${charId}_elite`].push(m);
     }
   }
+  if (resultView.equipId) {
+    let m = {};
+    edb[resultView.equipId]["itemCost"].forEach(x => {
+      if (x.id != "4001") {
+        let _nm = itemdb[x.id].name.replace(" ", "");
+        itemCache[_nm] = { id: x.id, name: _nm, rarity: itemdb[x.id].rarity };
+        m[_nm] = x.count;
+      }
+    });
+    resultView.mats[`${charId}_elite`].push(m);
+  }
+
   // 绿票算法
   var greenTable = AKDATA.Data.green;
   Object.keys(resultView.mats).forEach(k => {

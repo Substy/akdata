@@ -34859,7 +34859,7 @@
       "dangerLevel": null,
       "dangerPoint": -1.0,
       "loadingPicId": "loading_Bolivar_sea",
-      "canPractice": true,
+      "canPractice": false,
       "canBattleReplay": false,
       "apCost": 0,
       "apFailReturn": 0,
@@ -34869,7 +34869,7 @@
       "etButtonStyle": null,
       "apProtectTimes": 0,
       "diamondOnceDrop": 1,
-      "practiceTicketCost": 0,
+      "practiceTicketCost": -1,
       "dailyStageDifficulty": 0,
       "expGain": 0,
       "goldGain": 0,
@@ -34884,7 +34884,7 @@
       "isPredefined": true,
       "isHardPredefined": false,
       "isStoryOnly": false,
-      "appearanceStyle": 0,
+      "appearanceStyle": 3,
       "stageDropInfo": {
         "firstPassRewards": null,
         "firstCompleteRewards": null,
@@ -35528,7 +35528,7 @@
       "dangerLevel": null,
       "dangerPoint": -1.0,
       "loadingPicId": "loading_Bolivar_sea",
-      "canPractice": true,
+      "canPractice": false,
       "canBattleReplay": false,
       "apCost": 0,
       "apFailReturn": 0,
@@ -35538,7 +35538,7 @@
       "etButtonStyle": null,
       "apProtectTimes": 0,
       "diamondOnceDrop": 1,
-      "practiceTicketCost": 0,
+      "practiceTicketCost": -1,
       "dailyStageDifficulty": 0,
       "expGain": 0,
       "goldGain": 0,
@@ -35553,7 +35553,7 @@
       "isPredefined": true,
       "isHardPredefined": false,
       "isStoryOnly": false,
-      "appearanceStyle": 0,
+      "appearanceStyle": 3,
       "stageDropInfo": {
         "firstPassRewards": null,
         "firstCompleteRewards": null,
@@ -38006,6 +38006,89 @@
           }
         ],
         "displayDetailRewards": [
+          {
+            "occPercent": 0,
+            "type": "DIAMOND",
+            "id": "4002",
+            "dropType": 8
+          }
+        ]
+      },
+      "canUseCharm": true,
+      "startButtonOverrideId": null,
+      "isStagePatch": false,
+      "mainStageId": "act12side_s01"
+    },
+    "act12side_mo01": {
+      "stageType": "ACTIVITY",
+      "difficulty": "NORMAL",
+      "performanceStageFlag": "NORMAL_STAGE",
+      "unlockCondition": [
+        {
+          "stageId": "act12side_09",
+          "completeState": 2
+        }
+      ],
+      "stageId": "act12side_mo01",
+      "levelId": "Activities/ACT12SIDE/level_act12side_mo01",
+      "zoneId": "act12side_zone3",
+      "code": "DH-MO-1",
+      "name": "多索雷斯北郊",
+      "description": "远离多索雷斯喧闹中心的区块，潘乔手下的死硬派在此盘踞。请在海潮起伏中，寻找击破他们的方法。\\n<@lv.item><涨潮></>被淹没的地块无法部署，水中的敌方和我方单位受到“水蚀”：我方攻击速度降低，持续受到侵蚀损伤，被攻击时附带侵蚀损伤；敌方攻击速度和移动速度降低，持续流失生命",
+      "hardStagedId": null,
+      "dangerLevel": "-",
+      "dangerPoint": -1.0,
+      "loadingPicId": "loading_Bolivar_sea",
+      "canPractice": true,
+      "canBattleReplay": true,
+      "apCost": 0,
+      "apFailReturn": 0,
+      "etItemId": null,
+      "etCost": -1,
+      "etFailReturn": -1,
+      "etButtonStyle": null,
+      "apProtectTimes": 0,
+      "diamondOnceDrop": 1,
+      "practiceTicketCost": 0,
+      "dailyStageDifficulty": 0,
+      "expGain": 0,
+      "goldGain": 0,
+      "loseExpGain": 0,
+      "loseGoldGain": 0,
+      "passFavor": 0,
+      "completeFavor": 0,
+      "slProgress": 0,
+      "displayMainItem": null,
+      "hilightMark": false,
+      "bossMark": false,
+      "isPredefined": false,
+      "isHardPredefined": false,
+      "isStoryOnly": false,
+      "appearanceStyle": 5,
+      "stageDropInfo": {
+        "firstPassRewards": null,
+        "firstCompleteRewards": null,
+        "passRewards": null,
+        "completeRewards": null,
+        "displayRewards": [
+          {
+            "type": "CHARM",
+            "id": "charm_coin_3",
+            "dropType": 8
+          },
+          {
+            "type": "DIAMOND",
+            "id": "4002",
+            "dropType": 8
+          }
+        ],
+        "displayDetailRewards": [
+          {
+            "occPercent": 0,
+            "type": "CHARM",
+            "id": "charm_coin_3",
+            "dropType": 8
+          },
           {
             "occPercent": 0,
             "type": "DIAMOND",
@@ -80826,6 +80909,64 @@
       "dangerLevel": "-",
       "dangerPoint": -1.0,
       "loadingPicId": "loading_iberia",
+      "canPractice": false,
+      "canBattleReplay": true,
+      "apCost": 25,
+      "apFailReturn": 0,
+      "etItemId": null,
+      "etCost": 0,
+      "etFailReturn": 0,
+      "etButtonStyle": null,
+      "apProtectTimes": 0,
+      "diamondOnceDrop": 0,
+      "practiceTicketCost": 1,
+      "dailyStageDifficulty": 0,
+      "expGain": 0,
+      "goldGain": 0,
+      "loseExpGain": 0,
+      "loseGoldGain": 0,
+      "passFavor": 0,
+      "completeFavor": 0,
+      "slProgress": 0,
+      "displayMainItem": null,
+      "hilightMark": false,
+      "bossMark": false,
+      "isPredefined": false,
+      "isHardPredefined": false,
+      "isStoryOnly": false,
+      "appearanceStyle": 0,
+      "stageDropInfo": {
+        "firstPassRewards": null,
+        "firstCompleteRewards": null,
+        "passRewards": null,
+        "completeRewards": null,
+        "displayRewards": [],
+        "displayDetailRewards": []
+      },
+      "startButtonOverrideId": null,
+      "isStagePatch": false,
+      "mainStageId": null
+    },
+    "camp_r_06": {
+      "stageType": "CAMPAIGN",
+      "difficulty": "NORMAL",
+      "performanceStageFlag": "NORMAL_STAGE",
+      "unlockCondition": [
+        {
+          "stageId": "main_02-08",
+          "completeState": 2
+        }
+      ],
+      "stageId": "camp_r_06",
+      "levelId": "Obt/Campaign/level_camp_r_06",
+      "zoneId": "camp_zone_7",
+      "code": "萨尔贡",
+      "name": "长泉镇郊野",
+      "description": "“瞭望塔33号”事件后，部分“红标”雇佣兵控制残余畸变生物躲过了罗德岛的搜查，如果这些生物流窜至其他地区，后果不堪设想。请彻底消灭他们。\\n<@lv.rem><特殊条件></>部署费用不会自然回复\\n<@lv.item><沙尘暴></>暴露在沙尘暴中会使我方单位攻击力降低、持续流失生命值、再部署时间延长，使敌方单位移动速度降低",
+      "hardStagedId": null,
+      "dangerLevel": "-",
+      "dangerPoint": -1.0,
+      "loadingPicId": "loading_OOD_02",
       "canPractice": false,
       "canBattleReplay": true,
       "apCost": 25,
@@ -140887,6 +141028,10 @@
     },
     "act12side_s04#f#": {
       "startTs": 1628582400,
+      "endTs": 1629748799
+    },
+    "act12side_mo01": {
+      "startTs": 1629187200,
       "endTs": 1629748799
     },
     "act8mini_01": {
