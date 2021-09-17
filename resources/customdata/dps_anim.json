@@ -1847,6 +1847,20 @@
     },
     "Die": 30
   },
+  "char_171_bldsk_summer#7": {
+    "Attack": {
+      "duration": 35,
+      "OnAttack": 15
+    },
+    "Default": 0,
+    "Die": 30,
+    "Idle": 40,
+    "Start": {
+      "duration": 30,
+      "OnStart": 10
+    },
+    "Stun": 40
+  },
   "char_171_bldsk_witch#1": {
     "Attack": {
       "duration": 35,
@@ -3968,6 +3982,16 @@
       "OnStart": 18
     }
   },
+  "char_274_astesi_shining#1": {
+    "Attack": {
+      "duration": 36,
+      "OnAttack": 16
+    },
+    "Default": 0,
+    "Die": 30,
+    "Idle": 120,
+    "Start": 30
+  },
   "char_275_breeze": {
     "Attack": {
       "duration": 36,
@@ -4822,6 +4846,31 @@
     "Die": 28
   },
   "char_332_archet": {
+    "Attack": {
+      "duration": 36,
+      "OnAttack": 17
+    },
+    "Default": 0,
+    "Idle": 120,
+    "Skill_1": {
+      "duration": 36,
+      "OnAttack": 17
+    },
+    "Skill_2": {
+      "duration": 40,
+      "OnAttack": 21
+    },
+    "Skill_3": {
+      "duration": 37,
+      "OnAttack": 16
+    },
+    "Start": {
+      "duration": 30,
+      "OnStart": 9
+    },
+    "Die": 30
+  },
+  "char_332_archet_shining#1": {
     "Attack": {
       "duration": 36,
       "OnAttack": 17
@@ -6259,6 +6308,47 @@
       "OnAttack": 14
     }
   },
+  "char_440_pinecn_shining#1": {
+    "Attack": {
+      "duration": 29,
+      "OnAttack": 12
+    },
+    "Default": 0,
+    "Die": 26,
+    "Idle": 32,
+    "Skill_1": {
+      "duration": 39,
+      "OnAttack": 14
+    },
+    "Skill_2": {
+      "duration": 38,
+      "OnAttack": 14
+    },
+    "Skill_1_Up": {
+      "duration": 39,
+      "OnAttack": 14
+    },
+    "Skill_2_Up": {
+      "duration": 38,
+      "OnAttack": 14
+    },
+    "Start": {
+      "duration": 23,
+      "OnStart": 5
+    },
+    "Attack_Down": {
+      "duration": 29,
+      "OnAttack": 12
+    },
+    "Skill_1_Down": {
+      "duration": 39,
+      "OnAttack": 14
+    },
+    "Skill_2_Down": {
+      "duration": 38,
+      "OnAttack": 14
+    }
+  },
   "char_451_robin": {
     "Attack": {
       "duration": 28,
@@ -6592,6 +6682,26 @@
     },
     "Die": 30
   },
+  "char_473_mberry": {
+    "Attack": {
+      "duration": 35,
+      "OnAttack": 17
+    },
+    "Default": 0,
+    "Die": 30,
+    "Idle": 80,
+    "Skill": {
+      "duration": 35,
+      "OnAttack": 17
+    },
+    "Skill1_End": 13,
+    "Skill1_Loop": 30,
+    "Skill1_Start": 10,
+    "Start": {
+      "duration": 30,
+      "OnStart": 7
+    }
+  },
   "char_474_glady": {
     "Attack": {
       "duration": 54,
@@ -6686,6 +6796,46 @@
       "OnStart": 12
     },
     "Die": 37
+  },
+  "char_479_sleach": {
+    "Attack": {
+      "duration": 30,
+      "OnAttack": 11
+    },
+    "Default": 0,
+    "Die": 30,
+    "Die_Skill": 30,
+    "Idle": 160,
+    "Skill_1_Begin": 15,
+    "Skill_1_End": 7,
+    "Skill_1_Loop": 160,
+    "Skill_2_Begin": 28,
+    "Skill_2_End": 15,
+    "Skill_2_Loop": 160,
+    "Skill_3_Begin": 25,
+    "Skill_3_End": 15,
+    "Skill_3_Loop": 160,
+    "Start": {
+      "duration": 30,
+      "OnStart": 6
+    }
+  },
+  "char_484_robrta": {
+    "Attack": {
+      "duration": 46,
+      "OnAttack": 15
+    },
+    "Default": 0,
+    "Die": 30,
+    "Idle": 160,
+    "Skill2_Begin": 5,
+    "Skill2_Die": 31,
+    "Skill2_End": 20,
+    "Skill2_Loop": 145,
+    "Start": {
+      "duration": 30,
+      "OnStart": 6
+    }
   },
   "char_485_pallas": {
     "Attack": {

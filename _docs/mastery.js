@@ -6,7 +6,7 @@ const DefaultAttribute = {
   potential: 5,  // 0-5
   skillLevel: 9,  // 0-9,
   equip: false,
-  options: { cond: true, crit: true, stack: true, warmup: true, charge: true}
+  options: { cond: true, crit: true, stack: true, warmup: true, charge: true, equip: true}
 };
 const DefaultEnemy = { def: 0, magicResistance: 0, count: 1, hp: 0 };
 
@@ -231,7 +231,14 @@ function load() {
       <pre style="white-space: pre-wrap; word-wrap: break-word;">{{ JSON.stringify(jsonResult) }}</pre>
     </div>
   </div>
-
+<!--
+  <div class="card mb-2 col-12">
+    <div class="card-header">
+      <a class="card-title mb-0">专精收益（新版）</a>
+    </div>
+    <div id="echarts_chart" class="col-10"> </div>
+  </div>
+-->
 </div>`;
   let $dps = $(html);
 
@@ -657,6 +664,8 @@ function plot(chartView) {
   setTimeout(function() {
     $(".c3-chart-bar.c3-target-基准").css("opacity", 0.4);
   }, 100);
+
+ // plot2();
 }
 
 function updatePlot(chartView) {
@@ -770,6 +779,36 @@ function calcSubClass(x, prof) {
   return {
     rate, view, groups, pats
   };
+}
+
+function plot2() {
+  var myChart = echarts.init($("#echarts_chart")[0]);
+
+  // 指定图表的配置项和数据
+  var option = {
+    title: {
+      text: 'ECharts 入门示例'
+    },
+    tooltip: {},
+    legend: {
+      data: ['销量']
+    },
+    xAxis: {
+      data: ['衬衫', '羊毛衫', '雪纺衫', '裤子', '高跟鞋', '袜子']
+    },
+    yAxis: {},
+    series: [
+      {
+        name: '销量',
+        type: 'bar',
+        data: [5, 20, 36, 10, 10, 20]
+      }
+    ]
+  };
+
+  // 使用刚指定的配置项和数据显示图表。
+  myChart.setOption(option);
+  myChart.resize({height: 400});
 }
 
 pmBase.hook.on('init', init);

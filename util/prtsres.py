@@ -16,7 +16,7 @@ os.makedirs(half_dir, exist_ok=True)
 char_data = json.load(
     open(os.path.join(working_path, "character_table.json"), encoding="utf-8"))
 gacha_data = json.load(
-    open(os.path.join(working_path, "config.json"), encoding="utf-8"))
+    open("config.json", encoding="utf-8"))
 
 proxies={ 'http':'socks5h://127.0.0.1:1080',
                'https':'socks5h://127.0.0.1:1080'}

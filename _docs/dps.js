@@ -117,7 +117,7 @@ function load() {
   let html = `
 <div class="card mb-2">
   <div class="card-header">
-    <div class="card-title mb-0">干员</div>
+    <div class="card-title mb-0">干员（点击头像选择）</div>
   </div>
   <table class="table dps" style="table-layout:fixed;">
   <tbody>
@@ -125,7 +125,7 @@ function load() {
     <tr class="dps__row-level"> <th>等级</th> </tr>
     <tr class="dps__row-potentialrank"> <th>潜能</th> </tr>
     <tr class="dps__row-favor"> <th>信赖</th> </tr>
-    <tr class="dps__row-equip"> <th>模组</th> </tr>
+    <tr class="dps__row-equip"> <th>模组(精二生效)</th> </tr>
     <tr class="dps__row-skill"> <th>技能</th> </tr>
     <tr class="dps__row-option"> <th>选项</th> </tr>
     <tr class="dps__row-prts"> <th>PRTS干员页面</th> </tr>
@@ -207,28 +207,32 @@ function load() {
   for (let i = 0; i < charColumnCount; i++) {
     $dps.find('.dps__row-select').append(`<td>
       <div class="input-group">
-        <table style="table-layout: fixed; width: 100%"> <tr>
-          <td rowspan="3" style="padding: 0; width: 50%">
-            <figure class="figure">
-              <img class="img_char figure-img" style="max-width: 75%; height: auto" data-index="${i}" src="/akdata/assets/images/char/char_504_rguard.png"></img>
-              <figcaption class="figure-caption txt_char" style="max-width: 75%; font-weight:600; font-size: 1vw; color: #000; text-align: center;" data-index="${i}">-</figcaption>
-            </figure>
-          </td>
-          <td style="padding: 0"><button class="dps__char_sel btn btn-primary p-2 visible-desktop" style="float:right" data-index="${i}">
-            选择干员<i class="fa fa-ellipsis-h"></i></button></td>
-        </tr>
-        <tr>
-          <td style="padding: 0">
-            <button class="btn btn-outline-secondary dps__goto p-2 visible-desktop" style="float:right" data-index="${i}" type="button">
-              详细属性<i class="fa fa-info-circle"></i>
-            </button>
-          </td>
-        </tr>
-        <tr>
-          <td style="padding: 0"><button class="dps__copy btn btn-outline-info p-2 visible-desktop" style="float:right" data-index="${i}">复制到右侧</button></td>
-        </tr></table>
+        <table style="table-layout: fixed; width: 100%">
+          <tr>
+            <td rowspan="3" style="padding: 0; width: 50%">
+              <figure class="figure">
+                <img class="img_char figure-img" style="max-width: 75%; height: auto" data-index="${i}" src="/akdata/assets/images/char/char_504_rguard.png"></img>
+                <figcaption class="figure-caption txt_char" style="max-width: 75%; font-weight:600; font-size: 1vw; color: #000; text-align: center;" data-index="${i}">-</figcaption>
+              </figure>
+            </td>
+            <td style="padding: 0">
+              <button class="btn btn-outline-secondary dps__goto p-2 visible-desktop" style="float:right" data-index="${i}" type="button">
+                详细属性<i class="fa fa-info-circle"></i>
+              </button>
+            </td>
+          </tr>
+          <tr>
+            <td style="padding: 0">
+              <button class="btn btn-outline-secondary dps__mastery p-2 visible-desktop" style="float:right" data-index="${i}" type="button">
+                专精收益<i class="fa fa-cubes"></i>
+              </button>
+            </td>
+          </tr>
+          <tr>
+            <td style="padding: 0"><button class="dps__copy btn btn-outline-info p-2 visible-desktop" style="float:right" data-index="${i}">复制到右侧</button></td>
+          </tr>
+        </table>
       </div>
-      
     </td>`);
 
     $dps.find('.dps__row-level').append(`<td><div class="container"><div class="form-group row mb-0"><select class="form-control form-control-sm col-7 dps__phase" data-index="${i}"></select><select class="form-control form-control-sm col-5 dps__level" data-index="${i}"></select></div></div></td>`);
@@ -281,8 +285,8 @@ function load() {
   $('.dps__damagepool').click(showDamage);
   $('.dps__anim').click(showAnim);
   $('.dps__goto').click(goto);
+  $('.dps__mastery').click(gotoMastery);
   $('.dps__copy').click(copyChar);
-  $('.dps__char_sel').click(showSelectChar);
   $('.img_char').click(showSelectChar);
   
 
@@ -311,6 +315,15 @@ function goto() {
     window.open(`../character/#!/${Characters[index].charId}`, '_blank'); 
   }
 }
+
+function gotoMastery() {
+  let $this = $(this);
+  let index = ~~$this.data('index');
+  if ( Characters[index].charId ) {
+    window.open(`../mastery/#${Characters[index].charId}`, '_blank'); 
+  }
+}
+
 
 function showDetail() {
   let $this = $(this);

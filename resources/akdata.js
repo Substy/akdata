@@ -1,4 +1,4 @@
-const stringRegex = /<@(.+?)>(.+?)<\/>/g;
+const stringRegex = /<[@\$](.+?)>(.+?)<\/>/g;
 const variableRegex = /{(\-)*(.+?)(?:\:(.+?))?}/g;
 
 let CacheList = null;
@@ -7,11 +7,11 @@ const useCache = true;
 const cacheBeginTime = new Date(2019, 12, 10).getTime();
 
 window.AKDATA = {
-  akdata: "210906", // jsdelivr tag version
+  akdata: "210917", // jsdelivr tag version
 
   Data: {},
 
-  new_op: ["char_1013_chen2", "char_437_mizuki", "char_421_crow", "char_486_takila"],
+  new_op: ["char_479_sleach", "char_473_mberry", "char_484_robrta"],
 
   professionNames: {
     "PIONEER": "先锋",
@@ -158,7 +158,9 @@ window.AKDATA = {
     let html = "";
     ["新干员", ...Object.values(AKDATA.professionNames)].forEach(k => {
       let entry = `<h2>${k}</h2>`;
+      var r = 6;
       charPools[k].sort((a, b) => b.rarity - a.rarity).forEach(x => {
+        if (x.rarity < r && k != "新干员") { entry += `<br>☆${r} `; r-=1; }
         entry += `<a class="btn-outline-light p-2" href="#" onclick="AKDATA.selectChar('${x.id}')" role="button">${x.name}</a>`;
       });
       html += entry;
@@ -185,7 +187,7 @@ window.AKDATA = {
     string = string || '';
     string = string.replace(stringRegex, formatStringCallback);
     string = string.replace(/\\n/g, '<br>');
-    string = `<div class="${small?'small':''} text-left">${string}</div>`;
+    string = `<div class="${small?'small':''} ">${string}</div>`;
     if ( params ) {
       let params2 = deleteItem ? Object.assign({},params) : params;
       string = string.replace(variableRegex, (match, minus, key, format) => {
@@ -259,7 +261,13 @@ function loadJSON( url, callback ){
 
 function formatStringCallback(match, name, value) {
   if (!!AKDATA.Data.gamedata_const) {
-    return AKDATA.Data.gamedata_const.richTextStyles[name].replace('{0}', value).replace("color=", "span style=color:").replace("/color", "/span");
+    if (AKDATA.Data.gamedata_const.richTextStyles[name]) // 效果
+      return AKDATA.Data.gamedata_const.richTextStyles[name].replace('{0}', value).replace("color=", "span style=color:").replace("/color", "/span");
+    else { // 术语（新增）
+      var term_desc = AKDATA.Data.gamedata_const.termDescriptionDict[name].description;
+      term_desc = term_desc.replace(stringRegex, (m, n, v) => { return v; });
+      return `<a href="#" style="color: #0000ff" title="${term_desc}">${value}</a>`;
+    }
   } else {
     return value;
   }

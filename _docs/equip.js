@@ -1,5 +1,6 @@
 function init() {
   AKDATA.load([
+    'excel/gamedata_const.json',
     'excel/character_table.json',
     'excel/uniequip_table.json',
     'excel/battle_equip_table.json',
@@ -74,6 +75,11 @@ function load() {
     let item = edb["equipDict"][key];
     let info = getEquipInfo(key);
     let missions = "<ul>" + item.missionList.map(x => `<li> ${edb["missionList"][x].desc} </li>`).join() + "</ul>";
+    // 三围以外的属性补正
+    Object.keys(info.attr).forEach(k => {
+      if (!["max_hp", "atk", "def"].includes(k))
+        info.blackboard[k] = info.attr[k];
+    });
     return [
       chardb[item.charId].name,
       item.uniEquipName,
@@ -82,7 +88,7 @@ function load() {
       info.attr.max_hp || 0,
       info.attr.atk || 0,
       info.attr.def || 0,
-      info.description,
+      AKDATA.formatString(info.description, false, info.blackboard),
       missions,
       JSON.stringify(info.blackboard)
     ];

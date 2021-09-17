@@ -103,7 +103,10 @@ function calculateDps(char, enemy, raidBuff) {
   let charData = AKDATA.Data.character_table[charId];
   let skillData = AKDATA.Data.skill_table[char.skillId];
   let equipData = {};
-  if (char.equipId && char.equipId.length > 0) equipData = AKDATA.Data.uniequip_table["equipDict"][char.equipId];
+  if (char.equipId && char.equipId.length > 0) {
+    equipData = AKDATA.Data.uniequip_table["equipDict"][char.equipId];
+    displayNames[char.equipId] = equipData.uniEquipName;
+  }
   if (char.skillLevel == -1) char.skillLevel = skillData.levels.length - 1;
 
   let levelData = skillData.levels[char.skillLevel];
@@ -282,6 +285,7 @@ function applyBuff(charAttr, buffFrm, tag, blackbd, isSkill, isCrit, log, enemy)
     let line = [""];
     if (tag == skillId) line.push("[技能]");
     else if (tag == "raidBuff") line.push("[团辅/拐]");
+    else if (tag.includes("uniequip")) line.push("[模组]");
     else line.push("[天赋]");
     
     if (checkSpecs(tag, "cond")) 
@@ -873,6 +877,7 @@ function applyBuff(charAttr, buffFrm, tag, blackbd, isSkill, isCrit, log, enemy)
       case "skchr_jaksel_2":
       case "skchr_iris_1":
       case "skchr_indigo_2":
+      case "skchr_mberry_2":
         writeBuff(`base_attack_time: ${blackboard.base_attack_time}x`);
         blackboard.base_attack_time = (blackboard.base_attack_time - 1) * basic.baseAttackTime;
         break;
@@ -1201,7 +1206,11 @@ function applyBuff(charAttr, buffFrm, tag, blackbd, isSkill, isCrit, log, enemy)
         if (options.water)
           blackboard.attack_speed += blackboard["chen2_t_2[map].attack_speed"];
         break;
+      case "tachr_479_sleach_1":
+        blackboard.attack_speed = blackboard["sleach_t_1[ally].attack_speed"];
+        break;
     }
+
   }
   
   if (tag == "skchr_thorns_2") {
@@ -1209,6 +1218,16 @@ function applyBuff(charAttr, buffFrm, tag, blackbd, isSkill, isCrit, log, enemy)
     blackboard.base_attack_time = blackboard.cooldown - (basic.baseAttackTime + buffFrame.baseAttackTime);
     buffFrame.attackSpeed = 0;
     blackboard.attack_speed = 0;
+  }
+    // 模组判定
+  switch (tag) {
+    case "uniequip_002_cuttle":
+    case "uniequip_002_glaze":
+      if (options.equip) {
+        if (blackboard.damage_scale < 1) blackboard.damage_scale += 1;
+        console.log(blackboard);
+      } else blackboard.damage_scale = 1;
+      break;
   }
 
   if (!done) applyBuffDefault();
@@ -1734,7 +1753,11 @@ function calcDurations(isSkill, attackTime, attackSpeed, levelData, buffList, bu
           attackDuration += chargeDuration;
           duration = attackDuration;
           attackCount = Math.ceil(attackDuration / attackTime);
-        }
+        } else if (buffList["uniequip_002_milu"] && options.equip) { // 守林模组
+          attackCount = Math.ceil((spData.spCost - stunDuration*sp_rate) / (buffList["uniequip_002_milu"].sp + attackTime*sp_rate));
+          log.write(`[特殊] ${displayNames["uniequip_002_milu"]}: attack sp = ${attackCount * buffList["uniequip_002_milu"].sp}`);
+          duration = attackCount * attackTime;
+        } 
         break;
         // todo: cast time
     } // switch
@@ -1865,6 +1888,8 @@ function calculateAttack(charAttr, enemy, raidBlackboard, isSkill, charData, lev
   } else if (charData.description.includes("恢复三个") &&
              !(isSkill && charId == "char_275_breeze"))
     buffFrame.maxTarget = 3;
+    else if (buffList["uniequip_002_flower"])
+    buffFrame.maxTarget = 4;
 
   // 计算最终攻击间隔，考虑fps修正
   let fps = 30;
@@ -2260,6 +2285,7 @@ function calculateAttack(charAttr, enemy, raidBlackboard, isSkill, charData, lev
       case "skchr_utage_1":
       case "skchr_snakek_2":
       case "skchr_blitz_1":
+      case "skchr_robrta_2":
         damagePool[0] = 0; damagePool[1] = 0;
         log.write(`[特殊] ${displayNames[buffName]}: 伤害为0 （以上计算无效）`);
         break;
@@ -2525,6 +2551,26 @@ function calculateAttack(charAttr, enemy, raidBlackboard, isSkill, charData, lev
           log.writeNote(`目标数<3，自身伤害 ${damage.toFixed(1)}`);
           pool[2] -= damage * dur.attackCount;
         }
+        break;
+      case "tachr_473_mberry_trait":
+        let ep_ratio = bb.ep_heal_ratio;
+        if (blackboard.id == "skchr_mberry_1" && isSkill)
+          ep_ratio = buffList.skill.ep_heal_ratio;
+        damage = finalFrame.atk / buffFrame.heal_scale * ep_ratio;
+        log.writeNote(`元素治疗 ${damage.toFixed(1)} (${ep_ratio.toFixed(2)} x)`);
+        break;
+      case "skchr_sleach_2":
+        damagePool[0] = 0; damagePool[1] = 0; damagePool[2] = 0;
+        log.write("伤害为0（以上计算无效）");
+        pool[2] += finalFrame.atk * bb.atk_to_hp_recovery_ratio * dur.duration;
+        log.writeNote("可以治疗召唤物");
+        break;
+      case "skchr_sleach_3":
+        damagePool[0] = 0; damagePool[1] = 0; damagePool[2] = 0;
+        log.write("伤害为0（以上计算无效）");
+        damage = Math.max(finalFrame.atk - edef, finalFrame.atk * 0.05) * buffFrame.damage_scale;
+        pool[0] += damage * ecount;
+        log.write(`摔炮伤害 ${damage.toFixed(1)} (damage_scale=${buffFrame.damage_scale.toFixed(3)}), 命中 ${ecount}`);
         break;
     }; // switch
 
@@ -2851,8 +2897,10 @@ function getAttributes(char, log) { //charId, phase = -1, level = -1
 
   // 计算潜能和模组
   applyPotential(char.charId, charData, char.potentialRank, attributesKeyFrames, log);
-  if (char.equipId)
+  if (char.equipId) {
     applyEquip(char, attributesKeyFrames, log);
+    buffList[char.equipId] = attributesKeyFrames.equip_blackboard;
+  }
 
   // 计算天赋/特性，记为Buff
   if (charData.trait && !charData.has_trait) {
@@ -2980,11 +3028,13 @@ function applyEquip(char, basic, log) {
       
     });
   }
-  console.log(attr, blackboard);
+  //console.log(attr, blackboard);
   var attrKeys = {
     max_hp: "maxHp",
     atk: "atk",
-    def: "def"
+    def: "def",
+    magic_resistance: "magicResistance",
+    attack_speed: "attackSpeed"
   };
 
   Object.keys(attr).forEach(x => {
