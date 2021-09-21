@@ -1163,8 +1163,9 @@ function applyBuff(charAttr, buffFrm, tag, blackbd, isSkill, isCrit, log, enemy)
         if (!options.noblock) 
           done = true;
         else if (basic.equip_blackboard.atk_scale) {
-          blackboard.atk_scale = basic.equip_blackboard.atk_scale;
-          writeBuff(`模组倍率覆盖: ${blackboard.atk_scale}x`);
+          delete blackboard.atk_scale;
+          //blackboard.atk_scale = basic.equip_blackboard.atk_scale;
+          //writeBuff(`模组倍率覆盖: ${blackboard.atk_scale}x`);
         }
         break;
       case "tachr_130_doberm_trait":
@@ -1885,12 +1886,13 @@ function calculateAttack(charAttr, enemy, raidBlackboard, isSkill, charData, lev
     buffFrame.maxTarget = basicFrame.blockCnt;
   } else if (["所有敌人", "群体法术伤害", "群体物理伤害"].some(kw => charData.description.includes(kw))) {
     buffFrame.maxTarget = 999;
-  } else if (charData.description.includes("恢复三个") &&
-             !(isSkill && charId == "char_275_breeze"))
-    buffFrame.maxTarget = 3;
-    else if (buffList["uniequip_002_flower"])
+  } else if (buffList["uniequip_002_flower"])
     buffFrame.maxTarget = 4;
-
+    else if (charData.description.includes("恢复三个") &&
+             !(isSkill && charId == "char_275_breeze")) {
+      buffFrame.maxTarget = 3;
+    }
+      
   // 计算最终攻击间隔，考虑fps修正
   let fps = 30;
   // 攻速上下界
