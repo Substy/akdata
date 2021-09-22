@@ -1168,6 +1168,10 @@ function applyBuff(charAttr, buffFrm, tag, blackbd, isSkill, isCrit, log, enemy)
           //writeBuff(`模组倍率覆盖: ${blackboard.atk_scale}x`);
         }
         break;
+      case "uniequip_002_pallas":
+      case "uniequip_002_sophia":
+      case "uniequip_002_swire":
+        if (!options.noblock) done = true; break;
       case "tachr_130_doberm_trait":
         if (!options.noblock) 
           done = true; break;
