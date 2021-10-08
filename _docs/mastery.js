@@ -206,7 +206,8 @@ function load() {
         </span>
       </div>
     </div>
-    <div id="chart"></div>
+   <!-- <div id="chart"></div> -->
+   <div id="echarts_chart"> </div>
   </div>
   <div class="card mb-2 col-12">
     <div class="card-header">
@@ -214,7 +215,7 @@ function load() {
     </div>
     <div id="mats_table"></div>
   </div>
-
+<!--
   <div class="card mb-2 col-12">
     <div class="card-header">
       <div class="card-title mb-0">{{ txt_gain_title }}</div>
@@ -222,7 +223,7 @@ function load() {
     <div id="pie_chart" class="row">
     </div>
   </div>    
-
+-->
   <div class="card mb-2 col-12">
     <div class="card-header">
       <a class="card-title mb-0" data-toggle="collapse" data-target="#txt_json">JSON数据（点击展开）</a>
@@ -231,14 +232,6 @@ function load() {
       <pre style="white-space: pre-wrap; word-wrap: break-word;">{{ JSON.stringify(jsonResult) }}</pre>
     </div>
   </div>
-<!--
-  <div class="card mb-2 col-12">
-    <div class="card-header">
-      <a class="card-title mb-0">专精收益（新版）</a>
-    </div>
-    <div id="echarts_chart" class="col-10"> </div>
-  </div>
--->
 </div>`;
   let $dps = $(html);
 
@@ -388,17 +381,19 @@ function load() {
     watch: {
       resultView: function(_new, _old) {
         let cv = buildChartView(_new, this.chartKey);
-        plot(cv);
+        //plot(cv);
+        plot2(cv);
         let pv = buildPieView(cv);
-        plotPie(pv);
+        //plotPie(pv);
         this.updateMats()
         Object.assign(this.jsonResult, buildJsonView(this, cv, pv));
       },
       chartKey: function(_new, _old) {
         let cv = buildChartView(this.resultView, _new);
+        plot2Update(cv);
         let pv = buildPieView(cv);
-        plotPie(pv);
-        updatePlot(cv);
+        //plotPie(pv);
+        //updatePlot(cv);
         this.txt_gain_title = `提升率分布图 - ${ChartKeys[_new]}`;
       },
 
@@ -664,8 +659,6 @@ function plot(chartView) {
   setTimeout(function() {
     $(".c3-chart-bar.c3-target-基准").css("opacity", 0.4);
   }, 100);
-
- // plot2();
 }
 
 function updatePlot(chartView) {
@@ -781,34 +774,152 @@ function calcSubClass(x, prof) {
   };
 }
 
-function plot2() {
+function plot2(chartView) {
   var myChart = echarts.init($("#echarts_chart")[0]);
+  /* chartView是按行的
+  技能 1 2 3 skill_names
+  groups
+  基准 * * * columns[i]
+  满级 * * *
+  专1  * * *
+  专2  * * *
+  专3  * * *
+  模组 * * *
+  满潜 * * *
+  */
+  var dataset = { 
+    source: [
+      ["技能", ...chartView.skill_names],
+      ...chartView.columns,
+      ["注记", ...(chartView.notes.map(x => x.content))]  // 把注记也放在这里，使用自定义数据系列显示
+    ]
+  };
+  console.log(dataset);
+  //console.log(chartView);
+
+  var seriesTemplate = {
+    type: 'bar',
+    stack: 'total',
+    label: {
+      show: true,
+      //fontWeight: 'bold',
+      fontSize: 14,
+      formatter: function (args) {
+        //console.log(args); return "";
+        var v = parseFloat(args.value[args.seriesIndex+1]);
+        return v > 80 ? `${args.seriesName}\n+${Math.round(v)}`: "";
+      }
+    },
+    emphasis: { focus: 'series' },
+    blur: { itemStyle: { opacity: 0.3 } },
+    seriesLayoutBy: 'row',
+    barWidth: '50%',
+    itemStyle: {
+      shadowColor: 'rgba(0, 0, 0, 0.3)',
+      shadowBlur: 3,
+      shadowOffsetX: 1,
+      shadowOffsetY: 2,
+    }
+  };
+  var series = [];
+  for (var i=0; i<chartView.groups.length; ++i)
+    series.push(seriesTemplate);
+
+  // notes
+  var notesTemplate = {
+    type: 'custom',
+    seriesLayoutBy: 'row',
+    encode: {x: null, y: 0, tooltip: 0},  // x 不映射，y 对应表头(第0行)
+    renderItem: function (params, api) {
+      var value = api.value(8).replace(/\n/g, "; ").replace(/; ; /g, "\n"); // 第8行为注记值
+      var index = params.dataIndex;  // 第几行
+      //console.log({params, api, ids, value});
+
+      var barLayout = api.barLayout({   // 计算系列高度
+        barGap: '30%',
+        barCategoryGap: '20%',
+        barWidth: '50%',
+        count: params.dataInsideLength
+      });
+      var point = api.coord([20, api.value(0)]);  // 放在坐标轴的对应位置
+      //console.log(barLayout[index].bandWidth);
+      return {
+        type: 'text',
+        x: point[0],
+        y: point[1] - 10,
+        style: { text: value, font: '14px sans-serif' }
+      }
+    },
+    z: 10
+  };
+  series.push(notesTemplate);
 
   // 指定图表的配置项和数据
   var option = {
-    title: {
-      text: 'ECharts 入门示例'
+    toolbox: {
+      show: true,
+      feature: {
+        dataView: {},
+        saveAsImage: {}
+      }
     },
-    tooltip: {},
-    legend: {
-      data: ['销量']
+    tooltip: {
+      trigger: 'axis',
+      axisPointer: {
+        // Use axis to trigger tooltip
+        type: 'shadow' // 'shadow' as default; can also be 'line' or 'shadow'
+      }
+    },
+    legend: { top: 'bottom' },
+    grid: {
+      left: '0px',
+      right: '5%',
+      top: '3%',
+      bottom: '8%',
+      containLabel: true
     },
     xAxis: {
-      data: ['衬衫', '羊毛衫', '雪纺衫', '裤子', '高跟鞋', '袜子']
-    },
-    yAxis: {},
-    series: [
-      {
-        name: '销量',
-        type: 'bar',
-        data: [5, 20, 36, 10, 10, 20]
+      type: 'value',
+      name: ChartKeys[window.vue_app.chartKey],
+      axisLine: { show: true },
+      axisLabel: {
+        fontSize: 14,
+        margin: 5
       }
-    ]
+    },
+    yAxis: {
+      type: 'category',
+      axisLine: { show: true },
+      axisLabel: {
+        fontSize: 16,
+        fontWeight: 'bold',
+        margin: 5
+      }
+    },
+    dataset: dataset,
+    series: series,
+    color: [ "#eeeeee", "#4169e1", "#ff7f50", "#ffd700", "#dc143c", "#ba55d3", "#eea0ee"]
   };
 
   // 使用刚指定的配置项和数据显示图表。
   myChart.setOption(option);
-  myChart.resize({height: 400});
+  myChart.resize({height: chartView.skill_names.length * 180});
+
+  window.eChart = myChart;
+}
+
+function plot2Update(chartView) {
+  var dataset = { 
+    source: [
+      ["技能", ...chartView.skill_names],
+      ...chartView.columns,
+      ["注记", ...(chartView.notes.map(x => x.content))]  // 把注记也放在这里，使用自定义数据系列显示
+    ]
+  };
+  window.eChart.setOption({
+    dataset: dataset,
+    xAxis: { name: ChartKeys[window.vue_app.chartKey] }
+ });
 }
 
 pmBase.hook.on('init', init);
