@@ -6,7 +6,7 @@ const DefaultAttribute = {
   potential: 5,  // 0-5
   skillLevel: 9,  // 0-9,
   equip: false,
-  options: { cond: true, crit: true, stack: true, warmup: true, charge: true, equip: true}
+  options: { cond: true, crit: true, stack: true, warmup: true, charge: true, equip: true, far: true}
 };
 const DefaultEnemy = { def: 0, magicResistance: 0, count: 1, hp: 0 };
 

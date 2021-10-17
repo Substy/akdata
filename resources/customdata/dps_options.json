@@ -17,7 +17,8 @@
         "annie": { "type": "bool", "displaytext": "替身", "explain": "贝娜-显示替身数据", "off": true },
         "pallas": { "type": "bool", "displaytext": "加成自身", "explain": "帕拉斯-3技能加成自己的情况", "off": true },
         "water": { "type": "bool", "displaytext": "水地形", "explain": "假日威龙陈-水地形", "off": true },
-        "equip": { "type": "bool", "displaytext": "模组效果", "explain": "触发模组效果/叠满" }
+        "equip": { "type": "bool", "displaytext": "模组效果", "explain": "触发模组效果/叠满" },
+        "far": { "type": "bool", "displaytext": "原本范围以外", "explain": "远牙/安比尔-攻击原本范围以外的敌人" }
     },
     "cond_info": {
         "char_126_shotst": 1,
@@ -76,7 +77,9 @@
         "char_421_crow":    { "text": "[s2]半血敌人", "tooltip": "勾选表示2技能攻击半血敌人" },
         "char_1013_chen2":  "trait",
         "char_437_mizuki":  2,
-        "char_473_mberry":  1
+        "char_473_mberry":  1,
+        "char_430_fartth":  1,
+        "char_431_ashlok":  1
     },
     "char" : {
         "char_103_angel": [ "archet", "chen" ],
@@ -186,6 +189,8 @@
         "char_437_mizuki": [ "cond" ],
         "char_473_mberry":  [ "cond" ],
         "char_218_cuttle":  [ "equip" ],
-        "char_302_glaze":   [ "equip" ]
+        "char_302_glaze":   [ "equip", "far" ],
+        "char_430_fartth":  [ "cond", "equip", "far" ],
+        "char_431_ashlok":  [ "cond" ]
     }
 }

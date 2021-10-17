@@ -1056,6 +1056,19 @@
       "OnStart": 6
     }
   },
+  "char_126_shotst_epoque#10": {
+    "Attack": {
+      "duration": 30,
+      "OnAttack": 16
+    },
+    "Default": 0,
+    "Idle": 60,
+    "Start": {
+      "duration": 25,
+      "OnStart": 6
+    },
+    "Die": 30
+  },
   "char_127_estell": {
     "Attack": {
       "duration": 30,
@@ -3666,6 +3679,16 @@
     },
     "Die": 30
   },
+  "char_254_vodfox_witch#2": {
+    "Attack": {
+      "duration": 30,
+      "OnAttack": 14
+    },
+    "Default": 0,
+    "Die": 30,
+    "Idle": 80,
+    "Start": 30
+  },
   "char_258_podego": {
     "Attack": {
       "duration": 30,
@@ -3843,6 +3866,36 @@
     "Die": 30
   },
   "char_265_sophia": {
+    "Attack_End": 8,
+    "Attack_Loop": {
+      "duration": 32,
+      "OnAttack": 8
+    },
+    "Attack_Loop_Down": {
+      "duration": 32,
+      "OnAttack": 8
+    },
+    "Attack_Start": 15,
+    "Default": 0,
+    "Die": 30,
+    "Idle": 36,
+    "Skill_Begin": 30,
+    "Skill_End": 10,
+    "Skill_Idle": 30,
+    "Skill_Loop": {
+      "duration": 36,
+      "OnAttack": 12
+    },
+    "Skill_Loop_Down": {
+      "duration": 36,
+      "OnAttack": 12
+    },
+    "Start": {
+      "duration": 30,
+      "OnStart": 9
+    }
+  },
+  "char_265_sophia_epoque#11": {
     "Attack_End": 8,
     "Attack_Loop": {
       "duration": 32,
@@ -4845,6 +4898,26 @@
     },
     "Die": 28
   },
+  "char_328_cammou_witch#2": {
+    "Attack": {
+      "duration": 45,
+      "OnAttack": 17
+    },
+    "Default": 0,
+    "Idle": 120,
+    "Skill2_Begin": 17,
+    "Skill2_End": 25,
+    "Skill2_Idle": 120,
+    "Skill2_Loop": {
+      "duration": 34,
+      "OnAttack": 15
+    },
+    "Start": {
+      "duration": 30,
+      "OnStart": 5
+    },
+    "Die": 28
+  },
   "char_332_archet": {
     "Attack": {
       "duration": 36,
@@ -5685,6 +5758,31 @@
     },
     "Die": 30
   },
+  "char_383_snsant_witch#2": {
+    "Attack": {
+      "duration": 45,
+      "OnAttack": 14
+    },
+    "Default": 0,
+    "Idle": 30,
+    "Skill_2_Begin": {
+      "duration": 42,
+      "OnAttack": 28
+    },
+    "Skill_2_End": 30,
+    "Skill_2_Loop": 18,
+    "Skill_Begin": {
+      "duration": 30,
+      "OnAttack": 16
+    },
+    "Skill_End": 24,
+    "Skill_Loop": 18,
+    "Start": {
+      "duration": 30,
+      "OnStart": 4
+    },
+    "Die": 30
+  },
   "char_385_finlpp": {
     "Attack": {
       "duration": 28,
@@ -6168,6 +6266,35 @@
       "OnStart": 7
     }
   },
+  "char_423_blemsh_witch#2": {
+    "Attack": {
+      "duration": 36,
+      "OnAttack": 15
+    },
+    "Attack_Down": {
+      "duration": 36,
+      "OnAttack": 15
+    },
+    "Default": 0,
+    "Die": 30,
+    "Idle": 90,
+    "Skill_1": {
+      "duration": 36,
+      "OnAttack": 15
+    },
+    "Skill_2": {
+      "duration": 30,
+      "OnAttack": 15
+    },
+    "Skill_3": {
+      "duration": 36,
+      "OnAttack": 17
+    },
+    "Start": {
+      "duration": 30,
+      "OnStart": 7
+    }
+  },
   "char_426_billro": {
     "Default": 0,
     "Die": 31,
@@ -6189,6 +6316,70 @@
     "Start": {
       "duration": 30,
       "OnStart": 5
+    }
+  },
+  "char_430_fartth": {
+    "Attack_Begin": 5,
+    "Attack_Down_Begin": 5,
+    "Attack_Down_End": 5,
+    "Attack_Down_Loop": {
+      "duration": 80,
+      "OnAttack": 3,
+      "OnPlayAudio": 50
+    },
+    "Attack_End": 5,
+    "Attack_Loop": {
+      "duration": 80,
+      "OnAttack": 3,
+      "OnPlayAudio": 50
+    },
+    "Default": 0,
+    "Die": 30,
+    "Idle": 80,
+    "Skill3_Begin": 5,
+    "Skill3_End": 5,
+    "Skill3_Idle": 80,
+    "Skill3_Loop": {
+      "duration": 80,
+      "OnAttack": 3,
+      "OnPlayAudio": 50
+    },
+    "Start": {
+      "duration": 30,
+      "OnStart": 7
+    }
+  },
+  "char_431_ashlok": {
+    "Attack01": {
+      "duration": 35,
+      "OnAttack": 16
+    },
+    "Attack02": {
+      "duration": 44,
+      "OnAttack": 21
+    },
+    "Default": 0,
+    "Idle": 40,
+    "Skill_Idle_Up": 40,
+    "Skill_Loop_Up": {
+      "duration": 34,
+      "OnAttack": 16
+    },
+    "Start": 30,
+    "Attack01_Down": {
+      "duration": 35,
+      "OnAttack": 16
+    },
+    "Die": 28,
+    "Skill_Idle": 40,
+    "Skill_Idle_Down": 40,
+    "Skill_Loop": {
+      "duration": 34,
+      "OnAttack": 16
+    },
+    "Skill_Loop_Down": {
+      "duration": 34,
+      "OnAttack": 15
     }
   },
   "char_436_whispr": {
@@ -7115,6 +7306,15 @@
     "Start": {
       "duration": 15,
       "OnStart": 5
+    }
+  },
+  "token_10006_vodfox_doll_witch#2": {
+    "Default": 0,
+    "Die": 20,
+    "Idle": 28,
+    "Start": {
+      "duration": 30,
+      "OnStart": 15
     }
   },
   "token_10007_phatom_twin_ghost#1": {

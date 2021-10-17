@@ -461,6 +461,8 @@ function applyBuff(charAttr, buffFrm, tag, blackbd, isSkill, isCrit, log, enemy)
           blackboard.base_attack_time *= basic.baseAttackTime;
           applyBuffDefault();
           break;
+        case "tachr_431_ashlok_1":
+          applyBuffDefault(); break;
       };
       done = true;
     } else {
@@ -535,7 +537,11 @@ function applyBuff(charAttr, buffFrm, tag, blackbd, isSkill, isCrit, log, enemy)
           log.writeNote("半血斩杀加攻");
           writeBuff(`base_attack_time: ${blackboard.base_attack_time}x`);
           blackboard.base_attack_time *= basic.baseAttackTime;
-          break;  
+          break;
+        case "tachr_431_ashlok_1":
+          blackboard.atk = blackboard["ashlok_t_1.atk"];
+          log.writeNote("周围四格为地面");
+          break;
       }
     }
   } else if (checkSpecs(tag, "ranged_penalty")) { // 距离惩罚类
@@ -851,6 +857,7 @@ function applyBuff(charAttr, buffFrm, tag, blackbd, isSkill, isCrit, log, enemy)
       case "skchr_whispr_2":
       case "skchr_pasngr_2":
       case "skchr_indigo_1":
+      case "skchr_ashlok_2":
         writeBuff(`base_attack_time: ${blackboard.base_attack_time}x`);
         blackboard.base_attack_time *= basic.baseAttackTime;
         break;
@@ -1214,6 +1221,9 @@ function applyBuff(charAttr, buffFrm, tag, blackbd, isSkill, isCrit, log, enemy)
       case "tachr_479_sleach_1":
         blackboard.attack_speed = blackboard["sleach_t_1[ally].attack_speed"];
         break;
+      case "skchr_fartth_3":
+        if (!options.far) delete blackboard.damage_scale;
+        break;
     }
 
   }
@@ -1228,9 +1238,10 @@ function applyBuff(charAttr, buffFrm, tag, blackbd, isSkill, isCrit, log, enemy)
   switch (tag) {
     case "uniequip_002_cuttle":
     case "uniequip_002_glaze":
+    case "uniequip_002_fartth":
       if (options.equip) {
         if (blackboard.damage_scale < 1) blackboard.damage_scale += 1;
-        console.log(blackboard);
+        log.writeNote("距离>4.5");
       } else blackboard.damage_scale = 1;
       break;
   }
@@ -1470,6 +1481,10 @@ function calcDurations(isSkill, attackTime, attackSpeed, levelData, buffList, bu
       duration = levelData.duration - prepDuration;
       // 抬手时间
       var frameBegin = Math.round((checkSpecs(skillId, "attack_begin") || 12));
+      if (skillId == "skchr_glaze_2" && options.far) {
+        log.writeNote("技能前摇增加至27帧");
+        frameBegin = 27;
+      }
       var t = frameBegin / 30;
       attackCount = Math.ceil((duration - t) / attackTime);
       log.write(`技能前摇: ${t.toFixed(3)}s, ${frameBegin} 帧`);
@@ -1845,7 +1860,7 @@ function calculateAttack(charAttr, enemy, raidBlackboard, isSkill, charData, lev
     log.write(`[特殊] ${displayNames["skchr_bubble_2"]}: 攻击力以防御计算(${basicFrame.def + buffFrame.def})`);
   }
   // 迷迭香
-  if (["char_391_rosmon", "char_421_crow"].includes(charId)) {
+  if (["char_391_rosmon", "char_421_crow", "char_431_ashlok"].includes(charId)) {
     buffFrame.maxTarget = 999;
     log.write(`[特殊] ${displayNames[charId]}: maxTarget = 999`);
   }

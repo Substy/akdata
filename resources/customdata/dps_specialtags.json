@@ -119,7 +119,7 @@
     "skchr_glacus_2":	{ "cond": true, "cast_time": 50, "reset_attack": "ogcd", "frame_corr": 0 },
     "skchr_glady_3":    { "damage_type": 1, "sec": true, "interval": 1.5 },
     "skchr_glassb_2":   { "frame_corr": 0 },
-    "skchr_glaze_2":    { "attack_begin": 28 },
+    "skchr_glaze_2":    { "attack_begin": 18 },
     "skchr_hpsts_2":	{ "damage_type": "0" },
     "skchr_hsguma_2":   { "reflect" : true, "passive": true },
     "skchr_hsguma_3":	{ "sec": true },
@@ -315,5 +315,7 @@
     "tachr_503_rang_1":	{ "cond": true },
     "tachr_511_asnipe_1":   { "crit": true },
     "tachr_1012_skadi2_2":  { "cond": true },
-    "tachr_2015_dusk_1":    { "stack": true }
+    "tachr_2015_dusk_1":    { "stack": true },
+    "tachr_430_fartth_1":   { "cond": true },
+    "tachr_431_ashlok_1":   { "cond": true }
 }

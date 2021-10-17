@@ -42,6 +42,8 @@ def update_res():
     print("- 更新halfPic ...")
     for key in halfdict:
         filelink = halfdict[key]
+        if not "http" in filelink:
+            filelink = "https:" + filelink
         name=str(key)
 
         id=''
@@ -70,6 +72,8 @@ def update_res():
     print("- 更新icon ...")
     for key in icondict:
         filelink = icondict[key]
+        if not "http" in filelink:
+            filelink = "https:" + filelink
         name=str(key)
 
         id=''
@@ -339,7 +343,7 @@ def update_config():
 
 if __name__ == "__main__":
     print("update character_table ...")
-    update_chara_db()
+    #update_chara_db()
     print("update res img ...")
     update_res()
     print("update config.json ...")
