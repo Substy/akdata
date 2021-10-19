@@ -462,14 +462,14 @@ function load() {
         cols.push(["x", ...EnemySeries[this.enemyKey]]);
         for (var i=0; i<this.plotList.length; ++i) {
           var info = this.explainChar(this.plotList[i]);
-          var title = info.name + " " + info.text;
+          var title = info.name + " " + info.text.replace(/<br>/g, " ");
           if (!counts[title]) counts[title] = 0;
           counts[title] += 1;
         }
         
         for (var i=0; i<this.plotList.length; ++i) {
           var info = this.explainChar(this.plotList[i]);
-          var title = info.name + " " + info.text;
+          var title = info.name + " " + info.text.replace(/<br>/g, " ");
           
           if (counts[title] >= 2) title += " " + info.option;
           var values = Object.keys(this.chartView[i]).map(k => this.chartView[i][k][this.chartKey]);

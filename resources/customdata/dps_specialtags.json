@@ -110,6 +110,8 @@
     "skchr_excu_2":	    { "attack_begin": 23 },
     "skchr_f12yin_2":   { "toggle": true, "max_target": 2 }, 
     "skchr_f12yin_3":   { "times": 2 }, 
+    "skchr_fartth_2":   { "reset_attack": true },
+    "skchr_fartth_3":   { "reset_attack": true, "attack_begin": 3 },
     "skchr_finlpp_1":   { "reset_attack": "ogcd", "cast_time": 40, "attack_begin": 17 },
     "skchr_finlpp_2":   { "attack_begin": 11, "frame_corr": 1 },
     "skchr_flint_2":    { "note": "阻挡0，天赋一定触发"},
