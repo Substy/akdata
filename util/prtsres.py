@@ -42,8 +42,11 @@ def update_res():
     print("- 更新halfPic ...")
     for key in halfdict:
         filelink = halfdict[key]
-        if not "http" in filelink:
+        if filelink.startswith("//"):
             filelink = "https:" + filelink
+        elif len(filelink) == 0:
+            print(f"! {key} {filelink}")
+            continue
         name=str(key)
 
         id=''
@@ -72,7 +75,7 @@ def update_res():
     print("- 更新icon ...")
     for key in icondict:
         filelink = icondict[key]
-        if not "http" in filelink:
+        if filelink.startswith("//"):
             filelink = "https:" + filelink
         name=str(key)
 
@@ -180,6 +183,8 @@ def update_config():
     text = text.replace('\n', '')
     banner = {}
     limited = re.findall("<table(.*?)</table>", text)
+    print(limited)
+    os.system('pause')
     ret = r'<tr><td>(.*?)<\/td><td>(.*?)<\/td><td>(.*?)<\/td><td>(.*?)<\/td><\/tr>'
     result = re.findall(ret, limited[0])
     for gacha in result:

@@ -18,7 +18,8 @@
         "pallas": { "type": "bool", "displaytext": "加成自身", "explain": "帕拉斯-3技能加成自己的情况", "off": true },
         "water": { "type": "bool", "displaytext": "水地形", "explain": "假日威龙陈-水地形", "off": true },
         "equip": { "type": "bool", "displaytext": "模组效果", "explain": "触发模组效果/叠满" },
-        "far": { "type": "bool", "displaytext": "原本范围以外", "explain": "远牙/安比尔-攻击原本范围以外的敌人" }
+        "far": { "type": "bool", "displaytext": "原本范围以外", "explain": "远牙/安比尔-攻击原本范围以外的敌人" },
+        "block": { "type" : "bool", "displaytext": "阻挡", "explain": "满足阻挡条件" }
     },
     "cond_info": {
         "char_126_shotst": 1,
@@ -79,7 +80,8 @@
         "char_437_mizuki":  2,
         "char_473_mberry":  1,
         "char_430_fartth":  1,
-        "char_431_ashlok":  1
+        "char_431_ashlok":  1,
+        "char_1014_nearl2": { "text": "卡西米尔", "tooltip": "勾选表示上一个部署卡西米尔干员" }
     },
     "char" : {
         "char_103_angel": [ "archet", "chen" ],
@@ -191,6 +193,10 @@
         "char_218_cuttle":  [ "equip" ],
         "char_302_glaze":   [ "equip", "far" ],
         "char_430_fartth":  [ "cond", "equip", "far" ],
-        "char_431_ashlok":  [ "cond" ]
+        "char_431_ashlok":  [ "cond" ],
+        "char_1014_nearl2": [ "cond", "block" ],
+        "char_420_flamtl":  [ "crit" ],
+        "char_144_red":     [ "cond" ],
+        "char_214_kafka":   [ "cond" ] 
     }
 }

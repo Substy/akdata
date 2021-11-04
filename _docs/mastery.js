@@ -469,6 +469,10 @@ function calculate(charId) {
   let result = {}, mats = {};
   let equipId = null, equipName = null;
 
+  if (['char_306_leizi', 'char_472_pasngr', 'char_4004_pudd'].includes(charId)) {
+    enemy.count = 2;
+  }
+
   // calculate dps for each recipe case.
   db.skills.forEach(skill => {
     var entry = {};
@@ -893,7 +897,10 @@ function plot2(chartView) {
       axisLabel: {
         fontSize: 16,
         fontWeight: 'bold',
-        margin: 5
+        margin: 5,
+        formatter: function (v, i) {
+          return `${["I", "II", "III"][i]}-${v}`;
+        }
       }
     },
     dataset: dataset,

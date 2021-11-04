@@ -75,13 +75,17 @@ function load() {
     let item = edb["equipDict"][key];
     let info = getEquipInfo(key);
     let missions = "<ul>" + item.missionList.map(x => `<li> ${edb["missionList"][x].desc} </li>`).join() + "</ul>";
+    let charName = chardb[item.charId].name;
+    let subName = edb["subProfDict"][chardb[item.charId].subProfessionId].subProfessionName
+    ;
     // 三围以外的属性补正
     Object.keys(info.attr).forEach(k => {
       if (!["max_hp", "atk", "def"].includes(k))
         info.blackboard[k] = info.attr[k];
     });
     return [
-      chardb[item.charId].name,
+      subName,
+      charName,
       item.uniEquipName,
       // item.uniEquipDesc
       item.unlockLevel,
@@ -90,13 +94,13 @@ function load() {
       info.attr.def || 0,
       AKDATA.formatString(info.description, false, info.blackboard),
       missions,
-      JSON.stringify(info.blackboard)
+      JSON.stringify(info.blackboard).replace(/,/g, ",<br>")
     ];
   });
 
   let list = pmBase.component.create({
     type: 'list',
-    columns: [ '干员', '模组名称', '解锁等级', 
+    columns: [ '子职业', '干员', '模组名称', '解锁等级', 
                '生命值', '攻击力', ' 防御力', 
                {header:'特性变更',width:'20%'}, {header:'解锁任务',width:'20%'}, {header:'具体数值',width:'10%'} ],
     list: view,
@@ -109,6 +113,9 @@ function load() {
       content: list,
     }]
 	});
+
+  $("th:nth-child(4)").trigger("click");
+  $("th:nth-child(4)").trigger("click");
 }
 
 pmBase.hook.on( 'init', init );
