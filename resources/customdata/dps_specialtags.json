@@ -315,6 +315,7 @@
     "tachr_457_blitz_1":    { "cond": true },
     "tachr_472_pasngr_1":   { "cond": true, "note": "勾选表示两个天赋都触发" },
     "tachr_472_pasngr_2":   { "cond": true },
+    "tachr_473_mberry_1":   { "cond": true },
     "tachr_474_glady_2":    { "cond": true, "note": "敌人重量<=3"},
     "tachr_475_akafyu_1":   { "stack": true },
     "tachr_478_kirara_1":   { "cond": true },

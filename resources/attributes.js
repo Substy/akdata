@@ -1474,6 +1474,7 @@ function calcDurations(isSkill, attackTime, attackSpeed, levelData, buffList, bu
       case "skchr_surtr_3":
         prepDuration = 0.67; break;
       case "skchr_ash_2":
+      case "skchr_nearl2_2":
         prepDuration = 1; break;
     }
 
@@ -1542,6 +1543,7 @@ function calcDurations(isSkill, attackTime, attackSpeed, levelData, buffList, bu
       }
       if (levelData.duration > 0) { // 自动点火
         tags.push("auto"); log.write('落地点火');
+        if (prepDuration > 0) duration = levelData.duration - prepDuration;
       } else if (checkSpecs(skillId, "passive")) { // 被动
         attackCount = 1;
         duration = attackTime;
@@ -1678,11 +1680,16 @@ function calcDurations(isSkill, attackTime, attackSpeed, levelData, buffList, bu
         }
         if (levelData.duration > 0) {
           tags.push("auto");
-          log.write(`[特殊] 落地点火 - 取普攻时间=技能持续时间`);
-          log.writeNote("取普攻时间=技能持续时间");
-		      attackDuration = levelData.duration;
-          attackCount = Math.ceil(attackDuration / attackTime);
-          duration = attackCount * attackTime;
+          if (skillId == "skchr_nearl2_2") {
+            attackCount = 0; duration = 1;
+            log.writeNote("不进行普攻");
+          } else {
+            log.write(`[特殊] 落地点火 - 取普攻时间=技能持续时间`);
+            log.writeNote("取普攻时间=技能持续时间");
+		    attackDuration = levelData.duration;
+            attackCount = Math.ceil(attackDuration / attackTime);
+            duration = attackCount * attackTime;
+          }
         } else if (checkSpecs(skillId, "passive")) { // 被动
           attackCount = 10;
           duration = attackCount * attackTime;
@@ -2486,12 +2493,31 @@ function calculateAttack(charAttr, enemy, raidBlackboard, isSkill, charData, lev
         log.write(`[特殊] ${displayNames[buffName]}: 法术伤害 ${damage.toFixed(1)}, 命中 ${nHit}`);
         break;
       case "tachr_1014_nearl2_1":
-      case "skchr_nearl2_3":
-        let _scale = bb.value ? bb.value : bb.atk_scale;
+        let _scale = bb.atk_scale;
         let _nHit = options.cond ? 2 : 1;
-        damage = finalFrame.atk * _scale * (1-emrpct) * buffFrame.damage_scale;
-        pool[3] += damage * ecount * _nHit;
-        log.write(`[特殊] ${displayNames[buffName]}: 落地伤害 ${damage.toFixed(1)}, 命中 ${ecount*_nHit}`);
+        damage = finalFrame.atk * _scale * buffFrame.damage_scale;
+        switch (blackboard.id) {
+            case "skchr_nearl2_1":
+                if (!isSkill)
+                    log.writeNote(`本体落地伤害 ${damage.toFixed(1)}, 不计入总伤害`);
+                break;
+            case "skchr_nearl2_2":
+                if (isSkill) {
+                    pool[3] += damage * ecount * _nHit;
+                    log.write(`[特殊] ${displayNames[buffName]}: 落地伤害 ${damage.toFixed(1)}, 命中 ${ecount*_nHit}`);
+                }
+                break;
+            case "skchr_nearl2_3":
+                if (!isSkill)
+                    log.writeNote(`本体落地伤害 ${damage.toFixed(1)}, 不计入总伤害`);
+                else {
+                    _scale = buffList.skill.value;
+                    damage = finalFrame.atk * _scale * buffFrame.damage_scale;
+                    pool[3] += damage * ecount * _nHit;
+                    log.write(`[特殊] ${displayNames[buffName]}: 落地伤害 ${damage.toFixed(1)}, 命中 ${ecount*_nHit}`);
+                }
+            break;
+        }
         break;
       // 间接治疗
       case "skchr_tiger_2":
