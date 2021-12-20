@@ -1,5 +1,5 @@
 function init() {
-  $('#update_prompt').text("正在载入角色数据，请耐心等待......");
+  $('#update_prompt').text("正在载入角色数据，请耐心等待......\n(由于CDN服务出现问题，载入可能需要更长时间)");
   AKDATA.load([
     'excel/character_table.json',
     'excel/char_patch_table.json',
