@@ -1260,7 +1260,7 @@ function applyBuff(charAttr, buffFrm, tag, blackbd, isSkill, isCrit, log, enemy)
             (skillId == "skchr_gnosis_2" && isSkill && options.charge)
           ) {
           blackboard.damage_scale = blackboard.damage_scale_freeze;
-          blackboard.emr = -15;
+          blackboard.magic_resistance = -15;
           if (options.freeze) log.writeNote("维持冻结 -15法抗/脆弱加强");
         } else 
           blackboard.damage_scale = blackboard.damage_scale_cold;
@@ -1413,7 +1413,7 @@ function calcDurations(isSkill, attackTime, attackSpeed, levelData, buffList, bu
     }
 
     // charge 
-    var cast_sp = (options.charge ? spData.spCost*2 : spData.spCost);
+    var cast_sp = (options.charge && checkSpecs(skillId, "charge") ? spData.spCost*2 : spData.spCost);
     // init sp
     if (skillId == "skchr_amgoat_2" && buffList["tachr_180_amgoat_2"])
       sp = (buffList["tachr_180_amgoat_2"].sp_min + buffList["tachr_180_amgoat_2"].sp_max) / 2 * fps;
