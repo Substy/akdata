@@ -1260,7 +1260,7 @@ function applyBuff(charAttr, buffFrm, tag, blackbd, isSkill, isCrit, log, enemy)
             (skillId == "skchr_gnosis_2" && isSkill && options.charge)
           ) {
           blackboard.damage_scale = blackboard.damage_scale_freeze;
-          blackboard.emr = -15;
+          blackboard.magic_resistance = -15;
           if (options.freeze) log.writeNote("维持冻结 -15法抗/脆弱加强");
         } else 
           blackboard.damage_scale = blackboard.damage_scale_cold;
