@@ -1413,7 +1413,7 @@ function calcDurations(isSkill, attackTime, attackSpeed, levelData, buffList, bu
     }
 
     // charge 
-    var cast_sp = (options.charge ? spData.spCost*2 : spData.spCost);
+    var cast_sp = (options.charge && checkSpecs(skillId, "charge") ? spData.spCost*2 : spData.spCost);
     // init sp
     if (skillId == "skchr_amgoat_2" && buffList["tachr_180_amgoat_2"])
       sp = (buffList["tachr_180_amgoat_2"].sp_min + buffList["tachr_180_amgoat_2"].sp_max) / 2 * fps;
