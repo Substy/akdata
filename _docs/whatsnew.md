@@ -5,6 +5,12 @@ order: 4
 category: 工具
 icon: info-circle
 ---
+## 21.12.22
+- [update] 灵知等
+- [update] 模组更新：剑豪，冲锋手
+- [update] 灵知3/薄绿2：终结伤害动画时间计入技能用时
+- [bugfix] 稀音2的伤害类型（应为物理）
+
 ## 21.11.08
 - [bugfix] 耀骑士临光的1天赋落地伤害，2技能落地时间
 - [bugfix] 桑葚1天赋选项

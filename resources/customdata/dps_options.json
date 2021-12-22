@@ -19,7 +19,8 @@
         "water": { "type": "bool", "displaytext": "水地形", "explain": "假日威龙陈-水地形", "off": true },
         "equip": { "type": "bool", "displaytext": "模组效果", "explain": "触发模组效果/叠满" },
         "far": { "type": "bool", "displaytext": "原本范围以外", "explain": "远牙/安比尔-攻击原本范围以外的敌人" },
-        "block": { "type" : "bool", "displaytext": "阻挡", "explain": "满足阻挡条件" }
+        "block": { "type" : "bool", "displaytext": "阻挡", "explain": "满足阻挡条件" },
+        "freeze": { "type" : "bool", "displaytext": "保持冻结", "explain": "勾选时假设敌人全程被冻结（包括普攻/技能）", "off": true }
     },
     "cond_info": {
         "char_126_shotst": 1,
@@ -81,7 +82,8 @@
         "char_473_mberry":  1,
         "char_430_fartth":  1,
         "char_431_ashlok":  1,
-        "char_1014_nearl2": { "text": "卡西米尔", "tooltip": "勾选表示上一个部署卡西米尔干员" }
+        "char_1014_nearl2": { "text": "卡西米尔", "tooltip": "勾选表示上一个部署卡西米尔干员" },
+        "char_4013_kjera":  1
     },
     "char" : {
         "char_103_angel": [ "archet", "chen" ],
@@ -112,7 +114,7 @@
         "char_294_ayer": [ "ranged_penalty" ],
         "char_283_midn" : [ "ranged_penalty", "crit" ],
         "char_202_demkni" : [ "stack" ],
-        "char_290_vigna" : [ "crit" ],
+        "char_290_vigna" : [ "crit", "equip" ],
         "char_196_sunbr" : [ "crit" ],
         "char_219_meteo" : [ "crit", "archet", "chen" ],
         "char_124_kroos" : [ "crit", "archet", "chen" ],
@@ -197,6 +199,10 @@
         "char_1014_nearl2": [ "cond", "block" ],
         "char_420_flamtl":  [ "crit" ],
         "char_144_red":     [ "cond" ],
-        "char_214_kafka":   [ "cond" ] 
+        "char_214_kafka":   [ "cond" ],
+        "char_206_gnosis":  [ "freeze", "charge" ],
+        "char_422_aurora":  [ "freeze", "crit" ],
+        "char_4013_kjera":  [ "cond", "freeze" ],
+        "char_261_sddrag":  [ "equip" ]
     }
 }
