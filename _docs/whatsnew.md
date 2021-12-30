@@ -5,6 +5,9 @@ order: 4
 category: 工具
 icon: info-circle
 ---
+## 21.12.30
+- [fix] 修正灵知3/耶拉2帧数补正数据
+
 ## 21.12.22
 - [update] 灵知等
 - [update] 模组更新：剑豪，冲锋手
