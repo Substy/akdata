@@ -468,9 +468,11 @@ function calculate(charId) {
   let raidBuff = { atk: 0, atkpct: 0, ats: 0, cdr: 0, base_atk: 0, damage_scale: 0 };
   let result = {}, mats = {};
   let equipId = null, equipName = null;
+  let extraNote = "";
 
-  if (['char_306_leizi', 'char_472_pasngr', 'char_4004_pudd'].includes(charId)) {
+  if (['char_306_leizi', 'char_472_pasngr', 'char_4004_pudd', "char_4025_aprot2"].includes(charId)) {
     enemy.count = 2;
+    extraNote = "按2目标计算";
   }
 
   // calculate dps for each recipe case.
@@ -506,7 +508,8 @@ function calculate(charId) {
     dps: {},
     notes: {},
     mats: {},
-    cost: {}
+    cost: {},
+    extraNote
   };
   for (let k in result) {
     resultView.skill[k] = result[k]["满潜"].skillName;
@@ -607,6 +610,8 @@ function buildChartView(resultView, key) {
   for (let skill in view.skill) {
     skill_names.push(view.skill[skill]);
     let line = view.notes[skill];
+    if (resultView.extraNote.length > 0)
+      line += "\n" + resultView.extraNote;
     
     if (view.dps[skill]["满潜"].spType != 8) {
       if (line != "") line += "\n";

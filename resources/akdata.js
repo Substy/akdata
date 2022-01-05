@@ -11,7 +11,7 @@ window.AKDATA = {
 
   Data: {},
 
-  new_op: ["char_206_gnosis", "char_422_aurora", "char_4013_kjera"],
+  new_op: ["char_206_gnosis", "char_422_aurora", "char_4013_kjera", "char_4025_aprot2"],
 
   professionNames: {
     "PIONEER": "先锋",
@@ -46,7 +46,7 @@ window.AKDATA = {
         let path = `https://cdn.jsdelivr.net/gh/xulai1001/akdata@${window.AKDATA.akdata}/resources/gamedata/${paths[i].toLowerCase()}`;
         
         // comment line 49 to use local data only.
-        if (!(paths[i].includes("excel") || paths[i].includes("levels")))    // excel/levels使用cdn数据 其他使用本地数据
+        //if (!(paths[i].includes("excel") || paths[i].includes("levels")))    // excel/levels使用cdn数据 其他使用本地数据
           path = `../resources/gamedata/${paths[i].toLowerCase()}?_=${Math.round(Math.random()*1e8)}`;
         console.log(`Loading -> ${name}`);
         paths[i] = loadJSON(path, data => AKDATA.Data[name] = data);
@@ -149,7 +149,9 @@ window.AKDATA = {
         let profKey = AKDATA.professionNames[charData.profession];
         if (profKey) {
           if (!charPools[profKey]) charPools[profKey] = [];
-          charPools[profKey].push({"name": charData.name, "id": charId, "rarity": charData.rarity});
+          var displayName = charData.name;
+          if (!charData.displayNumber) displayName = "[集成战略]" + displayName;
+          charPools[profKey].push({"name": displayName, "id": charId, "rarity": charData.rarity});
         }
       } 
     });

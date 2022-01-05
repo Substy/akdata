@@ -22,20 +22,7 @@ function load() {
   let upCharNames = [];
   let nowTime = new Date().getTime() / 1000;
   AKDATA.patchAllChars();
-  /*
-  AKDATA.Data.gacha_table.gachaPoolClient
-    .filter(x => x.endTime > nowTime)
-    .forEach(data => {
-      let m6 = data.gachaPoolDetail.match( /\n★★★★★★\\n(.+?)（/);
-      let m5 = data.gachaPoolDetail.match( /\n★★★★★\\n(.+?)（/);
-      let m4 = data.gachaPoolDetail.match( /\n★★★★\\n(.+?)（/);
-      let m3 = data.gachaPoolDetail.match( /\n★★★\\n(.+?)（/);
-      if (m6) upCharNames.push(...m6[1].split(' / '));
-      if (m5) upCharNames.push(...m5[1].split(' / '));
-      if (m4) upCharNames.push(...m4[1].split(' / '));
-      if (m3) upCharNames.push(...m3[1].split(' / '));
-    });
-  */
+
   let upCharHtml = '';
   let proKeys = Object.keys(ProfessionNames);
   let charPools = Array.from(Array(6), () => Array(proKeys.length).fill(''));
@@ -43,7 +30,10 @@ function load() {
     let proIndex = proKeys.indexOf(charData.profession);
     if ( proIndex > -1 ) {
       let isUp = upCharNames.includes(charData.name);
-      let a = `<a href="${pmBase.url.getHref('character', charId)}">${charData.name}</a>`;
+      var displayName = charData.name;
+      if (!charData.displayNumber) displayName = "[集成战略]" + displayName;
+
+      let a = `<a href="${pmBase.url.getHref('character', charId)}">${displayName}</a>`;
       charPools[5-charData.rarity][proIndex] += `<div>
         ${AKDATA.getBadge('placeholder', '&nbsp;', '', 'min-width:16px;' )}
         ${AKDATA.getBadge('char', a, charData.rarity)}

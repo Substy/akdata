@@ -6224,6 +6224,29 @@
       "OnStart": 7
     }
   },
+  "char_4025_aprot2": {
+    "Attack": {
+      "duration": 50,
+      "OnAttack": 26
+    },
+    "Default": 0,
+    "Idle": 120,
+    "Skill_2_Begin": 25,
+    "Skill_2_End": 10,
+    "Skill_2_Loop": 50,
+    "Skill_Begin": 25,
+    "Skill_End": 10,
+    "Skill_Idle": 30,
+    "Skill_Loop": {
+      "duration": 30,
+      "OnAttack": 0
+    },
+    "Strat": {
+      "duration": 30,
+      "OnStart": 5
+    },
+    "Die": 30
+  },
   "char_402_tuye": {
     "Attack": {
       "duration": 30,
@@ -7730,6 +7753,32 @@
       "OnStart": 5
     },
     "Die": 30
+  },
+  "char_512_aprot": {
+    "Attack": {
+      "duration": 50,
+      "OnAttack": 26
+    },
+    "Default": 0,
+    "Die": 30,
+    "Idle": 120,
+    "Skill_2_Begin": 25,
+    "Skill_2_End": 10,
+    "Skill_2_Loop": 30,
+    "Skill_Begin": 25,
+    "Skill_End": {
+      "duration": 10,
+      "OnAttack": 0
+    },
+    "Skill_Idle": 30,
+    "Skill_Loop": {
+      "duration": 30,
+      "OnAttack": 0
+    },
+    "Strat": {
+      "duration": 30,
+      "OnStart": 5
+    }
   },
   "token_10000_silent_healrb": {
     "Default": 0,

@@ -83,7 +83,8 @@
         "char_430_fartth":  1,
         "char_431_ashlok":  1,
         "char_1014_nearl2": { "text": "卡西米尔", "tooltip": "勾选表示上一个部署卡西米尔干员" },
-        "char_4013_kjera":  1
+        "char_4013_kjera":  1,
+        "char_4025_aprot2": 1
     },
     "char" : {
         "char_103_angel": [ "archet", "chen" ],
@@ -203,6 +204,7 @@
         "char_206_gnosis":  [ "freeze", "charge" ],
         "char_422_aurora":  [ "freeze", "crit" ],
         "char_4013_kjera":  [ "cond", "freeze" ],
-        "char_261_sddrag":  [ "equip" ]
+        "char_261_sddrag":  [ "equip" ],
+        "char_4025_aprot2": [ "cond" ]
     }
 }

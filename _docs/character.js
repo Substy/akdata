@@ -32,10 +32,12 @@ function load() {
     let charData = AKDATA.Data.character_table[char];
     if (charData.profession == "TOKEN" || charData.profession == "TRAP") continue;
     let phaseData = charData.phases[0].attributesKeyFrames[0].data;
-    selector[char] = (charData.displayNumber || "Roguelike")+ ' ' + charData.name;
+    selector[char] = (charData.displayNumber || "-")+ ' ' + charData.name;
+    var displayName = charData.name;
+    if (!charData.displayNumber) displayName = "[集成战略]" + displayName;
     body.push([
       charData.displayNumber,
-      `<a href="#!/${char}">${charData.name}</a>`,
+      `<a href="#!/${char}">${displayName}</a>`,
       ProfessionNames[charData.profession],
       charData.rarity + 1,
       AKDATA.formatString(charData.itemUsage, true) + AKDATA.formatString(charData.itemDesc, true),

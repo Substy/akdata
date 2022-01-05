@@ -782,6 +782,8 @@ function applyBuff(charAttr, buffFrm, tag, blackbd, isSkill, isCrit, log, enemy)
         writeBuff(`最大目标数 = ${buffFrame.maxTarget}`);
         break;
       case "skchr_durnar_2":
+      case "skchr_aprot_1":
+      case "skchr_aprot2_1":
         buffFrame.maxTarget = 3;
         writeBuff(`最大目标数 = ${buffFrame.maxTarget}`);
         break;
@@ -1323,7 +1325,8 @@ function extractDamageType(charData, chr, isSkill, skillDesc, skillBlackboard, o
     ret = 2;
   } else if (options.annie) {
     ret = 1;
-  } else if (charData.description.includes('法术伤害') && !["char_260_durnar", "char_378_asbest"].includes(charId)) {
+  } else if (charData.description.includes('法术伤害') && 
+             !["char_260_durnar", "char_378_asbest", "char_4025_aprot2", "char_512_aprot"].includes(charId)) {
     ret = 1;
   }
   if (isSkill) {
@@ -2806,6 +2809,7 @@ function calculateAttack(charAttr, enemy, raidBlackboard, isSkill, charData, lev
           pool[2] -= bb.hp_ratio * finalFrame.maxHp; break;
         case "skchr_ifrit_3": // 自己掉血
         case "skchr_skadi2_3":
+        case "skchr_aprot2_2":
           pool[2] -= bb.hp_ratio * finalFrame.maxHp * dur.duration; break;
         case "skchr_bldsk_2":
           pool[2] -= bb.hp_ratio * finalFrame.maxHp * bb.duration * 2; break;
