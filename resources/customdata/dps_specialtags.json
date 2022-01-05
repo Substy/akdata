@@ -154,7 +154,7 @@
     "skchr_kalts_3":    { "damage_type": 2, "token_damage_type": 3, "grad": true, "use_token_for_mastery": true, "reset_attack": true, "attack_begin": 18 },
     "skchr_kirara_1":   { "damage_type": "0", "cast_time": 30, "sim": true },
     "skchr_kirara_2":   { "sec": true },
-    "skchr_kjera_2":    { "reset_attack": true },
+    "skchr_kjera_2":    { "reset_attack": true, "frame_corr": 0, "attack_begin": 20 },
     "skchr_kroos_1":    { "sim": true },
     "skchr_lava2_2":    { "sec": true, "note": "不重叠部分伤害减半" },
     "skchr_lionhd_2":   { "reset_attack": "ogcd", "cast_time": 32 },

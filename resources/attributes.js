@@ -778,6 +778,7 @@ function applyBuff(charAttr, buffFrm, tag, blackbd, isSkill, isCrit, log, enemy)
       case "skchr_mudrok_2":
       case "skchr_siege_2":
       case "skchr_glady_3":
+      case "skchr_gnosis_2":
         buffFrame.maxTarget = 999;
         writeBuff(`最大目标数 = ${buffFrame.maxTarget}`);
         break;
