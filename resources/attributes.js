@@ -783,10 +783,15 @@ function applyBuff(charAttr, buffFrm, tag, blackbd, isSkill, isCrit, log, enemy)
         writeBuff(`最大目标数 = ${buffFrame.maxTarget}`);
         break;
       case "skchr_durnar_2":
+        buffFrame.maxTarget = 3;
+        writeBuff(`最大目标数 = ${buffFrame.maxTarget}`);
+        break;
       case "skchr_aprot_1":
       case "skchr_aprot2_1":
         buffFrame.maxTarget = 3;
         writeBuff(`最大目标数 = ${buffFrame.maxTarget}`);
+        writeBuff(`base_attack_time: ${blackboard.base_attack_time}x`);
+        blackboard.base_attack_time *= basic.baseAttackTime;
         break;
       case "skchr_saga_2":
         buffFrame.maxTarget = 6;
