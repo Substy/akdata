@@ -33,14 +33,21 @@ function load() {
       var displayName = charData.name;
       if (!charData.displayNumber) displayName = "[集成战略]" + displayName;
 
-      let a = `<a href="${pmBase.url.getHref('character', charId)}">${displayName}</a>`;
-      charPools[5-charData.rarity][proIndex] += `<div>
-        ${AKDATA.getBadge('placeholder', '&nbsp;', '', 'min-width:16px;' )}
-        ${AKDATA.getBadge('char', a, charData.rarity)}
-        ${AKDATA.getBadge('placeholder', isUp ? 'UP' : '&nbsp;', '', 'min-width:16px;' )}
-      </div>`;
+      charPools[5-charData.rarity][proIndex] += `
+      <figure class="figure m-0 p-1 col-6">
+        <a href="/akdata/character/#!/${charId}">
+        <img class="img_char figure-img" style="max-width: 90%; height: auto; background:#e1e1e1;"
+             src="/akdata/assets/images/char/${charId}.png" title="${displayName}"></img>
+        </a>
+      </figure>
+      `;
     }
   });
+
+  // decorate
+  for (var i=0; i<charPools.length; ++i)
+    for (var j=0; j<charPools[i].length; ++j)
+      charPools[i][j] = "<div class='row'>" + charPools[i][j] + "</div>";
   console.log(charPools);
 
   let list = pmBase.component.create({

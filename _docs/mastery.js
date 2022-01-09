@@ -145,25 +145,10 @@ function showVersion() {
   });
 }
 
-function showReport() {
-  var text = `
-  - <a href="https://mew.fun/n/akmastery" target="_blank">Mew据点</a><br>
-  - <a href="https://space.bilibili.com/274013" target="_blank">私信作者（B站）</a><br>
-  - <a href="https://github.com/xulai1001/akdata/issues" target="_blank">Github Issue</a><br>
-  感谢您的热心反馈！`;
-  pmBase.component.create({
-    type: 'modal',
-    id: "modal_report",
-    content: text,
-    width: 800,
-    title: "您可以通过以下途径反馈遇到的问题:",
-    show: true,
-  });
-}
-
 function load() {
   showVersion();
-  $("#btn_report").click(showReport);
+  $("#btn_report").click(AKDATA.showReport);
+  $("#btn_whatsnew").click(AKDATA.showNews);
   AKDATA.patchAllChars();
   
   // build html

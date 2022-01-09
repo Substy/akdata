@@ -1,8 +1,8 @@
 ---
-title: DPS数据表格
+title: DPS数据表
 withjs: true
 order: 1
-category: 其他页面
+category: 游戏数据速查
 icon: random
 ---
 - 一个简单的dps汇总表格，收集了基于**计算器默认参数**（触发所有天赋、被动）的计算结果。

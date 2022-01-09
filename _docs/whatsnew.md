@@ -2,11 +2,17 @@
 title: 更新日志
 withjs: false
 order: 4
-category: 工具
+category: 其他功能
 icon: info-circle
 ---
-## 22.01.05
+## 22.01.10
+- [update] 新增【专有名词】术语速查表
+- [update] 侧边栏内容重新分组，增加更新日志按钮
+- [update] 【干员属性】页面改为头像，之后会重新排版
+
+## 22.01.05-07
 - [update] 暮落
+- [bugfix] 暮落1技能攻击间隔为乘算
 - [fix] 干员列表增加了区分肉鸽干员的前缀提示
 - [mastery] 专精图表增加了对特殊计算条件的说明
 
