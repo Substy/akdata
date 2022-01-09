@@ -1,5 +1,5 @@
 function init() {
-  $('#update_prompt').text("正在载入角色数据，请耐心等待......\n(由于CDN服务出现问题，载入可能需要更长时间)");
+  $('#update_prompt').text("正在载入角色数据，请耐心等待......");
   AKDATA.load([
     'excel/character_table.json',
     'excel/char_patch_table.json',
@@ -54,59 +54,14 @@ function showVersion() {
   });
 }
 
-function showReport() {
-  var text = `
-  - <a href="https://mew.fun/n/akmastery" target="_blank">Mew据点</a><br>
-  - <a href="https://space.bilibili.com/274013" target="_blank">私信作者（B站）</a><br>
-  - <a href="https://github.com/xulai1001/akdata/issues" target="_blank">Github Issue</a><br>
-  感谢您的热心反馈！`;
-  pmBase.component.create({
-    type: 'modal',
-    id: "modal_report",
-    content: text,
-    width: 800,
-    title: "您可以通过以下途径反馈遇到的问题:",
-    show: true,
-  });
-}
-
 function load() {
   showVersion();
-  $("#btn_report").click(showReport);
+  $("#btn_report").click(AKDATA.showReport);
+  $("#btn_whatsnew").click(AKDATA.showNews);
   AKDATA.patchAllChars();
 
   var charId_hash = window.location.hash.replace("#", "");
   console.log(charId_hash);
-/*
-  let selectOptions = '';
-  let charFinalData = [];
-
-  let toCopy = '';
-  selectOptions += `<option value="">-</option>`;
-
-  selectOptions += "<optgroup label='新干员'>";
-  AKDATA.new_op.forEach(id => {
-    let charData = AKDATA.Data.character_table[id];
-    selectOptions += `<option value="${id}">${charData.name}</option>`;
-  });
-  selectOptions += `</optgroup">`;
-
-  Object.keys(ProfessionNames).forEach(key => {
-    selectOptions += `<optgroup label="${ProfessionNames[key]}">`;
-    for (let charId in AKDATA.Data.character_table) {
-      let charData = AKDATA.Data.character_table[charId];
-      if (charData.profession != key) continue;
-      if (charData.skills.length == 0) continue;
-
-      selectOptions += `<option value="${charId}">${charData.name}</option>`;
-    }
-    selectOptions += `</optgroup">`;
-  });
-
-
-  if (toCopy) window.toCopy = toCopy;
-  // copy(toCopy);
-*/
 
   for (let charId in AKDATA.Data.character_table) {
     let charData = AKDATA.Data.character_table[charId];

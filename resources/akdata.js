@@ -33,6 +33,43 @@ window.AKDATA = {
     });    
   },
 
+
+  showReport: function () {
+    var text = `
+    - <a href="https://space.bilibili.com/274013" target="_blank">私信作者（B站）</a><br>
+    - <a href="https://github.com/xulai1001/akdata/issues" target="_blank">Github Issue</a><br>
+    感谢您的热心反馈！`;
+    pmBase.component.create({
+      type: 'modal',
+      id: "modal_report",
+      content: text,
+      width: 800,
+      title: "您可以通过以下途径反馈遇到的问题:",
+      show: true,
+    });
+  },
+  
+  showNews: function() {
+    let markdown = new window.showdown.Converter();
+    markdown.setOption("simpleLineBreaks", true);
+    markdown.setOption("headerLevelStart", 4);
+    markdown.setOption("tables", true);
+    markdown.setOption("tablesHeaderId", true);
+
+    var lines = $.ajax({url: "https://cdn.jsdelivr.net/gh/xulai1001/akdata/_docs/whatsnew.md", async: false}
+               ).responseText.split("\n");
+    var text = lines.slice(7).join("\n");
+  
+    pmBase.component.create({
+      type: 'modal',
+      id: "whatsnew",
+      content: markdown.makeHtml(text),
+      width: 750,
+      title: "更新日志",
+      show: true,
+    });
+  },
+
   reload: function () {
     localStorage.clear();
     location.reload();

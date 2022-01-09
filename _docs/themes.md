@@ -1,7 +1,7 @@
 ---
-title: 家具主题
+title: 家具套装
 withjs: true
 order: 5
-category: 资料
+category: 游戏数据速查
 icon: home
 ---
