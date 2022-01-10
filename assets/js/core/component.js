@@ -46,7 +46,7 @@ let createFunctions = {
 
     if (config.image) {
       imageCol = config.imageCol || 3;
-      imageHtml = `<div class="col-12 col-lg-${imageCol} order-xs-first order-first order-lg-last d-flex">
+      imageHtml = `<div class="col-12 col-lg-${imageCol} order-xs-first order-first d-flex">
         <div class="align-self-center flex-grow-1 text-center">${config.image}<hr class="d-lg-none"></div>
       </div>`;
     }
@@ -70,13 +70,13 @@ let createFunctions = {
     });
 
     let html = `<div class="row">
-      <div class="col-12 col-lg-${12-config.imageCol} order-lg-first">
+    ${imageHtml}
+      <div class="col-12 col-lg-${12-config.imageCol}">
         <table class="table table-sm c-infotable" style="table-layout:fixed;">
           ${headerHtml}
           <tbody>${bodyHtml}</tbody>
         </table>
-      </div>
-      ${imageHtml}
+      </div>      
     </div>`;
 
     if (config.card) {

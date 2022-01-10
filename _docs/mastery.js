@@ -410,6 +410,8 @@ function buildChar(charId, skillId, recipe) {
 
   if (charId == "char_230_savage")
     char.potentialRank = Math.min(char.potentialRank, 1);
+  if (charId == "char_4019_ncdeer")
+    char.potentialRank = Math.min(char.potentialRank, 0);
 
   let db = AKDATA.Data.character_table[charId];
   let skilldb = AKDATA.Data.skill_table[skillId];

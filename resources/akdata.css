@@ -75,12 +75,14 @@ strong {
 }
 
 .img_char {
-    /*    box-shadow: 3px 3px 7px -1px rgb(0 0 0 / 85%); */
-        border-radius: 5px;
+       /* box-shadow:2px 2px 4px #888;*/
+       border-radius: 5px;
 }
 .figure :hover{
-
     background:#f1f1f1;
-    box-shadow:2px 2px 4px #777;
+    box-shadow:2px 2px 4px #444;
 }
-    
+.img-char :hover{
+    background:#f1f1f1;
+    box-shadow:2px 2px 4px #444;
+}

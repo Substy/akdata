@@ -138,6 +138,8 @@ function show(hash) {
     card: true,
     title: charData.name,
     ignoreNull: true,
+    image: `<img class='img_char' src='/akdata/assets/images/char/${charId}.png' />`,
+    imageCol: 3
   });
   
   let phaseTable = createPhaseTable(charData);

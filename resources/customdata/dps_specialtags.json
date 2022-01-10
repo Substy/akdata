@@ -181,6 +181,8 @@
     "skchr_mudrok_2":   { "reset_attack": "ogcd", "cast_time": 30, "anim_key": "Skill_1"},
     "skchr_myrrh_1":    { "cast_time" : 30, "attack_begin": 12, "attack_animation": 30, "sim": true },
     "skchr_myrtle_2":	{ "reset_attack": true, "sec": true },
+    "skchr_ncdeer_1":   { "damage_type": 2 },
+    "skchr_ncdeer_2":   { "damage_type": 2 },
     "skchr_nian_2":     { "reflect": true },
     "skchr_nightm_1":	{ "damage_type": 1 },
     "skchr_pallas_1":   { "times": 2, "sim": true },

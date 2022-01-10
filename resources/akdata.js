@@ -2,16 +2,17 @@ const stringRegex = /<[@\$](.+?)>(.+?)<\/>/g;
 const variableRegex = /{(\-)*(.+?)(?:\:(.+?))?}/g;
 
 let CacheList = null;
+let _use_local = false;
 
 const useCache = true;
 const cacheBeginTime = new Date(2019, 12, 10).getTime();
 
 window.AKDATA = {
-  akdata: "220105", // jsdelivr tag version
+  akdata: "220110", // jsdelivr tag version
 
   Data: {},
 
-  new_op: ["char_206_gnosis", "char_422_aurora", "char_4013_kjera", "char_4025_aprot2"],
+  new_op: ["char_206_gnosis", "char_422_aurora", "char_4013_kjera", "char_4025_aprot2", "char_4019_ncdeer"],
 
   professionNames: {
     "PIONEER": "先锋",
@@ -32,7 +33,6 @@ window.AKDATA = {
       callback(result, v);
     });    
   },
-
 
   showReport: function () {
     var text = `
@@ -56,7 +56,7 @@ window.AKDATA = {
     markdown.setOption("tables", true);
     markdown.setOption("tablesHeaderId", true);
 
-    var lines = $.ajax({url: "https://cdn.jsdelivr.net/gh/xulai1001/akdata/_docs/whatsnew.md", async: false}
+    var lines = $.ajax({url: `https://cdn.jsdelivr.net/gh/xulai1001/akdata@${window.AKDATA.akdata}/_docs/whatsnew.md`, async: false}
                ).responseText.split("\n");
     var text = lines.slice(7).join("\n");
   
@@ -82,8 +82,9 @@ window.AKDATA = {
         let name = paths[i].split('/').pop().replace('.json', '');
         let path = `https://cdn.jsdelivr.net/gh/xulai1001/akdata@${window.AKDATA.akdata}/resources/gamedata/${paths[i].toLowerCase()}`;
         
-        // comment line 49 to use local data only.
-        if (!(paths[i].includes("excel") || paths[i].includes("levels")))    // excel/levels使用cdn数据 其他使用本地数据
+        // comment this line to use local data only.
+        if (_use_local ||
+            (!(paths[i].includes("excel") || paths[i].includes("levels"))))    // excel/levels使用cdn数据 其他使用本地数据
           path = `../resources/gamedata/${paths[i].toLowerCase()}?_=${Math.round(Math.random()*1e8)}`;
         console.log(`Loading -> ${name}`);
         paths[i] = loadJSON(path, data => AKDATA.Data[name] = data);
@@ -305,7 +306,7 @@ function formatStringCallback(match, name, value) {
     else { // 术语（新增）
       var term_desc = AKDATA.Data.gamedata_const.termDescriptionDict[name].description;
       term_desc = term_desc.replace(stringRegex, (m, n, v) => { return v; });
-      return `<a href="#" style="color: #0000ff" title="${term_desc}">${value}</a>`;
+      return `<a href="/akdata/terms/#${name}" style="color: #0000ff" title="${term_desc}">${value}</a>`;
     }
   } else {
     return value;

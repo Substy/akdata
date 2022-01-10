@@ -12,7 +12,7 @@ function load() {
     type: 'list',
     columns: [ {header:'术语',width:'20%'}, '效果说明', 'ID' ],
     list: Object.values(AKDATA.Data.gamedata_const.termDescriptionDict).orderby(x=>x.termId).map( itemData=> [
-      itemData.termName,
+      `<a name=${itemData.termId}>${itemData.termName}</a>`,
       AKDATA.formatString(itemData.description,true),
       itemData.termId
     ]),
@@ -25,6 +25,8 @@ function load() {
       content: list,
     }]
 	});
+
+  if (window.location.hash) location.href = window.location.hash;
 }
 
 pmBase.hook.on( 'init', init );

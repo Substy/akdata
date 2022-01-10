@@ -863,6 +863,8 @@ function applyBuff(charAttr, buffFrm, tag, blackbd, isSkill, isCrit, log, enemy)
         break;
       case "skchr_ccheal_2": // hot记为额外治疗，不在这里计算
       case "skchr_ccheal_1":
+      case "skchr_ncdeer_1":
+      case "skchr_ncdeer_2":
         delete blackboard["heal_scale"];
         break;
       case "skchr_hmau_2":
@@ -2849,6 +2851,7 @@ function calculateAttack(charAttr, enemy, raidBlackboard, isSkill, charData, lev
         case "tachr_437_mizuki_2":
         case "uniequip_002_sddrag":
         case "uniequip_002_vigna":
+        case "tachr_4019_ncdeer_1":
           break;
         case "skchr_gravel_2":
         case "skchr_phatom_1":

@@ -599,6 +599,11 @@ function chooseLevel() {
     pot_elem.val(1);
   }
 
+  // 九色鹿
+  if (Characters[index].charId == "char_4019_ncdeer" && ~~(pot_elem.val()) > 0) {
+    pot_elem.val(0);
+  }
+
   Characters[index].level = level;
   Characters[index].potentialRank = ~~(pot_elem.val());
   Characters[index].favor = ~~(getElement('favor', index).val());

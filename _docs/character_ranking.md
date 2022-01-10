@@ -1,7 +1,7 @@
 ---
 title: DPS数据表
 withjs: true
-order: 1
+order: 5
 category: 游戏数据速查
 icon: random
 ---

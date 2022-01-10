@@ -1,8 +1,8 @@
 ---
-title: 干员列表
+title: 干员信息
 withjs: true
 withcss: true
-order: 1
-category: 其他功能
+order: 4
+category: 游戏数据速查
 icon: users
 ---

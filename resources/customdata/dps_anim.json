@@ -357,6 +357,26 @@
       "OnStart": 6
     }
   },
+  "char_1011_lava2_nian#6": {
+    "Attack": {
+      "duration": 32,
+      "OnAttack": 14
+    },
+    "Default": 0,
+    "Idle": 40,
+    "Skill_1": {
+      "duration": 42,
+      "OnAttack": 13
+    },
+    "Skill_2_Begin": {
+      "duration": 10,
+      "OnAttack": 10
+    },
+    "Skill_2_End": 10,
+    "Skill_2_Loop": 40,
+    "Start": 27,
+    "Die": 40
+  },
   "char_1012_skadi2": {
     "Default": 0,
     "Die": 30,
@@ -6181,6 +6201,26 @@
       "OnStart": 11
     },
     "Die": 26
+  },
+  "char_4019_ncdeer": {
+    "Attack": {
+      "duration": 48,
+      "OnAttack": 18
+    },
+    "Default": 0,
+    "Die": 30,
+    "Idle": 50,
+    "Skill_Begin": 10,
+    "Skill_End": 10,
+    "Skill_Idle": 200,
+    "Skill_Loop": {
+      "duration": 35,
+      "OnAttack": 13
+    },
+    "Start": {
+      "duration": 30,
+      "OnStart": 15
+    }
   },
   "char_401_elysm": {
     "Attack": {

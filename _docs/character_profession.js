@@ -34,7 +34,7 @@ function load() {
       if (!charData.displayNumber) displayName = "[集成战略]" + displayName;
 
       charPools[5-charData.rarity][proIndex] += `
-      <figure class="figure m-0 p-1 col-6">
+      <figure class="figure m-0 p-1 col-lg-6 col-md-12">
         <a href="/akdata/character/#!/${charId}">
         <img class="img_char figure-img" style="max-width: 90%; height: auto; background:#e1e1e1;"
              src="/akdata/assets/images/char/${charId}.png" title="${displayName}"></img>

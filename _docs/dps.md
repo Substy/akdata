@@ -4,6 +4,7 @@ withjs: true
 order: 1
 category: 计算器
 icon: calculator
+new: true
 ---
 <span id="update_prompt">
 如果不能正常显示，请尝试使用Chrome浏览器。<br>这里可以进行详细检测：<http://ruanyf.github.io/es-checker/index.cn.html>
