@@ -7,6 +7,7 @@ Gemfile.lock
 assets/images/char/
 assets/images/skin*/
 assets/images/prts/
+assets/images/relic/
 */__pycache__/*
 *.pyc
 */build/*
