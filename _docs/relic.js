@@ -43,7 +43,12 @@ function load() {
   Object.values(relicBlackboard).forEach(item => {
     var buf = {};
     item.buffs.forEach(b => {
-      buf[b.key] = getBlackboard(b.blackboard);
+      buf[b.key] ||= [];
+      buf[b.key].push(getBlackboard(b.blackboard));
+    });
+    Object.keys(buf).forEach(k => {
+      if (buf[k].length == 1)
+        buf[k] = buf[k][0]; // flatten
     });
     if (relics[item.id])
       relics[item.id].blackboard = buf;

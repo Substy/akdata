@@ -5,7 +5,8 @@ order: 4
 category: 其他功能
 icon: info-circle
 ---
-## 22.01.10
+## 22.01.10-11
+- [bugfix] 收藏品列表parse blackboard没有显示所有词条
 - [update] 九色鹿
 - [update] 新增【专有名词】术语速查表，【集成战略】收藏品列表
 - [update] 侧边栏内容重新分组，增加更新日志按钮
