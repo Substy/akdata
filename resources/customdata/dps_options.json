@@ -20,7 +20,8 @@
         "equip": { "type": "bool", "displaytext": "模组效果", "explain": "触发模组效果/叠满" },
         "far": { "type": "bool", "displaytext": "原本范围以外", "explain": "远牙/安比尔-攻击原本范围以外的敌人" },
         "block": { "type" : "bool", "displaytext": "阻挡", "explain": "满足阻挡条件" },
-        "freeze": { "type" : "bool", "displaytext": "保持冻结", "explain": "勾选时假设敌人全程被冻结（包括普攻/技能）", "off": true }
+        "freeze": { "type" : "bool", "displaytext": "保持冻结", "explain": "勾选时假设敌人全程被冻结（包括普攻/技能）", "off": true },
+        "ling_fusion": { "type" : "bool", "displaytext": "融合大龙", "explain": "计算融合高级召唤物的输出", "off": true }
     },
     "cond_info": {
         "char_126_shotst": 1,
@@ -62,7 +63,7 @@
         "char_436_whispr":  1,
         "char_1012_skadi2": 2,
         "char_440_pinecn":  "trait",
-        "char_452_bstalk":  1,
+        "char_452_bstalk":  "trait",
         "char_402_tuye":    1,
         "char_362_saga":    { "text": "[s3]半血敌人", "tooltip": "勾选表示3技能攻击半血敌人" },
         "char_2015_dusk":   { "text": "[s2]半血敌人", "tooltip": "勾选表示2技能攻击半血敌人" },
@@ -84,7 +85,9 @@
         "char_431_ashlok":  1,
         "char_1014_nearl2": { "text": "卡西米尔", "tooltip": "勾选表示上一个部署卡西米尔干员" },
         "char_4013_kjera":  1,
-        "char_4025_aprot2": 1
+        "char_4025_aprot2": 1,
+        "char_322_lmlee":   { "text": "[t1]单挑", "tooltip": "周围八格内仅存在一个敌人" },
+        "char_476_blkngt":  "trait"
     },
     "char" : {
         "char_103_angel": [ "archet", "chen" ],
@@ -119,12 +122,12 @@
         "char_196_sunbr" : [ "crit" ],
         "char_219_meteo" : [ "crit", "archet", "chen" ],
         "char_124_kroos" : [ "crit", "archet", "chen" ],
-        "char_106_franka" : [ "crit" ],
+        "char_106_franka" : [ "crit", "equip" ],
         "char_155_tiger" : [ "crit" ],
         "char_243_waaifu" : [ "crit" ],
         "char_367_swllow" : [ "crit", "archet", "chen" ],
         "char_137_brownb" : [ "stack" ],
-        "char_131_flameb" : [ "stack" ],
+        "char_131_flameb" : [ "stack", "equip" ],
         "char_225_haak" : [ "crit" ],
         "char_226_hmau" : [ "cond" ],
         "char_2013_cerber" : [ "cond" ],
@@ -134,7 +137,7 @@
         "char_337_utage" : [ "stack" ],
         "char_379_sesa" : [ "cond" ],
         "char_252_bibeak" : [ "stack" ],
-        "char_159_peacok" : [ "crit" ],
+        "char_159_peacok" : [ "crit", "equip" ],
         "char_250_phatom" : [ "token" ],
         "char_254_vodfox" : [ "cond" ],
         "char_333_sidero" : [ "cond" ],
@@ -197,7 +200,7 @@
         "char_302_glaze":   [ "equip", "far" ],
         "char_430_fartth":  [ "cond", "equip", "far" ],
         "char_431_ashlok":  [ "cond" ],
-        "char_1014_nearl2": [ "cond", "block" ],
+        "char_1014_nearl2": [ "cond", "block", "equip" ],
         "char_420_flamtl":  [ "crit" ],
         "char_144_red":     [ "cond" ],
         "char_214_kafka":   [ "cond" ],
@@ -205,6 +208,12 @@
         "char_422_aurora":  [ "freeze", "crit" ],
         "char_4013_kjera":  [ "cond", "freeze" ],
         "char_261_sddrag":  [ "equip" ],
-        "char_4025_aprot2": [ "cond" ]
+        "char_4025_aprot2": [ "cond" ],
+        "char_1021_kroos2": [ "crit" ],
+        "char_322_lmlee":   [ "block", "cond" ],
+        "char_476_blkngt":  [ "cond", "token" ],
+        "char_2023_ling":   [ "token", "stack", "ling_fusion" ],
+        "char_263_skadi":   [ "equip" ],
+        "char_289_gyuki":   [ "equip" ]
     }
 }

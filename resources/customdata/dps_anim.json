@@ -495,6 +495,30 @@
     },
     "Stun": 30
   },
+  "char_1021_kroos2": {
+    "Attack": {
+      "duration": 30,
+      "OnAttack": 11
+    },
+    "Default": 0,
+    "Idle": 80,
+    "Skill_Begin": 10,
+    "Skill_End": 10,
+    "Skill_Idle": 80,
+    "Skill_Loop": {
+      "duration": 18,
+      "OnAttack": 3
+    },
+    "Skill_Loop_2": {
+      "duration": 18,
+      "OnAttack": 7
+    },
+    "Start": {
+      "duration": 30,
+      "OnStart": 4
+    },
+    "Die": 48
+  },
   "char_102_texas": {
     "Attack_End": 15,
     "Attack_Loop": {
@@ -2709,6 +2733,29 @@
       "OnStart": 24
     }
   },
+  "char_2015_dusk_nian#7": {
+    "Attack": {
+      "duration": 86,
+      "OnAttack": 31
+    },
+    "Default": 0,
+    "Die": 30,
+    "Idle": 240,
+    "Skill2_Begin": 5,
+    "Skill2_End": 30,
+    "Skill2_Loop": {
+      "duration": 40,
+      "OnAttack": 0
+    },
+    "Skill3_Attack": {
+      "duration": 103,
+      "OnAttack": 35
+    },
+    "Start": {
+      "duration": 30,
+      "OnStart": 24
+    }
+  },
   "char_201_moeshd": {
     "Attack": {
       "duration": 40,
@@ -2763,6 +2810,30 @@
     "Start": {
       "duration": 25,
       "OnStart": 6
+    }
+  },
+  "char_2023_ling": {
+    "Attack": {
+      "duration": 48,
+      "OnAttack": 18
+    },
+    "Default": 0,
+    "Die": 30,
+    "Idle": 300,
+    "Skill_02": {
+      "duration": 36,
+      "OnAttack": 15
+    },
+    "Skill_03_Begin": 15,
+    "Skill_03_End": 15,
+    "Skill_03_Idle": 190,
+    "Skill_03_Loop": {
+      "duration": 49,
+      "OnAttack": 14
+    },
+    "Start": {
+      "duration": 30,
+      "OnStart": 5
     }
   },
   "char_202_demkni": {
@@ -3672,6 +3743,29 @@
     "Skill_Start": {
       "duration": 24,
       "OnAttack": 20
+    }
+  },
+  "char_241_panda_nian#7": {
+    "Attack": {
+      "duration": 36,
+      "OnAttack": 12
+    },
+    "Attack_Down": {
+      "duration": 36,
+      "OnAttack": 20
+    },
+    "Default": 0,
+    "Die": 30,
+    "Idle": 180,
+    "Skill_End": 30,
+    "Skill_Loop": 0,
+    "Skill_Start": {
+      "duration": 24,
+      "OnAttack": 20
+    },
+    "Start": {
+      "duration": 30,
+      "OnStart": 6
     }
   },
   "char_242_otter": {
@@ -5025,6 +5119,38 @@
     "Start": {
       "duration": 30,
       "OnStart": 13
+    }
+  },
+  "char_322_lmlee": {
+    "Attack": {
+      "duration": 30,
+      "OnAttack": 14
+    },
+    "Default": 0,
+    "Die": 30,
+    "Idle": 108,
+    "Skill_2_Attack": {
+      "duration": 30,
+      "OnAttack": 21
+    },
+    "Skill_2_Start": {
+      "duration": 10,
+      "OnAttack": 6
+    },
+    "Skill_3_End": 3,
+    "Skill_3_Idle": 30,
+    "Skill_3_Loop": {
+      "duration": 30,
+      "OnAttack": 1
+    },
+    "Skill_3_Start": 10,
+    "Start": {
+      "duration": 30,
+      "OnStart": 14
+    },
+    "Skill_2_start": {
+      "duration": 10,
+      "OnAttack": 6
     }
   },
   "char_325_bison": {
@@ -7050,6 +7176,37 @@
       "OnStart": 8
     }
   },
+  "char_455_nothin_nian#7": {
+    "Attack": {
+      "duration": 33,
+      "OnAttack": 11
+    },
+    "Default": 0,
+    "Die": 32,
+    "Idle": 40,
+    "Idle_2": 40,
+    "Skill_1_Begin": {
+      "duration": 24,
+      "OnAttack": 24
+    },
+    "Skill_1_End": 16,
+    "Skill_1_Loop": 25,
+    "Skill_1_die": 25,
+    "Skill_2_Begin": {
+      "duration": 33,
+      "OnAttack": 13,
+      "OnPlayAudio": 24
+    },
+    "Skill_2_End": 10,
+    "Skill_2_Loop": {
+      "duration": 40,
+      "OnAttack": 16
+    },
+    "Start": {
+      "duration": 35,
+      "OnStart": 8
+    }
+  },
   "char_456_ash": {
     "Attack_Begin": 9,
     "Attack_Begin_Down": 9,
@@ -7296,6 +7453,26 @@
     },
     "Die": 35
   },
+  "char_469_indigo_nian#7": {
+    "Attack": {
+      "duration": 55,
+      "OnAttack": 25
+    },
+    "Attack_Charge": {
+      "duration": 55,
+      "OnAttack": 35
+    },
+    "Default": 0,
+    "Die": 35,
+    "Idle": 160,
+    "Skill_Begin": 10,
+    "Skill_End": 10,
+    "Skill_Loop": 30,
+    "Start": {
+      "duration": 30,
+      "OnStart": 18
+    }
+  },
   "char_472_pasngr": {
     "Attack": {
       "duration": 70,
@@ -7415,6 +7592,32 @@
       "duration": 30,
       "OnStart": 6
     }
+  },
+  "char_476_blkngt": {
+    "Attack": {
+      "duration": 43,
+      "OnAttack": 8,
+      "OnPlayAudio": 26
+    },
+    "Default": 0,
+    "Idle": 100,
+    "Skill_1": {
+      "duration": 35,
+      "OnAttack": 5
+    },
+    "Skill_2": {
+      "duration": 34,
+      "OnAttack": 16
+    },
+    "Start": {
+      "duration": 30,
+      "OnStart": 7
+    },
+    "Attack_Down": {
+      "duration": 43,
+      "OnAttack": 5
+    },
+    "Die": 56
   },
   "char_478_kirara": {
     "Attack": {
@@ -7995,5 +8198,16 @@
     "Y_Idle": 30,
     "Y_Start": 24,
     "Y_stun": 45
+  },
+  "token_10015_dusk_drgn_nian#7": {
+    "Attack": {
+      "duration": 30,
+      "OnAttack": 13
+    },
+    "Default": 0,
+    "Die": 30,
+    "Idle": 120,
+    "Start": 20,
+    "Stun": 30
   }
 }

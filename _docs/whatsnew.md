@@ -5,6 +5,13 @@ order: 4
 category: 其他功能
 icon: info-circle
 ---
+## 22.01.26
+- [update] 令/老鲤
+- [note] 令3技能的地板伤害是按照令的面板计算，所以去掉“计算召唤物数据”选项才能显示这部分伤害
+- [update] 剑圣、行商、令模组
+- [bugfix] 森蚺1/老鲤2的被动效果对普攻也生效
+- [bugfix] 麦哲伦3/令3攻击目标数量
+
 ## 22.01.10-11
 - [bugfix] 收藏品列表parse blackboard没有显示所有词条
 - [update] 九色鹿
