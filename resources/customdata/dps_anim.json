@@ -2653,6 +2653,34 @@
       "OnStart": 5
     }
   },
+  "char_2013_cerber_whirlwind#2": {
+    "Attack": {
+      "duration": 48,
+      "OnAttack": 21
+    },
+    "Default": 0,
+    "Die": 30,
+    "Idle": 120,
+    "Skill_1": {
+      "duration": 48,
+      "OnAttack": 29
+    },
+    "Skill_3": {
+      "duration": 48,
+      "OnAttack": 29
+    },
+    "Skill_2_Begin": 10,
+    "Skill_2_End": 10,
+    "Skill_2_Idle": 120,
+    "Skill_2_Loop": {
+      "duration": 19,
+      "OnAttack": 7
+    },
+    "Start": {
+      "duration": 30,
+      "OnStart": 4
+    }
+  },
   "char_2014_nian": {
     "Attack_Begin": 15,
     "Attack_End": 15,
@@ -3819,6 +3847,24 @@
       "OnStart": 5,
       "OnAttack": 14
     }
+  },
+  "char_243_waaifu_whirlwind#2": {
+    "Attack": {
+      "duration": 30,
+      "OnAttack": 14
+    },
+    "Default": 0,
+    "Idle": 30,
+    "Start": {
+      "duration": 30,
+      "OnStart": 5
+    },
+    "Start_2": {
+      "duration": 30,
+      "OnStart": 5,
+      "OnAttack": 14
+    },
+    "Die": 30
   },
   "char_248_mgllan": {
     "Attack": {
@@ -5608,6 +5654,30 @@
     },
     "Die": 25
   },
+  "char_347_jaksel_whirlwind#2": {
+    "Attack_A": {
+      "duration": 22,
+      "OnAttack": 10
+    },
+    "Attack_B": {
+      "duration": 22,
+      "OnAttack": 10
+    },
+    "Default": 0,
+    "Idle": 270,
+    "Skill_End": 10,
+    "Skill_Idle": 120,
+    "Skill_Loop": {
+      "duration": 20,
+      "OnAttack": 10
+    },
+    "Skill_Start": 10,
+    "Start": {
+      "duration": 30,
+      "OnStart": 5
+    },
+    "Die": 25
+  },
   "char_348_ceylon": {
     "Attack": {
       "duration": 43,
@@ -6019,6 +6089,37 @@
       "OnStart": 4
     },
     "Die": 30
+  },
+  "char_377_gdglow": {
+    "Attack": {
+      "duration": 39,
+      "OnAttack": 13
+    },
+    "Attack_End": 10,
+    "Attack_Start": 5,
+    "Default": 0,
+    "Idle": 240,
+    "Skill2_Idle": 120,
+    "Skill2_Loop": {
+      "duration": 39,
+      "OnAttack": 13
+    },
+    "Skill2_Start": 10,
+    "Skill_Attack": {
+      "duration": 39,
+      "OnAttack": 13
+    },
+    "Skill_End": 10,
+    "Skill_Idle": 240,
+    "Skill_Start": 5,
+    "Start": {
+      "duration": 30,
+      "OnStart": 8
+    },
+    "Die": 30,
+    "Skill3_End": 20,
+    "Skill3_Loop": 120,
+    "Skill3_Start": 10
   },
   "char_378_asbest": {
     "Attack": {
@@ -7807,6 +7908,33 @@
       "duration": 40,
       "OnAttack": 22
     }
+  },
+  "char_492_quercu": {
+    "Attack": {
+      "duration": 50,
+      "OnAttack": 27
+    },
+    "Default": 0,
+    "Idle": 60,
+    "Skill_2_End": 20,
+    "Skill_2_Idle": 60,
+    "Skill_2_Loop": {
+      "duration": 50,
+      "OnAttack": 25
+    },
+    "Skill_2_begin": 20,
+    "Skill_End": 20,
+    "Skill_Idle": 60,
+    "Skill_Loop": {
+      "duration": 50,
+      "OnAttack": 13
+    },
+    "Skill_begin": 20,
+    "Start": {
+      "duration": 30,
+      "OnStart": 25
+    },
+    "Die": 25
   },
   "char_496_wildmn": {
     "Attack": {

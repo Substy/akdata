@@ -214,6 +214,7 @@
         "char_476_blkngt":  [ "cond", "token" ],
         "char_2023_ling":   [ "token", "stack", "ling_fusion" ],
         "char_263_skadi":   [ "equip" ],
-        "char_289_gyuki":   [ "equip" ]
+        "char_289_gyuki":   [ "equip" ],
+        "char_377_gdglow":  [ "crit" ]
     }
 }

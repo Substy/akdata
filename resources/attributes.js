@@ -684,6 +684,7 @@ function applyBuff(charAttr, buffFrm, tag, blackbd, isSkill, isCrit, log, enemy)
         if (!isSkill) done = true; break;
       case "tachr_509_acast_1":
       case "tachr_350_surtr_1":
+      case "tachr_377_gdglow_2":
         blackboard.emr_pene = blackboard.magic_resist_penetrate_fixed;
         break;
         // ---- 技能 ----
@@ -878,8 +879,6 @@ function applyBuff(charAttr, buffFrm, tag, blackbd, isSkill, isCrit, log, enemy)
         break;
       case "skchr_ccheal_2": // hot记为额外治疗，不在这里计算
       case "skchr_ccheal_1":
-      case "skchr_ncdeer_1":
-      case "skchr_ncdeer_2":
         delete blackboard["heal_scale"];
         break;
       case "skchr_hmau_2":
@@ -1309,6 +1308,9 @@ function applyBuff(charAttr, buffFrm, tag, blackbd, isSkill, isCrit, log, enemy)
         break;
       case "skchr_ling_3":
         delete blackboard.atk_scale;
+        break;
+      case "tachr_377_gdglow_1":
+        blackboard.prob_override = 0.1;
         break;
     }
 
@@ -2859,6 +2861,15 @@ function calculateAttack(charAttr, enemy, raidBlackboard, isSkill, charData, lev
           log.writeNote(`召唤物范围法术伤害 ${damage.toFixed(1)*2}/s`);
         }
         break;
+      case "tachr_377_gdglow_1":
+        if (dur.critHitCount > 0) {
+          damage = finalFrame.atk * (1-emrpct) * bb["attack@atk_scale_2"] * buffFrame.damage_scale;
+          var funnel = checkSpecs(blackboard.id, "funnel") || 1;
+          pool[1] += damage * ecount * funnel * dur.critHitCount;
+          log.writeNote(`爆炸 ${dur.critHitCount*funnel} 次, 爆炸伤害 ${damage.toFixed(1)}`);
+        }
+        break;
+
     }; // switch
 
     // 百分比/固定回血
@@ -2948,6 +2959,7 @@ function calculateAttack(charAttr, enemy, raidBlackboard, isSkill, charData, lev
         case "uniequip_002_sddrag":
         case "uniequip_002_vigna":
         case "tachr_4019_ncdeer_1":
+        case "tachr_492_quercu_1":
         case "skchr_ling_2":
           break;
         case "skchr_gravel_2":
@@ -3028,16 +3040,26 @@ function calculateGradDamage(_) { // _ -> args
   var dmg_table = [];
   var _seq = [...Array(_.dur.attackCount).keys()];  // [0, 1, ..., attackCount-1]
 
-  if (_.charId == "char_328_cammou" || _.charId == "char_4013_kjera") {
-    // 卡达/耶拉: 可变倍率
+  if (["char_328_cammou", "char_4013_kjera", "char_377_gdglow"].includes(_.charId)) {
+    // 驭蟹术士
     // 基于当前伤害直接乘算atk_scale倍率即可
-    let tb = [1.2, 1.35, 1.5, 1.65, 1.8, 1.95, 2.1]; // 本体+无人机总的atk_scale
-    if (_.skillId == "skchr_kjera_2" && _.isSkill)
-      tb = [1.4, 1.7, 2.0, 2.3, 2.6, 2.9, 3.2];
-    dmg_table = [...Array(_.dur.attackCount).keys()].map(x => (
+    let base_scale = ((_.skillId == "skchr_gdglow_3" && _.isSkill) ? 0 : 1);
+    let base_table = [0, 1, 2, 3, 4, 5, 6];
+    let funnel = 1;
+    if (_.isSkill) funnel = checkSpecs(_.skillId, "funnel") || 1;
+
+    let tb = base_table.map(x => base_scale + (0.2+0.15*x)*funnel);
+    let acount = _.dur.attackCount;
+    if (_.charId == "char_377_gdglow" && _.dur.critHitCount > 0) {
+      acount -= _.dur.critHitCount;
+      _.log.write(`每个浮游炮平均爆炸 ${_.dur.critHitCount} 次, 从攻击次数中减去`);
+    }
+    _.log.write(`攻击 ${acount} 次，命中 ${(base_scale + funnel) * acount}`);
+    dmg_table = [...Array(acount).keys()].map(x => (
       x >= tb.length ? Math.round(_.hitDamage * tb[tb.length-1]) : Math.round(_.hitDamage * tb[x])
     ));
-    _.log.write(`单次伤害: ${dmg_table.slice(0, 6)}, ${dmg_table[6]} * ${_.dur.attackCount-6}`);
+    _.log.write(`倍率: ${tb.map(x => x.toFixed(2))} (本体: ${base_scale}, 浮游炮: ${funnel})`);
+    _.log.write(`单次伤害: ${dmg_table.slice(0, 6)}, ${dmg_table[6]} * ${acount-6}`);
   } else if (_.skillId == "skchr_kalts_3") {
     // 凯尔希: 每秒改变一次攻击力, finalFrame.atk为第一次攻击力
     let range = _.basicFrame.atk * _.blackboard["attack@atk"];
