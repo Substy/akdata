@@ -2862,10 +2862,10 @@ function calculateAttack(charAttr, enemy, raidBlackboard, isSkill, charData, lev
         }
         break;
       case "tachr_377_gdglow_1":
-        if (dur.critHitCount > 0) {
+        if (dur.critHitCount > 0 && isSkill) {
           damage = finalFrame.atk * (1-emrpct) * bb["attack@atk_scale_2"] * buffFrame.damage_scale;
           var funnel = checkSpecs(blackboard.id, "funnel") || 1;
-          pool[1] += damage * ecount * funnel * dur.critHitCount;
+          pool[1] += damage * enemy.count * funnel * dur.critHitCount;
           log.writeNote(`爆炸 ${dur.critHitCount*funnel} 次, 爆炸伤害 ${damage.toFixed(1)}`);
         }
         break;
@@ -3050,7 +3050,7 @@ function calculateGradDamage(_) { // _ -> args
 
     let tb = base_table.map(x => base_scale + (0.2+0.15*x)*funnel);
     let acount = _.dur.attackCount;
-    if (_.charId == "char_377_gdglow" && _.dur.critHitCount > 0) {
+    if (_.charId == "char_377_gdglow" && _.dur.critHitCount > 0 && _.isSkill) {
       acount -= _.dur.critHitCount;
       _.log.write(`每个浮游炮平均爆炸 ${_.dur.critHitCount} 次, 从攻击次数中减去`);
     }

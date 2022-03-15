@@ -135,7 +135,7 @@
     "skchr_frostl_1":   { "sim": true}, 
     "skchr_gdglow_1":   { "funnel": 2 },
     "skchr_gdglow_2":   { "note": "以满层计算(无限血量木桩)", "funnel": 2 },
-    "skchr_gdglow_3":   { "reset_attack": true, "funnel": 3, "attack_begin": 10 },
+    "skchr_gdglow_3":   { "reset_attack": true, "funnel": 3, "attack_begin": 5, "note": "实战可能打出24次攻击" },
     "skchr_glacus_2":	{ "cond": true, "cast_time": 50, "reset_attack": "ogcd", "frame_corr": 0 },
     "skchr_glady_3":    { "damage_type": 1, "sec": true, "interval": 1.5 },
     "skchr_glassb_2":   { "frame_corr": 0 },
