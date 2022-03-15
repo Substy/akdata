@@ -364,36 +364,41 @@ function showAnim() {
   let skindb = AKDATA.Data.skin_table["charSkins"];
 
   let skins = Object.keys(animdb).filter(x => x.startsWith(charId));
-  let skinNames = skins.map(x => {
-    let db_name = x.replace(`${charId}_`, `${charId}@`);
-    return skindb[db_name] ? skindb[db_name].displaySkin.skinName : "原皮"
-  });
-  let headers = ["动作", ...skinNames];
-  let h = {};
-  skins.forEach(sk => {
-    Object.keys(animdb[sk]).forEach(key => {
-      h[key] = true;
-     });
-  })
-  let line_headers = Object.keys(h);
   let rows = [];
-  
-  line_headers.forEach(key => {
-    let r = [key];
-    skins.forEach(sk => {
-      let item = animdb[sk][key];
-      if (!item) {
-        r.push("");
-      } else if (item.duration) {
-        let d = item.duration;
-        let n = Object.keys(item).filter(x => x!="duration")[0];
-        r.push(`动画: ${d} <br> 判定[${n}]: ${item[n]}`);
-      } else {
-        r.push(item);
-      }
+  let headers = ["暂无动画数据"];
+  if (skins.length > 0) {
+
+    let skinNames = skins.map(x => {
+      let db_name = x.replace(`${charId}_`, `${charId}@`);
+      return skindb[db_name] ? skindb[db_name].displaySkin.skinName : "原皮"
     });
-    rows.push(r);
-  });
+    headers = ["动作", ...skinNames];
+    let h = {};
+    skins.forEach(sk => {
+      Object.keys(animdb[sk]).forEach(key => {
+        h[key] = true;
+      });
+    })
+    let line_headers = Object.keys(h);
+
+    
+    line_headers.forEach(key => {
+      let r = [key];
+      skins.forEach(sk => {
+        let item = animdb[sk][key];
+        if (!item) {
+          r.push("");
+        } else if (item.duration) {
+          let d = item.duration;
+          let n = Object.keys(item).filter(x => x!="duration")[0];
+          r.push(`动画: ${d} <br> 判定[${n}]: ${item[n]}`);
+        } else {
+          r.push(item);
+        }
+      });
+      rows.push(r);
+    });
+  }
 
   let table = pmBase.component.create({
     type: 'list',

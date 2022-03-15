@@ -476,6 +476,11 @@ function applyBuff(charAttr, buffFrm, tag, blackbd, isSkill, isCrit, log, enemy)
             applyBuffDefault();
           }
           break;
+        case "skchr_phenxi_3":
+          blackboard.atk_scale = blackboard["attack@atk_scale_2"];
+          delete blackboard["attack@atk_scale"];
+          applyBuffDefault();
+          break;
       };
       done = true;
     } else {
@@ -569,6 +574,10 @@ function applyBuff(charAttr, buffFrm, tag, blackbd, isSkill, isCrit, log, enemy)
             blackboard.attack_speed = blackboard["lmlee_t_1[self].attack_speed"] * 2;
           }
           break;
+        case "skchr_phenxi_3":
+          blackboard.atk_scale = blackboard["attack@atk_scale"];
+          delete blackboard["attack@atk_scale"];
+          break;
       }
     }
   } else if (checkSpecs(tag, "ranged_penalty")) { // 距离惩罚类
@@ -577,7 +586,11 @@ function applyBuff(charAttr, buffFrm, tag, blackbd, isSkill, isCrit, log, enemy)
     if (options.stack) { // 叠层天赋类
       if (tag == "tachr_2015_dusk_1" && options.token) done = true;
       else if (tag == "tachr_2023_ling_2" && options.token) done = true;
-      else {
+      else if (tag == "tachr_300_phenxi_1") {
+        delete blackboard.hp_ratio;
+        blackboard.atk = blackboard["phenxi_t_1[peak_2].peak_performance.atk"];
+        log.writeNote("HP高于80%");
+      } else {
         if (blackboard.max_stack_cnt) {
           ["atk", "def", "attack_speed", "max_hp"].forEach(key => {
             if (blackboard[key]) blackboard[key] *= blackboard.max_stack_cnt;
@@ -1190,13 +1203,20 @@ function applyBuff(charAttr, buffFrm, tag, blackbd, isSkill, isCrit, log, enemy)
       case "skchr_bena_1":
         blackboard.edef_pene_scale = blackboard["def_penetrate"];
         if (options.annie) {
-          log.writeNote("替身-安妮模式");
+          log.writeNote("替身模式");
           done = true;
         }
         break;
       case "skchr_bena_2":
+      case "skchr_kazema_1":
         if (options.annie) {
-          log.writeNote("替身-安妮模式");
+          log.writeNote("替身模式");
+          done = true;
+        }
+        break;
+      case "skchr_kazema_2":
+        if (options.annie) {
+          log.writeNote("分身按本体属性计算");
           done = true;
         }
         break;
@@ -1312,6 +1332,10 @@ function applyBuff(charAttr, buffFrm, tag, blackbd, isSkill, isCrit, log, enemy)
       case "tachr_377_gdglow_1":
         blackboard.prob_override = 0.1;
         break;
+      case "tachr_4016_kazema_1":
+        done = true; break;
+      case "tachr_300_phenxi_2":
+        if (isSkill) done = true; break;
     }
 
   }
@@ -1347,11 +1371,16 @@ function applyBuff(charAttr, buffFrm, tag, blackbd, isSkill, isCrit, log, enemy)
         delete blackboard.damage_scale;
       break;
     case "uniequip_002_cutter":
+    case "uniequip_002_phenxi":
+    case "uniequip_002_meteo":
+    case "uniequip_002_yuki":
       blackboard.edef_pene = blackboard.def_penetrate_fixed;
       break;
     case "uniequip_002_nearl2":
     case "uniequip_002_franka":
     case "uniequip_002_peacok":
+    case "uniequip_002_cqbw":
+    case "uniequip_002_sesa":
       if (!options.equip) delete blackboard.atk_scale;
       break;
     case "uniequip_002_skadi":
@@ -2382,12 +2411,6 @@ function calculateAttack(charAttr, enemy, raidBlackboard, isSkill, charData, lev
           damagePool[0] = 0;
           log.write(`[特殊] ${displayNames[buffName]}: 伤害为0 （以上计算无效）`);
           break;
-        case "skchr_bena_1":
-        case "skchr_bena_2":
-          if (options.annie && !isSkill) {
-            damagePool[0] = 0; damagePool[1] = 0;
-          }
-          break;
         default:
           if (b=="skill") continue; // 非技能期间，跳过其他技能的额外伤害判定
       }
@@ -2869,6 +2892,37 @@ function calculateAttack(charAttr, enemy, raidBlackboard, isSkill, charData, lev
           log.writeNote(`爆炸 ${dur.critHitCount*funnel} 次, 爆炸伤害 ${damage.toFixed(1)}`);
         }
         break;
+      case "skchr_bena_1":
+      case "skchr_bena_2":
+        if (options.annie && isSkill) {
+          damagePool[0] = 0; damagePool[1] = 0;
+        }
+        break;
+      case "skchr_kazema_1":
+        if (options.annie) {
+          damage = finalFrame.atk / buffFrame.atk_scale * buffList["tachr_4016_kazema_1"].damage_scale
+                  * (1-emrpct) * buffFrame.damage_scale;
+          damagePool[1] += damage * ecount;
+          log.writeNote(`替身落地法伤 ${damage.toFixed(1)}，命中 ${ecount}`);
+          if (isSkill) {
+            damagePool[0] = 0; damagePool[1] = 0;
+          }
+        }
+        break;
+      case "skchr_kazema_2":
+        damage = finalFrame.atk * buffList["tachr_4016_kazema_1"].damage_scale * (1-emrpct) * buffFrame.damage_scale;
+        damagePool[1] += damage * ecount;
+        var kz_name = (options.annie ? "*替身*" : "*纸偶*");
+          log.writeNote(`${kz_name}落地法伤 ${damage.toFixed(1)}，命中 ${ecount}`);
+        if (options.annie && isSkill) {
+          damagePool[0] = 0; damagePool[1] = 0;
+        }
+        break;
+      case "skchr_phenxi_2":
+        var ph_2_atk = finalFrame.atk / buffFrame.atk_scale * bb.atk_scale_2;
+        damage = Math.max(ph_2_atk - edef, ph_2_atk*0.05) * buffFrame.damage_scale;
+        log.writeNote(`子爆炸伤害 ${damage.toFixed(1)}, 不计入总伤`);
+        break;
 
     }; // switch
 
@@ -2921,7 +2975,13 @@ function calculateAttack(charAttr, enemy, raidBlackboard, isSkill, charData, lev
         case "skchr_huang_3": // 自爆
         case "skchr_utage_2":
         case "skchr_akafyu_2":
-          pool[2] -= bb.hp_ratio * finalFrame.maxHp; break;
+        case "skchr_kazema_2":
+          if (!options.annie) {
+            damage = bb.hp_ratio * finalFrame.maxHp;
+            pool[2] -= damage; 
+            log.writeNote(`对自身伤害 ${damage.toFixed(1)}`);
+          }
+          break;
         case "skchr_ifrit_3": // 自己掉血
         case "skchr_skadi2_3":
         case "skchr_aprot2_2":
@@ -2937,10 +2997,12 @@ function calculateAttack(charAttr, enemy, raidBlackboard, isSkill, charData, lev
             pool[2] += heal * dur.critHitCount; 
           }
           break;
+        case "skchr_kazema_1":
+          if (!isSkill) break;
         case "skchr_bena_2":
           if (!options.annie) {
             pool[2] -= bb.hp_ratio * dur.attackCount * finalFrame.maxHp;
-            log.writeNote(`每次攻击生命流失 ${(bb.hp_ratio * finalFrame.maxHp).toFixed(1)}`);
+            log.writeNote(`每次技能攻击HP-${(bb.hp_ratio * finalFrame.maxHp).toFixed(1)}`);
           }
           break;
         case "tachr_017_huang_1":
@@ -2980,6 +3042,10 @@ function calculateAttack(charAttr, enemy, raidBlackboard, isSkill, charData, lev
             log.writeNote(`HP上限减少至 ${(finalFrame.maxHp * bb.max_hp).toFixed(1)}`);
             finalFrame.maxHp = finalFrame.maxHp * bb.max_hp;
           }
+          break;
+        case "tachr_300_phenxi_1":
+          heal = bb.hp_ratio * 10 * finalFrame.maxHp;
+          log.writeNote(`最大生命流失率 ${heal.toFixed(1)}/s`);
           break;
         default:
           pool[2] += bb.hp_ratio * finalFrame.maxHp * dur.attackCount;
@@ -3390,7 +3456,7 @@ function applyEquip(char, basic, log) {
 function calculateAnimation(charId, skillId, isSkill, attackTime, attackSpeed, log) {
   var _fps = 30;
   var charData = AKDATA.Data.character_table[charId];
-  var animData = AKDATA.Data.dps_anim[charId];
+  var animData = AKDATA.Data.dps_anim[charId] || {};
   var animKey = "Attack";
   var attackKey = checkSpecs(charId, "anim_key");
   if (!attackKey) {
