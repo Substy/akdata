@@ -2482,12 +2482,12 @@ function calculateAttack(charAttr, enemy, raidBlackboard, isSkill, charData, lev
       // 技能
       // 伤害类
       case "skchr_ifrit_2":
-        damage = basicFrame.atk * bb["burn.atk_scale"] * Math.floor(bb.duration) * (1-emrpct);
+        damage = basicFrame.atk * bb["burn.atk_scale"] * Math.floor(bb.duration) * (1-emrpct) * buffFrame.damage_scale;
         log.write(`[特殊] ${displayNames[buffName]}: 灼烧伤害 ${damage.toFixed(1)}, 命中 ${ecount}`);
         pool[1] += damage * dur.attackCount * ecount;
         break;
       case "skchr_amgoat_2":
-        damage = finalFrame.atk/2 * (1 - enemy.magicResistance / 100);
+        damage = finalFrame.atk/2 * (1 - enemy.magicResistance / 100) * buffFrame.damage_scale;
         log.write(`[特殊] ${displayNames[buffName]}: 溅射伤害 ${damage.toFixed(1)}, 命中 ${dur.attackCount * (enemy.count-1)}`);
         pool[1] += damage * dur.attackCount * (enemy.count-1);
         break;
@@ -2511,19 +2511,19 @@ function calculateAttack(charAttr, enemy, raidBlackboard, isSkill, charData, lev
         pool[0] += damage * ecount;
         break;
       case "skchr_chen_2":
-        damage = finalFrame.atk * (1 - emrpct);
+        damage = finalFrame.atk * (1 - emrpct) * buffFrame.damage_scale;
         pool[1] += damage * dur.hitCount;
         log.write(`[特殊] ${displayNames[buffName]}: 法术伤害 = ${damage.toFixed(1)}, 命中 ${dur.hitCount}`);
         break;
       case "skchr_bibeak_1":
         if (enemy.count > 1) {
-          damage = finalFrame.atk * (1 - emrpct);
+          damage = finalFrame.atk * (1 - emrpct) * buffFrame.damage_scale;
           pool[1] += damage;
           log.write(`[特殊] ${displayNames[buffName]}: 法术伤害 = ${damage.toFixed(1)}`);
         }
         break;
       case "skchr_ayer_2":
-        damage = finalFrame.atk * bb.atk_scale * (1 - emrpct);
+        damage = finalFrame.atk * bb.atk_scale * (1 - emrpct) * buffFrame.damage_scale;
         pool[1] += damage * enemy.count * dur.hitCount;
         log.write(`[特殊] ${displayNames[buffName]}: 法术伤害 = ${damage.toFixed(1)}, 命中 ${enemy.count * dur.hitCount}`);
         log.writeNote("假设断崖的当前攻击目标也被阻挡");
@@ -2546,7 +2546,7 @@ function calculateAttack(charAttr, enemy, raidBlackboard, isSkill, charData, lev
         log.write(`[特殊] ${displayNames[buffName]}: 治疗为0 （以上计算无效）`);
         break;
       case "skchr_sddrag_2":
-        damage = finalFrame.atk * bb["attack@skill.atk_scale"] * (1-emrpct);
+        damage = finalFrame.atk * bb["attack@skill.atk_scale"] * (1-emrpct) * buffFrame.damage_scale;
         log.write(`[特殊] ${displayNames[buffName]}: 法术伤害 = ${damage.toFixed(1)}, 命中 ${dur.hitCount}`);
         pool[1] += damage * dur.hitCount;
         break;
@@ -2556,13 +2556,13 @@ function calculateAttack(charAttr, enemy, raidBlackboard, isSkill, charData, lev
         break;
       case "skchr_podego_2":
         log.write(`[特殊] ${displayNames[buffName]}: 直接伤害为0 （以上计算无效）, 效果持续${bb.projectile_delay_time}秒`);
-        damage = finalFrame.atk * bb.projectile_delay_time * (1-emrpct) * enemy.count;
+        damage = finalFrame.atk * bb.projectile_delay_time * (1-emrpct) * enemy.count * buffFrame.damage_scale;
         pool[1] = damage; damagePool[1] = 0;
         break;
       case "skchr_beewax_2":
       case "skchr_mint_2":
         if (isSkill) {
-          damage = finalFrame.atk * bb.atk_scale * (1-emrpct) * ecount;
+          damage = finalFrame.atk * bb.atk_scale * (1-emrpct) * ecount * buffFrame.damage_scale;
           pool[1] = damage;
         } 
         break;
@@ -2577,7 +2577,7 @@ function calculateAttack(charAttr, enemy, raidBlackboard, isSkill, charData, lev
       case "skchr_archet_1":
         atk = finalFrame.atk / bb.atk_scale * bb.atk_scale_2;
         let hit = Math.min(enemy.count-1, bb.show_max_target) * dur.hitCount;
-        damage = Math.max(atk - enemy.def, atk * 0.05);
+        damage = Math.max(atk - enemy.def, atk * 0.05) * buffFrame.damage_scale;
         log.write(`[特殊] ${displayNames[buffName]}: 分裂箭伤害 ${damage.toFixed(1)}, 命中 ${hit}`);
         pool[0] += damage * hit;
         break;
@@ -2594,7 +2594,7 @@ function calculateAttack(charAttr, enemy, raidBlackboard, isSkill, charData, lev
           if (isSkill && ["skchr_iris_2", "skchr_indigo_2"].includes(blackboard.id)) {} 
           else {
             let scale = (buffList["tachr_338_iris_1"] ? buffList["tachr_338_iris_1"].atk_scale : 1);
-            damage = hitDamage * scale;
+            damage = hitDamage * scale * buffFrame.damage_scale;
             let md = damage * 3 + hitDamage;
             log.write(`[特殊] ${displayNames[buffName]}: 蓄力伤害 ${damage.toFixed(1)}, 满蓄力伤害(3蓄+普攻) ${md.toFixed(1)}, 不计入dps`);
             log.writeNote(`满蓄力伤害 ${md.toFixed(1)}`);
@@ -2603,25 +2603,25 @@ function calculateAttack(charAttr, enemy, raidBlackboard, isSkill, charData, lev
         break;
       case "skchr_ash_3":
         atk = finalFrame.atk / bb.atk_scale * (options.cond ? bb.hitwall_scale : bb.not_hitwall_scale);
-        damage = Math.max(atk - enemy.def, atk * 0.05);
+        damage = Math.max(atk - enemy.def, atk * 0.05) * buffFrame.damage_scale;
         pool[0] += damage * enemy.count;
         log.write(`[特殊] ${displayNames[buffName]}: 爆炸伤害 ${damage.toFixed(1)}, 命中 ${enemy.count}`);
         break;
       case "skchr_blitz_2":
         atk = finalFrame.atk * bb.atk_scale;
-        damage = Math.max(atk - enemy.def, atk * 0.05);
+        damage = Math.max(atk - enemy.def, atk * 0.05) * buffFrame.damage_scale;
         pool[0] += damage * enemy.count;
         log.write(`[特殊] ${displayNames[buffName]}: 范围伤害 ${damage.toFixed(1)}, 命中 ${enemy.count}`);
         break;
       case "skchr_rfrost_2":
         atk = finalFrame.atk / bb.atk_scale * bb.trap_atk_scale;
-        damage = Math.max(atk - enemy.def, atk * 0.05);
+        damage = Math.max(atk - enemy.def, atk * 0.05) * buffFrame.damage_scale;
         pool[0] += damage;
         log.write(`[特殊] ${displayNames[buffName]}: 陷阱伤害 ${damage.toFixed(1)}`);
         break;
       case "skchr_tachak_1":
         atk = finalFrame.atk * bb.atk_scale;
-        damage = Math.max(atk * (1-emrpct), atk * 0.05);
+        damage = Math.max(atk * (1-emrpct), atk * 0.05) * buffFrame.damage_scale;
         pool[1] += damage * bb.projectile_delay_time * enemy.count;
         log.write(`[特殊] ${displayNames[buffName]}: 燃烧伤害 ${damage.toFixed(1)}, 命中 ${bb.projectile_delay_time * enemy.count}`);
         break;
@@ -3044,7 +3044,7 @@ function calculateAttack(charAttr, enemy, raidBlackboard, isSkill, charData, lev
           }
           break;
         case "tachr_300_phenxi_1":
-          heal = bb.hp_ratio * 10 * finalFrame.maxHp;
+          heal = Math.ceil(bb.hp_ratio * finalFrame.maxHp) * 10;
           log.writeNote(`最大生命流失率 ${heal.toFixed(1)}/s`);
           break;
         default:
