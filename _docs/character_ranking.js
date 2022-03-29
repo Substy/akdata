@@ -290,13 +290,13 @@ function calculate() {
           ProfessionNames[charData.profession],
           (charData.description.includes('法术伤害') || levelData.description.includes('伤害类型变为<@ba.vup>法术</>') ) ? '法术' : '物理',
           Math.round(dps.skill.atk),
-          Math.round(dps.skill.attackTime*100)/100,
+          dps.skill.attackTime.toFixed(3),
           levelData.name,
           desc,
           Math.round(dps.normal.dps),
           Math.round(dps.skill.isInstant ? dps.globalDps : dps.skill.dps),
           Math.round(dps.globalDps),
-          Math.round(dps.skill.dur.duration*100)/100
+          dps.skill.dur.duration.toFixed(3)
         ].join('</td><td>') + '</td></tr>';
       }
     });
