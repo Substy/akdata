@@ -8337,5 +8337,170 @@
     "Idle": 120,
     "Start": 20,
     "Stun": 30
+  },
+  "char_300_phenxi": {
+    "Attack": {
+      "duration": 0,
+      "OnAttack": 25
+    },
+    "Default": null,
+    "Die": null,
+    "Idle": null,
+    "Skill_2_Begin": null,
+    "Skill_2_End": null,
+    "Skill_2_Idle": null,
+    "Skill_2_Loop": {
+      "duration": 0,
+      "OnAttack": 1
+    },
+    "Skill_Begin": null,
+    "Skill_End": null,
+    "Skill_Idle": null,
+    "Skill_Loop": {
+      "duration": 0,
+      "OnAttack": 25
+    },
+    "Start": {
+      "duration": 0,
+      "OnStart": 10
+    }
+  },
+  "char_378_asbest_whirlwind#3": {
+    "Attack": {
+      "duration": 0,
+      "OnAttack": 18
+    },
+    "Default": null,
+    "Idle": null,
+    "Skill_Begin": null,
+    "Skill_End": null,
+    "Skill_Idle": null,
+    "Skill_Loop": {
+      "duration": 0,
+      "OnAttack": 11
+    },
+    "Start": {
+      "duration": 0,
+      "OnStart": 22
+    }
+  },
+  "char_4016_kazema": {
+    "Attack": {
+      "duration": 0,
+      "OnAttack": 13
+    },
+    "Attack_B": {
+      "duration": 0,
+      "OnAttack": 13
+    },
+    "Default": null,
+    "Default_B": null,
+    "Die": null,
+    "Die_2": null,
+    "Die_B": null,
+    "Idle": null,
+    "Idle_B": null,
+    "Skill2": {
+      "duration": 0,
+      "OnAttack": 13
+    },
+    "Start": {
+      "duration": 0,
+      "OnStart": 6
+    },
+    "Start_B": {
+      "duration": 0,
+      "OnAttack": 8
+    }
+  },
+  "char_402_tuye_epoque#14": {
+    "Attack": {
+      "duration": 0,
+      "OnAttack": 13
+    },
+    "Default": null,
+    "Idle": null,
+    "Skill_1": {
+      "duration": 0,
+      "OnAttack": 13
+    },
+    "Skill_2_Attack": {
+      "duration": 0,
+      "OnAttack": 13
+    },
+    "Skill_2_Begin": null,
+    "Skill_2_Idle": null,
+    "Start": {
+      "duration": 0,
+      "OnStart": 11
+    }
+  },
+  "char_4036_forcer": {
+    "Attack_Begin": null,
+    "Attack_End": null,
+    "Attack_Loop": {
+      "duration": 0,
+      "OnAttack": 10
+    },
+    "Attack_Loop_Down": {
+      "duration": 0,
+      "OnAttack": 10
+    },
+    "Default": null,
+    "Die": null,
+    "Idle": null,
+    "Skill": {
+      "duration": 0,
+      "OnAttack": 12
+    },
+    "Skill_Down": {
+      "duration": 0,
+      "OnAttack": 12
+    },
+    "Start": {
+      "duration": 0,
+      "OnStart": 8
+    }
+  },
+  "char_473_mberry_epoque#14": {
+    "Attack": {
+      "duration": 0,
+      "OnAttack": 17
+    },
+    "Default": null,
+    "Die": null,
+    "Idle": null,
+    "Skill": {
+      "duration": 0,
+      "OnAttack": 17
+    },
+    "Skill1_End": null,
+    "Skill1_Loop": null,
+    "Skill1_Start": null,
+    "Start": {
+      "duration": 0,
+      "OnStart": 7
+    }
+  },
+  "char_479_sleach_epoque#14": {
+    "Attack": {
+      "duration": 0,
+      "OnAttack": 11
+    },
+    "Default": null,
+    "Idle": null,
+    "Skill_1_Begin": null,
+    "Skill_1_End": null,
+    "Skill_1_Loop": null,
+    "Skill_2_Begin": null,
+    "Skill_2_End": null,
+    "Skill_2_Loop": null,
+    "Skill_3_Begin": null,
+    "Skill_3_End": null,
+    "Skill_3_Loop": null,
+    "Start": {
+      "duration": 0,
+      "OnStart": 6
+    }
   }
 }
