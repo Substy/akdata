@@ -5,6 +5,9 @@ order: 4
 category: 其他功能
 icon: info-circle
 ---
+## 22.04.06
+- [fix] 更新群法的帧数补正数据。无模组的群法dps进一步降低了......
+
 ## 22.03.20
 - [fix] 菲雅3掉血向上取整
 - [fix] 一部分干员额外伤害没有乘算damage\_scale
