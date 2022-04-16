@@ -8,11 +8,11 @@ const useCache = true;
 const cacheBeginTime = new Date(2019, 12, 10).getTime();
 
 window.AKDATA = {
-  akdata: "220316", // jsdelivr tag version
+  akdata: "220417-v1", // jsdelivr tag version
 
   Data: {},
 
-  new_op: ["char_300_phenxi", "char_4016_kazema", "char_4036_forcer"],
+  new_op: ["char_4039_horn", "char_4040_rockr", "char_4045_heidi", "char_4041_chnut"],
 
   professionNames: {
     "PIONEER": "先锋",
@@ -170,13 +170,13 @@ window.AKDATA = {
   },
 
   patchAllChars: function() {
-    AKDATA.patchChar("char_1001_amiya2", "char_1001_amiya2", "（近卫 Ver.）");
+    AKDATA.patchChar("char_1001_amiya2", "char_1001_amiya2", "（近卫）");
   },
 
   selChar: "",
 
-  showSelectCharDialog: function(excludeChars=[]) {
-    let charPools = {"新干员": []};
+  showSelectCharDialog: function(excludeChars=[], selectedChar=null) {
+    let charPools = {"新干员": [], "同分支干员": []};
     AKDATA.new_op.forEach(x => {
       let d = AKDATA.Data.character_table[x];
       charPools["新干员"].push({"name": d.name, "id": x, "rarity": d.rarity});
@@ -191,16 +191,21 @@ window.AKDATA = {
           if (!charData.displayNumber) displayName = "[集成战略]" + displayName;
           charPools[profKey].push({"name": displayName, "id": charId, "rarity": charData.rarity});
         }
+        if (AKDATA.Data.character_table[selectedChar]) {
+          let subProfId = AKDATA.Data.character_table[selectedChar].subProfessionId;
+          if (charData.subProfessionId == subProfId)
+            charPools["同分支干员"].push({"name": displayName, "id": charId, "rarity": charData.rarity});
+        }
       } 
     });
    // console.log(charPools);
 
     let html = "";
-    ["新干员", ...Object.values(AKDATA.professionNames)].forEach(k => {
+    ["新干员", "同分支干员", ...Object.values(AKDATA.professionNames)].forEach(k => {
       let entry = `<h2>${k}</h2>`;
       var r = 6;
       charPools[k].sort((a, b) => b.rarity - a.rarity).forEach(x => {
-        if (x.rarity < r && k != "新干员") { entry += `<br>☆${r} `; r-=1; }
+        if (x.rarity < r && !k.endsWith("干员")) { entry += `<br>☆${r} `; r-=1; }
         entry += `<a class="btn-outline-light p-2" href="#" onclick="AKDATA.selectChar('${x.id}')" role="button">${x.name}</a>`;
       });
       html += entry;

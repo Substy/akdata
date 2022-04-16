@@ -21,7 +21,9 @@
         "far": { "type": "bool", "displaytext": "原本范围以外", "explain": "远牙/安比尔-攻击原本范围以外的敌人" },
         "block": { "type" : "bool", "displaytext": "阻挡", "explain": "满足阻挡条件" },
         "freeze": { "type" : "bool", "displaytext": "保持冻结", "explain": "勾选时假设敌人全程被冻结（包括普攻/技能）", "off": true },
-        "ling_fusion": { "type" : "bool", "displaytext": "融合大龙", "explain": "计算融合高级召唤物的输出", "off": true }
+        "ling_fusion": { "type" : "bool", "displaytext": "融合大龙", "explain": "计算融合高级召唤物的输出", "off": true },
+        "od_trigger": { "type" : "bool", "displaytext": "过载立即结束", "explain": "勾选时立即结束过载", "off": true },
+        "melee":   { "type" : "bool", "displaytext": "近战攻击", "explain": "勾选时使用近战攻击", "off": true }
     },
     "cond_info": {
         "char_126_shotst": 1,
@@ -88,7 +90,10 @@
         "char_4025_aprot2": 1,
         "char_322_lmlee":   { "text": "[t1]单挑", "tooltip": "周围八格内仅存在一个敌人" },
         "char_476_blkngt":  "trait",
-        "char_300_phenxi":  { "text": "[s3]靶心范围", "tooltip": "对目标位置附近[1.1]范围内的敌人[倍率]提升" }
+        "char_300_phenxi":  { "text": "[s3]靶心范围", "tooltip": "对目标位置附近[1.1]范围内的敌人[倍率]提升" },
+        "char_4041_chnut":  1,
+        "char_4045_heidi":  2,
+        "char_4039_horn":   2
     },
     "char" : {
         "char_103_angel": [ "archet", "chen" ],
@@ -219,6 +224,10 @@
         "char_377_gdglow":  [ "crit" ],
         "char_4036_forcer": [ "cond" ],
         "char_4016_kazema": [ "annie" ],
-        "char_300_phenxi":  [ "cond", "stack", "archet", "chen" ]
+        "char_300_phenxi":  [ "cond", "stack", "archet", "chen" ],
+        "char_4041_chnut":  [ "cond" ],
+        "char_4045_heidi":  [ "cond" ],
+        "char_4039_horn":   [ "cond", "melee", "od_trigger" ],
+        "char_4040_rockr":  [ "stack", "od_trigger" ]
     }
 }

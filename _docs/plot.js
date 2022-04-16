@@ -353,7 +353,7 @@ function load() {
       },
       selChar: function(event) {
         AKDATA.selectCharCallback = function (id) { window.vue_app.charId = id; window.vue_app.setChar(); }
-        AKDATA.showSelectCharDialog(this.excludeList);
+        AKDATA.showSelectCharDialog(this.excludeList, this.charId);
       },
       setChar: function(event) {
         let phases = charDB[this.charId].phases.length;

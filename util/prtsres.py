@@ -75,6 +75,7 @@ def update_res():
     print("- 更新icon ...")
     for key in icondict:
         filelink = icondict[key]
+        print(filelink)
         if filelink.startswith("//"):
             filelink = "https:" + filelink
         name=str(key)

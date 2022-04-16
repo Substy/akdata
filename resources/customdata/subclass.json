@@ -23,6 +23,7 @@
     "不屈者-绝食盾": { "id": "unyield", "desc": "", "prof": "TANK", "feat": [32.21, 26.27, 30.00, 1600] },
     "驭法铁卫-魔盾": { "id": "artsprotector", "desc": "", "prof": "TANK", "feat": [38.90, 23.26, 22.93, 1600] },
     "决战者-进攻型重装": { "id": "duelist", "desc": "", "prof": "TANK", "feat": [29.89, 19.01, 21.89, 1600] },
+    "要塞-炮盾": {"id": "fortress", "desc": "", "prof": "TANK", "feat": [39.37, 19.30, 33.11, 2800] },
     "医师-单奶": { "id": "physician", "desc": "", "prof": "MEDIC", "feat": [11.15, 21.09, 25.66, 2850] },
     "群愈师-群奶": { "id": "ringhealer", "desc": "", "prof": "MEDIC", "feat": [26.67, 20.74, 20.97, 2850] },
     "疗养师-广域奶": { "id": "healer", "desc": "", "prof": "MEDIC", "feat": [14.06, 22.65, 26.00, 2850] },

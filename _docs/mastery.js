@@ -282,7 +282,7 @@ function load() {
       },
       selChar: function(event) {
         AKDATA.selectCharCallback = function (id) { window.vue_app.charId = id; window.vue_app.changeChar(); }
-        AKDATA.showSelectCharDialog(this.excludeList);
+        AKDATA.showSelectCharDialog(this.excludeList, this.charId);
       },
       updateMats: function() {
         let matsView = {};

@@ -260,7 +260,7 @@ function showSelectChar() {
   let __this=$(this);
   let index = ~~__this.data("index");
   AKDATA.selectCharCallback = function (id) { selectChar(id, index); }
-  AKDATA.showSelectCharDialog(excludeChars);
+  AKDATA.showSelectCharDialog(excludeChars, Characters[0] ? Characters[0].charId : null);
 }
 
 function goto() {
