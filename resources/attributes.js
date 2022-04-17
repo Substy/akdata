@@ -1755,8 +1755,12 @@ function calcDurations(isSkill, attackTime, attackSpeed, levelData, buffList, bu
     } 
     // 重置普攻
     if (rst) {
-      if (duration > (levelData.duration-prepDuration) && rst != "ogcd")
-        log.write(`[重置普攻] 截断最后一个攻击间隔`);
+      if (duration > (levelData.duration-prepDuration) && rst != "ogcd") {
+        if (options.overdrive_mode)
+          log.write("[结束时重置普攻] 截断最后一个攻击间隔");
+        else
+          log.write(`[重置普攻] 截断最后一个攻击间隔`);
+      }
       duration = levelData.duration - prepDuration;
       // 抬手时间
       var frameBegin = Math.round((checkSpecs(skillId, "attack_begin") || 12));
