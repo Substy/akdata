@@ -46,7 +46,11 @@ function showVersion() {
       });
       $('#update_prompt').html(["有新数据，请更新", remote, local].join("<br>"));
     } else {
-      $('#update_prompt').text(local);
+      local = `新增干员：`;
+      AKDATA.new_op.forEach(op => {
+        local += `<a href='#${op}'>${AKDATA.Data.character_table[op].name}</a>   `;
+      });
+      $('#update_prompt').html(local);
       $("#btn_update_data").text("手动刷新");
       $("#btn_update_data").attr("class", "btn btn-success");
     }
@@ -244,9 +248,14 @@ function load() {
   $('.dps__copy').click(copyChar);
   $('.img_char').click(showSelectChar);
   
-
   if (charId_hash.length > 0) selectChar(charId_hash, 0);
   
+}
+
+window.onhashchange = function () {
+  var charId_hash = window.location.hash.replace("#", "");
+  console.log(charId_hash);
+  if (charId_hash.length > 0) selectChar(charId_hash, 0);  
 }
 
 function selectChar(charId, i) {

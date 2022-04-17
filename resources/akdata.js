@@ -8,7 +8,7 @@ const useCache = true;
 const cacheBeginTime = new Date(2019, 12, 10).getTime();
 
 window.AKDATA = {
-  akdata: "220417-v1", // jsdelivr tag version
+  akdata: "220417-v2", // jsdelivr tag version
 
   Data: {},
 

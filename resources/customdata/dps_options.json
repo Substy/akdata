@@ -116,7 +116,7 @@
         "char_298_susuro" : [ "cond" ],
         "char_348_ceylon" : [ "cond", "ranged_penalty" ],
         "char_174_slbell" : [ "cond" ],
-        "char_326_glacus" : [ "cond" ],
+        "char_326_glacus" : [ "cond", "equip" ],
         "char_279_excu" : [ "cond" ],
         "char_193_frostl" : [ "ranged_penalty" ],
         "char_140_whitew" : [ "ranged_penalty", "chen" ],
@@ -155,7 +155,7 @@
         "char_400_weedy":   [ "token", "cannon" ],
         "char_405_absin":   [ "cond" ],
         "char_197_poca":    [ "cond" ],
-        "char_358_lisa":    [ "cond" ],
+        "char_358_lisa":    [ "cond", "equip" ],
         "char_349_chiave":  [ "cond" ],
         "char_336_folivo":  [ "token" ],
         "char_272_strong":  [ "cond" ],
@@ -228,6 +228,7 @@
         "char_4041_chnut":  [ "cond" ],
         "char_4045_heidi":  [ "cond" ],
         "char_4039_horn":   [ "cond", "melee", "od_trigger" ],
-        "char_4040_rockr":  [ "stack", "od_trigger" ]
+        "char_4040_rockr":  [ "stack", "od_trigger" ],
+        "char_258_podego":  [ "equip" ]
     }
 }

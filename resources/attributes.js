@@ -1503,6 +1503,11 @@ function applyBuff(charAttr, buffFrm, tag, blackbd, isSkill, isCrit, log, enemy)
       delete blackboard.max_hp;
       if (!options.equip) delete blackboard.attack_speed;
       break;
+    case "uniequip_002_lisa":
+    case "uniequip_002_glacus":
+    case "uniequip_002_podego":
+      if (!options.equip) delete blackboard.sp_recovery_per_sec;
+      break;
   }
 
   if (!done) applyBuffDefault();
@@ -1863,7 +1868,7 @@ function calcDurations(isSkill, attackTime, attackSpeed, levelData, buffList, bu
           }
           */
           log.write(`技能动画：${animKey}, 释放时间 ${ct} 帧`);
-          log.writeNote(`技能动画(基于数值): ${ct} 帧`);
+          log.writeNote(`技能动画: ${ct} 帧`);
           if ((duration < ct/30 && spData.spType == 1) || rst == "ogcd")
             duration = ct/30;
         }
@@ -1872,7 +1877,7 @@ function calcDurations(isSkill, attackTime, attackSpeed, levelData, buffList, bu
           let ct = checkSpecs(skillId, "cast_time");
           if (duration < ct/30 || rst == "ogcd") {
             log.write(`技能动画: ${ct} 帧(基于测量)`);
-            log.writeNote(`技能动画(基于测量): ${ct} 帧`);
+            log.writeNote(`技能动画: ${ct} 帧`);
             if (spData.spType == 1 || rst == "ogcd")
               duration = ct / 30;
           }

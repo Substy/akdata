@@ -116,7 +116,7 @@
     "skchr_chen2_2":    { "reset_attack": true, "magazine": 8, "charge": true },
     "skchr_chen2_3":    { "reset_attack": true, "magazine": 16, "times": 2, "note": "减防为最终加算" },
     "skchr_chiave_2":   { "anim_key": "Skill", "anim_cast": true, "anim_max_scale": 1 },
-    "skchr_chnut_1":    { "sim": true, "cast_time": 28 },
+    "skchr_chnut_1":    { "reset_attack": "ogcd", "cast_time": 28 },
     "skchr_cqbw_1":     { "reset_attack": "ogcd", "cast_time": 42 },
     "skchr_cqbw_2":     { "cast_time": 85, "attack_begin": 12, "attack_animation": 47, "sim": true },
     "skchr_cqbw_3":     { "cast_time": 60, "reset_attack": "ogcd" },

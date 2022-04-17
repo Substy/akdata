@@ -283,6 +283,7 @@ let createFunctions = {
       $e = $(html);
       $('body').append($e);
     }
+    $e.find('.modal-title').html(config.title);
     $e.find('.modal-body').html(config.content);
     if (config.show) $e.modal();
   },

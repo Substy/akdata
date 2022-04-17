@@ -5,6 +5,13 @@ order: 4
 category: 其他功能
 icon: info-circle
 ---
+## 22.04.17-v2
+- [update] 模组数据
+- [update] 优化了计算器版本显示
+- [equip] 优化了模组列表页，现在可以显示小作文了
+- [fix] 褐果1技能应为手动穿插
+- [fix] 删除了模组泄漏数据
+
 ## 22.04.17
 - [update] 号角
 - [todo] 模组尚未更新

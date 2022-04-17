@@ -63,9 +63,25 @@ function getEquipInfo(eid) {
 
 }
 
+function showDesc(key) {
+  var item = AKDATA.Data.uniequip_table["equipDict"][key];
+  if (item) {
+    console.log(item.uniEquipDesc);
+    pmBase.component.create({
+      type: 'modal',
+      id: "equip_desc_dialog",
+      content: item.uniEquipDesc.replaceAll("\n", "<br>"),
+      width: 600,
+      title: `${item.uniEquipName} - 故事`,
+      show: true
+    });
+  }
+}
+
 function load() {
   let selector = {};
   let body = [];
+  window.showDesc = showDesc;
  
   edb = AKDATA.Data.uniequip_table;
   bedb = AKDATA.Data.battle_equip_table;
@@ -75,9 +91,14 @@ function load() {
     let item = edb["equipDict"][key];
     let info = getEquipInfo(key);
     let missions = "<ul>" + item.missionList.map(x => `<li> ${edb["missionList"][x].desc} </li>`).join() + "</ul>";
-    let charName = chardb[item.charId].name;
-    let subName = edb["subProfDict"][chardb[item.charId].subProfessionId].subProfessionName
-    ;
+    let charName = `
+    <figure class="figure">
+      <a href='/akdata/character/#!/${item.charId}' target='_blank'>
+        <img class="figure-img" style="max-width: 80%; height: auto" src="/akdata/assets/images/char/${item.charId}.png"></img>
+        <figcaption>${chardb[item.charId].name}</figcaption>
+      </a>
+    </figure>`;
+    let subName = edb["subProfDict"][chardb[item.charId].subProfessionId].subProfessionName;
     // 三围以外的属性补正
     Object.keys(info.attr).forEach(k => {
       if (!["max_hp", "atk", "def"].includes(k))
@@ -86,7 +107,7 @@ function load() {
     return [
       subName,
       charName,
-      item.uniEquipName,
+      `<a href="###" onclick='showDesc("${key}")'> ${item.uniEquipName} </a>`,
       // item.uniEquipDesc
       item.unlockLevel,
       info.attr.max_hp || 0,
@@ -100,7 +121,7 @@ function load() {
 
   let list = pmBase.component.create({
     type: 'list',
-    columns: [ '子职业', '干员', '模组名称', '解锁等级', 
+    columns: [ '子职业', {header:'干员',width:'6%'}, '模组名称', '解锁等级', 
                '生命值', '攻击力', ' 防御力', 
                {header:'特性变更',width:'20%'}, {header:'解锁任务',width:'20%'}, {header:'具体数值',width:'10%'} ],
     list: view,
