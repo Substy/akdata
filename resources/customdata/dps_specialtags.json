@@ -59,7 +59,7 @@
     "char_4016_kazema": { "token": "token_10022_kazema_shadow" },
     "char_4025_aprot2": { "note": "假设全程覆盖Debuff" },
     "char_4039_horn":   { "frame_corr": 1 },
-    "char_4040_rockr":  { "frame_corr": 1, "grad": true },
+    "char_4040_rockr":  { "grad": true },
     "skchr_absin_2":    { "reset_attack": true },
     "skchr_acdrop_2":   { "reset_attack": true }, 
     "skchr_aglina_1":   { "reset_attack": true, "attack_begin": 19 },

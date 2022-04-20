@@ -276,17 +276,24 @@ function calculateDpsSeries(char, enemy, raidBuff, key, series) {
   var _backup = {
     basic: {...attr.basic},
     };
+  let skillAttack = null;
+  let normalAttack = null;
+
   series.forEach(x => {
     enemy[key] = x;
     if (!checkSpecs(char.skillId, "overdrive")) { // 正常计算
-      let skillAttack = calculateAttack(attr, enemy, raidBlackboard, true, charData, levelData, log);
+      attr.char.options.overdrive_mode = false;
+      attr.basic = Object.assign({}, _backup.basic);
+      skillAttack = calculateAttack(attr, enemy, raidBlackboard, true, charData, levelData, log);
       if (!skillAttack) return;
-
-      let normalAttack = calculateAttack(attr, enemy, raidBlackboard, false, charData, levelData, log);
+      
+      attr.basic = Object.assign({}, _backup.basic);
+      normalAttack = calculateAttack(attr, enemy, raidBlackboard, false, charData, levelData, log);
       if (!normalAttack) return;
     } else {
       // 22.4.15 过载模式计算
       // 直接粘过来了。麻了
+      attr.basic = Object.assign({}, _backup.basic);
       let od_p1 = calculateAttack(attr, enemy, raidBlackboard, true, charData, levelData, log);
 
       attr.basic = Object.assign({}, _backup.basic);
