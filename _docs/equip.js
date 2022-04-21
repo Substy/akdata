@@ -94,11 +94,16 @@ function load() {
     let charName = `
     <figure class="figure">
       <a href='/akdata/character/#!/${item.charId}' target='_blank'>
-        <img class="figure-img" style="max-width: 80%; height: auto" src="/akdata/assets/images/char/${item.charId}.png"></img>
+        <img class="figure-img" style="max-width: 60px; height: auto;" src="/akdata/assets/images/char/${item.charId}.png"></img>
         <figcaption>${chardb[item.charId].name}</figcaption>
       </a>
     </figure>`;
-    let subName = edb["subProfDict"][chardb[item.charId].subProfessionId].subProfessionName;
+    let subName = `
+    <figure class="figure">
+        <img class="figure-img" style="max-width: 36px; height: auto; filter: invert(100%);" 
+             src="/akdata/assets/images/subclass/sub_${chardb[item.charId].subProfessionId}_icon.png"></img>
+        <figcaption>${edb["subProfDict"][chardb[item.charId].subProfessionId].subProfessionName}</figcaption>
+    </figure>`;
     // 三围以外的属性补正
     Object.keys(info.attr).forEach(k => {
       if (!["max_hp", "atk", "def"].includes(k))

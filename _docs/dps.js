@@ -388,6 +388,7 @@ function showAnim() {
         h[key] = true;
       });
     })
+    delete h.version;
     let line_headers = Object.keys(h);
 
     

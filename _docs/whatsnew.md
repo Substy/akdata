@@ -5,6 +5,11 @@ order: 4
 category: 其他功能
 icon: info-circle
 ---
+## 22.04.21
+- [update] 增加了新干员的新版动画数据
+- [update] 更新了绿票价值表
+- [update] 模组一览增加了子职业图标
+
 ## 22.04.17-v2
 - [update] 模组数据
 - [update] 优化了计算器版本显示
