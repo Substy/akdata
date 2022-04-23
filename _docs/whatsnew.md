@@ -6,6 +6,7 @@ category: 其他功能
 icon: info-circle
 ---
 ## 22.04.21
+- [fix] 号角3技能损血计算
 - [update] 增加了新干员的新版动画数据
 - [update] 更新了绿票价值表
 - [update] 模组一览增加了子职业图标

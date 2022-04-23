@@ -3133,7 +3133,7 @@ function calculateAttack(charAttr, enemy, raidBlackboard, isSkill, charData, lev
         break;
       case "skchr_horn_3":
         if (options.overdrive_mode && !options.od_trigger) {
-          var horn_3_pct = dur.duration * (1+dur.duration) / 2;
+          var horn_3_pct = dur.duration * (dur.duration-0.2) / 2; // 0.4, 1.4,...,11.4
           damage = finalFrame.maxHp * horn_3_pct / 100;
           pool[2] -= damage;
           log.writeNote(`生命流失 ${damage.toFixed(1)}`);

@@ -196,7 +196,9 @@ function load() {
   </div>
   <div class="card mb-2 col-12">
     <div class="card-header">
-      <div class="card-title mb-0">精英化/专精材料（绿票算法）</div>
+      <div class="card-title mb-0">精英化/专精材料（绿票算法）
+        <a href="http://ark.yituliu.site/" target="_blank">绿票材料一图流</a>
+      </div>
     </div>
     <div id="mats_table"></div>
   </div>
