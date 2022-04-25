@@ -1,4 +1,4 @@
-import * as loader from "./loader.js";
+import * as loader from "./loader.esm.js";
 //import * as Dps from "./dpsv2.js";
 //import * as Actions from "./dps_actions.js";
 import * as Attributes from "./attributes.js";
@@ -8,7 +8,7 @@ loader.loadGameData(GameDataRoot);
 loader.patchAllChars();
 var _d = loader.Data;
 
-var new_op = ["char_426_billro", "char_478_kirara", "char_369_bena", "char_469_indigo"];
+var new_op = ["char_4039_horn", "char_4040_rockr", "char_4045_heidi", "char_4041_chnut"];
 
 var professionNames = {
     "PIONEER": "先锋",

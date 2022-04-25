@@ -20,11 +20,14 @@ loadJSON("./version.json", "version");
 loadData("dps_options");
 loadData("dps_specialtags");
 loadData("dps_specialtags_v2");
+loadData("dps_anim");
 
 export function loadGameData(basepath) {
   loadExcel("character_table", basepath);
   loadExcel("char_patch_table", basepath);
   loadExcel("skill_table", basepath);
+  loadExcel("uniequip_table", basepath);
+  loadExcel("battle_equip_table", basepath);
 }
 
 export function patchChar(charId, patchId, suffix) {

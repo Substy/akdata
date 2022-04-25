@@ -1,11 +1,11 @@
-import * as AKDATA from './akdata.js';
+import * as AKDATA from './akdata.esm.js';
 
 console.log("- 请在akdata.js中指定游戏数据路径");
 console.log("- 当前AKDATA.GameDataRoot = ", AKDATA.GameDataRoot);
 
-var charId = "char_426_billro";
-var skillId = "skchr_billro_3";
-var options = { "charge": true };
+var charId = "char_4039_horn";
+var skillId = "skchr_horn_3";
+var options = { "cond": true };
 
 //var dps = new AKDATA.Dps.DpsCalculator();
 //dps.calculateDps({ charId, skillId });

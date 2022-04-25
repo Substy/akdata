@@ -1,4 +1,4 @@
-import * as AKDATA from './akdata.js';
+import * as AKDATA from './akdata.esm.js';
 
 console.log("- 请在akdata.js中指定游戏数据路径");
 console.log("- 当前AKDATA.GameDataRoot = ", AKDATA.GameDataRoot);
