@@ -1551,6 +1551,7 @@ function extractDamageType(charData, chr, isSkill, skillDesc, skillBlackboard, o
     if (options.token) {
       var _r = checkSpecs(skillId, "token_damage_type")
       if (_r != null) ret = _r;
+      if (skillId == "skchr_ling_3" && chr.options.ling_fusion) ret = 1;
     }
   } else if (chr.options.token) {
     ret = checkSpecs(charId, "token_damage_type") || ret;

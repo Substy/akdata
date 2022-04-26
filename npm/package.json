@@ -3,10 +3,11 @@
   "type": "module",
   "version": "3.0.0-alpha",
   "description": "Arknights DPS calculator core",
-  "main": "akdata.esm.js",
-  "types": "akdata.d.ts",
+  "main": "dist/akdata.esm.js",
+  "types": "dist/akdata.esm.d.ts",
   "scripts": {
-    "test": "node test.js"
+    "test": "node dist/test.js",
+    "prepublish": "babel src --out-dir dist"
   },
   "repository": {
     "type": "git",
@@ -15,6 +16,11 @@
   "keywords": [
     "Arknights"
   ],
+  "devDependencies": {
+    "babel-cli": "^6.26.0",
+    "babel-plugin-transform-object-rest-spread": "^6.26.0",
+    "babel-preset-env": "^1.6.1"
+  },
   "author": "curran",
   "license": "CC-BY-NC-SA-4.0",
   "bugs": {

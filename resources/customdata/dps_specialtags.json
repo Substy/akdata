@@ -184,7 +184,7 @@
     "skchr_lava2_2":    { "sec": true, "note": "不重叠部分伤害减半" },
     "skchr_ling_1":     { "token": "token_10020_ling_soul1", "token_damage_type": 1, "use_token_for_mastery": true },
     "skchr_ling_2":     { "token": "token_10020_ling_soul2", "token_damage_type": 1, "cast_time": 36, "reset_attack": "ogcd", "use_token_for_mastery": true },
-    "skchr_ling_3":     { "token": "token_10020_ling_soul3", "token_damage_type": 1, "use_token_for_mastery": true, "reset_attack": true,
+    "skchr_ling_3":     { "token": "token_10020_ling_soul3", "token_damage_type": "0", "use_token_for_mastery": true, "reset_attack": true,
                           "fusion_buff": { "atk": 0.8, "def": 0.8, "max_hp": 1, "base_attack_time": 0.8 } },
     "skchr_lionhd_2":   { "reset_attack": "ogcd", "cast_time": 32 },
     "skchr_lmlee_2":    { "passive": true, "damage_type": "0" },

@@ -12,3 +12,4 @@ assets/images/relic/
 *.pyc
 */build/*
 resources/gamedata/story
+npm/node_modules
