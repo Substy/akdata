@@ -229,6 +229,7 @@
         "char_4045_heidi":  [ "cond" ],
         "char_4039_horn":   [ "cond", "melee", "od_trigger" ],
         "char_4040_rockr":  [ "stack", "od_trigger" ],
-        "char_258_podego":  [ "equip" ]
+        "char_258_podego":  [ "equip" ],
+        "char_108_silent":  [ "token" ]
     }
 }

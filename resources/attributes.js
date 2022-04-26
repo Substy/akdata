@@ -1125,10 +1125,6 @@ function applyBuff(charAttr, buffFrm, tag, blackbd, isSkill, isCrit, log, enemy)
       case "skchr_vodfox_1":
         buffFrame.damage_scale = 1 + (buffFrame.damage_scale - 1) * blackboard.scale_delta_to_one;
         break;
-      case "skchr_silent_2":
-      case "skchr_vodfox_2":
-        if (isSkill) log.writeNote("召唤类技能，调整中");
-        break;
       case "skchr_elysm_2":
         delete blackboard["def"];
         delete blackboard["max_target"];
@@ -1455,6 +1451,9 @@ function applyBuff(charAttr, buffFrm, tag, blackbd, isSkill, isCrit, log, enemy)
       case "skchr_rockr_2":
         if (!options.overdrive_mode)
           delete blackboard.atk;
+        break;
+      case "tachr_108_silent_1":
+        if (options.token) done = true;
         break;
     }
 
@@ -2577,6 +2576,18 @@ function calculateAttack(charAttr, enemy, raidBlackboard, isSkill, charData, lev
           damagePool[0] = 0;
           log.write(`[特殊] ${displayNames[buffName]}: 伤害为0 （以上计算无效）`);
           break;
+        case "skcom_heal_up[3]":
+          if (options.token) {
+            damagePool[0] = damagePool[2] = 0;
+            log.write(`[特殊] ${displayNames[buffName]}: 伤害/治疗为0 （以上计算无效）`);
+          }
+          break;
+        case "skchr_silent_2":
+          if (options.token) {
+            damagePool[2] = 0;
+            log.write(`[特殊] ${displayNames[buffName]}: 治疗为0 （以上计算无效）`);
+          }
+          break;
         default:
           if (b=="skill") continue; // 非技能期间，跳过其他技能的额外伤害判定
       }
@@ -2706,7 +2717,6 @@ function calculateAttack(charAttr, enemy, raidBlackboard, isSkill, charData, lev
         damagePool[0] = 0; damagePool[1] = 0;
         log.write(`[特殊] ${displayNames[buffName]}: 伤害为0 （以上计算无效）`);
         break;
-      case "skchr_silent_2":
       case "skchr_zebra_1":
         damagePool[2] = 0;
         log.write(`[特殊] ${displayNames[buffName]}: 治疗为0 （以上计算无效）`);
@@ -3140,6 +3150,12 @@ function calculateAttack(charAttr, enemy, raidBlackboard, isSkill, charData, lev
           log.writeNote(`生命流失 ${damage.toFixed(1)}`);
         }
         break;
+      case "skcom_heal_up[3]":
+        if (options.token) {
+          damagePool[0] = damagePool[2] = 0;
+          log.write(`[特殊] ${displayNames[buffName]}: 伤害/治疗为0 （以上计算无效）`);
+        }
+        break;
 
     }; // switch
 
@@ -3541,28 +3557,30 @@ function getAttributes(char, log) { //charId, phase = -1, level = -1
     charData.has_trait = true;
     charData.talents.push(charData.trait);
   }
-  charData.talents.forEach(talentData => {
-    if (talentData.candidates) { // mon3tr!!
-      for (let i = talentData.candidates.length - 1; i >= 0; i--) {
-        let cd = talentData.candidates[i];
-        //console.log(cd);
-        if (char.phase >= cd.unlockCondition.phase && char.level >= cd.unlockCondition.level && 
-            char.potentialRank >= cd.requiredPotentialRank) {
-          // 找到了当前生效的天赋
-          let blackboard = getBlackboard(cd.blackboard);
-          if (!cd.prefabKey || cd.prefabKey < 0) {
-            cd.prefabKey = "trait";  // trait as talent
-            cd.name = "特性";
+  if (charData.talents) {
+    charData.talents.forEach(talentData => {
+      if (talentData.candidates) { // mon3tr!!
+        for (let i = talentData.candidates.length - 1; i >= 0; i--) {
+          let cd = talentData.candidates[i];
+          //console.log(cd);
+          if (char.phase >= cd.unlockCondition.phase && char.level >= cd.unlockCondition.level && 
+              char.potentialRank >= cd.requiredPotentialRank) {
+            // 找到了当前生效的天赋
+            let blackboard = getBlackboard(cd.blackboard);
+            if (!cd.prefabKey || cd.prefabKey < 0) {
+              cd.prefabKey = "trait";  // trait as talent
+              cd.name = "特性";
+            }
+            let prefabKey = 'tachr_' + char.charId.slice(5) + '_' + cd.prefabKey;
+            displayNames[prefabKey] = cd.name;  // add to name cache
+            // bufflist处理
+            buffList[prefabKey] = blackboard;
+            break;
           }
-          let prefabKey = 'tachr_' + char.charId.slice(5) + '_' + cd.prefabKey;
-          displayNames[prefabKey] = cd.name;  // add to name cache
-          // bufflist处理
-          buffList[prefabKey] = blackboard;
-          break;
-        }
-      };
-    }
-  });
+        };
+      }
+    }); // foreach
+  }
 
   // 令3
   if (char.skillId == "skchr_ling_3" && char.options.ling_fusion && char.options.token) {
