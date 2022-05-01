@@ -1455,6 +1455,9 @@ function applyBuff(charAttr, buffFrm, tag, blackbd, isSkill, isCrit, log, enemy)
       case "tachr_108_silent_1":
         if (options.token) done = true;
         break;
+      case "skchr_silent_2":
+        if (options.token) buffFrame.maxTarget = 999;
+        break;
     }
 
   }
