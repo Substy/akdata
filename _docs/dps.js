@@ -64,8 +64,8 @@ function load() {
   $("#btn_whatsnew").click(AKDATA.showNews);
   AKDATA.patchAllChars();
 
-  var charId_hash = window.location.hash.replace("#", "");
-  console.log(charId_hash);
+  var charId_hash = window.location.hash.replaceAll("#", "");
+  //console.log(charId_hash);
 
   for (let charId in AKDATA.Data.character_table) {
     let charData = AKDATA.Data.character_table[charId];
@@ -217,11 +217,12 @@ function load() {
     $dps.find('.dps__row-note').append(`<td><div class="dps__note" data-index="${i}"></div></td>`);
     $dps.find('.dps__row-prts').append(`<td></td>`);  
     $dps.find('.dps__row-option').append(`<td></td>`);
-    $dps.find('.dps__row-damagepool').append(`<td><a class="dps__damagepool" data-index="${i}" href="#">[点击显示]</a></td>`);
-    $dps.find('.dps__row-anim').append(`<td><a class="dps__anim" data-index="${i}" href="#">[点击显示]</a></td>`);
+    $dps.find('.dps__row-damagepool').append(`<td><a class="dps__damagepool" data-index="${i}" href="###">[点击显示]</a></td>`);
+    $dps.find('.dps__row-anim').append(`<td><a class="dps__anim" data-index="${i}" href="###">[点击显示]</a></td>`);
     $dps.find('.dps__row-potentialrank').append(`<td><select class="form-control form-control-sm dps__potentialrank" data-index="${i}">${[0,1,2,3,4,5].map(x=>`<option value="${x}">${x+1}</option>`).join('')}</select></td>`);
     $dps.find('.dps__row-favor').append(`<td><select class="form-control form-control-sm dps__favor" data-index="${i}">${Object.keys(new Array(51).fill(0)).map(x=>`<option value="${x*2}">${x*2}</option>`).join('')}</select></td>`);
-    $dps.find('.dps__row-equip').append(`<td><select class="form-control form-control-sm dps__equip" data-index="${i}"></select></td>`);
+    $dps.find('.dps__row-equip').append(`<td><select class="form-control form-control-sm dps__equip" data-index="${i}"></select>
+                                             <a class="dps__equip_info" data-index="${i}" href="###">模组信息</a></td>`);
   }
 
   pmBase.content.build({
@@ -253,16 +254,19 @@ function load() {
 }
 
 window.onhashchange = function () {
-  var charId_hash = window.location.hash.replace("#", "");
-  console.log(charId_hash);
+  var charId_hash = window.location.hash.replaceAll("#", "");
+  //console.log(charId_hash);
   if (charId_hash.length > 0) selectChar(charId_hash, 0);  
 }
 
 function selectChar(charId, i) {
-  var name = AKDATA.Data.character_table[charId].name;
-  $(`.txt_char:eq(${i})`).text(name);
-  $(`.img_char:eq(${i})`).attr("src", `/akdata/assets/images/char/${charId}.png`);
-  updateChar(charId, i);
+  //console.log(charId);
+  if (charId && charId != "-") {
+    var name = AKDATA.Data.character_table[charId].name;
+    $(`.txt_char:eq(${i})`).text(name);
+    $(`.img_char:eq(${i})`).attr("src", `/akdata/assets/images/char/${charId}.png`);
+    updateChar(charId, i);
+  }
 }
 
 function showSelectChar() {
@@ -292,7 +296,7 @@ function gotoMastery() {
 function showDetail() {
   let $this = $(this);
   let index = ~~$this.data('index');
-  let name = AKDATA.Data.character_table[Characters[index].charId].name;
+  let name = Characters[index].name;
   //console.log(Characters[index].dps.log);
   pmBase.component.create({
     type: 'modal',
@@ -333,7 +337,7 @@ function showDamage() {
 说明: <span id="damage_note_${index}"></span>
 `;
 
-  let name = AKDATA.Data.character_table[Characters[index].charId].name;
+  let name = Characters[index].name;
 
   pmBase.component.create({
     type: 'modal',
@@ -499,9 +503,12 @@ function updateChar(charId, index) {
   if (equips.length > 0) {
     equipId = equips[equips.length-1].id;
     setSelectValue('equip', index, equipId);
-  }
+    $(`.dps__equip_info:eq(${index})`).attr("href", `/akdata/equip/#${equipId}`).attr("target", "_blank");
+  } else 
+    $(`.dps__equip_info:eq(${index})`).attr("href", `###`).attr("target", "");
 
   Characters[index] = {
+    name: charData.name,
     charId,
     skillId,
     skillLevel,
@@ -632,6 +639,10 @@ function chooseEquip() {
   let eid = $this.val();
 
   Characters[index].equipId = eid;
+  if (eid) {
+    $(`.dps__equip_info:eq(${index})`).attr("href", `/akdata/equip/#${eid}`);
+  } else 
+    $(`.dps__equip_info:eq(${index})`).attr("href", `###`).attr("target", "");
   if (index == 0) calculateAll();
   else calculate(index);
 }
@@ -755,7 +766,7 @@ function calculate(index) {
 
  // console.log(s.dur.tags);
   if (s.dur.tags.includes("infinity"))
-    getElement('period', index).html(`${Math.round(dps.normal.dur.duration*100)/100}s + 持续时间无限(记为1800s)`);
+    getElement('period', index).html(`${Math.round(dps.normal.dur.duration*100)/100}s + 持续时间无限(记为${dps.skill.dur.duration.toFixed(1)}s)`);
   if (s.dur.tags.includes("instant"))
     getElement('s_dps', index).append(" / 瞬发");
   if (s.dur.tags.includes("passive")) {

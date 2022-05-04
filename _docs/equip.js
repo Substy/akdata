@@ -10,6 +10,7 @@ function init() {
 let edb = null;
 let bedb = null;
 let chardb = null;
+let equipList = [];
 
 function getBlackboard(blackboardArray) {
   let blackboard = {};
@@ -66,7 +67,7 @@ function getEquipInfo(eid) {
 function showDesc(key) {
   var item = AKDATA.Data.uniequip_table["equipDict"][key];
   if (item) {
-    console.log(item.uniEquipDesc);
+   // console.log(item.uniEquipDesc);
     pmBase.component.create({
       type: 'modal',
       id: "equip_desc_dialog",
@@ -78,23 +79,19 @@ function showDesc(key) {
   }
 }
 
-function load() {
-  let selector = {};
-  let body = [];
-  window.showDesc = showDesc;
- 
+function buildEquipList() {
   edb = AKDATA.Data.uniequip_table;
   bedb = AKDATA.Data.battle_equip_table;
   chardb = AKDATA.Data.character_table;
 
-  let view = Object.keys(edb["equipDict"]).map( key => {
+  let list = Object.keys(edb["equipDict"]).map( key => {
     let item = edb["equipDict"][key];
     let info = getEquipInfo(key);
     let missions = "<ul>" + item.missionList.map(x => `<li> ${edb["missionList"][x].desc} </li>`).join() + "</ul>";
     let charName = `
     <figure class="figure">
-      <a href='/akdata/character/#!/${item.charId}' target='_blank'>
-        <img class="figure-img" style="max-width: 60px; height: auto;" src="/akdata/assets/images/char/${item.charId}.png"></img>
+      <a href='/akdata/character/#!/${item.charId}' name='${key}' target='_blank'>
+        <img class="figure-img" loading="lazy" style="max-width: 60px; height: auto;" src="/akdata/assets/images/char/${item.charId}.png"></img>
         <figcaption>${chardb[item.charId].name}</figcaption>
       </a>
     </figure>`;
@@ -124,22 +121,48 @@ function load() {
     ];
   });
 
+  return list;
+}
+
+function updateView() {
+  var subList = equipList;
+  var eid = window.location.hash.replaceAll("#", "");
+  if (eid) {
+    var charName = chardb[edb["equipDict"][eid].charId].name;
+    subList = equipList.filter(x => x[1].includes(charName));
+  }
+  if ($("#opt_hidebase").is(":checked"))
+    subList = subList.filter(x => !x[7].includes("基础模组"));  
+  //console.log(subList);
+
   let list = pmBase.component.create({
     type: 'list',
     columns: [ '子职业', {header:'干员',width:'6%'}, '模组名称', '解锁等级', 
-               '生命值', '攻击力', ' 防御力', 
-               {header:'特性变更',width:'20%'}, {header:'解锁任务',width:'20%'}, {header:'具体数值',width:'10%'} ],
-    list: view,
+                '生命值', '攻击力', ' 防御力', 
+                {header:'特性变更',width:'20%'}, {header:'解锁任务',width:'20%'}, {header:'具体数值',width:'10%'} ],
+    list: subList,
     sortable: true,
     card: true,
+    class: "tablesorter table-striped"
   });
+
+  $("#equip_list").html(list);
+  $(".tablesorter").tablesorter();
+}
+
+function load() {
+  window.showDesc = showDesc;
 
 	pmBase.content.build({
 	  pages: [{
-      content: list,
+      content: "<div id='equip_list'></div>"
     }]
 	});
 
+  equipList = buildEquipList();
+  updateView();  
+
+  $("#opt_hidebase").change(updateView);
   $("th:nth-child(4)").trigger("click");
   $("th:nth-child(4)").trigger("click");
 }

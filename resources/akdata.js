@@ -8,11 +8,11 @@ const useCache = true;
 const cacheBeginTime = new Date(2019, 12, 10).getTime();
 
 window.AKDATA = {
-  akdata: "220421", // jsdelivr tag version
+  akdata: "220504", // jsdelivr tag version
 
   Data: {},
 
-  new_op: ["char_4039_horn", "char_4040_rockr", "char_4045_heidi", "char_4041_chnut"],
+  new_op: ["char_1023_ghost2", "char_4009_irene", "char_4042_lumen", "char_433_windft"],
 
   professionNames: {
     "PIONEER": "先锋",
@@ -76,18 +76,30 @@ window.AKDATA = {
   },
 
   load: function (paths, callback, ...args) {
-
+    var t0 = performance.now();
     for( let i=0;i<paths.length;i++) {
       if ( paths[i].endsWith('.json') ){
         let name = paths[i].split('/').pop().replace('.json', '');
-        let path = `https://cdn.jsdelivr.net/gh/xulai1001/akdata@${window.AKDATA.akdata}/resources/gamedata/${paths[i].toLowerCase()}`;
-        
-        // comment this line to use local data only.
-        if (_use_local ||
-            (!(paths[i].includes("excel") || paths[i].includes("levels"))))    // excel/levels使用cdn数据 其他使用本地数据
-          path = `../resources/gamedata/${paths[i].toLowerCase()}?_=${Math.round(Math.random()*1e8)}`;
-        console.log(`Loading -> ${name}`);
-        paths[i] = loadJSON(path, data => AKDATA.Data[name] = data);
+        let path = `resources/gamedata/${paths[i].toLowerCase()}`;
+        let isGamedata = (paths[i].includes("excel") || paths[i].includes("levels"));
+
+        // mirrors
+        let jsdelivr = `https://cdn.jsdelivr.net/gh/xulai1001/akdata@${window.AKDATA.akdata}/` + path;
+        let local = `/akdata/` + path;
+        let github = "https://raw.githubusercontent.com/xulai1001/akdata/master/" + path;
+
+        let urlList = [];
+        if (_use_local)
+          urlList = [local];
+        else if (isGamedata)
+          urlList = [jsdelivr, github, local];
+        else
+          urlList = [github, local];
+
+        // convert path to Promise.race()
+        paths[i] = loadJSONFromSources(name, urlList, !isGamedata, result => {
+          AKDATA.Data[name] = result;
+        });
       }
     }
 
@@ -96,6 +108,8 @@ window.AKDATA = {
         let string = JSON.stringify( CacheList );
         localStorage.setItem( 'CacheList', string);
       }
+
+      console.log(`Load time: ${(performance.now() - t0).toFixed(1)} ms.`);
 
       if (callback){
         let result = callback(...args);
@@ -276,35 +290,62 @@ function setLocaStorageObject(key, obj) {
   localStorage.setItem( key, string);
 }
 
-function loadJSON( url, callback ){
+function ajaxPromise(url) {
+  return new Promise(function(resolve, reject){
+    var t0 = performance.now();
+    $.ajax(url, {
+      async: true,
+      timeout: 30000,
+      success: function(response) {
+                  if (typeof response === 'string')
+                    response = JSON.parse(response);
+                  resolve({
+                    url,
+                    response,
+                    time: performance.now() - t0
+                  });
+                },
+      error: function(xhr) { reject(xhr.statusText); } 
+    });
+  });
+}
+
+// returns Promise.race() predicate
+function loadJSONFromSources( tag, urlList, bypassCache, callback ){
   let hasCache = false;
   let beginTime = performance.now();
-
+  let elapsed = 0;
+  let obj = null;
+  let salt = `?_=${Math.round(Math.random()*1e8)}`;
   if (useCache){
     if ( CacheList === null ) {
       CacheList = getLocaStorageObject('CacheList', false, {});
     }
-    hasCache = url in CacheList && CacheList[url].time >= cacheBeginTime;
+    hasCache = tag in CacheList && CacheList[tag].time >= cacheBeginTime;
   }
 
-  if ( hasCache ) {
-    let obj = getLocaStorageObject(url, CacheList[url].compressed);
+  if ( hasCache && !bypassCache ) {
+    obj = getLocaStorageObject(tag, CacheList[tag].compressed);
     callback(obj);
-    //console.log(`load json '${url} from localStorage in ${performance.now() - beginTime}ms.`);
+    elapsed = performance.now() - beginTime;
+    console.log(`Loading ${tag} (cached) -> ${elapsed.toFixed(1)} ms.`);
     return true;
   }
   else {
-    return $.getJSON(url, null, data => {
-      callback(data);
-      if (useCache) {
-        setLocaStorageObject( url, data );
-      }
-      //console.log(`load json '${url} from server in ${performance.now() - beginTime}ms.`);
+    return Promise.race(urlList.map(x => ajaxPromise(x+salt))).then(r => {
+      if (useCache) setLocaStorageObject(tag, r.response);
+      elapsed = performance.now() - beginTime;
+      console.log(`Loading ${tag} @ ${r.url} -> ${elapsed.toFixed(1)} ms.`);
+      obj = r.response;
+      callback(obj);
+    }, e => {
+      console.log(e);
     });
   }
 }
 
 function formatStringCallback(match, name, value) {
+  //console.log(name,value);
   if (!!AKDATA.Data.gamedata_const) {
     if (AKDATA.Data.gamedata_const.richTextStyles[name]) // 效果
       return AKDATA.Data.gamedata_const.richTextStyles[name].replace('{0}', value).replace("color=", "span style=color:").replace("/color", "/span");
