@@ -325,7 +325,11 @@ function ajaxPromise(url) {
                     time: performance.now() - t0
                   });
                 },
-      error: function(xhr) { reject(xhr.statusText); } 
+      error: function(xhr) {
+        //console.log("ajaxPromise error pending @",url); 
+        // prevent rejecting too early. use race() to mimic Promise.any() functionality.
+        setTimeout(function (){ reject(xhr.statusText);}, 30000);
+      } 
     });
   });
 }

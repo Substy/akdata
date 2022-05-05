@@ -71,7 +71,7 @@ function showDesc(key) {
     pmBase.component.create({
       type: 'modal',
       id: "equip_desc_dialog",
-      content: item.uniEquipDesc.replaceAll("\n", "<br>"),
+      content: item.uniEquipDesc.replace(/\n/g, "<br>"),
       width: 600,
       title: `${item.uniEquipName} - 故事`,
       show: true
@@ -126,7 +126,7 @@ function buildEquipList() {
 
 function updateView() {
   var subList = equipList;
-  var eid = window.location.hash.replaceAll("#", "");
+  var eid = window.location.hash.replace(/\#/g, "");
   if (eid) {
     var charName = chardb[edb["equipDict"][eid].charId].name;
     subList = equipList.filter(x => x[1].includes(charName));

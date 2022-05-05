@@ -64,7 +64,7 @@ function load() {
   $("#btn_whatsnew").click(AKDATA.showNews);
   AKDATA.patchAllChars();
 
-  var charId_hash = window.location.hash.replaceAll("#", "");
+  var charId_hash = window.location.hash.replace(/\#/g, "");
   //console.log(charId_hash);
 
   for (let charId in AKDATA.Data.character_table) {
@@ -254,7 +254,7 @@ function load() {
 }
 
 window.onhashchange = function () {
-  var charId_hash = window.location.hash.replaceAll("#", "");
+  var charId_hash = window.location.hash.replace(/\#/g, "");
   //console.log(charId_hash);
   if (charId_hash.length > 0) selectChar(charId_hash, 0);  
 }
