@@ -74,9 +74,26 @@ window.AKDATA = {
     localStorage.clear();
     location.reload();
   },
+  progress: 0,
+  prog_n: 0,
+
+  incProgress: function() {
+    this.progress += 1;
+    if ($("#prg_load").length > 0)
+      $("#prg_load").attr("style", `width: ${this.progress*100/this.prog_n}%`);
+  },
+
+  completeProgress: function() {
+    this.progress = this.prog_n;
+    if ($("#prg_load").length > 0) {
+      $("#prg_load").attr("style", `width: 100%`).addClass("bg-success");
+    }
+  },
 
   load: function (paths, callback, ...args) {
     var t0 = performance.now();
+    this.progress = 0;
+    this.prog_n = paths.length;
     for( let i=0;i<paths.length;i++) {
       if ( paths[i].endsWith('.json') ){
         let name = paths[i].split('/').pop().replace('.json', '');
@@ -101,6 +118,8 @@ window.AKDATA = {
           AKDATA.Data[name] = result;
         });
       }
+      else 
+        this.incProgress();
     }
 
     pmBase.loader.using( paths, () => {
@@ -110,7 +129,8 @@ window.AKDATA = {
       }
 
       console.log(`Load time: ${(performance.now() - t0).toFixed(1)} ms.`);
-
+      this.completeProgress();
+      
       if (callback){
         let result = callback(...args);
         if (result !== undefined) pmBase.content.show(result);
@@ -329,6 +349,7 @@ function loadJSONFromSources( tag, urlList, bypassCache, callback ){
     callback(obj);
     elapsed = performance.now() - beginTime;
     console.log(`Loading ${tag} (cached) -> ${elapsed.toFixed(1)} ms.`);
+    AKDATA.incProgress();
     return true;
   }
   else {
@@ -337,6 +358,7 @@ function loadJSONFromSources( tag, urlList, bypassCache, callback ){
       elapsed = performance.now() - beginTime;
       console.log(`Loading ${tag} @ ${r.url} -> ${elapsed.toFixed(1)} ms.`);
       obj = r.response;
+      AKDATA.incProgress();
       callback(obj);
     }, e => {
       console.log(e);
