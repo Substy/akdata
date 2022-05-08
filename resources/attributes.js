@@ -913,7 +913,6 @@ function applyBuff(charAttr, buffFrm, tag, blackbd, isSkill, isCrit, log, enemy)
       case "skchr_siege_2":
       case "skchr_glady_3":
       case "skchr_gnosis_2":
-      case "skchr_irene_3":
         buffFrame.maxTarget = 999;
         writeBuff(`最大目标数 = ${buffFrame.maxTarget}`);
         break;
@@ -1520,6 +1519,15 @@ function applyBuff(charAttr, buffFrm, tag, blackbd, isSkill, isCrit, log, enemy)
       case "tachr_1023_ghost2_1":
         if (!options.annie)
           done = true; break;
+      case "skchr_irene_1":
+      case "skchr_irene_2":
+          blackboard.prob_override = 1;
+          break;
+      case "skchr_irene_3":
+          blackboard.prob_override = 1;
+          buffFrame.maxTarget = 999;
+          writeBuff(`最大目标数 = ${buffFrame.maxTarget}`);
+          break;
     }
 
   }
@@ -2376,7 +2384,8 @@ function calculateAttack(charAttr, enemy, raidBlackboard, isSkill, charData, lev
   }
 
   // sec spec
-  if (checkSpecs(blackboard.id, "sec") && isSkill) {
+  if ((checkSpecs(blackboard.id, "sec") && isSkill) ||
+      (options.annie && charId == "char_1023_ghost2")) {
     let intv = 1;
     if (checkSpecs(blackboard.id, "interval")) {
       intv = checkSpecs(blackboard.id, "interval");
@@ -3250,12 +3259,6 @@ function calculateAttack(charAttr, enemy, raidBlackboard, isSkill, charData, lev
           log.write(`[特殊] ${displayNames[buffName]}: 伤害/治疗为0 （以上计算无效）`);
         }
         break;
-      case "skchr_irene_1":
-        var irene_1_edef = Math.max(0, (enemy.def - enemyBuffFrame.edef_pene) * (1-buffList["tachr_4009_irene_1"].def_penetrate));
-        log.write(`[特殊] ${displayNames[buffName]} 额外伤害-敌人防御 ${irene_1_edef.toFixed(1)}`);
-        damage = Math.max(finalFrame.atk - irene_1_edef, finalFrame.atk * 0.05) * buffFrame.damage_scale;
-        pool[0] += damage;
-        break;
       case "skchr_irene_3":
         var irene_3_edef = Math.max(0, (enemy.def - enemyBuffFrame.edef_pene) * (1-buffList["tachr_4009_irene_1"].def_penetrate));
         var irene_3_atk = finalFrame.atk / buffFrame.atk_scale * bb.multi_atk_scale;
@@ -3265,14 +3268,14 @@ function calculateAttack(charAttr, enemy, raidBlackboard, isSkill, charData, lev
         log.write(`[特殊] ${displayNames[buffName]} 轰击伤害 ${damage.toFixed(1)} 命中 ${bb.multi_times * ecount}`);
         break;
       case "skchr_lumen_1":
-        heal = finalFrame.atk / buffFrame.heal_scale * bb["aura.heal_scale"];
+        heal = finalFrame.atk * bb["aura.heal_scale"];
         var lumen_1_hitcount = bb["aura.projectile_life_time"] * dur.attackCount * enemy.count;
         log.write(`[特殊] ${displayNames[buffName]}: HoT ${heal.toFixed(1)}/s, 命中 ${lumen_1_hitcount}`);
         pool[2] += heal * lumen_1_hitcount;
         break;
       case "skchr_ghost2_3":
-        if (isSkill) {
-          if (options.cond && !options.annie) {
+        if (isSkill && !options.annie) {
+          if (options.cond) {
             var ghost2_3_atk = finalFrame.atk * bb["attack@atk_scale_ex"];
             damage = Math.max(ghost2_3_atk - edef, ghost2_3_atk * 0.05) * buffFrame.damage_scale;
             pool[0] += damage * dur.hitCount;

@@ -171,6 +171,7 @@
     "skchr_huang_3":	{ "reset_attack": true, "sec": true, "grad": true },
     "skchr_ifrit_2":    { "cast_time": 39, "sim": true },
     "skchr_ifrit_3":	{ "reset_attack": true, "sec": true, "frame_corr": 0 },
+    "skchr_irene_1":    { "times": 2 },
     "skchr_irene_2":    { "reset_attack": "ogcd", "cast_time": 30, "attack_begin": 8 },
     "skchr_irene_3":    { "cast_time": 123, "reset_attack": "ogcd", "attack_begin": 4 },
     "skchr_iris_1":     { "attack_begin": 28 },
