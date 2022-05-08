@@ -587,9 +587,9 @@ function buildChartView(resultView, key) {
       k = (view.dps[skill][stg].damageType == 2) ? HealKeys[key] : key; 
       var value = view.dps[skill][stg][k];
       if (skill in last)
-        entry.push((value - last[skill]).toFixed(2));
+        entry.push((value - last[skill]).toFixed(1));
       else
-        entry.push(value.toFixed(2));
+        entry.push(value.toFixed(1));
       last[skill] = value;
     }
     columns.push(entry);
@@ -772,6 +772,9 @@ function calcSubClass(x, prof) {
   };
 }
 
+var _baseValue = null;
+var _lineCount = 0;
+
 function plot2(chartView) {
   var myChart = echarts.init($("#echarts_chart")[0]);
   /* chartView是按行的
@@ -866,7 +869,27 @@ function plot2(chartView) {
       axisPointer: {
         // Use axis to trigger tooltip
         type: 'shadow' // 'shadow' as default; can also be 'line' or 'shadow'
-      }
+      }, 
+      valueFormatter: function (value) {
+        var v = parseFloat(value);
+        if (!_baseValue && v>=0) {
+          _baseValue = v; // 暂存第一个值作为基准值
+          _lineCount = 0;
+          return value;
+        } else {
+          if (isNaN(v)) {  // 最后一行
+            _baseValue = null;
+            return "";
+          } else if (_lineCount < 4) {
+            var pct = v*100/_baseValue;
+            ++_lineCount;  // 只显示前四行的百分比
+            return `${value} / ${pct.toFixed(1)}%`;
+          } else {
+            ++_lineCount;
+            return value;
+          }
+        }
+      },
     },
     legend: { top: 'bottom' },
     grid: {

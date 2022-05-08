@@ -20,7 +20,7 @@ js:
   - https://cdn.jsdelivr.net/npm/vue@2.6.14/dist/vue.min.js
   - https://cdn.jsdelivr.net/npm/d3@5.16.0/dist/d3.min.js
   - https://cdn.jsdelivr.net/npm/c3@0.7.20/c3.min.js
-  - https://cdn.jsdelivr.net/npm/echarts@5.2.2/dist/echarts.min.js
+  - https://cdn.jsdelivr.net/npm/echarts@5.3.2/dist/echarts.min.js
   - https://cdn.jsdelivr.net/npm/showdown@1.9.1/dist/showdown.min.js
 
 css:
