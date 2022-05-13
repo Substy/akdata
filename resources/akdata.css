@@ -86,3 +86,56 @@ strong {
     background:#f1f1f1;
     box-shadow:2px 2px 4px #444;
 }
+.dps_table_header {
+    width: 18%;
+    max-width: 200px;
+}
+.dps_menu_item {
+    display: flex;
+    flex-flow: row wrap;
+    justify-content: left;
+}
+.dps_menu_item_50 {
+    width: 50%;
+}
+@media (max-width: 840px) {
+    .dps_table_header {
+        width: 12%;
+    }
+    .dps_menu_item {
+        flex-flow: column wrap;
+    }
+    .dps_menu_item_50 {
+        width: 100%;
+    }
+
+    table.dps_responsive tr th { /* 隐藏真实表头 */
+        display: none;
+    }
+    table.dps_responsive tr{
+        border-bottom: 1px solid #e0e0e0;
+        display: block;
+    }
+    table.dps_responsive tr td {
+        position: relative;
+        padding-left: 30%; /* 数据列左边留 30% 空间给新的表头 */
+        border-bottom: 1px solid #e0e0e0;
+        text-align: center;
+        background: #fff;
+        display: block;
+    }
+    table.dps_responsive tr td::before {
+        content: attr(data-th); /* 使用 data-th 属性生成新的表头 */
+        position: absolute;
+        left: 15%;  /* 30/2 */
+        transform: translateX(-50%); /* left 与 transform 配合实现表头居中 */
+        font-weight: 700;
+    }
+}
+
+/* debug */
+/*
+* {
+    border: 1px solid #0f0;
+}
+*/

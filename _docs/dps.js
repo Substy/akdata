@@ -80,11 +80,11 @@ function load() {
   </div>
   <table class="table dps" style="table-layout:fixed;">
   <tbody>
-    <tr class="dps__row-select" style="width:20%;"> <th style="width:240px;">干员</th> </tr>
+    <tr class="dps__row-select"> <th class="dps_table_header">干员</th> </tr>
     <tr class="dps__row-level"> <th>等级</th> </tr>
     <tr class="dps__row-potentialrank"> <th>潜能</th> </tr>
     <tr class="dps__row-favor"> <th>信赖</th> </tr>
-    <tr class="dps__row-equip"> <th>模组(精二生效)</th> </tr>
+    <tr class="dps__row-equip"> <th>模组 (精二生效)</th> </tr>
     <tr class="dps__row-skill"> <th>技能</th> </tr>
     <tr class="dps__row-option"> <th>选项</th> </tr>
     <tr class="dps__row-prts"> <th>PRTS干员页面</th> </tr>
@@ -98,18 +98,17 @@ function load() {
     <tr class="dps__row-s_atk"> <th>技能攻击力 <i class="fas fa-info-circle pull-right" data-toggle="tooltip" data-placement="right" title="角色攻击力（计算技能倍数）"></i></th> </tr>
     <tr class="dps__row-s_damage"> <th>技能总伤害 <i class="fas fa-info-circle pull-right" data-toggle="tooltip" data-placement="right" title="单次伤害 x 命中数"></i></th> </tr>
     <tr class="dps__row-s_dps"> <th><font color="blue"><span>技能DPS</span></font><i class="fas fa-info-circle pull-right" data-toggle="tooltip" data-placement="right" title="技能总伤害 / 持续时间（包括罚站时间）"></i></th></tr>
-  <!--  <tr class="dps__row-a_dps"> <th><font color="silver"><span>技能DPS(攻击)</span></font><i class="fas fa-info-circle pull-right" data-toggle="tooltip" data-placement="right" title="技能单次伤害 / 攻击间隔，不考虑攻击力变化和暴击"></i></th></tr> -->
     <tr class="dps__row-n_dps"> <th>普攻</th> </tr>
     <tr class="dps__row-g_dps"> <th>平均</th> </tr>
     <tr class="dps__row-s_att"> <th>技能攻击间隔</th> </tr>
     <tr class="dps__row-n_att"> <th>普攻攻击间隔</th> </tr>
-    <tr class="dps__row-s_diff"> <th>技能总伤害提升% <i class="fas fa-info-circle pull-right" data-toggle="tooltip" data-placement="right" title="对比首列 +/-%"></i></th> </tr>
-    <tr class="dps__row-g_diff"> <th>平均DPS提升% <i class="fas fa-info-circle pull-right" data-toggle="tooltip" data-placement="right" title="对比首列 +/-%"></i></th> </tr>
+    <tr class="dps__row-s_diff"> <th>技能总伤害 提升% <i class="fas fa-info-circle pull-right" data-toggle="tooltip" data-placement="right" title="对比首列 +/-%"></i></th> </tr>
+    <tr class="dps__row-g_diff"> <th>平均DPS 提升% <i class="fas fa-info-circle pull-right" data-toggle="tooltip" data-placement="right" title="对比首列 +/-%"></i></th> </tr>
   </tbody>
   <tbody class="">
     <tr class="dps__row-damagepool"> <th>伤害表<i class="fas fa-info-circle pull-right" data-toggle="tooltip" title="详细的伤害表格"></i></th></tr>
     <tr class="dps__row-anim"> <th>动画帧数</th></tr>
-    <tr class="dps__row-results"> <th>计算过程(用于验算)</th> </tr>
+    <tr class="dps__row-results"> <th>计算过程 (用于验算)</th> </tr>
     <tr class="dps__row-note"> <th>说明</th> </tr>
   </tbody>
   </table>
@@ -118,19 +117,17 @@ function load() {
   <div class="card-header">
     <div class="card-title mb-0">敌人</div>
   </div>
-  <table class="table dps" style="table-layout:fixed;">
+  <table class="table dps dps_responsive" style="table-layout:fixed;">
     <tbody>
       <tr>
         <th>防御力</th>
         <th>法术抗性</th>
-      <!--  <th>HP</th> -->
         <th>数量</th>
       </tr>
       <tr>
-      <td><input type="text" class="dps__enemy-def" value="0"></td>
-      <td><input type="text" class="dps__enemy-mr" value="0"></td>
-    <!--  <td><input type="text" class="dps__enemy-hp" value="0"></td> -->
-      <td><input type="text" class="dps__enemy-count" value="1"></td>
+      <td data-th="防御"><input type="text" class="dps__enemy-def" value="0" style="width: 80%"></td>
+      <td data-th="法抗"><input type="text" class="dps__enemy-mr" value="0" style="width: 80%"></td>
+      <td data-th="数量"><input type="text" class="dps__enemy-count" value="1" style="width: 80%"></td>
       </tr>
     </tbody>
   </table>
@@ -139,7 +136,7 @@ function load() {
   <div class="card-header">
     <div class="card-title mb-0">团辅（输入整数）</div>
   </div>
-  <table class="table dps" style="table-layout:fixed;">
+  <table class="table dps dps_responsive" style="table-layout:fixed;">
     <tbody>
       <tr>
         <th>攻击力(+x)</th>
@@ -150,12 +147,12 @@ function load() {
         <th>伤害倍率<br>(damage_scale + x%)</th>
       </tr>
       <tr>
-      <td><input type="text" class="dps__buff-atk" value="0"></td>
-      <td><input type="text" class="dps__buff-atkpct" value="0"></td>
-      <td><input type="text" class="dps__buff-ats" value="0"></td>
-      <td><input type="text" class="dps__buff-cdr" value="0"></td>
-      <td><input type="text" class="dps__buff-batk" value="0"></td>
-      <td><input type="text" class="dps__buff-scale" value="0"></td>
+      <td data-th="攻击力(+x)"><input type="text" class="dps__buff-atk" value="0" style="width: 90%" ></td>
+      <td data-th="攻击力(+x%)"><input type="text" class="dps__buff-atkpct" value="0" style="width: 90%" ></td>
+      <td data-th="攻速(+x)"><input type="text" class="dps__buff-ats" value="0" style="width: 90%"></td>
+      <td data-th="技力恢复(+x%)"><input type="text" class="dps__buff-cdr" value="0" style="width: 90%"></td>
+      <td data-th="原本攻击力(+x%)"><input type="text" class="dps__buff-batk" value="0" style="width: 90%"></td>
+      <td data-th="伤害倍率(+x%)"><input type="text" class="dps__buff-scale" value="0" style="width: 90%"></td>
       </tr>
     </tbody>
   </table>
@@ -165,41 +162,49 @@ function load() {
 
   for (let i = 0; i < charColumnCount; i++) {
     $dps.find('.dps__row-select').append(`<td>
-      <div class="input-group">
-        <table style="table-layout: fixed; width: 100%">
-          <tr>
-            <td rowspan="3" style="padding: 0; width: 50%">
-              <figure class="figure">
-                <img class="img_char figure-img" style="max-width: 75%; height: auto" data-index="${i}" src="/akdata/assets/images/char/char_504_rguard.png"></img>
-                <figcaption class="figure-caption txt_char" style="max-width: 75%; font-weight:600; font-size: 1vw; color: #000; text-align: center;" data-index="${i}">-</figcaption>
-              </figure>
-            </td>
-            <td style="padding: 0">
-              <button class="btn btn-outline-secondary dps__goto p-2 visible-desktop" style="float:right" data-index="${i}" type="button">
-                详细属性<i class="fa fa-info-circle"></i>
-              </button>
-            </td>
-          </tr>
-          <tr>
-            <td style="padding: 0">
-              <button class="btn btn-outline-secondary dps__mastery p-2 visible-desktop" style="float:right" data-index="${i}" type="button">
-                专精收益<i class="fa fa-cubes"></i>
-              </button>
-            </td>
-          </tr>
-          <tr>
-            <td style="padding: 0"><button class="dps__copy btn btn-outline-info p-2 visible-desktop" style="float:right" data-index="${i}">复制到右侧</button></td>
-          </tr>
-        </table>
+      <div class="input-group dps_menu_item">
+        <div class="dps_menu_item_50">
+          <figure class="figure">
+            <img class="img_char figure-img" style="max-width: 75%; height: auto" data-index="${i}" src="/akdata/assets/images/char/char_504_rguard.png"></img>
+            <figcaption class="figure-caption txt_char" style="max-width: 75%; font-weight:600; font-size: 1vw; color: #000; text-align: center;" data-index="${i}">-</figcaption>
+          </figure>
+        </div>
+        <div class="d-flex flex-column justify-content-start">
+          <div class="p-0">
+            <button class="btn btn-outline-secondary dps__goto p-2 visible-desktop" data-index="${i}" type="button">
+              详细属性<i class="fa fa-info-circle"></i>
+            </button>
+          </div>
+          <div class="p-0">
+            <button class="btn btn-outline-secondary dps__mastery p-2 visible-desktop" data-index="${i}" type="button">
+              专精收益<i class="fa fa-cubes"></i>
+            </button>
+          </div>
+          <div class="p-0">
+            <button class="dps__copy btn btn-outline-info p-2 visible-desktop" data-index="${i}">复制到右侧</button>
+          </div>
+        </div>
       </div>
     </td>`);
 
-    $dps.find('.dps__row-level').append(`<td><div class="container"><div class="form-group row mb-0"><select class="form-control form-control-sm col-7 dps__phase" data-index="${i}"></select><select class="form-control form-control-sm col-5 dps__level" data-index="${i}"></select></div></div></td>`);
+    $dps.find('.dps__row-level').append(`
+    <td>
+      <div class="form-group dps_menu_item">
+        <select class="form-control form-control-sm dps__phase dps_menu_item_50" data-index="${i}"></select>
+        <select class="form-control form-control-sm dps__level dps_menu_item_50" data-index="${i}"></select>
+      </div>
+    </td>`);
     $dps.find('.dps__row-atk').append(`<td><div class="dps__atk" data-index="${i}"></div></td>`);
     $dps.find('.dps__row-attackSpeed').append(`<td><div class="dps__attackSpeed" data-index="${i}"></div></td>`);
     $dps.find('.dps__row-baseAttackTime').append(`<td><div class="dps__baseAttackTime" data-index="${i}"></div></td>`);
     $dps.find('.dps__row-dps').append(`<td><div class="dps__dps" data-index="${i}"></div></td>`);
-    $dps.find('.dps__row-skill').append(`<td><div class="container"><div class="form-group row mb-0"><select class="form-control form-control-sm col-7 dps__skill" data-index="${i}"></select><select class="form-control form-control-sm col-5 dps__skilllevel" data-index="${i}"></select></div></div></td>`);
+    $dps.find('.dps__row-skill').append(`
+    <td>
+      <div class="form-group dps_menu_item">
+        <select class="form-control form-control-sm dps__skill dps_menu_item_50" data-index="${i}"></select>
+        <select class="form-control form-control-sm dps__skilllevel dps_menu_item_50" data-index="${i}"></select>
+      </div>
+    </td>`);
     $dps.find('.dps__row-s_atk').append(`<td><div class="dps__s_atk" data-index="${i}"></div></td>`);
 
     $dps.find('.dps__row-s_dps').append(`<td><div class="dps__s_dps font-weight-bold" data-index="${i}"></div></td>`);
