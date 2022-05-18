@@ -100,7 +100,7 @@ strong {
 }
 @media (max-width: 840px) {
     .dps_table_header {
-        width: 12%;
+        width: 18%;
     }
     .dps_menu_item {
         flex-flow: column wrap;
