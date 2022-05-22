@@ -12,9 +12,11 @@ const ProfessionNames = {
 function init() {
   AKDATA.load([
     'excel/character_table.json',
+    'excel/char_patch_table.json',
     'excel/skill_table.json',
     'excel/uniequip_table.json',
     'excel/battle_equip_table.json',
+    'excel/gamedata_const.json',
     '../version.json',
     '../customdata/dps_specialtags.json',
     '../customdata/dps_options.json',
@@ -23,20 +25,44 @@ function init() {
   ], load);
 }
 
+function getSubName(sid) {
+  return AKDATA.Data.uniequip_table["subProfDict"][sid].subProfessionName;
+}
+
+function getEquipName(eid) {
+  if (eid) {
+    console.log(eid);
+    const ename = AKDATA.Data.uniequip_table["equipDict"][eid].uniEquipName;
+    return `<a href="/akdata/equip/#${eid}" target="_blank">${ename}</a>`;
+  } else return "-";
+}
+
+function getJobName(char) {
+  return ProfessionNames[char.profession] + "-" + getSubName(char.subProfessionId);
+}
+
 function load() {
 
   let rankingList = [];
   let costList = [];
   let hpsList = [];
+  AKDATA.patchAllChars();
+
   for (let charId in AKDATA.Data.character_table) {
     let charData = AKDATA.Data.character_table[charId];
     if (charData.profession == "TOKEN" || charData.profession == "TRAP") continue;
     try {
       let perfectAttr = AKDATA.attributes.getCharAttributes({charId});
+      let displayName = charData.name;
+      let defaultChar = AKDATA.attributes.checkChar({charId});
+
+      if (!charData.displayNumber) displayName = "[集成战略]" + displayName;
       rankingList.push([
-        `<a href="../character/#!/${charId}">${charData.name}</a>`,
-        ProfessionNames[charData.profession],
+        `<a href="../character/#!/${charId}" target="_blank">${displayName}</a>`,
+        getJobName(charData),
         charData.rarity + 1,
+        defaultChar.potentialRank + 1,
+        getEquipName(defaultChar.equipId),
         Math.floor(perfectAttr.respawnTime),
         perfectAttr.cost,
         perfectAttr.blockCnt,
@@ -55,6 +81,7 @@ function load() {
           if ( skillData.levels.length < skillLevel ) return;
           let levelData = skillData.levels[skillLevel-1];
           if ( !levelData.description.includes("费用") ) return;
+          if ( !['pioneer', 'bearer', 'tactician'].includes(charData.subProfessionId)) return;
           let bb = {};
           levelData.blackboard.forEach(kv => bb[kv.key] = kv.value);
           let desc = AKDATA.formatString(levelData.description, true, bb);
@@ -84,7 +111,7 @@ function load() {
           reqTime += Math.ceil( reqCost / cost ) * ( levelData.spData.spCost + levelData.duration );
 
           costList.push([
-            `<a href="../character/#!/${charId}">${charData.name}</a>`,
+            `<a href="../character/#!/${charId}" target="_blank">${displayName}</a>`,
             charData.rarity + 1,
             levelData.name,
             skillLevel,
@@ -127,10 +154,11 @@ function load() {
           }
 
           hpsList.push([
-            `<a href="../character/#!/${charId}">${charData.name}</a>`,
+            `<a href="../character/#!/${charId}" target="_blank">${displayName}</a>`,
             charData.rarity + 1,
             levelData.name,
             skillLevel,
+            getEquipName(defaultChar.equipId),
             desc,
             hps.toFixed(2),
             Math.round(duration*100)/100,
@@ -139,8 +167,8 @@ function load() {
         }
 
     });
-  } catch {
-    console.log("error: ", charId);
+  } catch (e) {
+    console.log("error: ", charId, e);
   }
 }
 
@@ -148,8 +176,7 @@ function load() {
   let item = pmBase.component.create({
     type: 'list',
 
-    header: ['干员', '职业', '星级', '再部署', '部署费用', '阻挡数', '攻击速度', '生命上限', '攻击', '防御', '法术抗性'],
-
+    header: ['干员', '职业', '星级', '潜能', '模组', '再部署', '部署费用', '阻挡数', '攻击速度', '生命上限', '攻击', '防御', '法术抗性'],
 
     list: rankingList,
 
@@ -160,7 +187,7 @@ function load() {
   let item2 = pmBase.component.create({
     type: 'list',
 
-    columns: ['干员', '职业', '伤害', '技能攻击', '技能攻速', '技能', {header:'说明',width:'40%'}, '攻击DPS<br>触发天赋/下同', '技能DPS', '平均DPS', "技能持续"],
+    columns: ['干员', '职业', '伤害', '技能攻击', '技能攻速', '技能', '模组', {header:'说明',width:'25%'}, '攻击DPS<br>触发天赋/下同', '技能DPS', '平均DPS', "技能持续"],
     "class":  "dps-result",
     list: [],
 
@@ -205,7 +232,7 @@ function load() {
 let item3 = pmBase.component.create({
   type: 'list',
 
-  columns: ['干员', '星级', '技能', '技能等级', {header:'说明',width:'40%'}, '技能费用回复', '技能周期', '100秒费用回复', '60费用需要时间'],
+  columns: ['干员', '星级', '技能', '技能等级', '模组', {header:'说明',width:'25%'}, '技能费用回复', '技能周期', '100秒费用回复', '60费用需要时间'],
   "class":  "cost-result",
   list: costList,
 
@@ -216,7 +243,7 @@ let item3 = pmBase.component.create({
 let item4 = pmBase.component.create({
   type: 'list',
 
-  columns: ['干员', '星级', '技能', '技能等级', {header:'说明',width:'40%'}, 'HPS', "技能持续", "heal_scale"],
+  columns: ['干员', '星级', '技能', '技能等级', '模组', {header:'说明',width:'30%'}, 'HPS', "技能持续", "heal_scale"],
   "class":  "hps-result",
   list: hpsList,
 
@@ -263,6 +290,8 @@ function calculate() {
   for (let charId in AKDATA.Data.character_table) {
     let charData = AKDATA.Data.character_table[charId];
     if (charData.profession == "TOKEN" || charData.profession == "TRAP" || charData.profession == "MEDIC") continue;
+    let displayName = charData.name;
+    if (!charData.displayNumber) displayName = "[集成战略]" + displayName;
 
     charData.skills.forEach(skill=>{
       let char = {
@@ -271,6 +300,7 @@ function calculate() {
         skillLevel: -1,
         options: { cond: true, buff: true },
       };
+      let defaultChar = AKDATA.attributes.checkChar(char);
       let dps = null;
       try {
         dps = AKDATA.attributes.calculateDps(char, enemy);
@@ -283,19 +313,20 @@ function calculate() {
         let bb = {};
         levelData.blackboard.forEach(kv => bb[kv.key] = kv.value);
         let desc = AKDATA.formatString(levelData.description, true, bb);
-        //desc += `<ul class="small text-left mb-0 muted">${Object.entries(bb).map(k=>`<li>${k[0]}: ${k[1]}</li>`).join('')}</ul>`;
 
         html += '<tr><td>' + [
-          `<a href="../character/#!/${charId}">${charData.name}</a>`,
-          ProfessionNames[charData.profession],
+          `<a href="../character/#!/${charId}" target="_blank">${displayName}</a>`,
+          getJobName(charData),
           (charData.description.includes('法术伤害') || levelData.description.includes('伤害类型变为<@ba.vup>法术</>') ) ? '法术' : '物理',
           Math.round(dps.skill.atk),
           dps.skill.attackTime.toFixed(3),
           levelData.name,
+          getEquipName(defaultChar.equipId),
           desc,
           Math.round(dps.normal.dps),
-          Math.round(dps.skill.isInstant ? dps.globalDps : dps.skill.dps),
-          Math.round(dps.globalDps),
+          //Math.round(dps.skill.isInstant ? dps.globalDps : dps.skill.dps),
+          Math.round(dps.skill.dps),
+          `<a href="../dps/#${charId}" target="_blank">${Math.round(dps.globalDps)}</a>`,
           dps.skill.dur.duration.toFixed(3)
         ].join('</td><td>') + '</td></tr>';
       }

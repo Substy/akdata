@@ -8,11 +8,11 @@ const useCache = true;
 const cacheBeginTime = new Date(2019, 12, 10).getTime();
 
 window.AKDATA = {
-  akdata: "220504", // jsdelivr tag version
+  akdata: "220522", // jsdelivr tag version
 
   Data: {},
 
-  new_op: ["char_1023_ghost2", "char_4009_irene", "char_4042_lumen", "char_433_windft"],
+  new_op: ["char_1023_ghost2", "char_4009_irene", "char_4042_lumen", "char_433_windft", "char_4043_erato"],
 
   professionNames: {
     "PIONEER": "先锋",
@@ -204,7 +204,7 @@ window.AKDATA = {
   },
 
   patchAllChars: function() {
-    AKDATA.patchChar("char_1001_amiya2", "char_1001_amiya2", "（近卫）");
+    AKDATA.patchChar("char_1001_amiya2", "char_1001_amiya2", "(近卫)");
   },
 
   selChar: "",

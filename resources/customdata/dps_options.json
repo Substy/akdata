@@ -96,7 +96,8 @@
         "char_4045_heidi":  2,
         "char_4039_horn":   2,
         "char_4009_irene":  2,
-        "char_1023_ghost2": { "text": "[s3]攻击高血量敌人", "tooltip": "对高于自身HP比例的敌人造成额外伤害" }
+        "char_1023_ghost2": { "text": "[s3]攻击高血量敌人", "tooltip": "对高于自身HP比例的敌人造成额外伤害" },
+        "char_4043_erato":  1
     },
     "char" : {
         "char_103_angel": [ "archet", "chen" ],
@@ -240,6 +241,7 @@
         "char_4009_irene":  [ "cond", "crit" ],
         "char_204_platnm":  [ "short_mode" ],
         "char_492_quercu":  [ "short_mode" ],
-        "char_017_huang":   [ "short_mode" ]
+        "char_017_huang":   [ "short_mode" ],
+        "char_4043_erato":  [ "cond" ]
     }
 }

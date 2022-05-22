@@ -622,8 +622,8 @@ function chooseLevel() {
   let pot_elem = getElement('potentialrank', index);
 
   // 暴行
-  if (Characters[index].charId == "char_230_savage" && ~~(pot_elem.val()) > 1) {
-    pot_elem.val(1);
+  if (Characters[index].charId == "char_230_savage" && ~~(pot_elem.val()) > 2) {
+    pot_elem.val(2);
   }
 
   // 九色鹿

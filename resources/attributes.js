@@ -6,15 +6,6 @@ function checkSpecs(tag, spec) {
   else return false;
 }
 
-function groupArray(arr, n) {
-  var ret = [], i=0;
-  while (i<arr.length) {
-    ret.push(arr.slice(i, i+n));
-    i+=n;
-  }
-  return ret;
-}
-
 function getCharAttributes(char) {
   checkChar(char);
   let {
@@ -41,12 +32,27 @@ function getTokenAtkHp(charAttr, tokenId, log) {
 
 function checkChar(char) {
   let charData = AKDATA.Data.character_table[char.charId];
-  if (!('phase' in char)) char.phase = charData.phases.length - 1;
-  if (!('level' in char)) char.level = charData.phases[char.phase].maxLevel;
-  if (!('favor' in char)) char.favor = 200;
-  if (!('skillLevel' in char)) char.skillLevel = 6;
-  if (!('options' in char)) char.options = { cond: true, crit: true, token: false };
-  if (!('potentialRank' in char)) char.potentialRank = 5;
+  let attr = {};
+  if (!('phase' in char)) attr.phase = charData.phases.length - 1;
+  if (!('level' in char)) attr.level = charData.phases[attr.phase].maxLevel;
+  if (!('favor' in char)) attr.favor = 200;
+  if (!('skillLevel' in char)) attr.skillLevel = 6;
+  if (!('options' in char)) attr.options = { cond: true, crit: true, token: false, equip: true };
+  if (!('potentialRank' in char)) attr.potentialRank = 5;
+  if (char.charId == "char_230_savage")
+    attr.potentialRank = Math.min(2, attr.potentialRank);
+  else if (char.charId == "char_4019_ncdeer")
+    attr.potentialRank = Math.min(0, attr.potentialRank);
+  // 添加默认模组
+  if (!char.equipId) {
+    let elist = AKDATA.Data.uniequip_table["charEquip"][char.charId];
+    if (elist) {
+      attr.equipId = elist[elist.length-1];
+    }
+  }
+ // if (Object.keys(attr).length > 0) console.log("添加默认角色属性", attr);
+  Object.assign(char, attr);
+  return char;
 }
 
 class Log {
@@ -1528,6 +1534,12 @@ function applyBuff(charAttr, buffFrm, tag, blackbd, isSkill, isCrit, log, enemy)
           buffFrame.maxTarget = 999;
           writeBuff(`最大目标数 = ${buffFrame.maxTarget}`);
           break;
+      case "tachr_4043_erato_1":
+        if (options.cond)
+          blackboard.edef_pene_scale = blackboard.def_penetrate;
+        else
+          done = true;
+        break;
     }
 
   }
@@ -3896,11 +3908,11 @@ function calculateAnimation(charId, skillId, isSkill, attackTime, attackSpeed, l
   var scaledAnimFrame = 0; // 缩放后的动画帧数
   var preDelay = 0, postDelay = 0;
 
-  console.log("**【动画计算测试，结果仅供参考，不用于后续计算】**");
+ // console.log("**【动画计算测试，结果仅供参考，不用于后续计算】**");
 
-  if (!animKey || !animData[animKey])
-    console.log("暂无帧数数据，保持原结果不变");
-  else {
+  if (!animKey || !animData[animKey]) {
+ //   console.log("暂无帧数数据，保持原结果不变");
+  } else {
     var specKey = animKey.includes("Attack") ? charId : skillId;
     var isLoop = animKey.includes("Loop");
     // 动画拉伸幅度默认为任意
@@ -3937,24 +3949,24 @@ function calculateAnimation(charId, skillId, isSkill, attackTime, attackSpeed, l
       scaledAnimFrame = preDelay + postDelay; 
     } else
       scaledAnimFrame = animFrame;
-
+/*
     console.log(`理论攻击间隔: ${attackTime.toFixed(3)}s, ${attackFrame.toFixed(1)} 帧. 攻速 ${Math.round(attackSpeed)}%`);
     console.log(`原本动画时间: ${animKey} - ${animFrame} 帧, 抬手 ${eventFrame} 帧`);
     console.log(`缩放系数: ${scale.toFixed(2)}`);
     console.log(`缩放后动画时间: ${scaledAnimFrame} 帧, 抬手 ${preDelay} 帧`);
-
+*/
     // 帧数补正
     // checkSpecs(specKey, "reset_cd_strategy") == "ceil" ? 
     if (attackFrame - scaledAnimFrame > 0.5) {
-      console.log("[补正] 动画时间 < 攻击间隔-0.5帧: 理论攻击帧数向上取整且+1");
+      //console.log("[补正] 动画时间 < 攻击间隔-0.5帧: 理论攻击帧数向上取整且+1");
       realAttackFrame = Math.ceil(attackFrame) + 1;
     } else {
-      console.log("[补正] 四舍五入");
+      //console.log("[补正] 四舍五入");
       realAttackFrame = Math.max(scaledAnimFrame, Math.round(attackFrame));
     }
     
     realAttackTime = realAttackFrame / _fps;
-    console.log(`实际攻击间隔: ${realAttackTime.toFixed(3)}s, ${realAttackFrame} 帧`);
+    //console.log(`实际攻击间隔: ${realAttackTime.toFixed(3)}s, ${realAttackFrame} 帧`);
   }
 
   return {
@@ -3969,5 +3981,6 @@ function calculateAnimation(charId, skillId, isSkill, attackTime, attackSpeed, l
 AKDATA.attributes = {
   getCharAttributes,
   calculateDps,
-  calculateDpsSeries
+  calculateDpsSeries,
+  checkChar
 };
