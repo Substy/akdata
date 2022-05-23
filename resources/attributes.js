@@ -687,27 +687,24 @@ function applyBuff(charAttr, buffFrm, tag, blackbd, isSkill, isCrit, log, enemy)
   } else if (checkSpecs(tag, "stack")) { // 叠层类
     if (options.stack) { // 叠层天赋类
       switch (tag) {
-        case "tachr_2015_dusk_1":
-        case "tachr_2023_ling_2":
-          if (options.token) done = true;
-          break;
         case "tachr_300_phenxi_1":
           delete blackboard.hp_ratio;
           blackboard.atk = blackboard["phenxi_t_1[peak_2].peak_performance.atk"];
           log.writeNote("HP高于80%");
           break;
+        case "tachr_2015_dusk_1":
+        case "tachr_2023_ling_2":
+          if (options.token) done = true; break;
         case "tachr_188_helage_1":
         case "tachr_337_utage_1":
         case "tachr_475_akafyu_1":
           blackboard.attack_speed = blackboard.min_attack_speed;
-        default:
-          if (blackboard.max_stack_cnt) {
-            ["atk", "def", "attack_speed", "max_hp"].forEach(key => {
-              if (blackboard[key]) blackboard[key] *= blackboard.max_stack_cnt;
-            });
-          }
-          break;
-      };
+      }
+      if (!done && blackboard.max_stack_cnt) {
+        ["atk", "def", "attack_speed", "max_hp"].forEach(key => {
+          if (blackboard[key]) blackboard[key] *= blackboard.max_stack_cnt;
+        });
+      }
     } else done = true;
   } else { // 普通类
    // console.log(tag, options);

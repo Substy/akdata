@@ -130,7 +130,7 @@ function load() {
             charId,
             skillId: skill.skillId,
             skillLevel: skillLevel-1,
-            options: { cond: true, buff: true },
+            options: { cond: true, buff: true, crit: true, equip: true },
           };
           let dps = AKDATA.attributes.calculateDps(char);
           if ( !dps ) return;
@@ -298,7 +298,7 @@ function calculate() {
         charId,
         skillId: skill.skillId,
         skillLevel: -1,
-        options: { cond: true, buff: true },
+        options: { cond: true, buff: true, crit: true, equip: true },
       };
       let defaultChar = AKDATA.attributes.checkChar(char);
       let dps = null;

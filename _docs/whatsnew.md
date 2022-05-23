@@ -6,12 +6,13 @@ category: 其他功能
 icon: info-circle
 ---
 
-## 22.05.22
+## 22.05.22-23
 - [update] 埃拉托
 - [ranking] 更新dps统计表，增加模组
+- [fix] 叠层技能逻辑错误
 - [fix] 修正暴行和九色鹿潜能
 - [fix] 异客3技能持续现在按1.2s计算
-- [note] 基本改为国内js/css源
+- [note] 全部改为国内js/css源
 
 ## 22.05.04-13
 - [update] 优化DPS页面移动端排版
