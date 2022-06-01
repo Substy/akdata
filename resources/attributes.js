@@ -1022,8 +1022,8 @@ function applyBuff(charAttr, buffFrm, tag, blackbd, isSkill, isCrit, log, enemy)
         break;
       case "skchr_brownb_2":  // 攻击间隔缩短，但是是乘算负数
       case "skchr_whispr_2":
-      case "skchr_pasngr_2":
       case "skchr_indigo_1":
+      case "skchr_pasngr_2":
       case "skchr_ashlok_2":
         writeBuff(`base_attack_time: ${blackboard.base_attack_time}x`);
         blackboard.base_attack_time *= basic.baseAttackTime;
@@ -1302,6 +1302,10 @@ function applyBuff(charAttr, buffFrm, tag, blackbd, isSkill, isCrit, log, enemy)
         writeBuff(`base_attack_time: ${blackboard.base_attack_time}x`);
         blackboard.base_attack_time *= basic.baseAttackTime;
         if (!isCrit) delete blackboard.atk_scale;
+        break;
+      case "skchr_pasngr_1":
+        blackboard.max_target = blackboard['pasner_s_1.max_target'];
+        blackboard.atk_scale = blackboard['pasner_s_1.atk_scale'];
         break;
       case "skchr_pasngr_3":
         done = true; break;
@@ -1854,6 +1858,8 @@ function calcDurations(isSkill, attackTime, attackSpeed, levelData, buffList, bu
         prepDuration = 1.167; break;
       case "skchr_mint_2":
         prepDuration = 1.33; break;
+      case "skchr_blemsh_2":
+        prepDuration = 1; break;
     }
 
     // 快速估算
