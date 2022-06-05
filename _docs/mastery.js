@@ -305,8 +305,9 @@ function load() {
               AKDATA.getItemBadge("MATERIAL", itemCache[x].id, rv.mats[sk][i][x])
             );
             let lineTitle = `${base_lv + i} <i class="fas fa-angle-right"></i> ${base_lv + i + 1}`;
-            if (sk.includes("elite") && i==2) // 专武材料，非等级
-              lineTitle = rv.equipName;
+            if (sk.includes("elite") && i>=2) {// 专武材料，非等级
+              lineTitle = rv.equipName + ` Lv${i-1} (测试)`;
+            }
             matsView[sk].list.push([ lineTitle, items, Math.round(rv.cost[sk][i]) ]);
             tot += Math.round(rv.cost[sk][i]);
           }
@@ -548,14 +549,17 @@ function calculate(charId) {
   }
   if (resultView.equipId) {
     let m = {};
-    edb[resultView.equipId]["itemCost"].forEach(x => {
-      if (x.id != "4001") {
-        let _nm = itemdb[x.id].name.replace(" ", "");
-        itemCache[_nm] = { id: x.id, name: _nm, rarity: itemdb[x.id].rarity };
-        m[_nm] = x.count;
-      }
-    });
-    resultView.mats[`${charId}_elite`].push(m);
+    for (var lv=0; lv < 3; ++lv) {
+      edb[resultView.equipId]["itemCost"].forEach(x => {
+        if (x.id != "4001") {
+          let _nm = itemdb[x.id].name.replace(" ", "");
+          itemCache[_nm] = { id: x.id, name: _nm, rarity: itemdb[x.id].rarity };
+          m[_nm] = x.count;
+          if (x.id != 'mod_unlock_token') m[_nm] = Math.floor(x.count * (1+lv/2));
+        }
+      });
+      resultView.mats[`${charId}_elite`].push({...m});
+    }
   }
 
   // 绿票算法
