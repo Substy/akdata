@@ -3497,18 +3497,20 @@ function calculateGradDamage(_) { // _ -> args
     // 基于当前伤害直接乘算atk_scale倍率即可
     let base_scale = ((_.skillId == "skchr_gdglow_3" && _.isSkill) ? 0 : 1);
     let base_table = [0, 1, 2, 3, 4, 5, 6];
+    let max_funnel_scale = 1.1;
     if (_.skillId == "skchr_rockr_2" && _.options.overdrive_mode) {
       // 洛洛 - 过载模式
       _.log.writeNote("假设进入过载时是满倍率1.1");
       let start = 1.1;
-      let stacks = Math.ceil((_.blackboard.scale - start) / 0.15 + 1);
+      max_funnel_scale = _.blackboard.scale * 1.1;
+      let stacks = Math.ceil((_.blackboard.scale * 1.1 - start) / 0.15 + 1);
       base_table = [...Array(stacks).keys()].map(x => x + 6);
     }
 
     let funnel = 1;
     if (_.isSkill) funnel = checkSpecs(_.skillId, "funnel") || 1;
 
-    let tb = base_table.map(x => base_scale + (0.2+0.15*x)*funnel);
+    let tb = base_table.map(x => base_scale + Math.min(max_funnel_scale, 0.2+0.15*x)*funnel);
     let acount = _.dur.attackCount;
     if (_.charId == "char_377_gdglow" && _.dur.critHitCount > 0 && _.isSkill) {
       acount -= _.dur.critHitCount;
