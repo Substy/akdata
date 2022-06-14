@@ -204,7 +204,10 @@ let createFunctions = {
     config.list.map(tr => {
       body += '<tr>';
       tr.map((cell, col) => {
-        body += `<td class="${columns[col]?columns[col]['class']||'':''}">${cell}</td>`;
+        if (cell && cell.hasOwnProperty('rowspan'))
+          body += `<td rowspan="${cell.rowspan}" class="${columns[col]?columns[col]['class']||'':''}">${cell.text}</td>`;
+        else 
+          body += `<td class="${columns[col]?columns[col]['class']||'':''}">${cell}</td>`;
       });
       body += '</tr>';
     });

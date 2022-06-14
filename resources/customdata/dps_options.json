@@ -97,7 +97,9 @@
         "char_4039_horn":   2,
         "char_4009_irene":  2,
         "char_1023_ghost2": { "text": "[s3]攻击高血量敌人", "tooltip": "对高于自身HP比例的敌人造成额外伤害" },
-        "char_4043_erato":  1
+        "char_4043_erato":  1,
+        "char_4046_ebnhlz": 2,
+        "char_4046_ebnhlz_elite": { "text": "精英敌人", "tooltip": "对精英敌人额外蓄力1层" }
     },
     "char" : {
         "char_103_angel": [ "archet", "chen" ],
@@ -198,8 +200,8 @@
         "char_426_billro":  [ "charge" ],
         "char_369_bena":  [ "annie" ],
         "char_485_pallas": [ "cond", "noblock", "pallas", "chen" ],
-        "char_308_swire":   [ "noblock" ],
-        "char_130_doberm":  [ "noblock" ],
+        "char_308_swire":   [ "noblock", "equip" ],
+        "char_130_doberm":  [ "noblock", "equip" ],
         "char_265_sophia":  [ "noblock" ],
         "char_486_takila":  [ "charge" ],
         "char_421_crow":    [ "stack", "cond" ],
@@ -242,6 +244,7 @@
         "char_204_platnm":  [ "short_mode" ],
         "char_492_quercu":  [ "short_mode" ],
         "char_017_huang":   [ "short_mode" ],
-        "char_4043_erato":  [ "cond" ]
+        "char_4043_erato":  [ "cond" ],
+        "char_4046_ebnhlz": [ "cond", "cond_elite" ]
     }
 }

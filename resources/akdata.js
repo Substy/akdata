@@ -2,17 +2,17 @@ const stringRegex = /<[@\$](.+?)>(.+?)<\/>/g;
 const variableRegex = /{(\-)*(.+?)(?:\:(.+?))?}/g;
 
 let CacheList = null;
-let _use_local = false;
+let _use_local = true;
 
 const useCache = true;
 const cacheBeginTime = new Date(2019, 12, 10).getTime();
 
 window.AKDATA = {
-  akdata: "220522", // jsdelivr tag version
+  akdata: "220615", // jsdelivr tag version
 
   Data: {},
 
-  new_op: ["char_1023_ghost2", "char_4009_irene", "char_4042_lumen", "char_433_windft", "char_4043_erato"],
+  new_op: ["char_4046_ebnhlz", "char_4047_pianst", "char_1024_hbisc2", "char_4043_erato"],
 
   professionNames: {
     "PIONEER": "先锋",
@@ -173,6 +173,7 @@ window.AKDATA = {
       let data = AKDATA.Data.item_table.items[id];
       text = data.name;
       rarity = data.rarity;
+      if (id == "30145") rarity = "crystal";
     }
     let s = createBadge('item', text, rarity);
     if ( count !== null ) s += createBadge('count', '×' + count);

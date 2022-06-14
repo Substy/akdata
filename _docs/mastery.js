@@ -6,6 +6,7 @@ const DefaultAttribute = {
   potential: 5,  // 0-5
   skillLevel: 9,  // 0-9,
   equip: false,
+  equipLevel: 1,
   options: { cond: true, crit: true, stack: true, warmup: true, charge: true, equip: true, far: true}
 };
 const DefaultEnemy = { def: 0, magicResistance: 0, count: 1, hp: 0 };
@@ -16,9 +17,13 @@ const Stages = {
   "专1": { skillLevel: 7, desc: "满级 潜能1 专精1" },
   "专2": { skillLevel: 8, desc: "满级 潜能1 专精2" },
   "专3": { skillLevel: 9, desc: "满级 潜能1 专精3" },
-  "模组": { equip: true },
-  "满潜": { potential: 5, desc: "满级 满潜 专精3"},
+  "模组1": { equip: true, desc: "满级 潜能1 专精3 模组1级" },
+  "模组2": { equipLevel: 2, desc: "满级 潜能1 专精3 模组2级" },
+  "模组3": { equipLevel: 3, desc: "满级 潜能1 专精3 模组3级" },
+  "满潜": { potential: 5, desc: "满级 满潜 专精3 模组3级"},
 };
+
+//const StageSeq = ['基准', '满级', '专1', '专2', '专3', '模组1', '模组2', '模组3', '满潜'];
 
 const CostStages = [
   { level: 1, potential: 0, skillLevel: 6, desc: "2017" },
@@ -34,11 +39,12 @@ const ChartKeys = {
 };
 
 const LevelingCost = {4: [2391, 9], 5: [3699, 13], 6: [5874, 21] };
+const EliteLMB = {3: [10000], 4: [15000, 60000], 5: [20000, 120000], 6: [30000, 180000]};
 
 let itemCache = {};
 
-function checkSpecs(tag, spec) {
-  let specs = AKDATA.Data.dps_specialtags;
+function checkSpecs(tag, spec, filename="dps_specialtags") {
+  let specs = AKDATA.Data[filename];
   if ((tag in specs) && (spec in specs[tag]))
     return specs[tag][spec];
   else return false;
@@ -60,13 +66,14 @@ function init() {
     '../resources/attributes.js',
     '../customdata/green.json',
     '../customdata/dps_anim.json',
-    '../customdata/subclass.json'
+    '../customdata/subclass.json',
+    '../customdata/mastery.json'
   ], load);
 }
 
 function queryArkPlanner(mats, callback, ...args) {
-  var url = "https://planner.penguin-stats.io/plan";
-  var data = {
+  let url = "https://planner.penguin-stats.io/plan";
+  let data = {
     required: mats,
     owned: {},
     extra_outc: true,
@@ -95,7 +102,7 @@ function buildVueModel() {
   let version = AKDATA.Data.version;
   
   // exclude list
-  var excludeList = [];
+  let excludeList = [];
   for (let id in AKDATA.Data.character_table) {
     let data = AKDATA.Data.character_table[id];
       if (!data.phases || data.phases.length <= 2)
@@ -117,15 +124,18 @@ function buildVueModel() {
     txt_char: "请选择",
     txt_gain_title: "提升率分布图 - 平均DPS",
     hash_args: "",
-    jsonResult: {}
+    jsonResult: {},
+    equipId: null,
+    equipList: null,
+    equip_hint: ""
   };
 }
 
 function showVersion() {
   AKDATA.checkVersion(function (ok, v) {
-    var remote = `最新版本: ${v.akdata}, 游戏数据: ${v.gamedata} (${v.customdata})`;
-    var local = `当前版本: ${AKDATA.Data.version.akdata}, 游戏数据: ${AKDATA.Data.version.gamedata} (${AKDATA.Data.version.customdata})`;
-    var whatsnew = `更新内容: ${v.whatsnew} <br> <a href='/akdata/whatsnew'>查看更新日志</a>`;
+    let remote = `最新版本: ${v.akdata}, 游戏数据: ${v.gamedata} (${v.customdata})`;
+    let local = `当前版本: ${AKDATA.Data.version.akdata}, 游戏数据: ${AKDATA.Data.version.gamedata} (${AKDATA.Data.version.customdata})`;
+    let whatsnew = `更新内容: ${v.whatsnew} <br> <a href='/akdata/whatsnew'>查看更新日志</a>`;
     if (!ok) {
       pmBase.component.create({
         type: 'modal',
@@ -180,7 +190,7 @@ function load() {
   <div class="card mb-2 col-12">
     <div class="card-header">
       <div class="card-title">
-        专精收益（以精2 1级 7级技能为基准计算）
+        专精收益（以精2 1级 7级技能为基准计算）{{ equip_hint }}
         <span class="float-right">
           <input type="radio" id="btn_avg" value="dps" v-model="chartKey">
           <label for="btn_avg">平均dps/hps</label>
@@ -196,11 +206,17 @@ function load() {
   </div>
   <div class="card mb-2 col-12">
     <div class="card-header">
-      <div class="card-title mb-0">精英化/专精材料（绿票算法）
+      <div class="card-title mb-0">专精材料（绿票算法）
         <a href="http://ark.yituliu.site/" target="_blank">绿票材料一图流</a>
       </div>
     </div>
     <div id="mats_table"></div>
+  </div>
+  <div class="card mb-2 col-12">
+    <div class="card-header">
+      <div class="card-title mb-0">精英化/模组材料（不含模组升级材料）</div>
+    </div>
+    <div id="elite_table"></div>
   </div>
 <!--
   <div class="card mb-2 col-12">
@@ -225,7 +241,7 @@ function load() {
   $dps.find('.dps__row-select').append(`<td>
     <table style="table-layout:fixed; width: 100%; margin-bottom: 0px;">
       <tr>
-        <td rowspan="2" style="padding: 0; width: 50%">
+        <td rowspan="3" style="padding: 0; width: 50%">
           <figure class="figure">
             <img class="img_char figure-img" style="max-width: 80%; height: auto" :src="img_char" @click="selChar"></img>
             <figcaption class="figure-caption" style="max-width: 80%; font-weight:600; font-size: 1vw; color: #000; text-align: center; text-weight: 600">{{ txt_char }}</figcaption>
@@ -233,6 +249,11 @@ function load() {
         </td>
         <td style="padding: 0">
           <button class="btn btn-outline-secondary dps__goto float-right" type="button" v-on:click="goto"><i class="fas fa-search"></i> 详细属性</button>
+        </td>
+      </tr>
+      <tr>
+        <td style="padding: 0">
+          <button class="btn btn-outline-secondary dps__goequip float-right" type="button" v-on:click="goequip"><i class="fas fa-share-alt"></i> 模组信息</button>
         </td>
       </tr>
       <tr>
@@ -268,8 +289,12 @@ function load() {
           this.txt_char = AKDATA.Data.character_table[this.charId].name;
           if (this.resultView.rhodes) {
             $("#mats_table").text("集成战略临时干员");
+            $("#elite_table").text("集成战略临时干员");
           }
           this.updateLevelingTable();
+          let uptime = checkSpecs(this.charId, "mod_update_time", "mastery");
+          this.equip_hint = (uptime ? `模组升级收益已更新: ${uptime}` : "(模组升级收益暂未更新)");
+          if (!this.equipId) this.equip_hint = ""; 
         }
       },
       debugPrint: function(obj) {
@@ -282,6 +307,9 @@ function load() {
       godps: function(event) {
         window.open(`../dps/#${this.charId}`, '_blank'); 
       },
+      goequip: function(event) {
+        window.open(`../equip/#${this.equipId}`, '_blank'); 
+      },
       selChar: function(event) {
         AKDATA.selectCharCallback = function (id) { window.vue_app.charId = id; window.vue_app.changeChar(); }
         AKDATA.showSelectCharDialog(this.excludeList, this.charId);
@@ -289,34 +317,26 @@ function load() {
       updateMats: function() {
         let matsView = {};
         let rv = this.resultView;
-        let i = 0, tot = 0;
+        let i = 0;
 
-        /*let costResult = calculateCost(this.charId, pr, this.resultView);
-        //this.test = costResult;
-        updateCostPlot(costResult, this.chartKey);
-*/
-        for (var sk in rv.cost) {
-          matsView[sk] = {title: rv.skill[sk] || `精英化/模组材料(不含龙门币)`};
+        //let costResult = calculateCost(this.charId, pr, this.resultView);
+        //updateCostPlot(costResult, this.chartKey);
+
+        for (let sk in rv.cost) {
+          matsView[sk] = {title: rv.skill[sk] };
           matsView[sk].list = [];
-          tot = 0;  
           let base_lv = sk.includes("elite") ? 0 : 7;
           for (i=0; i<rv.mats[sk].length; ++i) {
-            var items = Object.keys(rv.mats[sk][i]).map(x => 
+            let items = Object.keys(rv.mats[sk][i]).map(x => 
               AKDATA.getItemBadge("MATERIAL", itemCache[x].id, rv.mats[sk][i][x])
             );
             let lineTitle = `${base_lv + i} <i class="fas fa-angle-right"></i> ${base_lv + i + 1}`;
-            if (sk.includes("elite") && i>=2) {// 专武材料，非等级
-              lineTitle = rv.equipName + ` Lv${i-1} (测试)`;
-            }
             matsView[sk].list.push([ lineTitle, items, Math.round(rv.cost[sk][i]) ]);
-            tot += Math.round(rv.cost[sk][i]);
           }
-          console.log(rv.skill[sk], tot);
         }
 
-        // this.test = matsView;
         let matsHtml = "";
-        for (var sk in matsView) {
+        for (let sk in matsView) {
           matsHtml += pmBase.component.create({
             type: 'list',
             card: true,
@@ -328,17 +348,47 @@ function load() {
         $("#mats_table").html(matsHtml);
 
       },
-      updateLevelingTable: function () {
-        var db = AKDATA.Data.character_table[this.charId];
-        var r = {}; $.extend(r, DefaultAttribute); $.extend(r, Stages["基准"]);
-        var ch0 = buildChar(this.charId, db.skills[0].skillId, r);
-        r.level = "max";
-        var ch1 = buildChar(this.charId, db.skills[0].skillId, r);
-        var a0 = AKDATA.attributes.getCharAttributes(ch0), a1 = AKDATA.attributes.getCharAttributes(ch1);
+      updateEliteMats: function() {
+        let list = [];
+        let rv = this.resultView;
+        let i = 0;
+        let edb = AKDATA.Data.uniequip_table["equipDict"];
 
-        var gain_pct = [(a1.maxHp - a0.maxHp)/a0.maxHp, (a1.atk - a0.atk)/a0.atk, (a1.def - a0.def)/a0.def];
-        var gain = [(a1.maxHp - a0.maxHp), (a1.atk - a0.atk), (a1.def - a0.def)];
-        var result = [0, 1, 2].map(x => `+${Math.round(gain[x])} (+${(gain_pct[x]*100).toFixed(1)}%)`);
+        for (let key in rv.cost_e) { 
+          for (i=0; i<rv.mats_e[key].length; ++i) {
+            let items = [];
+            let lmb = 0;
+            let lineTitle = key == "elite" ? `${i} - ${i+1}` : `${edb[key].uniEquipName} Lv${i+1}`;
+            Object.keys(rv.mats_e[key][i]).forEach(k => {
+              if (k == "龙门币")
+                lmb = rv.mats_e[key][i][k];
+              else
+                items.push(AKDATA.getItemBadge("MATERIAL", itemCache[k].id, rv.mats_e[key][i][k]));
+            });
+            list.push([ lineTitle, items, lmb, Math.round(rv.cost_e[key][i]) ]);
+          }
+        }
+
+        let html = pmBase.component.create({
+            type: 'list',
+            card: true,
+            title: ``,
+            header: ['等级', '素材', '龙门币', '绿票'],
+            list
+        });
+        $("#elite_table").html(html);
+      },
+      updateLevelingTable: function () {
+        let db = AKDATA.Data.character_table[this.charId];
+        let r = {}; $.extend(r, DefaultAttribute); $.extend(r, Stages["基准"]);
+        let ch0 = buildChar(this.charId, db.skills[0].skillId, r);
+        r.level = "max";
+        let ch1 = buildChar(this.charId, db.skills[0].skillId, r);
+        let a0 = AKDATA.attributes.getCharAttributes(ch0), a1 = AKDATA.attributes.getCharAttributes(ch1);
+
+        let gain_pct = [(a1.maxHp - a0.maxHp)/a0.maxHp, (a1.atk - a0.atk)/a0.atk, (a1.def - a0.def)/a0.def];
+        let gain = [(a1.maxHp - a0.maxHp), (a1.atk - a0.atk), (a1.def - a0.def)];
+        let result = [0, 1, 2].map(x => `+${Math.round(gain[x])} (+${(gain_pct[x]*100).toFixed(1)}%)`);
         result.push(`${a0.baseAttackTime.toFixed(3)} s`);
 
         let html = pmBase.component.create({
@@ -352,11 +402,11 @@ function load() {
         this.jsonResult["levelUpGain"] = {gain, gain_pct};
 
         // 模板分析
-        var scalar = [...gain_pct.map(x => x*100), a0.baseAttackTime * 1000];
-        var sc_result = calcSubClass(scalar, db.profession);
+        let scalar = [...gain_pct.map(x => x*100), a0.baseAttackTime * 1000];
+        let sc_result = calcSubClass(scalar, db.profession);
         this.jsonResult["subclass"] = { result: sc_result.view, scalar };
 
-        var chart = c3.generate({
+        let chart = c3.generate({
           bindto: "#subclass",
           size: { height: 180 },
           data: {
@@ -373,7 +423,8 @@ function load() {
         plot2(cv);
         let pv = buildPieView(cv);
         //plotPie(pv);
-        this.updateMats()
+        this.updateMats();
+        this.updateEliteMats();
         Object.assign(this.jsonResult, buildJsonView(this, cv, pv));
       },
       chartKey: function(_new, _old) {
@@ -389,7 +440,7 @@ function load() {
   });
 
   window.vue_app.hash_args = window.location.hash.replace("#", "").split("/");
-  var args = window.vue_app.hash_args;
+  let args = window.vue_app.hash_args;
   console.log("args:", args);
   if (args[0]) {
     window.vue_app.charId = args[0]; window.vue_app.changeChar();
@@ -426,24 +477,28 @@ function buildChar(charId, skillId, recipe) {
   char.name = db.name;
   char.skillName = skilldb.levels[char.skillLevel].name;
   //console.log(char);
-  var _opts = AKDATA.Data.dps_options.char[charId];
+  let _opts = AKDATA.Data.dps_options.char[charId];
   if (checkSpecs(charId, "use_token_for_mastery") || checkSpecs(skillId, "use_token_for_mastery"))
     char.options.token = true;
   else char.options.token = false;
 
   // 模组
-  if (recipe.equip) {
-    let edb = AKDATA.Data.uniequip_table["equipDict"];
-    let equips = Object.keys(edb).filter(x => edb[x].charId == charId && edb[x].unlockLevel > 0);
-    // console.log(equips);
-    if (equips.length > 0) {
-      let eid = equips[equips.length - 1];
-      char.equipId = eid;
-      char.equipName = edb[eid].uniEquipName;
-      window.vue_app.equipId = eid;
-      console.log(`equip -> ${eid} ${char.equipName}`);
-    }
+  let edb = AKDATA.Data.uniequip_table["equipDict"];
+  let equips = Object.keys(edb).filter(x => edb[x].charId == charId);
+  if (equips.length > 0) {
+    window.vue_app.equipList = equips.filter(x => edb[x].unlockLevel > 0);
+    let eid = (recipe.equip ? equips[equips.length - 1] : equips[0]);  // todo
+    char.equipId = eid;
+    char.equipName = edb[eid].uniEquipName;
+    char.equipLevel = recipe.equipLevel;
+    window.vue_app.equipId = eid;
+    //console.log(`equip -> ${eid} ${char.equipName}`);
+  } else {
+    window.vue_app.equipId = null;
+    window.vue_app.equipList = null;
   }
+
+  //console.log(JSON.stringify({char, recipe}));
 
   return char;
 }
@@ -467,12 +522,11 @@ function calculate(charId) {
 
   // calculate dps for each recipe case.
   db.skills.forEach(skill => {
-    var entry = {};
+    let entry = {};
     recipe = {}; $.extend(recipe, DefaultAttribute);
-    console.log(recipe);
-    for (let st in stages) {
+    for (let st in Stages) {
       $.extend(recipe, stages[st]);
-      var ch = buildChar(charId, skill.skillId, recipe);
+      let ch = buildChar(charId, skill.skillId, recipe);
       ch.dps = AKDATA.attributes.calculateDps(ch, enemy, raidBuff);
       entry[st] = ch;
       if (ch.equipId) {
@@ -498,15 +552,17 @@ function calculate(charId) {
     dps: {},
     notes: {},
     mats: {},
+    mats_e: {},
     cost: {},
+    cost_e: {},
     extraNote
   };
   for (let k in result) {
     resultView.skill[k] = result[k]["满潜"].skillName;
     resultView.notes[k] = result[k]["满潜"].dps.note;
     resultView.dps[k] = {};
-    for (let st in stages) {
-      var entry = result[k][st].dps;
+    for (let st in Stages) {
+      let entry = result[k][st].dps;
       resultView.dps[k][st] = {
         damageType: entry.skill.damageType,
         spType: entry.skill.spType,
@@ -519,13 +575,13 @@ function calculate(charId) {
         s_ssp: entry.skill.dur.startSp,
       };
      // console.log(k, st, entry.skill.dur.startSp);
-    };
+    }
     resultView.mats[k] = [];
     mats[k].forEach(level => {
-      var i = {};
+      let i = {};
       if (level) {
         level.forEach(x => {
-		  var _n = itemdb[x.id].name.replace(" ", "");
+		  let _n = itemdb[x.id].name.replace(" ", "");
           i[_n] = x.count;
           itemCache[_n] = {id: x.id, name: _n, rarity: itemdb[x.id].rarity};
         });
@@ -535,7 +591,7 @@ function calculate(charId) {
     });
   };
 
-  resultView.mats[`${charId}_elite`] = [];
+  resultView.mats_e = { elite: [] };
   for (let elite=1; elite<=2; elite+=1) {
     if (mats[elite]) {
       let m = {};
@@ -544,31 +600,42 @@ function calculate(charId) {
         itemCache[_nm] = { id: x.id, name: _nm, rarity: itemdb[x.id].rarity };
         m[_nm] = x.count;
       });
-      resultView.mats[`${charId}_elite`].push(m);
+      m["龙门币"] = EliteLMB[db.rarity+1][elite-1];
+      resultView.mats_e.elite.push({...m});
     }
   }
-  if (resultView.equipId) {
-    let m = {};
-    for (var lv=0; lv < 3; ++lv) {
-      edb[resultView.equipId]["itemCost"].forEach(x => {
-        if (x.id != "4001") {
-          let _nm = itemdb[x.id].name.replace(" ", "");
-          itemCache[_nm] = { id: x.id, name: _nm, rarity: itemdb[x.id].rarity };
-          m[_nm] = x.count;
-          if (x.id != 'mod_unlock_token') m[_nm] = Math.floor(x.count * (1+lv/2));
-        }
-      });
-      resultView.mats[`${charId}_elite`].push({...m});
-    }
+  if (window.vue_app.equipList) {
+    window.vue_app.equipList.forEach(eid => {
+      resultView.mats_e[eid] = [];
+      for (let lv=1; lv <= 3; ++lv) {
+        let m = {};
+        edb[eid]["itemCost"][lv].forEach(x => {
+          if (!["mod_update_token_1", "mod_update_token_2"].includes(x.id)) {
+            let _nm = itemdb[x.id].name.replace(" ", "");
+            itemCache[_nm] = { id: x.id, name: _nm, rarity: itemdb[x.id].rarity };
+            m[_nm] = x.count;
+          }
+        });
+        resultView.mats_e[eid].push({...m});
+      }
+    })
   }
 
   // 绿票算法
-  var greenTable = AKDATA.Data.green;
-  Object.keys(resultView.mats).forEach(k => {
-    resultView.cost[k] = resultView.mats[k].map(item => [0, ...Object.keys(item)].reduce((sum, x) => sum + greenTable[x] * item[x]));
-  });
+  let greenTable = AKDATA.Data.green;
+  const calculateGreen = (matObj) => 
+    [0, ...Object.keys(matObj)].reduce((sum, x) =>
+      (x!=0 && x!="龙门币" && x in greenTable) ? sum + greenTable[x] * matObj[x] : sum
+    );
 
-  // console.log(window.vue_app.debugPrint(resultView.mats));
+  Object.keys(resultView.mats).forEach(k => {
+    resultView.cost[k] = resultView.mats[k].map(calculateGreen);
+  });
+  
+  Object.keys(resultView.mats_e).forEach(k => {
+    resultView.cost_e[k] = resultView.mats_e[k].map(calculateGreen);
+  });
+  // console.log(JSON.stringify(resultView.mats_e), JSON.stringify(resultView.cost_e));
   return resultView;
 }
 
@@ -584,12 +651,12 @@ function buildChartView(resultView, key) {
   let view = resultView;
   let k = key;
   let columns = [], groups = [], skill_names = [], notes = [];
-  var last = {};
-  for (let stg in view.stages) {
-    var entry = [stg];
+  let last = {};
+  for (let stg in Stages) {
+    let entry = [stg];
     for (let skill in view.skill) {
       k = (view.dps[skill][stg].damageType == 2) ? HealKeys[key] : key; 
-      var value = view.dps[skill][stg][k];
+      let value = view.dps[skill][stg][k];
       if (skill in last)
         entry.push((value - last[skill]).toFixed(1));
       else
@@ -599,7 +666,7 @@ function buildChartView(resultView, key) {
     columns.push(entry);
     groups.push(stg);
   }
-  var x = 0.02, i = 0;
+  let x = 0.02, i = 0;
   for (let skill in view.skill) {
     skill_names.push(view.skill[skill]);
     let line = view.notes[skill];
@@ -671,11 +738,11 @@ function updatePlot(chartView) {
 }
 
 function buildPieView(chartView) {
-  var view = {};
-  for (var i=0; i<chartView.skill_names.length; i+=1) {
+  let view = {};
+  for (let i=0; i<chartView.skill_names.length; i+=1) {
     let sk = chartView.skill_names[i];
     view[sk] = [];
-    for (var j=1; j<chartView.groups.length; j+=1) {  // skip base value
+    for (let j=1; j<chartView.groups.length; j+=1) {  // skip base value
       view[sk].push([chartView.groups[j], chartView.columns[j][i+1]]);
     }
   }
@@ -685,7 +752,7 @@ function buildPieView(chartView) {
 function plotPie(pieView) {
   if (!window.chart) window.chart = {};
   window.chart.pie = {};
-  var i=0;
+  let i=0;
   $(`#pie_chart`).html("");
   Object.keys(pieView).forEach(sk => {
     $(`#pie_chart`).append(`
@@ -734,27 +801,27 @@ function buildJsonView(app, chartView, pieView) {
 }
 
 function _dist(x, y) {
-  var d = 0;
-  for (var i=0; i<x.length; i+=1) {
+  let d = 0;
+  for (let i=0; i<x.length; i+=1) {
     d += (x[i] - y[i]) * (x[i] - y[i]);
   }
   return Math.sqrt(d);
 }
 
 function calcSubClass(x, prof) {
-  var sub_db = AKDATA.Data.subclass;
-  var dists = Object.keys(sub_db).filter(
+  let sub_db = AKDATA.Data.subclass;
+  let dists = Object.keys(sub_db).filter(
     k => sub_db[k].prof == prof).map(
     k => [k, _dist(x, sub_db[k].feat)]).sort(
       (x, y) => x[1] - y[1]
     );
-  var d_1 = dists.map(x => 1 / (x[1] + 0.0001));
-  var s = d_1.reduce((sum, x) => sum + x);
-  var rate = dists.map((x, index) => [x[0], d_1[index] / s]);
-  console.log(rate);
-  var view = [];
-  var groups = [];
-  var patterns = [ "#4169e1", "#ff7f50", "#ffd700", "#dc143c", "#ee82ee", "#e6e6fa" ];
+  let d_1 = dists.map(x => 1 / (x[1] + 0.0001));
+  let s = d_1.reduce((sum, x) => sum + x);
+  let rate = dists.map((x, index) => [x[0], d_1[index] / s]);
+  //console.log(rate);
+  let view = [];
+  let groups = [];
+  let patterns = [ "#4169e1", "#ff7f50", "#ffd700", "#dc143c", "#ee82ee", "#e6e6fa" ];
   s = 1;
   rate.forEach(x => {
     if (x[1] >= 0.1) {
@@ -763,7 +830,7 @@ function calcSubClass(x, prof) {
       s -= x[1];
     }
   });
-  var pats = patterns.slice(0, view.length);
+  let pats = patterns.slice(0, view.length);
   /*
   if (s>0) {
     view.push(["其他", (s*100).toFixed(2)]);
@@ -776,11 +843,11 @@ function calcSubClass(x, prof) {
   };
 }
 
-var _baseValue = null;
-var _lineCount = 0;
+let _baseValue = null;
+let _lineCount = 0;
 
 function plot2(chartView) {
-  var myChart = echarts.init($("#echarts_chart")[0]);
+  let myChart = echarts.init($("#echarts_chart")[0]);
   /* chartView是按行的
   技能 1 2 3 skill_names
   groups
@@ -792,61 +859,60 @@ function plot2(chartView) {
   模组 * * *
   满潜 * * *
   */
-  var dataset = { 
+  let dataset = { 
     source: [
       ["技能", ...chartView.skill_names],
       ...chartView.columns,
       ["注记", ...(chartView.notes.map(x => x.content))]  // 把注记也放在这里，使用自定义数据系列显示
     ]
   };
-  console.log(dataset);
+  //console.log(dataset);
   //console.log(chartView);
 
-  var seriesTemplate = {
+  let seriesTemplate = {
     type: 'bar',
     stack: 'total',
     label: {
       show: true,
       //fontWeight: 'bold',
-      fontSize: 14,
+      fontSize: 15,
       formatter: function (args) {
-        //console.log(args); return "";
-        var v = parseFloat(args.value[args.seriesIndex+1]);
+        let v = parseFloat(args.value[args.seriesIndex+1]);
         return v > 80 ? `${args.seriesName}\n+${Math.round(v)}`: "";
       }
     },
     emphasis: { focus: 'series' },
     blur: { itemStyle: { opacity: 0.3 } },
     seriesLayoutBy: 'row',
-    barWidth: '50%',
+    barWidth: '35%',
     itemStyle: {
-      shadowColor: 'rgba(0, 0, 0, 0.3)',
+      shadowColor: 'rgba(0, 0, 0, 0.4)',
       shadowBlur: 3,
       shadowOffsetX: 1,
       shadowOffsetY: 2,
     }
   };
-  var series = [];
-  for (var i=0; i<chartView.groups.length; ++i)
+  let series = [];
+  for (let i=0; i<chartView.groups.length; ++i)
     series.push(seriesTemplate);
 
   // notes
-  var notesTemplate = {
+  let notesTemplate = {
     type: 'custom',
     seriesLayoutBy: 'row',
     encode: {x: null, y: 0, tooltip: 0},  // x 不映射，y 对应表头(第0行)
     renderItem: function (params, api) {
-      var value = api.value(8).replace(/\n/g, "; ").replace(/; ; /g, "\n"); // 第8行为注记值
-      var index = params.dataIndex;  // 第几行
+      let value = api.value(10).replace(/\n/g, "; ").replace(/; ; /g, "\n"); // 第10行为注记值
+      let index = params.dataIndex;  // 第几行
       //console.log({params, api, ids, value});
 
-      var barLayout = api.barLayout({   // 计算系列高度
+      let barLayout = api.barLayout({   // 计算系列高度
         barGap: '30%',
         barCategoryGap: '20%',
         barWidth: '50%',
         count: params.dataInsideLength
       });
-      var point = api.coord([20, api.value(0)]);  // 放在坐标轴的对应位置
+      let point = api.coord([20, api.value(0)]);  // 放在坐标轴的对应位置
       //console.log(barLayout[index].bandWidth);
       return {
         type: 'text',
@@ -857,10 +923,10 @@ function plot2(chartView) {
     },
     z: 10
   };
-  series.push(notesTemplate);
+  series.push(notesTemplate); 
 
   // 指定图表的配置项和数据
-  var option = {
+  let option = {
     toolbox: {
       show: true,
       feature: {
@@ -875,7 +941,7 @@ function plot2(chartView) {
         type: 'shadow' // 'shadow' as default; can also be 'line' or 'shadow'
       }, 
       valueFormatter: function (value) {
-        var v = parseFloat(value);
+        let v = parseFloat(value);
         if (!_baseValue && v>=0) {
           _baseValue = v; // 暂存第一个值作为基准值
           _lineCount = 0;
@@ -884,8 +950,8 @@ function plot2(chartView) {
           if (isNaN(v)) {  // 最后一行
             _baseValue = null;
             return "";
-          } else if (_lineCount < 4) {
-            var pct = v*100/_baseValue;
+          } else if (_lineCount < 8) {
+            let pct = v*100/_baseValue;
             ++_lineCount;  // 只显示前四行的百分比
             return `${value} / ${pct.toFixed(1)}%`;
           } else {
@@ -895,7 +961,15 @@ function plot2(chartView) {
         }
       },
     },
-    legend: { top: 'bottom' },
+    legend: {
+      top: 'bottom',
+      tooltip: {
+        trigger: 'item',
+        valueFormatter: function (value) {
+          return Stages[value].desc;
+        },
+      }
+    },
     grid: {
       left: '0px',
       right: '5%',
@@ -908,7 +982,7 @@ function plot2(chartView) {
       name: ChartKeys[window.vue_app.chartKey],
       axisLine: { show: true },
       axisLabel: {
-        fontSize: 14,
+        fontSize: 16,
         margin: 5
       }
     },
@@ -926,18 +1000,21 @@ function plot2(chartView) {
     },
     dataset: dataset,
     series: series,
-    color: [ "#eeeeee", "#4169e1", "#ff7f50", "#ffd700", "#dc143c", "#ba55d3", "#eea0ee"]
+    color: ["#7c1f66",
+            "#a03989", "#c558be", "#e9adce",
+            "#ff7e5a", "#fdaa67", "#ffc78f",
+            "#fff8bc","#eeeeee"].reverse()
   };
 
   // 使用刚指定的配置项和数据显示图表。
   myChart.setOption(option);
-  myChart.resize({height: chartView.skill_names.length * 180});
+  myChart.resize({height: chartView.skill_names.length * 200});
 
   window.eChart = myChart;
 }
 
 function plot2Update(chartView) {
-  var dataset = { 
+  let dataset = { 
     source: [
       ["技能", ...chartView.skill_names],
       ...chartView.columns,

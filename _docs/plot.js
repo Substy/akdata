@@ -70,7 +70,7 @@ let page_html = `
     <table class="table" style="table-layout:fixed">
       <tbody>
         <tr>
-          <td align="center">
+          <td align="center" rowspan="2">
           <figure class="figure">
             <img class="img_char figure-img" style="max-width: 70%; height: auto;" :src="img_char" @click="selChar"></img>
             <figcaption class="figure-caption" style="max-width: 70%; font-weight:600; font-size: 1vw; color: #000; text-align: center; text-weight: 600">{{ txt_char }}</figcaption>
@@ -91,6 +91,8 @@ let page_html = `
             <option v-for="x in opt_pot" :value="x">{{ x+1 }}</option>
           </select>
         </td>
+        </tr>
+        <tr>
         <td><b>技能</b>
           <select id="sel_skill" class="form-control" v-model="details.skillId">
             <option v-for="x in opt_skill" :value="x.id">{{ x.name }}</option>
@@ -106,8 +108,14 @@ let page_html = `
             <option v-for="x in opt_equip" :value="x.id">{{ x.name }}</option>
           </select>
         </td>
+        <td><b>模组等级</b>
+          <select id="sel_equiplv" class="form-control" v-model="details.equipLevel">
+            <option v-for="x in opt_equipLv" :value="x">{{ x }}</option>
+          </select>
+        </td>
         <td><b>条件</b><br>
-          <label class="form-check-label" style="margin-left: 30px" v-for="opt in opt_options">
+          <label v-for="opt in opt_options" class="form-check-label" data-toggle="tooltip"
+                 :title="opt.tooltip" style="margin-left: 30px" >
             <input class="form-check-input" type="checkbox" checked :value="opt.tag" :id="opt.tag" v-model="details.options">
             {{ opt.text }}
           </label>
@@ -181,7 +189,7 @@ let page_html = `
               <td><b>技力恢复(+x%)</b><br>
                 <input id="txt_cdr" type="text" v-model="raidBuff.cdr">
               </td>
-              <td><b>合约攻击力Tag(+/-x%)</b><br>
+              <td><b>合约/保全攻击力(+/-x%)</b><br>
                 <input id="txt_batk" type="text" v-model="raidBuff.base_atk">
               </td>
               <td><b>伤害倍率(damage_scale/x%)</b><br>
@@ -256,11 +264,12 @@ function buildVueModel() {
     opt_skillLv: [],
     opt_options: [],
     opt_equip: [],
+    opt_equipLv: [1, 2, 3],
     charId: "-",
     chartKey: "dps",
     enemyKey: "def",
     test: {},
-    details: { phase: 2, level: 90, potential: 5, skillId: "-", skillLevel: 9, favor: 200, options: [], equipId: "" },
+    details: { phase: 2, level: 90, potential: 5, skillId: "-", skillLevel: 9, favor: 200, options: [], equipId: "", equipLevel: 3 },
     enemy: { def: 0, magicResistance: 0, count: 1 },
     raidBuff: { atk: 0, atkpct: 0, ats: 0, cdr: 0, base_atk: 0, damage_scale: 0},
     resultCache: {},
@@ -339,8 +348,11 @@ function load() {
         // { charId, phase: 2, level: 90, potential: 5, skillId: "-", skillLevel: 9, options: [] }
         var levelStr = `精${char.phase} ${char.level}级, 潜能${char.potential+1}, `;
         var skillStr = skillDB[char.skillId] ? `${skillDB[char.skillId].levels[0].name} 等级${char.skillLevel+1}` : "";
-        var equipStr = (char.equipId.length>0) ? equipDB[char.equipId].uniEquipName + "<br>" : "";
-        var optionStr = char.options.map(x => optionDB.tags[x].displaytext).join("/");
+        var equipStr = (char.equipId.length>0) ? `${equipDB[char.equipId].uniEquipName} 等级${char.equipLevel}<br>` : "";
+        var optionStr = char.options.map(x => optionDB.tags[x] ? 
+          optionDB.tags[x].displaytext : 
+          optionDB.cond_info[x.replace("cond", char.charId)].text
+        ).join("/");
         return { name: charDB[char.charId].name, text: levelStr + equipStr + skillStr, option: optionStr }
       },
       explainArgs: function() {
@@ -356,17 +368,46 @@ function load() {
         AKDATA.showSelectCharDialog(this.excludeList, this.charId);
       },
       setChar: function(event) {
-        let phases = charDB[this.charId].phases.length;
-        this.txt_char = charDB[this.charId].name;
+        let charData = charDB[this.charId];
+        let phases = charData.phases.length;
+        this.txt_char = charData.name;
         this.img_char = `/akdata/assets/images/char/${this.charId}.png`;
         this.opt_phase = [...Array(phases).keys()];
         this.details.phase = phases-1;
         this.setPhase();
 
         var opts = (optionDB.char[this.charId] || []).map(
-          x => ({ tag: x, text: optionDB.tags[x].displaytext })
-        );
-        opts.push({ tag: "buff", text: "计算团辅"});
+          x => {
+            if (x.startsWith("cond")) {
+              // June 14: add wildcard cond support
+              let suffix = x.replace("cond", "");
+              let tooltip = "", text = "";
+              if ((this.charId + suffix) in optionDB.cond_info) {
+                let which = optionDB.cond_info[this.charId + suffix];
+                
+                let talent = null;
+                if (typeof(which) == "number")
+                  talent = charData.talents[which-1];
+                else if (which == "trait")
+                  talent = charData.trait;
+                else if (which.text) {
+                  text = "触发 - " + which.text;
+                  tooltip = which.tooltip;
+                }
+      
+                if (talent) {
+                  text = "触发 - " + talent.candidates[0].name;
+                  if (which == "trait") {
+                    text = "触发 - 特性";
+                  }
+                }
+              } else tooltip = `触发条件${suffix}`;
+              return { tag: x, text, tooltip };
+            } else {
+              return { tag: x, text: optionDB.tags[x].displaytext, tooltip: optionDB.tags[x].explain };
+            }
+          });
+        opts.push({ tag: "buff", text: "计算团辅", tooltip: ""});
         var sel_opts = [];
         opts.forEach(x => {
           if (x.tag != "token") sel_opts.push(x.tag);         
@@ -529,7 +570,8 @@ function buildArgs(info, enemy, raidBuff, key) {
     potentialRank: info.potential,
     skillLevel: info.skillLevel,
     options: {},
-    equipId: info.equipId
+    equipId: info.equipId,
+    equipLevel: info.equipLevel
   };
   info.options.forEach(x => { char_obj.options[x] = true; });
   let enemy_obj = {

@@ -12,9 +12,15 @@
     width: 80px;
 }
 
+.o-badge--rarity-crystal {
+    --badge-light: rgb(255,103,173);
+    --badge-color: rgb(46,41,5);
+    box-shadow: 1px 2px 4px 0px #333;
+}
+
 .o-badge--rarity-5 {
     --badge-light: rgb(161,72,5);
-    --badge-color: rgb(250,195,95);
+    --badge-color: rgb(250,225,95);
     box-shadow: 1px 2px 4px 0px #333;
 }
 .o-badge--rarity-4 {
@@ -98,6 +104,16 @@ strong {
 .dps_menu_item_50 {
     width: 50%;
 }
+.dps_menu_item_70 {
+    width: 70%;
+}
+.dps_menu_item_30 {
+    width: 30%;
+}
+.table_equip_blackboard {
+    word-break: break-all;
+}
+
 @media (max-width: 840px) {
     .dps_table_header {
         width: 18%;
@@ -107,6 +123,12 @@ strong {
     }
     .dps_menu_item_50 {
         width: 100%;
+    }
+    .dps_menu_item_70 {
+        width: 100%;
+    }
+    .dps_menu_item_30 {
+        width: 100%; 
     }
 
     table.dps_responsive tr th { /* 隐藏真实表头 */

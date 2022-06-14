@@ -32,26 +32,30 @@ function getTokenAtkHp(charAttr, tokenId, log) {
 
 function checkChar(char) {
   let charData = AKDATA.Data.character_table[char.charId];
-  let attr = {};
-  if (!('phase' in char)) attr.phase = charData.phases.length - 1;
-  if (!('level' in char)) attr.level = charData.phases[attr.phase].maxLevel;
-  if (!('favor' in char)) attr.favor = 200;
-  if (!('skillLevel' in char)) attr.skillLevel = 6;
-  if (!('options' in char)) attr.options = { cond: true, crit: true, token: false, equip: true };
-  if (!('potentialRank' in char)) attr.potentialRank = 5;
-  if (char.charId == "char_230_savage")
-    attr.potentialRank = Math.min(2, attr.potentialRank);
-  else if (char.charId == "char_4019_ncdeer")
-    attr.potentialRank = Math.min(0, attr.potentialRank);
-  // 添加默认模组
-  if (!char.equipId) {
-    let elist = AKDATA.Data.uniequip_table["charEquip"][char.charId];
-    if (elist) {
-      attr.equipId = elist[elist.length-1];
-    }
+  let skillData = AKDATA.Data.skill_table[char.skillId];
+  // 默认最大属性
+  let attr = {  
+    phase: charData.phases.length - 1,
+    level: charData.phases[charData.phases.length - 1].maxLevel,
+    favor: 200,
+    skillLevel: skillData.levels.length-1,
+    options: { cond: true, crit: true, token: false, equip: true },
+    potentialRank: charData.potentialRanks.length
+  };
+  // 默认模组
+  let elist = AKDATA.Data.uniequip_table["charEquip"][char.charId];
+  if (elist) {
+    attr.equipId = elist[elist.length-1];
+    attr.equipLevel = 3;
   }
- // if (Object.keys(attr).length > 0) console.log("添加默认角色属性", attr);
-  Object.assign(char, attr);
+
+  // 检查属性
+  Object.keys(attr).forEach(k => {
+    if (!(k in char))
+      char[k] = attr[k];
+  });
+  
+ // console.log( {char} );
   return char;
 }
 
@@ -118,18 +122,20 @@ function calculateDps(char, enemy, raidBuff) {
   let levelData = skillData.levels[char.skillLevel];
   let blackboard = getBlackboard(skillData.levels[char.skillLevel].blackboard) || {};
 
+  console.log(charData.name, levelData.name);
+  log.write(`| 角色 | 等级 | 技能 | 模组 |`);
+  log.write(`| :--: | :--: | :--: | :--: |`);
+  log.write(`| **${charData.name}**<br>~${charId}~ | 潜能 ${char.potentialRank+1}<br>精英 ${char.phase}, 等级 ${char.level} | **${levelData.name}**<br>等级 ${char.skillLevel+1} | **${equipData.uniEquipName}**<br>等级 ${char.equipLevel} |`);
+  log.write('');
+  log.write("----");
+  displayNames[charId] = charData.name;
+  displayNames[char.skillId] = levelData.name;  // add to name cache
+
   // calculate basic attribute package
   let attr = getAttributes(char, log);
   blackboard.id = skillData.skillId;
   attr.buffList["skill"] = blackboard;
   attr.skillId = blackboard.id;
-
-  console.log(charData.name, levelData.name);
-  log.write(`| 角色 | 等级 | 技能 | 模组 |`);
-  log.write(`| :--: | :--: | :--: | :--: |`);
-  log.write(`| ~${charId}~ - **${charData.name}**  | 精英 ${char.phase}, 等级 ${char.level}, 潜能 ${char.potentialRank+1} | ${levelData.name}, 等级 ${char.skillLevel+1} | ${equipData.uniEquipName} |`);
-  displayNames[charId] = charData.name;
-  displayNames[char.skillId] = levelData.name;  // add to name cache
 
   if (char.options.token && (checkSpecs(charId, "token") || checkSpecs(char.skillId, "token")))  {
     log.write("\n");
@@ -145,7 +151,8 @@ function calculateDps(char, enemy, raidBuff) {
     attr.basic.atk = Math.round(attr.basic.atk + delta);
     log.write(`[团辅] 原本攻击力变为 ${attr.basic.atk} (${prefix}${delta.toFixed(1)})`); 
   }
-
+  log.write("");
+  log.write("----");
   var _backup = {
 	basic: {...attr.basic},
 //	enemy: {...enemy},
@@ -157,7 +164,8 @@ function calculateDps(char, enemy, raidBuff) {
   let skillAttack = null;
 
   if (!checkSpecs(char.skillId, "overdrive")) { // 正常计算
-    log.write(`- **技能**\n`);
+    log.write(`【技能】`);
+    log.write("----------");
     skillAttack = calculateAttack(attr, enemy, raidBlackboard, true, charData, levelData, log);
     if (!skillAttack) return;
     _note = `${log.note}`;
@@ -168,7 +176,8 @@ function calculateDps(char, enemy, raidBuff) {
   //  charData = _backup.chr;
   //  levelData = _backup.level;
 
-    log.write(`- **普攻**\n`); 
+    log.write(`【普攻】`);
+    log.write("----------"); 
     normalAttack = calculateAttack(attr, enemy, raidBlackboard, false, charData, levelData, log);
     if (!normalAttack) return;
   } else {
@@ -916,6 +925,7 @@ function applyBuff(charAttr, buffFrm, tag, blackbd, isSkill, isCrit, log, enemy)
       case "skchr_siege_2":
       case "skchr_glady_3":
       case "skchr_gnosis_2":
+      case "skchr_ebnhlz_2":
         buffFrame.maxTarget = 999;
         writeBuff(`最大目标数 = ${buffFrame.maxTarget}`);
         break;
@@ -1051,6 +1061,7 @@ function applyBuff(charAttr, buffFrm, tag, blackbd, isSkill, isCrit, log, enemy)
       case "skchr_jaksel_2":
       case "skchr_iris_1":
       case "skchr_indigo_2":
+      case "skchr_ebnhlz_1":
       case "skchr_mberry_2":
       case "skchr_flamtl_3":
         writeBuff(`base_attack_time: ${blackboard.base_attack_time}x`);
@@ -1246,6 +1257,9 @@ function applyBuff(charAttr, buffFrm, tag, blackbd, isSkill, isCrit, log, enemy)
       case "tachr_469_indigo_trait":
       case "tachr_338_iris_1":
       case "tachr_362_saga_2":
+      case "tachr_4046_ebnhlz_trait":
+      case "tachr_4046_ebnhlz_1":
+      case "tachr_4046_ebnhlz_2":
         done = true; break;
       case "skchr_tuye_1":
       case "skchr_tuye_2":
@@ -1365,11 +1379,6 @@ function applyBuff(charAttr, buffFrm, tag, blackbd, isSkill, isCrit, log, enemy)
       case "tachr_265_sophia_trait":
         if (!options.noblock) 
           done = true;
-        else if (basic.equip_blackboard.atk_scale) {
-          delete blackboard.atk_scale;
-          //blackboard.atk_scale = basic.equip_blackboard.atk_scale;
-          //writeBuff(`模组倍率覆盖: ${blackboard.atk_scale}x`);
-        }
         break;
       case "uniequip_002_pallas":
       case "uniequip_002_sophia":
@@ -1541,6 +1550,10 @@ function applyBuff(charAttr, buffFrm, tag, blackbd, isSkill, isCrit, log, enemy)
         else
           done = true;
         break;
+      case "skchr_pianst_2":
+        delete blackboard.atk_scale;
+        blackboard.atk *= blackboard.max_stack_cnt;
+        break;
     }
 
   }
@@ -1559,6 +1572,7 @@ function applyBuff(charAttr, buffFrm, tag, blackbd, isSkill, isCrit, log, enemy)
     case "uniequip_002_glaze":
     case "uniequip_002_fartth":
       if (options.equip) {
+        blackboard = blackboard.trait;
         if (blackboard.damage_scale < 1) blackboard.damage_scale += 1;
         log.writeNote("距离>4.5");
       } else blackboard.damage_scale = 1;
@@ -1566,12 +1580,14 @@ function applyBuff(charAttr, buffFrm, tag, blackbd, isSkill, isCrit, log, enemy)
     case "uniequip_002_sddrag":
     case "uniequip_002_vigna":
       if (options.equip) {
+        blackboard = blackboard.trait;
         delete blackboard.hp_ratio;
       } else done = true;
       break;
     case "uniequip_002_chen":
     case "uniequip_002_tachak":
     case "uniequip_002_bibeak":
+      blackboard = blackboard.trait;
       if (!isSkill)
         delete blackboard.damage_scale;
       break;
@@ -1580,6 +1596,7 @@ function applyBuff(charAttr, buffFrm, tag, blackbd, isSkill, isCrit, log, enemy)
     case "uniequip_002_meteo":
     case "uniequip_002_yuki":
     case "uniequip_002_irene":
+      blackboard = blackboard.trait;
       blackboard.edef_pene = blackboard.def_penetrate_fixed;
       break;
     case "uniequip_002_nearl2":
@@ -1587,11 +1604,13 @@ function applyBuff(charAttr, buffFrm, tag, blackbd, isSkill, isCrit, log, enemy)
     case "uniequip_002_peacok":
     case "uniequip_002_cqbw":
     case "uniequip_002_sesa":
+      blackboard = blackboard.trait;
       if (!options.equip) delete blackboard.atk_scale;
       break;
     case "uniequip_002_skadi":
     case "uniequip_002_flameb":
     case "uniequip_002_gyuki":
+      blackboard = blackboard.trait;
       delete blackboard.hp_ratio;
       delete blackboard.max_hp;
       if (!options.equip) delete blackboard.attack_speed;
@@ -1599,6 +1618,7 @@ function applyBuff(charAttr, buffFrm, tag, blackbd, isSkill, isCrit, log, enemy)
     case "uniequip_002_lisa":
     case "uniequip_002_glacus":
     case "uniequip_002_podego":
+      blackboard = blackboard.trait;
       if (!options.equip) delete blackboard.sp_recovery_per_sec;
       break;
     case "uniequip_002_lumen":
@@ -1606,6 +1626,7 @@ function applyBuff(charAttr, buffFrm, tag, blackbd, isSkill, isCrit, log, enemy)
     case "uniequip_002_whispr":
       done = true; break;
     case "uniequip_002_finlpp":
+      blackboard = blackboard.trait;
       if (options.ranged_penalty) {
         options.ranged_penalty = false;
         writeBuff("取消距离惩罚");
@@ -1614,6 +1635,7 @@ function applyBuff(charAttr, buffFrm, tag, blackbd, isSkill, isCrit, log, enemy)
     case "uniequip_002_ghost2":
     case "uniequip_002_kazema":
     case "uniequip_002_bena":
+      blackboard = blackboard.trait;
       if (!options.annie)
         done = true;
       break;
@@ -1621,6 +1643,10 @@ function applyBuff(charAttr, buffFrm, tag, blackbd, isSkill, isCrit, log, enemy)
     case "uniequip_002_aurora":
       log.writeNote("按正常技力回复计算");
       done = true;
+      break;
+    case "uniequip_002_doberm":
+      if (!options.equip) done = true;
+      else blackboard = blackboard.talent;
       break;
   }
 
@@ -1631,16 +1657,16 @@ function applyBuff(charAttr, buffFrm, tag, blackbd, isSkill, isCrit, log, enemy)
 // 伤害类型判定
 function extractDamageType(charData, chr, isSkill, skillDesc, skillBlackboard, options) {
   let charId = chr.charId;
+  let spId = charData.subProfessionId;
   let skillId = skillBlackboard.id;
   let ret = 0;
-  if (charData.profession == "MEDIC")
+  if (charData.profession == "MEDIC" && spId != "incantationmedic")
     ret = 2;
-  else if (["char_1012_skadi2", "char_101_sora", "char_4045_heidi"].includes(charId)) {
+  else if (spId == "bard") {
     ret = 2;
   } else if (options.annie) {
     ret = 1;
-  } else if (charData.description.includes('法术伤害') && 
-             !["char_260_durnar", "char_378_asbest", "char_4025_aprot2", "char_512_aprot"].includes(charId)) {
+  } else if (charData.description.includes('法术伤害') && spId != "artsprotector") {
     ret = 1;
   }
   if (isSkill) {
@@ -1753,8 +1779,12 @@ function calcDurations(isSkill, attackTime, attackSpeed, levelData, buffList, bu
 
     log.write(`[模拟] T = 120s, 初始sp = ${(sp/fps).toFixed(1)}, 技能sp = ${cast_sp}, 技能动画时间 = ${Math.round(cast_time)} 帧, sp上限设为 ${max_sp / fps}`);
     log.write(`[模拟] 攻击间隔 ${attackTime.toFixed(3)}s`);
-    if (checkSpecs(skillId, "attack_animation"))
-      log.write(`[模拟] 攻击动画 = ${checkSpecs(skillId, "attack_animation")} 帧`);
+    let attackAnim = checkSpecs(skillId, "attack_animation");
+    if (attackAnim) {
+      // 缩放至攻击间隔
+      attackAnim = Math.min(Math.round(attackTime * fps), attackAnim);
+      log.write(`[模拟] 攻击动画 = ${attackAnim} 帧`);
+    }
 
     if (spData.spType == 1) {
       sp+=fps;  // 落地时恢复1sp
@@ -1771,10 +1801,8 @@ function calcDurations(isSkill, attackTime, attackSpeed, levelData, buffList, bu
       // skill
       if (sp >= cast_sp * fps &&
           time_since("skill") >= skill_time &&
-          (time_since("attack") >= attackTime * fps || (
-            checkSpecs(skillId, "attack_animation") && time_since("attack") == checkSpecs(skillId, "attack_animation")
-          ) ) ) {
-        if (checkSpecs(skillId, "attack_animation") && time_since("attack") == checkSpecs(skillId, "attack_animation"))
+          (time_since("attack") >= attackTime * fps || (attackAnim && time_since("attack") == attackAnim) ) ) {
+        if (time_since("attack") < attackTime * fps)
           action("reset_animation");
         action("skill");
       }
@@ -2221,8 +2249,8 @@ function calcDurations(isSkill, attackTime, attackSpeed, levelData, buffList, bu
           duration = attackDuration;
           attackCount = Math.ceil(attackDuration / attackTime);
         } else if (buffList["uniequip_002_milu"] && options.equip) { // 守林模组
-          attackCount = Math.ceil((spData.spCost - stunDuration*sp_rate) / (buffList["uniequip_002_milu"].sp + attackTime*sp_rate));
-          log.write(`[特殊] ${displayNames["uniequip_002_milu"]}: attack sp = ${attackCount * buffList["uniequip_002_milu"].sp}`);
+          attackCount = Math.ceil((spData.spCost - stunDuration*sp_rate) / (buffList["uniequip_002_milu"].trait.sp + attackTime*sp_rate));
+          log.write(`[特殊] ${displayNames["uniequip_002_milu"]}: attack sp = ${attackCount * buffList["uniequip_002_milu"].trait.sp}`);
           duration = attackCount * attackTime;
         } else if (buffList["tachr_489_serum_1"] && skillId == "skchr_serum_1") {
           let esp = buffList["tachr_489_serum_1"].sp_recovery_per_sec *
@@ -2475,7 +2503,7 @@ function calculateAttack(charAttr, enemy, raidBlackboard, isSkill, charData, lev
     if (isSkill && blackboard.id == "skchr_leizi_2")
       scale = 1;
     else if (charAttr.char.equipId && AKDATA.Data.battle_equip_table[charAttr.char.equipId])
-      scale = basicFrame.equip_blackboard["attack@chain.atk_scale"];
+      scale = basicFrame.equip_blackboard.trait["attack@chain.atk_scale"];
     
     for (var i=0; i<ecount-1; ++i) {
         s*=scale; tot += s; sks.push(s);
@@ -2885,14 +2913,31 @@ function calculateAttack(charAttr, enemy, raidBlackboard, isSkill, charData, lev
         break;
       case "tachr_338_iris_trait":
       case "tachr_469_indigo_trait":
-          if (isSkill && ["skchr_iris_2", "skchr_indigo_2"].includes(blackboard.id)) {} 
+      case "tachr_4046_ebnhlz_trait":
+          if (isSkill && ["skchr_iris_2", "skchr_ebnhlz_2"].includes(blackboard.id)) {} 
           else {
-            let scale = (buffList["tachr_338_iris_1"] ? buffList["tachr_338_iris_1"].atk_scale : 1);
-            damage = hitDamage * scale * buffFrame.damage_scale;
-            let md = damage * 3 + hitDamage;
-            log.write(`[特殊] ${displayNames[buffName]}: 蓄力伤害 ${damage.toFixed(1)}, 满蓄力伤害(3蓄+普攻) ${md.toFixed(1)}, 不计入dps`);
+            let talent_key = charId.replace("char", "tachr") + "_1";
+            // 倍率
+            let scale = buffList[talent_key].atk_scale || 1;
+            if (isSkill && blackboard.id == "skchr_ebnhlz_3")
+              scale *= buffList.skill.talent_scale_multiplier;
+            // 个数
+            let nBalls = bb.times;
+            if (talent_key == "tachr_4046_ebnhlz_1" && options.cond_elite)
+              ++nBalls;
+            // 伤害
+            let extra_scale = 0;
+            if ("tachr_4046_ebnhlz_2" in buffList && options.cond) {
+              extra_scale = buffList["tachr_4046_ebnhlz_2"].atk_scale;
+            }
+            damage = hitDamage * (scale + extra_scale); // hitDamage已经包含了damage_scale
+            let md = damage * nBalls + hitDamage * (1 + extra_scale);
+            let delta = md - hitDamage * (1+extra_scale) * (1+nBalls);
+            log.write(`[特殊] ${displayNames[buffName]}: 蓄力倍率 ${scale.toFixed(2)}, 每层伤害 ${damage.toFixed(1)}, 最大层数 ${nBalls}。
+                       满蓄力+普攻伤害 ${md.toFixed(1)}, 比连续普攻多 ${delta.toFixed(1)}`);
             log.writeNote(`满蓄力伤害 ${md.toFixed(1)}`);
-            if (isSkill) log.writeNote("(不计入dps)");
+            if (isSkill) log.writeNote("DPS按满蓄力1次计算");
+            pool[1] += delta;
           }
         break;
       case "skchr_ash_3":
@@ -3013,6 +3058,8 @@ function calculateAttack(charAttr, enemy, raidBlackboard, isSkill, charData, lev
         pool[2] += bb.heal_scale * finalFrame.maxHp; break;
       case "skchr_nightm_1":
         pool[2] += damagePool[1] * bb["attack@heal_scale"] * Math.min(enemy.count, bb["attack@max_target"]); break;
+      case "tachr_1024_hbisc2_trait":
+        pool[2] += damagePool[1] * bb.scale; break;
       case "skchr_folnic_2":
         pool[2] += bb["attack@heal_scale"] * finalFrame.atk / buffFrame.atk_scale * dur.hitCount; break;
       case "skchr_breeze_2":
@@ -3301,6 +3348,18 @@ function calculateAttack(charAttr, enemy, raidBlackboard, isSkill, charData, lev
           }
         }
         break;
+      case "skchr_pianst_2":
+        damage = finalFrame.atk * bb.atk_scale * (1-emrpct) * buffFrame.damage_scale;
+        pool[1] += damage * enemy.count;
+        log.write(`[特殊] ${displayNames[buffName]} 额外伤害 ${damage.toFixed(1)} 命中 ${enemy.count}`);
+        break;
+      case "tachr_4046_ebnhlz_2":
+        if (options.cond) {
+          damage = finalFrame.atk * bb.atk_scale * (1-emrpct) * buffFrame.damage_scale;
+          pool[1] += damage * dur.hitCount;
+          log.write(`[特殊] ${displayNames[buffName]} 额外伤害 ${damage.toFixed(1)} 命中 ${enemy.count}`);
+        }
+        break;
 
     }; // switch
 
@@ -3420,7 +3479,7 @@ function calculateAttack(charAttr, enemy, raidBlackboard, isSkill, charData, lev
         case "uniequip_002_gyuki":
           if (options.equip) {
             log.writeNote(`HP上限减少至 ${(finalFrame.maxHp * bb.max_hp).toFixed(1)}`);
-            finalFrame.maxHp = finalFrame.maxHp * bb.max_hp;
+            finalFrame.maxHp = finalFrame.maxHp * bb.trait.max_hp;
           }
           break;
         case "tachr_300_phenxi_1":
@@ -3675,7 +3734,8 @@ function getAttributes(char, log) { //charId, phase = -1, level = -1
   let attributesKeyFrames = {};
   let buffs = initBuffFrame();
   let buffList = {};
-  log.write("**【基础属性计算】**")
+  log.write("【基础属性】");
+  log.write("----");
   // 计算基础属性，包括等级和潜能
   if (char.level == charData.phases[char.phase].maxLevel) {
     attributesKeyFrames = Object.assign(attributesKeyFrames, phaseData.attributesKeyFrames[1].data);
@@ -3695,7 +3755,7 @@ function getAttributes(char, log) { //charId, phase = -1, level = -1
 
   // 计算潜能和模组
   applyPotential(char.charId, charData, char.potentialRank, attributesKeyFrames, log);
-  if (char.equipId && !char.options.token) {
+  if (char.equipId && !char.options.token && char.phase >= 2) {
     applyEquip(char, attributesKeyFrames, log);
     buffList[char.equipId] = attributesKeyFrames.equip_blackboard;
   }
@@ -3721,6 +3781,27 @@ function getAttributes(char, log) { //charId, phase = -1, level = -1
             }
             let prefabKey = 'tachr_' + char.charId.slice(5) + '_' + cd.prefabKey;
             displayNames[prefabKey] = cd.name;  // add to name cache
+
+            // 如果天赋被模组修改，覆盖对应面板
+            if (attributesKeyFrames.equip_blackboard) {
+              let ebb = attributesKeyFrames.equip_blackboard; 
+              if (ebb.override_talent == cd.prefabKey) {
+                var tb = ebb.talent;
+                //console.log({cd, old: blackboard, new: tb });
+                Object.keys(tb).forEach(k => {
+                  blackboard[k] = tb[k];
+                });
+                log.write(`[模组] 强化天赋 - ${cd.name}: ${JSON.stringify(blackboard)}`);
+              }
+              if (cd.prefabKey == "trait" && ebb.override_trait) {
+                var tb = ebb.trait;
+                //console.log({cd, old: blackboard, new: tb });
+                Object.keys(tb).forEach(k => {
+                  blackboard[k] = tb[k];
+                });
+                log.write(`[模组] 强化特性: ${JSON.stringify(blackboard)}`);
+              }
+            }
             // bufflist处理
             buffList[prefabKey] = blackboard;
             break;
@@ -3793,7 +3874,7 @@ function applyPotential(charId, charData, rank, basic, log) {
 
     basic[key] += value;
     if (value>0) {
-      log.write(`潜能 ${i+2}: ${key} ${basic[key]-value} -> ${basic[key]}`);
+      log.write(`潜能 ${i+2}: ${key} ${basic[key]-value} -> ${basic[key]} (+${value})`);
     }
   }
 }
@@ -3801,39 +3882,53 @@ function applyPotential(charId, charData, rank, basic, log) {
 function applyEquip(char, basic, log) {
   var equipId = char.equipId;
   var bedb = AKDATA.Data.battle_equip_table;
-  var phase = 0;  // 默认取第一个
+  var phase = char.equipLevel - 1;
   var cand = 0;
   var blackboard = {};
   var attr = {};
-
+  //console.log(phase);
   if (equipId && bedb[equipId]) {
     var item = bedb[equipId].phases[phase];
     attr = getBlackboard(item.attributeBlackboard);
+    blackboard.attr = attr;
 
     if (item.tokenAttributeBlackboard) {
       var tb = {};
       Object.keys(item.tokenAttributeBlackboard).forEach(tok => {
         tb[tok] = getBlackboard(item.tokenAttributeBlackboard[tok]);
       })
-      Object.assign(blackboard, tb);
+//      Object.assign(blackboard, tb);
+      blackboard.token = tb;
     }
+    var talents = {}, traits = {};
 
     item.parts.forEach(pt => {
       let talentBundle = pt.addOrOverrideTalentDataBundle;
       let traitBundle = pt.overrideTraitDataBundle;
       // 天赋变更
       if (talentBundle && talentBundle.candidates) {
-        // 目前只有杜宾一个人
-        let entry = talentBundle.candidates[cand];
-        Object.assign(blackboard, getBlackboard(entry.blackboard));
+        for (cand = talentBundle.candidates.length - 1; cand > 0; --cand) {
+          if (char.potentialRank >= talentBundle.candidates[cand].requiredPotentialRank) break;
+        }
+        Object.assign(talents, getBlackboard(talentBundle.candidates[cand].blackboard));
       }
       // 特性变更
       if (traitBundle && traitBundle.candidates) {
-        let entry = traitBundle.candidates[cand];
-        Object.assign(blackboard, getBlackboard(entry.blackboard));
+        for (cand = traitBundle.candidates.length - 1; cand > 0; --cand) {
+          if (char.potentialRank >= traitBundle.candidates[cand].requiredPotentialRank) break;
+        }
+        Object.assign(traits, getBlackboard(traitBundle.candidates[cand].blackboard));
       }
       
     });
+    blackboard.talent = talents;
+    blackboard.trait = traits;
+    // 查询额外数据，获得修改的是哪个天赋的面板
+    var which = ~~checkSpecs(equipId, "override_talent");
+    if (which > 0)
+      blackboard.override_talent = which;
+    // override_trait 为true时才把装备特性面板覆盖到原本特性上，否则把装备和特性作为不同buff处理。
+    blackboard.override_trait = checkSpecs(equipId, "override_trait");
   }
   //console.log(attr, blackboard);
   var attrKeys = {
@@ -3846,7 +3941,7 @@ function applyEquip(char, basic, log) {
 
   Object.keys(attr).forEach(x => {
     basic[attrKeys[x]] += attr[x];
-    if (attr[x]!=0) log.write(`模组: ${attrKeys[x]} ${basic[attrKeys[x]]-attr[x]} -> ${basic[attrKeys[x]]}`);
+    if (attr[x]!=0) log.write(`模组 Lv${char.equipLevel}: ${attrKeys[x]} ${basic[attrKeys[x]]-attr[x]} -> ${basic[attrKeys[x]]} (+${attr[x]})`);
   });  
   basic.equip_blackboard = blackboard; // 处理过的模组面板放在这里
 }

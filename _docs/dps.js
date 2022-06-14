@@ -11,6 +11,7 @@ function init() {
     '../customdata/dps_specialtags.json',
     '../customdata/dps_options.json',
     '../customdata/dps_anim.json',
+    '../customdata/mastery.json',
     '../resources/attributes.js'
   ], load);
 }
@@ -143,7 +144,7 @@ function load() {
         <th>攻击力(+x%)</th>
         <th>攻速(+x)</th>
         <th>技力恢复(+x%)</th>
-        <th>原本攻击力变化<br>(危机合约Tag +/-%)</th>
+        <th>原本攻击力变化<br>(合约Tag/保全装备 +x%)</th>
         <th>伤害倍率<br>(damage_scale + x%)</th>
       </tr>
       <tr>
@@ -226,8 +227,11 @@ function load() {
     $dps.find('.dps__row-anim').append(`<td><a class="dps__anim" data-index="${i}" href="###">[点击显示]</a></td>`);
     $dps.find('.dps__row-potentialrank').append(`<td><select class="form-control form-control-sm dps__potentialrank" data-index="${i}">${[0,1,2,3,4,5].map(x=>`<option value="${x}">${x+1}</option>`).join('')}</select></td>`);
     $dps.find('.dps__row-favor').append(`<td><select class="form-control form-control-sm dps__favor" data-index="${i}">${Object.keys(new Array(51).fill(0)).map(x=>`<option value="${x*2}">${x*2}</option>`).join('')}</select></td>`);
-    $dps.find('.dps__row-equip').append(`<td><select class="form-control form-control-sm dps__equip" data-index="${i}"></select>
-                                             <a class="dps__equip_info" data-index="${i}" href="###">模组信息</a></td>`);
+    $dps.find('.dps__row-equip').append(`<td><div class="form-group dps_menu_item">
+      <select class="dps__equip form-control form-control-sm dps_menu_item_70" data-index="${i}"></select>
+      <select class="dps__equip_level form-control form-control-sm dps_menu_item_30" data-index="${i}"></select>
+      <a class="dps__equip_info" data-index="${i}" href="###">模组信息</a>
+    </div></td>`);
   }
 
   pmBase.content.build({
@@ -242,6 +246,7 @@ function load() {
   $('.dps__phase').change(choosePhase);
   $('.dps__level').change(chooseLevel);
   $('.dps__equip').change(chooseEquip);
+  $('.dps__equip_level').change(chooseEquip);
   $('.dps__skill, .dps__skilllevel, .dps__potentialrank, .dps__favor').change(chooseSkill);
   $('.dps__enemy-def, .dps__enemy-mr, .dps__enemy-count, .dps__enemy-hp').change(calculateAll);
   $('.dps__buff-atk, .dps__buff-atkpct, .dps__buff-ats, .dps__buff-cdr, .dps__buff-batk, .dps__buff-scale').change(calculateAll);
@@ -503,11 +508,15 @@ function updateChar(charId, index) {
       equips.push({ id: key, name: item.uniEquipName });
   });
   let equipHtml = equips.map(e => `<option value="${e.id}">${e.name}</option>`).join();
+  let equipLevels = [1, 2, 3].map(x => `<option value="${x}">Lv ${x}</option>`).join();
   getElement("equip", index).html(equipHtml);
+  getElement("equip_level", index).html(equipLevels);
   let equipId = "";
+  let equipLevel = 3;
   if (equips.length > 0) {
     equipId = equips[equips.length-1].id;
     setSelectValue('equip', index, equipId);
+    setSelectValue('equip_level', index, 3);
     $(`.dps__equip_info:eq(${index})`).attr("href", `/akdata/equip/#${equipId}`).attr("target", "_blank");
   } else 
     $(`.dps__equip_info:eq(${index})`).attr("href", `###`).attr("target", "");
@@ -517,7 +526,8 @@ function updateChar(charId, index) {
     charId,
     skillId,
     skillLevel,
-    equipId
+    equipId,
+    equipLevel
   };
   $phase.change();
 }
@@ -534,31 +544,39 @@ function updateOptions(charId, index) {
     
   if (opts.char[charId]) {
     for (var t of opts.char[charId]) {
-      let checked = opts.tags[t].off ? "" : "checked";
-      let text = opts.tags[t].displaytext;
-      let tooltip = opts.tags[t].explain;
+      let u = (t.startsWith("cond") ? "cond" : t);  // wildcard cond
+      let checked = opts.tags[u].off ? "" : "checked";
+      let text = opts.tags[u].displaytext;
+      let tooltip = opts.tags[u].explain;
 
-      if (t == "cond" && opts.cond_info[charId]) {
-        let which = opts.cond_info[charId];
-        let talent = null;
-        if (typeof(which) == "number")
-          talent = charData.talents[which-1];
-        else if (which == "trait")
-          talent = charData.trait;
-        else if (which.text) {
-          text = "触发 - " + which.text;
-          tooltip = which.tooltip;
-        }
-
-        if (talent) {
-          text = "触发 - " + talent.candidates[0].name;
-          if (which == "trait") {
-            text = "触发 - 特性";
+      // June 9: add wildcard cond desciption support
+      if (t.startsWith("cond")) {
+        let suffix = t.replace("cond", "");
+        if ((charId + suffix) in opts.cond_info) {
+          let which = opts.cond_info[charId + suffix];
+          
+          let talent = null;
+          if (typeof(which) == "number")
+            talent = charData.talents[which-1];
+          else if (which == "trait")
+            talent = charData.trait;
+          else if (which.text) {
+            text = "触发 - " + which.text;
+            tooltip = which.tooltip;
           }
-          console.log(text);
-        }
-      }
 
+          if (talent) {
+            text = "触发 - " + talent.candidates[0].name;
+            if (talent.candidates[0].description)
+              tooltip = talent.candidates[0].description.replace(/<.*?>/g, '').replace(/\d/g, "x");
+              tooltip += " (效果可能被模组改变)";
+            if (which == "trait") {
+              text = "触发 - 特性";
+            }
+            // console.log(text);
+          }
+        } else tooltip = `触发条件${suffix}`;
+      } // if
       let html_bool = `
       <div class="form-check">
         <label class="form-check-label" data-toggle="tooltip" data-placement="right" title="${tooltip}">
@@ -566,8 +584,8 @@ function updateOptions(charId, index) {
             ${text}
         </label> </div>`;
       html += html_bool;
-    }
-  }
+    } // for
+  } // if
   $(`.dps__row-option td:nth-child(${index+2})`).html(html);
   getElement("buff", index).change(calculateColumn);
   if (opts.char[charId])
@@ -606,10 +624,14 @@ function choosePhase() {
   let charId = Characters[index].charId;
   let charData = AKDATA.Data.character_table[charId];
   let maxLevel = charData.phases[phase].maxLevel;
+  let maxSkillLevel = (phase+1)*3;
   let html = [...Array(maxLevel).keys()].map(x => `<option value="${x+1}">${x+1}</option>`).join('');
   let $level = getElement('level', index);
   $level.html(html);
+  getElement('skilllevel', index).html(
+    [...Array(maxSkillLevel+1).keys()].map(x =>`<option value="${x}">${x+1}</option>`).join(''))
   setSelectValue('level', index, maxLevel);
+  setSelectValue('skilllevel', index, maxSkillLevel);
 
   Characters[index].phase = phase;
   $level.change();
@@ -641,9 +663,11 @@ function chooseLevel() {
 function chooseEquip() {
   let $this = $(this);
   let index = ~~$this.data('index');
-  let eid = $this.val();
+  let eid = $(`.dps__equip:eq(${index})`).val();
+  let elv = ~~$(`.dps__equip_level:eq(${index})`).val();
 
   Characters[index].equipId = eid;
+  Characters[index].equipLevel = elv;
   if (eid) {
     $(`.dps__equip_info:eq(${index})`).attr("href", `/akdata/equip/#${eid}`);
   } else 
@@ -678,9 +702,7 @@ function calculate(index) {
   char.options = {};
   if (opts.char[char.charId]) {
     for (var t of opts.char[char.charId]) {
-      if (opts.tags[t].type == "bool") {
-        char.options[t] = getElement(t, index).is(':checked');
-      }
+      char.options[t] = getElement(t, index).is(':checked');
     }
   }
   // 团辅
@@ -798,7 +820,10 @@ function calculate(index) {
   else 
     getElement('g_dps', index).html(`DPS: ${dps.globalDps.toFixed(1)}, HPS: ${dps.globalHps.toFixed(1)}`);
 //  getElement('e_time', index).html(dps.killTime ?  `${Math.ceil(dps.killTime)}秒` : '-');
-  getElement("note", index).html(dps.note.replace(/\n/g,'<br>').replace(/ /g,'&nbsp;'));
+  let equip_prompt = "";
+  if (!(char.charId in AKDATA.Data.mastery) && char.equipLevel > 1)
+    equip_prompt = "暂未更新2-3级模组计算结果<br>(结果无效)";
+  getElement("note", index).html(dps.note.replace(/\n/g,'<br>').replace(/ /g,'&nbsp;') + equip_prompt);
 
   // attack time
   getElement("s_att", index).text(`${dps.skill.attackTime.toFixed(3)} s / ${dps.skill.frame} 帧`);
