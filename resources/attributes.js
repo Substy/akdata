@@ -440,7 +440,9 @@ function applyBuff(charAttr, buffFrm, tag, blackbd, isSkill, isCrit, log, enemy)
           break;
         case "sp_recovery_per_sec":
           buffFrame.spRecoveryPerSec += blackboard.sp_recovery_per_sec;
-          if (blackboard[key]>0) writeBuff(`sp: +${buffFrame.spRecoveryPerSec}/s`);
+          prefix = blackboard[key] > 0 ? "+" : "";
+          if (blackboard.sp_recovery_per_sec != 0)
+            writeBuff(`sp: ${prefix}${blackboard.sp_recovery_per_sec.toFixed(2)}/s`);
           break;
         case "atk_scale":
         case "def_scale":
@@ -643,6 +645,8 @@ function applyBuff(charAttr, buffFrm, tag, blackbd, isSkill, isCrit, log, enemy)
         case "tachr_472_pasngr_1":
           blackboard.damage_scale = blackboard["pasngr_t_1[enhance].damage_scale"];
           break;
+        case "tachr_472_pasngr_2":
+          if (!options.cond_2) done = true; break;
         case "tachr_1012_skadi2_2":
           log.writeNote("有深海猎人");
           blackboard.atk = blackboard["skadi2_t_2[atk][2].atk"];
@@ -1578,11 +1582,17 @@ function applyBuff(charAttr, buffFrm, tag, blackbd, isSkill, isCrit, log, enemy)
       } else blackboard.damage_scale = 1;
       break;
     case "uniequip_002_sddrag":
-    case "uniequip_002_vigna":
       if (options.equip) {
-        blackboard = blackboard.trait;
-        delete blackboard.hp_ratio;
-      } else done = true;
+        blackboard.atk_scale = blackboard.trait.atk_scale;
+        if (options.cond_spd) {
+          blackboard.attack_speed = blackboard.talent.attack_speed;
+          log.writeNote("受到持续法术伤害");
+        }
+      }
+      break;
+    case "uniequip_002_vigna":
+      if (options.equip)
+        blackboard.atk_scale = blackboard.trait.atk_scale;
       break;
     case "uniequip_002_chen":
     case "uniequip_002_tachak":
@@ -1604,8 +1614,8 @@ function applyBuff(charAttr, buffFrm, tag, blackbd, isSkill, isCrit, log, enemy)
     case "uniequip_002_peacok":
     case "uniequip_002_cqbw":
     case "uniequip_002_sesa":
-      blackboard = blackboard.trait;
-      if (!options.equip) delete blackboard.atk_scale;
+      if (options.equip)
+        blackboard = blackboard.trait;
       break;
     case "uniequip_002_skadi":
     case "uniequip_002_flameb":
@@ -1645,8 +1655,31 @@ function applyBuff(charAttr, buffFrm, tag, blackbd, isSkill, isCrit, log, enemy)
       done = true;
       break;
     case "uniequip_002_doberm":
-      if (!options.equip) done = true;
-      else blackboard = blackboard.talent;
+      if (options.equip) {
+        blackboard = blackboard.talent;
+        log.writeNote("有三星干员");
+      }
+      break;
+    case "uniequip_002_plosis":
+      if (options.equip && "sp_recovery_per_sec" in blackboard.talent)
+          blackboard.sp_recovery_per_sec = blackboard.talent.sp_recovery_per_sec - 0.3;
+      break;
+    case "uniequip_002_red":
+    case "uniequip_002_kafka":
+      if (options.equip) {
+        blackboard = blackboard.trait;
+        log.writeNote("周围4格没有队友");
+      }
+      break;
+    case "uniequip_002_waaifu":
+      if (options.equip) {
+        blackboard = blackboard.talent;
+        log.writeNote("对感染生物");
+      }
+      break;
+    case "uniequip_002_pasngr":
+      if (options.cond_2)
+        blackboard = blackboard.talent;
       break;
   }
 
@@ -1899,7 +1932,9 @@ function calcDurations(isSkill, attackTime, attackSpeed, levelData, buffList, bu
       var init_sp = spData.initSp + (buffList["tachr_180_amgoat_2"].sp_min + buffList["tachr_180_amgoat_2"].sp_max) / 2;
       startSp = spData.spCost - init_sp;
     } else if (buffList["tachr_222_bpipe_2"]) { // 军事传统
-      startSp = spData.spCost - spData.initSp - buffList["tachr_222_bpipe_2"].sp;
+      startSp = spData.spCost - spData.initSp - buffList["tachr_222_bpipe_2"].sp
+                - (buffList["tachr_222_bpipe_2"]["bpipe_e_2[locate].sp"] || 0);
+              console.log(startSp);
     } else if (buffList["tachr_456_ash_2"]) {
       startSp = spData.spCost - spData.initSp - buffList["tachr_456_ash_2"].sp;
     } 
@@ -1921,7 +1956,7 @@ function calcDurations(isSkill, attackTime, attackSpeed, levelData, buffList, bu
       var t = frameBegin / 30;
       attackCount = Math.ceil((duration - t) / attackTime);
       log.write(`技能前摇: ${t.toFixed(3)}s, ${frameBegin} 帧`);
-      if (!checkSpecs(skillId, "attack_begin")) log.write("（此为计算器默认值。实际前摇请参考动画时间）");
+      if (!checkSpecs(skillId, "attack_begin")) log.write("（计算器默认值；请参考动画时间）");
       else log.writeNote(`技能前摇: ${frameBegin} 帧`);
       if (spData.spType == 2) {
         log.writeNote("考虑普攻穿插技能");
@@ -2120,7 +2155,7 @@ function calcDurations(isSkill, attackTime, attackSpeed, levelData, buffList, bu
       var t = frameBegin / 30;
       attackCount = Math.ceil((duration - t) / attackTime);
       log.write(`技能前摇: ${t.toFixed(3)}s, ${frameBegin} 帧`);
-      if (!checkSpecs(skillId, "attack_begin")) log.write("（此为计算器默认值。实际前摇请参考动画时间）");
+      if (!checkSpecs(skillId, "attack_begin")) log.write("（计算器默认值；请参考动画时间）");
     }
 
     // 技能类型
@@ -2249,8 +2284,15 @@ function calcDurations(isSkill, attackTime, attackSpeed, levelData, buffList, bu
           duration = attackDuration;
           attackCount = Math.ceil(attackDuration / attackTime);
         } else if (buffList["uniequip_002_milu"] && options.equip) { // 守林模组
+          log.writeNote("每次攻击恢复1sp");
           attackCount = Math.ceil((spData.spCost - stunDuration*sp_rate) / (buffList["uniequip_002_milu"].trait.sp + attackTime*sp_rate));
-          log.write(`[特殊] ${displayNames["uniequip_002_milu"]}: attack sp = ${attackCount * buffList["uniequip_002_milu"].trait.sp}`);
+          log.write(`[特殊] ${displayNames["uniequip_002_milu"]}: 攻击恢复SP = ${attackCount * buffList["uniequip_002_milu"].trait.sp}`);
+          duration = attackCount * attackTime;
+        } else if ("uniequip_002_leizi" in buffList && options.cond
+                   && "sp" in buffList["uniequip_002_leizi"].talent) { // 惊蛰模组
+          log.writeNote("每次命中恢复1sp");
+          attackCount = Math.ceil((spData.spCost - stunDuration*sp_rate) / (enemyCount + attackTime*sp_rate));
+          log.write(`[特殊] ${displayNames["uniequip_002_leizi"]}: 攻击恢复SP = ${attackCount * enemyCount}`);
           duration = attackCount * attackTime;
         } else if (buffList["tachr_489_serum_1"] && skillId == "skchr_serum_1") {
           let esp = buffList["tachr_489_serum_1"].sp_recovery_per_sec *
@@ -2404,12 +2446,9 @@ function calculateAttack(charAttr, enemy, raidBlackboard, isSkill, charData, lev
     buffFrame.maxTarget = basicFrame.blockCnt;
   } else if (["所有敌人", "群体法术伤害", "群体物理伤害"].some(kw => charData.description.includes(kw))) {
     buffFrame.maxTarget = 999;
-  } else if (buffList["uniequip_002_flower"])
-    buffFrame.maxTarget = 4;
-    else if (charData.description.includes("恢复三个") &&
-             !(isSkill && charId == "char_275_breeze")) {
-      buffFrame.maxTarget = 3;
-    }
+  } else if (charData.description.includes("恢复三个") && !(isSkill && charId == "char_275_breeze")) {
+      buffFrame.maxTarget = Math.max(buffFrame.maxTarget, 3);
+  }
   if (options.token) {
     if (blackboard.id == "skchr_mgllan_3" ||
         (isSkill && blackboard.id == "skchr_mgllan_2"))
@@ -3455,8 +3494,6 @@ function calculateAttack(charAttr, enemy, raidBlackboard, isSkill, charData, lev
         case "tachr_472_pasngr_1":
         case "skchr_crow_2":
         case "tachr_437_mizuki_2":
-        case "uniequip_002_sddrag":
-        case "uniequip_002_vigna":
         case "tachr_4019_ncdeer_1":
         case "tachr_492_quercu_1":
         case "skchr_ling_2":

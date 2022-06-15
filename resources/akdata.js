@@ -8,7 +8,7 @@ const useCache = true;
 const cacheBeginTime = new Date(2019, 12, 10).getTime();
 
 window.AKDATA = {
-  akdata: "220615", // jsdelivr tag version
+  akdata: "220615-v2", // jsdelivr tag version
 
   Data: {},
 
@@ -228,7 +228,7 @@ window.AKDATA = {
         }
         if (AKDATA.Data.character_table[selectedChar]) {
           let subProfId = AKDATA.Data.character_table[selectedChar].subProfessionId;
-          if (charData.subProfessionId == subProfId)
+          if (charData.subProfessionId == subProfId && !charId.startsWith("token"))
             charPools["同分支干员"].push({"name": displayName, "id": charId, "rarity": charData.rarity});
         }
       } 

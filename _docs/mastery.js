@@ -126,8 +126,9 @@ function buildVueModel() {
     hash_args: "",
     jsonResult: {},
     equipId: null,
-    equipList: null,
-    equip_hint: ""
+    equipList: [],
+    equip_hint: "",
+    calculating: false
   };
 }
 
@@ -193,11 +194,17 @@ function load() {
         专精收益（以精2 1级 7级技能为基准计算）{{ equip_hint }}
         <span class="float-right">
           <input type="radio" id="btn_avg" value="dps" v-model="chartKey">
-          <label for="btn_avg">平均dps/hps</label>
+          <label for="btn_avg" style="margin: 5px">平均dps/hps</label>
           <input type="radio" id="btn_skill" value="s_dps" v-model="chartKey">
-          <label for="btn_skill">技能dps/hps</label>
+          <label for="btn_skill" style="margin: 5px">技能dps/hps</label>
           <input type="radio" id="btn_total" value="s_dmg" v-model="chartKey">
-          <label for="btn_total">技能总伤害/治疗</label>
+          <label for="btn_total" style="margin: 5px">技能总伤害/治疗</label>
+        </span>
+        <span class="float-right" style="padding-right: 50px">
+          <template v-for="e in equipList">
+            <input type="radio" :id="'btn_' + e.id" :value="e.id" v-model="equipId">
+            <label :for="'btn_' + e.id" style="margin: 5px">{{ e.name }}</label>
+          </template>
         </span>
       </div>
     </div>
@@ -241,14 +248,14 @@ function load() {
   $dps.find('.dps__row-select').append(`<td>
     <table style="table-layout:fixed; width: 100%; margin-bottom: 0px;">
       <tr>
-        <td rowspan="3" style="padding: 0; width: 50%">
+        <td rowspan="4" style="padding: 0; width: 50%">
           <figure class="figure">
             <img class="img_char figure-img" style="max-width: 80%; height: auto" :src="img_char" @click="selChar"></img>
             <figcaption class="figure-caption" style="max-width: 80%; font-weight:600; font-size: 1vw; color: #000; text-align: center; text-weight: 600">{{ txt_char }}</figcaption>
           </figure>
         </td>
         <td style="padding: 0">
-          <button class="btn btn-outline-secondary dps__goto float-right" type="button" v-on:click="goto"><i class="fas fa-search"></i> 详细属性</button>
+          <button class="btn btn-outline-secondary dps__goto float-right" type="button" v-on:click="goto"><i class="fas fa-address-card"></i> 详细属性</button>
         </td>
       </tr>
       <tr>
@@ -259,6 +266,11 @@ function load() {
       <tr>
         <td style="padding: 0">
           <button class="btn btn-outline-secondary dps__godps float-right" type="button" v-on:click="godps"><i class="fas fa-calculator"></i> DPS计算</button>
+        </td>
+      </tr>
+      <tr>
+        <td style="padding: 0">
+          <button class="btn btn-outline-secondary dps__goprts float-right" type="button" v-on:click="goprts"><i class="fas fa-search"></i>　PRTS　</button>
         </td>
       </tr>
     </table>
@@ -309,6 +321,9 @@ function load() {
       },
       goequip: function(event) {
         window.open(`../equip/#${this.equipId}`, '_blank'); 
+      },
+      goprts: function(event) {
+        window.open(`http://prts.wiki/w/${this.txt_char}`, '_blank'); 
       },
       selChar: function(event) {
         AKDATA.selectCharCallback = function (id) { window.vue_app.charId = id; window.vue_app.changeChar(); }
@@ -433,9 +448,12 @@ function load() {
         let pv = buildPieView(cv);
         //plotPie(pv);
         //updatePlot(cv);
-        this.txt_gain_title = `提升率分布图 - ${ChartKeys[_new]}`;
+        //this.txt_gain_title = `提升率分布图 - ${ChartKeys[_new]}`;
       },
-
+      equipId: function(_new, _old) {
+        if (!this.calculating)  // 避免嵌套
+          this.resultView = calculate(this.charId);
+      }
     }
   });
 
@@ -486,16 +504,19 @@ function buildChar(charId, skillId, recipe) {
   let edb = AKDATA.Data.uniequip_table["equipDict"];
   let equips = Object.keys(edb).filter(x => edb[x].charId == charId);
   if (equips.length > 0) {
-    window.vue_app.equipList = equips.filter(x => edb[x].unlockLevel > 0);
-    let eid = (recipe.equip ? equips[equips.length - 1] : equips[0]);  // todo
+    window.vue_app.equipList = equips.filter(x => edb[x].unlockLevel > 0)
+                                    .map(x => ({ id: x, name: edb[x].uniEquipName }));
+    // 默认equipId
+    if (!window.vue_app.equipId || edb[window.vue_app.equipId].charId != charId)
+      window.vue_app.equipId = equips[equips.length-1];
+    let eid = (recipe.equip ? window.vue_app.equipId : equips[0]);
     char.equipId = eid;
     char.equipName = edb[eid].uniEquipName;
     char.equipLevel = recipe.equipLevel;
-    window.vue_app.equipId = eid;
     //console.log(`equip -> ${eid} ${char.equipName}`);
   } else {
     window.vue_app.equipId = null;
-    window.vue_app.equipList = null;
+    window.vue_app.equipList = [];
   }
 
   //console.log(JSON.stringify({char, recipe}));
@@ -519,6 +540,8 @@ function calculate(charId) {
     enemy.count = 2;
     extraNote = "按2目标计算";
   }
+
+  window.vue_app.calculating = true;
 
   // calculate dps for each recipe case.
   db.skills.forEach(skill => {
@@ -605,7 +628,8 @@ function calculate(charId) {
     }
   }
   if (window.vue_app.equipList) {
-    window.vue_app.equipList.forEach(eid => {
+    window.vue_app.equipList.forEach(entry => {
+      let eid = entry.id;
       resultView.mats_e[eid] = [];
       for (let lv=1; lv <= 3; ++lv) {
         let m = {};
@@ -636,6 +660,7 @@ function calculate(charId) {
     resultView.cost_e[k] = resultView.mats_e[k].map(calculateGreen);
   });
   // console.log(JSON.stringify(resultView.mats_e), JSON.stringify(resultView.cost_e));
+  window.vue_app.calculating = false;
   return resultView;
 }
 
@@ -676,7 +701,6 @@ function buildChartView(resultView, key) {
     if (view.dps[skill]["满潜"].spType != 8) {
       if (line != "") line += "\n";
       line += `启动技力 ${view.dps[skill]["基准"].s_ssp}s -> ${view.dps[skill]["满潜"].s_ssp}s`;
-      console.log(view.dps[skill]["满潜"].spType);
       if (view.dps[skill]["满潜"].s_ssp <= 0)
         line += " （落地点火）";
     }
@@ -877,8 +901,9 @@ function plot2(chartView) {
       //fontWeight: 'bold',
       fontSize: 15,
       formatter: function (args) {
+        let sum = args.value.map(x => parseFloat(x) || 0).reduce((s, x) => s+x);
         let v = parseFloat(args.value[args.seriesIndex+1]);
-        return v > 80 ? `${args.seriesName}\n+${Math.round(v)}`: "";
+        return v/sum > 0.04 ? `${args.seriesName}\n+${Math.round(v)}`: "";
       }
     },
     emphasis: { focus: 'series' },
@@ -943,32 +968,29 @@ function plot2(chartView) {
       valueFormatter: function (value) {
         let v = parseFloat(value);
         if (!_baseValue && v>=0) {
-          _baseValue = v; // 暂存第一个值作为基准值
+          _baseValue = { base: v, total: v }; // 暂存第一个值作为基准值
           _lineCount = 0;
           return value;
         } else {
           if (isNaN(v)) {  // 最后一行
+            let total = _baseValue.total;
             _baseValue = null;
-            return "";
+            return `总 ${Math.round(total)}`;
           } else if (_lineCount < 8) {
-            let pct = v*100/_baseValue;
-            ++_lineCount;  // 只显示前四行的百分比
-            return `${value} / ${pct.toFixed(1)}%`;
+            let pct = v*100/_baseValue.base;
+            let prefix = (v>0 ? "+" : "");
+            _baseValue.total += v;
+            ++_lineCount;  // 只显示前8行的百分比
+            return `${prefix}${Math.round(v)} / ${Math.round(pct)}%`;
           } else {
             ++_lineCount;
-            return value;
+            return Math.round(v);
           }
         }
       },
     },
     legend: {
       top: 'bottom',
-      tooltip: {
-        trigger: 'item',
-        valueFormatter: function (value) {
-          return Stages[value].desc;
-        },
-      }
     },
     grid: {
       left: '0px',
@@ -979,10 +1001,25 @@ function plot2(chartView) {
     },
     xAxis: {
       type: 'value',
-      name: ChartKeys[window.vue_app.chartKey],
+      name: `${window.vue_app.txt_char} - ${ChartKeys[window.vue_app.chartKey]}`,
+      nameLocation: "middle",
+      nameGap: -24,
+      nameTextStyle: {
+        fontSize: 24,
+        fontWeight: 600
+      },
       axisLine: { show: true },
+      minorTick: { show: true },
+      splitLine: {
+        lineStyle: { color: "#e0e0e0" }
+      },
+      minorSplitLine: {
+        show: true,
+        lineStyle: { color: "#f4f4f4" }
+      },
       axisLabel: {
         fontSize: 16,
+        fontWeight: 600,
         margin: 5
       }
     },
@@ -1023,7 +1060,7 @@ function plot2Update(chartView) {
   };
   window.eChart.setOption({
     dataset: dataset,
-    xAxis: { name: ChartKeys[window.vue_app.chartKey] }
+    xAxis: { name: `${window.vue_app.txt_char} - ${ChartKeys[window.vue_app.chartKey]}` }
  });
 }
 

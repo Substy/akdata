@@ -569,7 +569,7 @@ function updateOptions(charId, index) {
             text = "触发 - " + talent.candidates[0].name;
             if (talent.candidates[0].description)
               tooltip = talent.candidates[0].description.replace(/<.*?>/g, '').replace(/\d/g, "x");
-              tooltip += " (效果可能被模组改变)";
+              tooltip += " 　 (效果可能被模组改变)";
             if (which == "trait") {
               text = "触发 - 特性";
             }
@@ -821,7 +821,7 @@ function calculate(index) {
     getElement('g_dps', index).html(`DPS: ${dps.globalDps.toFixed(1)}, HPS: ${dps.globalHps.toFixed(1)}`);
 //  getElement('e_time', index).html(dps.killTime ?  `${Math.ceil(dps.killTime)}秒` : '-');
   let equip_prompt = "";
-  if (!(char.charId in AKDATA.Data.mastery) && char.equipLevel > 1)
+  if (!(char.charId in AKDATA.Data.mastery) && char.equipId.length > 0 && char.equipLevel > 1)
     equip_prompt = "暂未更新2-3级模组计算结果<br>(结果无效)";
   getElement("note", index).html(dps.note.replace(/\n/g,'<br>').replace(/ /g,'&nbsp;') + equip_prompt);
 

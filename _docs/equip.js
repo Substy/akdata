@@ -36,30 +36,22 @@ function getEquipInfo(eid) {
   var phases = [];
   var phase = 0;  // 默认取第一个
   var cand = 0;
-  var blackboard = null;
   var attr = {};
   var description = null;
 
   if (bedb[eid]) {
     for (phase = 0; phase < bedb[eid].phases.length; ++phase) {
       var item = bedb[eid].phases[phase];
-      blackboard = {};  // 不用于显示和计算，但是用于显示文字格式(formatString)
       var rawBlackboard = {};
       attr = getBlackboard(item.attributeBlackboard);
 
       if (Object.keys(attr).length>0) rawBlackboard.attr = attr;
-      // 三围以外的基础属性补正挪到blackboard里输出
-      Object.keys(attr).forEach(k => {
-        if (!["max_hp", "atk", "def"].includes(k))
-          blackboard[k] = attr[k];
-      });
 
       if (item.tokenAttributeBlackboard) {
         var tb = {};
         Object.keys(item.tokenAttributeBlackboard).forEach(tok => {
           tb[tok] = getBlackboard(item.tokenAttributeBlackboard[tok]);
         })
-        Object.assign(blackboard, tb);
         if (tb && Object.keys(tb).length > 0) rawBlackboard.token = tb;
       }
 
@@ -72,7 +64,6 @@ function getEquipInfo(eid) {
           cand = talentBundle.candidates.length - 1;  // 取满潜数值
           let entry = talentBundle.candidates[cand];
           let value = getBlackboard(entry.blackboard);
-          Object.assign(blackboard, value);
           let d = entry.upgradeDescription;
           if (d && d.length>0) desc['talent'] = d;
           if (value && Object.keys(value).length>0) rawBlackboard.talent = value;
@@ -82,7 +73,6 @@ function getEquipInfo(eid) {
           cand = traitBundle.candidates.length - 1;  // 取满潜数值
           let entry = traitBundle.candidates[cand];
           let value = getBlackboard(entry.blackboard);
-          Object.assign(blackboard, value);
           let d = (entry.additionalDescription || "") + (entry.overrideDescripton || "");
           if (d.length>0) desc['trait'] = d;
           if (value && Object.keys(value).length>0) rawBlackboard.trait = value;
@@ -91,7 +81,7 @@ function getEquipInfo(eid) {
       });
       description = desc;
 
-      phases.push({ attr, blackboard, description, rawBlackboard });
+      phases.push({ attr, description, rawBlackboard });
     } // for
   } // if
 
@@ -165,11 +155,11 @@ function descHtml(info) {
             table.push([ 
               { text: lv+1, rowspan: Object.keys(info[lv].description).length },
               BBLabels[k],
-              AKDATA.formatString(value, false, info[lv].blackboard)
+              AKDATA.formatString(value, false, info[lv].rawBlackboard[k])
             ]);
             first = false;
           } else {
-            table.push([ BBLabels[k], AKDATA.formatString(value, false, info[lv].blackboard) ]);
+            table.push([ BBLabels[k], AKDATA.formatString(value, false, info[lv].rawBlackboard[k]) ]);
           }
           
       });
