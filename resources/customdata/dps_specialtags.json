@@ -64,7 +64,6 @@
     "char_4025_aprot2": { "note": "假设全程覆盖Debuff" },
     "char_4039_horn":   { "frame_corr": 1 },
     "char_4040_rockr":  { "grad": true },
-    "char_4047_pianst": { "note": "不计第一天赋反伤" },
     "char_4009_irene":  { "times": 2 },
     "char_4042_lumen":  { "frame_corr": 1 },
     "skchr_absin_2":    { "reset_attack": true },
@@ -437,5 +436,8 @@
     "uniequip_002_cutter":  { "override_talent": 1 },
     "uniequip_002_bpipe":   { "override_talent": 2 },
     "uniequip_002_vigna":   { "override_talent": 1 },
-    "uniequip_002_nearl2":  { "override_talent": 2 }
+    "uniequip_002_nearl2":  { "override_talent": 2 },
+    "uniequip_002_irene":   { "override_talent": 2 },
+    "uniequip_002_ghost2":  { "override_talent": 1 },
+    "uniequip_002_phenxi":  { "override_talent": 2 }
 }

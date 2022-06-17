@@ -66,7 +66,10 @@ function getEquipInfo(eid) {
           let value = getBlackboard(entry.blackboard);
           let d = entry.upgradeDescription;
           if (d && d.length>0) desc['talent'] = d;
-          if (value && Object.keys(value).length>0) rawBlackboard.talent = value;
+          if (value && Object.keys(value).length>0) {
+            rawBlackboard.talent ||= {};
+            $.extend(rawBlackboard.talent, value);
+          }
         }
         // 特性变更
         if (traitBundle && traitBundle.candidates) {
@@ -75,7 +78,10 @@ function getEquipInfo(eid) {
           let value = getBlackboard(entry.blackboard);
           let d = (entry.additionalDescription || "") + (entry.overrideDescripton || "");
           if (d.length>0) desc['trait'] = d;
-          if (value && Object.keys(value).length>0) rawBlackboard.trait = value;
+          if (value && Object.keys(value).length>0) {
+            rawBlackboard.trait ||= {};
+            $.extend(rawBlackboard.trait, value);
+          }
         }
         
       });

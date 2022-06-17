@@ -139,7 +139,7 @@ function calculateDps(char, enemy, raidBuff) {
 
   if (char.options.token && (checkSpecs(charId, "token") || checkSpecs(char.skillId, "token")))  {
     log.write("\n");
-    log.writeNote("**召唤物dps，非本体**");
+    log.writeNote("**召唤物dps**");
     var tokenId = checkSpecs(charId, "token") || checkSpecs(char.skillId, "token");      
     getTokenAtkHp(attr, tokenId, log);
   }
@@ -692,6 +692,7 @@ function applyBuff(charAttr, buffFrm, tag, blackbd, isSkill, isCrit, log, enemy)
           break;
         case "tachr_4009_irene_2":
           blackboard.attack_speed *= 2;
+          if ("atk" in blackboard) blackboard.atk *= 2;
           break;
       }
     }
@@ -1322,8 +1323,8 @@ function applyBuff(charAttr, buffFrm, tag, blackbd, isSkill, isCrit, log, enemy)
         if (!isCrit) delete blackboard.atk_scale;
         break;
       case "skchr_pasngr_1":
-        blackboard.max_target = blackboard['pasner_s_1.max_target'];
-        blackboard.atk_scale = blackboard['pasner_s_1.atk_scale'];
+        blackboard.max_target = blackboard['pasngr_s_1.max_target'];
+        blackboard.atk_scale = blackboard['pasngr_s_1.atk_scale'];
         break;
       case "skchr_pasngr_3":
         done = true; break;
@@ -1369,7 +1370,7 @@ function applyBuff(charAttr, buffFrm, tag, blackbd, isSkill, isCrit, log, enemy)
         break;
       case "skchr_kazema_2":
         if (options.annie) {
-          log.writeNote("分身按本体属性计算");
+          log.writeNote("替身模式");
           done = true;
         }
         break;
@@ -1483,7 +1484,9 @@ function applyBuff(charAttr, buffFrm, tag, blackbd, isSkill, isCrit, log, enemy)
       case "tachr_4016_kazema_1":
         done = true; break;
       case "tachr_300_phenxi_2":
-        if (isSkill) done = true; break;
+        if (isSkill)
+          blackboard.attack_speed = blackboard["phenxi_e_t_2[in_skill].attack_speed"] || 0;
+        break;
       case "skchr_chnut_2":
         blackboard.heal_scale = blackboard["attack@heal_continuously_scale"];
         log.writeNote("以连续治疗同一目标计算");
@@ -1558,6 +1561,9 @@ function applyBuff(charAttr, buffFrm, tag, blackbd, isSkill, isCrit, log, enemy)
         delete blackboard.atk_scale;
         blackboard.atk *= blackboard.max_stack_cnt;
         break;
+      case "tachr_4047_pianst_1":
+        delete blackboard.atk_scale;
+        break; 
     }
 
   }
@@ -1934,10 +1940,10 @@ function calcDurations(isSkill, attackTime, attackSpeed, levelData, buffList, bu
     } else if (buffList["tachr_222_bpipe_2"]) { // 军事传统
       startSp = spData.spCost - spData.initSp - buffList["tachr_222_bpipe_2"].sp
                 - (buffList["tachr_222_bpipe_2"]["bpipe_e_2[locate].sp"] || 0);
-              console.log(startSp);
+              //console.log(startSp);
     } else if (buffList["tachr_456_ash_2"]) {
       startSp = spData.spCost - spData.initSp - buffList["tachr_456_ash_2"].sp;
-    } 
+    }
     // 重置普攻
     if (rst) {
       if (duration > (levelData.duration-prepDuration) && rst != "ogcd") {
@@ -3315,20 +3321,36 @@ function calculateAttack(charAttr, enemy, raidBlackboard, isSkill, charData, lev
         break;
       case "skchr_kazema_1":
         if (options.annie) {
-          damage = finalFrame.atk / buffFrame.atk_scale * buffList["tachr_4016_kazema_1"].damage_scale
+          let kazema_scale = buffList["tachr_4016_kazema_1"].damage_scale;
+          if ("uniequip_002_kazema" in buffList && buffList["uniequip_002_kazema"].talent)
+            kazema_scale = buffList["uniequip_002_kazema"].talent.damage_scale;
+          damage = finalFrame.atk / buffFrame.atk_scale * kazema_scale
                   * (1-emrpct) * buffFrame.damage_scale;
           pool[1] += damage * ecount;
-          log.writeNote(`替身落地法伤 ${damage.toFixed(1)}，命中 ${ecount}`);
+          log.writeNote(`替身落地法伤 ${damage.toFixed(1)} (${kazema_scale.toFixed(2)}x)，命中 ${ecount}`);
           if (isSkill) {
             damagePool[0] = 0; damagePool[1] = 0;
           }
         }
         break;
       case "skchr_kazema_2":
-        damage = finalFrame.atk * buffList["tachr_4016_kazema_1"].damage_scale * (1-emrpct) * buffFrame.damage_scale;
-        pool[1] += damage * ecount;
-        var kz_name = (options.annie ? "*替身*" : "*纸偶*");
-          log.writeNote(`${kz_name}落地法伤 ${damage.toFixed(1)}，命中 ${ecount}`);
+        let kazema_scale = buffList["tachr_4016_kazema_1"].damage_scale;
+        let kz_name = "[纸偶]";
+        let kz_invalid = false;
+        if (options.annie) {
+          kz_name = "[替身]";
+          if ("uniequip_002_kazema" in buffList && buffList["uniequip_002_kazema"].talent)
+            kazema_scale = buffList["uniequip_002_kazema"].talent.damage_scale;
+        } else if (!options.token) {
+          log.writeNote("落地伤害需要勾选\n[替身]或[召唤物]进行计算");
+          kz_invalid = true;
+        }
+        if (!kz_invalid) {
+          damage = finalFrame.atk * kazema_scale * (1-emrpct) * buffFrame.damage_scale;
+          pool[1] += damage * ecount;
+          
+          log.writeNote(`${kz_name}落地法伤 ${damage.toFixed(1)} (${kazema_scale.toFixed(2)}x)，命中 ${ecount}`);
+        }
         if (options.annie && isSkill) {
           damagePool[0] = 0; damagePool[1] = 0;
         }
@@ -3336,7 +3358,8 @@ function calculateAttack(charAttr, enemy, raidBlackboard, isSkill, charData, lev
       case "skchr_phenxi_2":
         var ph_2_atk = finalFrame.atk / buffFrame.atk_scale * bb.atk_scale_2;
         damage = Math.max(ph_2_atk - edef, ph_2_atk*0.05) * buffFrame.damage_scale;
-        log.writeNote(`子爆炸伤害 ${damage.toFixed(1)}, 不计入总伤`);
+        pool[0] += damage * 2 * dur.hitCount;
+        log.writeNote(`子爆炸伤害 ${damage.toFixed(1)}\n以2段子爆炸计算`);
         break;
       case "skchr_horn_2":
         if (options.overdrive_mode) {
@@ -3391,6 +3414,10 @@ function calculateAttack(charAttr, enemy, raidBlackboard, isSkill, charData, lev
         damage = finalFrame.atk * bb.atk_scale * (1-emrpct) * buffFrame.damage_scale;
         pool[1] += damage * enemy.count;
         log.write(`[特殊] ${displayNames[buffName]} 额外伤害 ${damage.toFixed(1)} 命中 ${enemy.count}`);
+        break;
+      case "tachr_4047_pianst_1":
+        damage = finalFrame.atk * bb.atk_scale * (1-emrpct) * buffFrame.damage_scale;
+        log.writeNote(`反弹伤害 ${damage.toFixed(1)}, 不计入DPS`);
         break;
       case "tachr_4046_ebnhlz_2":
         if (options.cond) {
@@ -3452,7 +3479,7 @@ function calculateAttack(charAttr, enemy, raidBlackboard, isSkill, charData, lev
         case "skchr_utage_2":
         case "skchr_akafyu_2":
         case "skchr_kazema_2":
-          if (!options.annie) {
+          if (!options.annie && !options.token) {
             damage = bb.hp_ratio * finalFrame.maxHp;
             pool[2] -= damage; 
             log.writeNote(`对自身伤害 ${damage.toFixed(1)}`);
@@ -3771,7 +3798,10 @@ function getAttributes(char, log) { //charId, phase = -1, level = -1
   let attributesKeyFrames = {};
   let buffs = initBuffFrame();
   let buffList = {};
-  log.write("【基础属性】");
+  if (char.charId.startsWith("token"))
+    log.write("【召唤物属性】");
+  else 
+    log.write("【基础属性】");
   log.write("----");
   // 计算基础属性，包括等级和潜能
   if (char.level == charData.phases[char.phase].maxLevel) {
@@ -3947,14 +3977,14 @@ function applyEquip(char, basic, log) {
         for (cand = talentBundle.candidates.length - 1; cand > 0; --cand) {
           if (char.potentialRank >= talentBundle.candidates[cand].requiredPotentialRank) break;
         }
-        Object.assign(talents, getBlackboard(talentBundle.candidates[cand].blackboard));
+        $.extend(talents, getBlackboard(talentBundle.candidates[cand].blackboard));
       }
       // 特性变更
       if (traitBundle && traitBundle.candidates) {
         for (cand = traitBundle.candidates.length - 1; cand > 0; --cand) {
           if (char.potentialRank >= traitBundle.candidates[cand].requiredPotentialRank) break;
         }
-        Object.assign(traits, getBlackboard(traitBundle.candidates[cand].blackboard));
+        $.extend(traits, getBlackboard(traitBundle.candidates[cand].blackboard));
       }
       
     });
@@ -3975,11 +4005,12 @@ function applyEquip(char, basic, log) {
     magic_resistance: "magicResistance",
     attack_speed: "attackSpeed"
   };
-
-  Object.keys(attr).forEach(x => {
-    basic[attrKeys[x]] += attr[x];
-    if (attr[x]!=0) log.write(`模组 Lv${char.equipLevel}: ${attrKeys[x]} ${basic[attrKeys[x]]-attr[x]} -> ${basic[attrKeys[x]]} (+${attr[x]})`);
-  });  
+  if (!char.options.token) {
+    Object.keys(attr).forEach(x => {
+      basic[attrKeys[x]] += attr[x];
+      if (attr[x]!=0) log.write(`模组 Lv${char.equipLevel}: ${attrKeys[x]} ${basic[attrKeys[x]]-attr[x]} -> ${basic[attrKeys[x]]} (+${attr[x]})`);
+    });  
+  } 
   basic.equip_blackboard = blackboard; // 处理过的模组面板放在这里
 }
 

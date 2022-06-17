@@ -232,7 +232,7 @@
         "char_289_gyuki":   [ "equip" ],
         "char_377_gdglow":  [ "crit", "short_mode" ],
         "char_4036_forcer": [ "cond" ],
-        "char_4016_kazema": [ "annie" ],
+        "char_4016_kazema": [ "annie", "token" ],
         "char_300_phenxi":  [ "cond", "stack", "archet", "chen", "short_mode" ],
         "char_4041_chnut":  [ "cond" ],
         "char_4045_heidi":  [ "cond" ],
