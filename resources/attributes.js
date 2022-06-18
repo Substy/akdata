@@ -18,16 +18,35 @@ function getCharAttributes(char) {
 
 function getTokenAtkHp(charAttr, tokenId, log) {
   var id = charAttr.char.charId;
+  let tokenName = AKDATA.Data.character_table[tokenId].name;
   charAttr.char.charId = tokenId;
   var token = getAttributes(charAttr.char, log);
-  // console.log(token);
   charAttr.basic.atk = token.basic.atk;
   charAttr.basic.def = token.basic.def;
   charAttr.basic.maxHp = token.basic.maxHp;
   charAttr.basic.baseAttackTime = token.basic.baseAttackTime;
   charAttr.basic.attackSpeed = token.basic.attackSpeed;
   charAttr.char.charId = id;
-  log.write(`[召唤物] ${tokenId} maxHp = ${charAttr.basic.maxHp}, atk = ${charAttr.basic.atk}, baseAttackTime = ${charAttr.basic.baseAttackTime}`);
+
+  // 模组判断
+  let buffHp = 0;
+  let buffAtk = 0;
+  //console.log(charAttr);
+  if (charAttr.char.equipLevel == 3) {
+    if (charAttr.char.equipId == "uniequip_002_deepcl") {
+      // 深海色：直接乘算
+      buffHp = charAttr.basic.maxHp * charAttr.buffList["uniequip_002_deepcl"].talent.max_hp;
+    } else if (charAttr.char.equipId == "uniequip_002_ling") {
+      let blackboard = charAttr.buffList["uniequip_002_ling"].token[tokenId];
+      // 令：直接加算
+      buffHp = blackboard.max_hp;
+      buffAtk = blackboard.atk;
+    }
+    charAttr.basic.maxHp += buffHp;
+    charAttr.basic.atk += buffAtk;
+    log.write(`[模组] ${tokenName} maxHp + ${Math.round(buffHp)}, atk + ${buffAtk}`);
+  }
+  log.write(`[召唤物] ${tokenName} maxHp = ${charAttr.basic.maxHp}, atk = ${charAttr.basic.atk}, baseAttackTime = ${charAttr.basic.baseAttackTime}`);
 }
 
 function checkChar(char) {
@@ -535,6 +554,10 @@ function applyBuff(charAttr, buffFrm, tag, blackbd, isSkill, isCrit, log, enemy)
         case "skchr_glacus_2":  // 格劳克斯
           buffFrame.atk_scale = blackboard["atk_scale[normal]"];
           writeBuff(`atk_scale = ${buffFrame.atk_scale} 不受天赋影响`);
+        case "tachr_326_glacus_1":
+          if ("sp_recovery_per_sec" in blackboard)
+            delete blackboard.sp_recovery_per_sec;
+          break;
         case "skchr_cutter_2":
           applyBuffDefault(); break;
         case "tachr_145_prove_1": // 普罗旺斯
@@ -598,6 +621,10 @@ function applyBuff(charAttr, buffFrm, tag, blackbd, isSkill, isCrit, log, enemy)
           buffFrame.atk_scale = blackboard["atk_scale[drone]"];
           writeBuff(`atk_scale = ${buffFrame.atk_scale} 不受天赋影响`);
           done = true; break;
+        case "tachr_326_glacus_1":
+          if ("sp_recovery_per_sec" in blackboard)
+            delete blackboard.sp_recovery_per_sec;
+          break;
         case "skchr_cutter_2":
           buffFrame.maxTarget = blackboard.max_target;
           buffFrame.atk_scale = blackboard.atk_scale * blackboard["cutter_s_2[drone].atk_scale"];
@@ -1564,6 +1591,14 @@ function applyBuff(charAttr, buffFrm, tag, blackbd, isSkill, isCrit, log, enemy)
       case "tachr_4047_pianst_1":
         delete blackboard.atk_scale;
         break; 
+      case "tachr_258_podego_1":
+        if ("sp_recovery_per_sec" in blackboard)
+          delete blackboard.sp_recovery_per_sec;
+        break;
+      case "tachr_195_glassb_1":
+        if (isSkill && "glassb_e_t_1[skill].attack_speed" in blackboard) 
+          blackboard.attack_speed += blackboard["glassb_e_t_1[skill].attack_speed"];
+        break;
     }
 
   }
@@ -1573,6 +1608,12 @@ function applyBuff(charAttr, buffFrm, tag, blackbd, isSkill, isCrit, log, enemy)
     blackboard.base_attack_time = blackboard.cooldown - (basic.baseAttackTime + buffFrame.baseAttackTime);
     buffFrame.attackSpeed = 0;
     blackboard.attack_speed = 0;
+  }
+  // 决战者阻回
+  if (["char_416_zumama", "char_422_aurora"].includes(charId)
+      && !options.block
+      && buffFrame.sp_recover_ratio == 0) {
+    buffFrame.sp_recover_ratio = -1;
   }
     // 模组判定
     // options.equip 指满足模组额外效果的条件
@@ -1610,55 +1651,60 @@ function applyBuff(charAttr, buffFrm, tag, blackbd, isSkill, isCrit, log, enemy)
     case "uniequip_002_cutter":
     case "uniequip_002_phenxi":
     case "uniequip_002_meteo":
-    case "uniequip_002_yuki":
     case "uniequip_002_irene":
       blackboard = blackboard.trait;
       blackboard.edef_pene = blackboard.def_penetrate_fixed;
+      break;
+    case "uniequip_002_yuki":
+      let bb_yuki = {...blackboard.trait};
+      bb_yuki.edef_pene = bb_yuki.def_penetrate_fixed;
+      if (blackboard.talent.sp_recovery_per_sec)
+        bb_yuki.sp_recovery_per_sec = blackboard.talent.sp_recovery_per_sec;
+      blackboard = bb_yuki;
       break;
     case "uniequip_002_nearl2":
     case "uniequip_002_franka":
     case "uniequip_002_peacok":
     case "uniequip_002_cqbw":
     case "uniequip_002_sesa":
+    case "uniequip_003_skadi":
       if (options.equip)
         blackboard = blackboard.trait;
       break;
     case "uniequip_002_skadi":
     case "uniequip_002_flameb":
     case "uniequip_002_gyuki":
-      blackboard = blackboard.trait;
-      delete blackboard.hp_ratio;
-      delete blackboard.max_hp;
-      if (!options.equip) delete blackboard.attack_speed;
+      if (options.equip) blackboard.attack_speed = blackboard.trait.attack_speed;
       break;
     case "uniequip_002_lisa":
-    case "uniequip_002_glacus":
+      if ("atk" in blackboard.talent)
+        blackboard.atk = blackboard.talent.atk;
     case "uniequip_002_podego":
-      blackboard = blackboard.trait;
-      if (!options.equip) delete blackboard.sp_recovery_per_sec;
+    case "uniequip_002_glacus":
+      if (options.equip)
+        blackboard.sp_recovery_per_sec = 0.2; // hard coded, 不覆盖天赋否则无法区分
       break;
     case "uniequip_002_lumen":
     case "uniequip_002_ceylon":
     case "uniequip_002_whispr":
       done = true; break;
     case "uniequip_002_finlpp":
-      blackboard = blackboard.trait;
-      if (options.ranged_penalty) {
-        options.ranged_penalty = false;
-        writeBuff("取消距离惩罚");
-      }
-      done = true; break;
+      if (isSkill)
+        blackboard = blackboard.talent;
+      break;
     case "uniequip_002_ghost2":
     case "uniequip_002_kazema":
     case "uniequip_002_bena":
       blackboard = blackboard.trait;
-      if (!options.annie)
+      if (!options.annie || options.token)
         done = true;
       break;
     case "uniequip_002_zumama":
     case "uniequip_002_aurora":
-      log.writeNote("按正常技力回复计算");
-      done = true;
+      if (!options.block) {  
+        buffFrame.sp_recover_ratio = blackboard.trait.sp_recover_ratio;
+        log.write(`技力回复系数 ${buffFrame.sp_recover_ratio.toFixed(2)}x`);
+      }
       break;
     case "uniequip_002_doberm":
       if (options.equip) {
@@ -1686,6 +1732,12 @@ function applyBuff(charAttr, buffFrm, tag, blackbd, isSkill, isCrit, log, enemy)
     case "uniequip_002_pasngr":
       if (options.cond_2)
         blackboard = blackboard.talent;
+      break;
+    case "uniequip_002_nearl":
+    case "uniequip_002_sunbr":
+    case "uniequip_002_demkni":
+      if (options.equip || skillId == "skchr_demkni_1")
+        blackboard.heal_scale = blackboard.trait.heal_scale;
       break;
   }
 
@@ -2137,7 +2189,12 @@ function calcDurations(isSkill, attackTime, attackSpeed, levelData, buffList, bu
     if (stunDuration > 0) log.write(`晕眩: ${stunDuration}s`);
     
     // 快速估算
-    let attackDuration = spData.spCost / (1 + buffFrame.spRecoveryPerSec) - stunDuration;
+    let spRatio = 1;
+    if (buffFrame.sp_recover_ratio != 0) {
+      spRatio += buffFrame.sp_recover_ratio;
+      log.write(`技力回复 ${((1 + buffFrame.spRecoveryPerSec) * spRatio).toFixed(2)}/s`);
+    }
+    let attackDuration = spData.spCost / ((1 + buffFrame.spRecoveryPerSec) * spRatio) - stunDuration;
     // 施法时间
     if (checkSpecs(skillId, "cast_time")) {
       let ct = checkSpecs(skillId, "cast_time");
@@ -2152,7 +2209,7 @@ function calcDurations(isSkill, attackTime, attackSpeed, levelData, buffList, bu
     duration = attackCount * attackTime;
     // 重置普攻（瞬发/ogcd除外）
     if (rst && rst != "ogcd" && spData.spType != 8) {
-      var dd = spData.spCost / (1 + buffFrame.spRecoveryPerSec) - stunDuration;
+      var dd = spData.spCost / ((1 + buffFrame.spRecoveryPerSec) * spRatio) - stunDuration;
       if (duration > dd)
         log.write(`[重置普攻] 截断最后一个攻击间隔`);
       duration = dd;
@@ -2308,10 +2365,10 @@ function calcDurations(isSkill, attackTime, attackSpeed, levelData, buffList, bu
           attackCount = Math.ceil(attackDuration / attackTime);
           duration = attackDuration;
         } else if (buffList["tachr_422_aurora_1"]) {
-          attackDuration = spData.spCost / (1 + buffFrame.spRecoveryPerSec) / 2;
+          attackDuration = spData.spCost / ((1 + buffFrame.spRecoveryPerSec) * spRatio) / 2;
           if (attackDuration < stunDuration) attackDuration = 0;
           attackCount = Math.ceil(attackDuration / attackTime);
-          duration = spData.spCost / (1 + buffFrame.spRecoveryPerSec);
+          duration = spData.spCost / ((1 + buffFrame.spRecoveryPerSec) * spRatio);
           log.write(`[特殊] ${displayNames["tachr_422_aurora_1"]}: 普攻时间 ${attackDuration.toFixed(3)}s / ${duration.toFixed(3)}s, 攻击 ${attackCount} 次`);
           log.write("(晕眩期间不回复技力)");
         } else if (skillId == "skchr_blkngt_2" && options.token) {
@@ -3322,7 +3379,7 @@ function calculateAttack(charAttr, enemy, raidBlackboard, isSkill, charData, lev
       case "skchr_kazema_1":
         if (options.annie) {
           let kazema_scale = buffList["tachr_4016_kazema_1"].damage_scale;
-          if ("uniequip_002_kazema" in buffList && buffList["uniequip_002_kazema"].talent)
+          if ("uniequip_002_kazema" in buffList && buffList["uniequip_002_kazema"].talent && !options.token)
             kazema_scale = buffList["uniequip_002_kazema"].talent.damage_scale;
           damage = finalFrame.atk / buffFrame.atk_scale * kazema_scale
                   * (1-emrpct) * buffFrame.damage_scale;
@@ -3339,7 +3396,7 @@ function calculateAttack(charAttr, enemy, raidBlackboard, isSkill, charData, lev
         let kz_invalid = false;
         if (options.annie) {
           kz_name = "[替身]";
-          if ("uniequip_002_kazema" in buffList && buffList["uniequip_002_kazema"].talent)
+          if ("uniequip_002_kazema" in buffList && buffList["uniequip_002_kazema"].talent && !options.token)
             kazema_scale = buffList["uniequip_002_kazema"].talent.damage_scale;
         } else if (!options.token) {
           log.writeNote("落地伤害需要勾选\n[替身]或[召唤物]进行计算");
@@ -3450,7 +3507,7 @@ function calculateAttack(charAttr, enemy, raidBlackboard, isSkill, charData, lev
         } else {}
       } else if (buffName == "tachr_422_aurora_1") {
         if (!isSkill) {
-          var aurora_hp_time = levelData.spData.spCost / (1 + buffFrame.spRecoveryPerSec) / 2 + dur.stunDuration;
+          var aurora_hp_time = levelData.spData.spCost / ((1 + buffFrame.spRecoveryPerSec) * (1 + buffFrame.sp_recover_ratio)) / 2 + dur.stunDuration;
           var aurora_hps = hpratiosec * finalFrame.maxHp;
           pool[2] += aurora_hps * aurora_hp_time;
           log.write(`HP恢复时间: ${aurora_hp_time.toFixed(3)}s, HPS ${aurora_hps.toFixed(1)}`);
@@ -3788,6 +3845,7 @@ function initBuffFrame() {
     maxHp: 0,
     baseAttackTime:0,
     spRecoveryPerSec:0,
+    sp_recover_ratio:0,
     applied:{}
   };
 }
@@ -3822,7 +3880,7 @@ function getAttributes(char, log) { //charId, phase = -1, level = -1
 
   // 计算潜能和模组
   applyPotential(char.charId, charData, char.potentialRank, attributesKeyFrames, log);
-  if (char.equipId && !char.options.token && char.phase >= 2) {
+  if (char.equipId && char.phase >= 2) {
     applyEquip(char, attributesKeyFrames, log);
     buffList[char.equipId] = attributesKeyFrames.equip_blackboard;
   }

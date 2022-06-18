@@ -67,7 +67,7 @@ function getEquipInfo(eid) {
           let d = entry.upgradeDescription;
           if (d && d.length>0) desc['talent'] = d;
           if (value && Object.keys(value).length>0) {
-            rawBlackboard.talent ||= {};
+            if (!("talent" in rawBlackboard)) rawBlackboard.talent = {};
             $.extend(rawBlackboard.talent, value);
           }
         }
@@ -79,7 +79,7 @@ function getEquipInfo(eid) {
           let d = (entry.additionalDescription || "") + (entry.overrideDescripton || "");
           if (d.length>0) desc['trait'] = d;
           if (value && Object.keys(value).length>0) {
-            rawBlackboard.trait ||= {};
+            if (!("trait" in rawBlackboard)) rawBlackboard.trait = {};
             $.extend(rawBlackboard.trait, value);
           }
         }
