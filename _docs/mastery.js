@@ -539,7 +539,7 @@ function calculate(charId) {
   if (['char_306_leizi', 'char_472_pasngr', 'char_4004_pudd', "char_4025_aprot2"].includes(charId)) {
     enemy.count = 2;
     extraNote = "按2目标计算";
-  }
+  } else enemy.count = 1;
 
   window.vue_app.calculating = true;
 
