@@ -47,10 +47,14 @@ function showVersion() {
       });
       $('#update_prompt').html(["有新数据，请更新", remote, local].join("<br>"));
     } else {
-      local = `新增干员：`;
-      AKDATA.new_op.forEach(op => {
-        local += `<a href='#${op}'>${AKDATA.Data.character_table[op].name}</a>   `;
-      });
+      try {
+        local = `新增干员：`;
+        AKDATA.new_op.forEach(op => {
+          local += `<a href='#${op}'>${AKDATA.Data.character_table[op].name}</a>   `;
+        });
+      } catch (e) {
+        local = "请点击[手动刷新]更新数据";
+      }
       $('#update_prompt').html(local);
       $("#btn_update_data").text("手动刷新");
       $("#btn_update_data").attr("class", "btn btn-success");

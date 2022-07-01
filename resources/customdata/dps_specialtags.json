@@ -212,7 +212,7 @@
     "skchr_meteo_1":    { "cast_time": 31, "sim": true },
     "skchr_meteo_2":    { "reset_attack": "ogcd", "cast_time": 31, "attack_begin": 8 },
     "skchr_mgllan_1":   { "token": "token_10005_mgllan_drone1" },
-    "skchr_mgllan_2":   { "token": "token_10005_mgllan_drone2", "use_token_for_mastery": true },
+    "skchr_mgllan_2":   { "token": "token_10005_mgllan_drone2", "use_token_for_mastery": true, "token_damage_type": 1 },
     "skchr_mgllan_3":	{ "token": "token_10005_mgllan_drone3", "token_damage_type": "0", "reset_attack": true, "use_token_for_mastery": true },
     "skchr_midn_1":	    { "reset_attack": true },
     "skchr_milu_1":     { "frame_corr": 1 },

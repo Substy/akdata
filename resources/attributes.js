@@ -534,6 +534,14 @@ function applyBuff(charAttr, buffFrm, tag, blackbd, isSkill, isCrit, log, enemy)
           if (blackboard[key] != 0)
             writeBuff(`atk(+): ${prefix}${(blackboard[key]*100).toFixed(1)}`);
           break;
+        case "sp_interval": // June 20: {sp, interval, ...} -> 每interval秒/攻击x次回复sp点技力，可叠加
+          // interval == "hit" 为每次攻击恢复
+          // 也可以加入prob等额外参数用于特判
+          let unit = (blackboard[key].interval == "hit" ? "" : "s");
+            writeBuff(`额外技力: ${blackboard[key].sp} / ${blackboard[key].interval}${unit}`);
+          blackboard[key].tag = tag;
+          buffFrame.spRecoverIntervals.push(blackboard[key]);
+          break;
       }
     }
   }
@@ -1612,8 +1620,8 @@ function applyBuff(charAttr, buffFrm, tag, blackbd, isSkill, isCrit, log, enemy)
   // 决战者阻回
   if (["char_416_zumama", "char_422_aurora"].includes(charId)
       && !options.block
-      && buffFrame.sp_recover_ratio == 0) {
-    buffFrame.sp_recover_ratio = -1;
+      && buffFrame.spRecoverRatio == 0) {
+    buffFrame.spRecoverRatio = -1;
   }
     // 模组判定
     // options.equip 指满足模组额外效果的条件
@@ -1702,8 +1710,8 @@ function applyBuff(charAttr, buffFrm, tag, blackbd, isSkill, isCrit, log, enemy)
     case "uniequip_002_zumama":
     case "uniequip_002_aurora":
       if (!options.block) {  
-        buffFrame.sp_recover_ratio = blackboard.trait.sp_recover_ratio;
-        log.write(`技力回复系数 ${buffFrame.sp_recover_ratio.toFixed(2)}x`);
+        buffFrame.spRecoverRatio = blackboard.trait.sp_recover_ratio;
+        log.write(`技力回复系数 ${buffFrame.spRecoverRatio.toFixed(2)}x`);
       }
       break;
     case "uniequip_002_doberm":
@@ -2097,13 +2105,7 @@ function calcDurations(isSkill, attackTime, attackSpeed, levelData, buffList, bu
           let animKey = checkSpecs(skillId, "anim_key");
           let animData = AKDATA.Data.dps_anim[charId][animKey];
           let ct = animData.duration || animData;
-          /*
-          if (checkSpecs(skillId, "anim_max_scale") != 1) {
-            // 瞬发技能，但是动画时间和攻速挂钩
-            ct = Math.round(ct * 100 / attackSpeed);
-            log.writeNote(`动画时间随攻速(${attackSpeed})变化(???)`);
-          }
-          */
+
           log.write(`技能动画：${animKey}, 释放时间 ${ct} 帧`);
           log.writeNote(`技能动画: ${ct} 帧`);
           if ((duration < ct/30 && spData.spType == 1) || rst == "ogcd")
@@ -2190,8 +2192,8 @@ function calcDurations(isSkill, attackTime, attackSpeed, levelData, buffList, bu
     
     // 快速估算
     let spRatio = 1;
-    if (buffFrame.sp_recover_ratio != 0) {
-      spRatio += buffFrame.sp_recover_ratio;
+    if (buffFrame.spRecoverRatio != 0) {
+      spRatio += buffFrame.spRecoverRatio;
       log.write(`技力回复 ${((1 + buffFrame.spRecoveryPerSec) * spRatio).toFixed(2)}/s`);
     }
     let attackDuration = spData.spCost / ((1 + buffFrame.spRecoveryPerSec) * spRatio) - stunDuration;
@@ -2220,6 +2222,21 @@ function calcDurations(isSkill, attackTime, attackSpeed, levelData, buffList, bu
       log.write(`技能前摇: ${t.toFixed(3)}s, ${frameBegin} 帧`);
       if (!checkSpecs(skillId, "attack_begin")) log.write("（计算器默认值；请参考动画时间）");
     }
+    
+    // June 20: 额外sp计算mixin
+    let _args = {
+      buffFrame,
+      buffList, 
+      spData,
+      stunDuration,
+      attackCount,
+      attackTime,
+      duration,
+      rst,
+      options,
+      skillId,
+      enemyCount
+    };
 
     // 技能类型
     switch (spData.spType) {
@@ -3507,7 +3524,7 @@ function calculateAttack(charAttr, enemy, raidBlackboard, isSkill, charData, lev
         } else {}
       } else if (buffName == "tachr_422_aurora_1") {
         if (!isSkill) {
-          var aurora_hp_time = levelData.spData.spCost / ((1 + buffFrame.spRecoveryPerSec) * (1 + buffFrame.sp_recover_ratio)) / 2 + dur.stunDuration;
+          var aurora_hp_time = levelData.spData.spCost / ((1 + buffFrame.spRecoveryPerSec) * (1 + buffFrame.spRecoverRatio)) / 2 + dur.stunDuration;
           var aurora_hps = hpratiosec * finalFrame.maxHp;
           pool[2] += aurora_hps * aurora_hp_time;
           log.write(`HP恢复时间: ${aurora_hp_time.toFixed(3)}s, HPS ${aurora_hps.toFixed(1)}`);
@@ -3845,8 +3862,9 @@ function initBuffFrame() {
     maxHp: 0,
     baseAttackTime:0,
     spRecoveryPerSec:0,
-    sp_recover_ratio:0,
-    applied:{}
+    spRecoverRatio:0,
+    spRecoverIntervals: [],
+    applied:{},
   };
 }
 
@@ -4202,6 +4220,33 @@ function calculateAnimation(charId, skillId, isSkill, attackTime, attackSpeed, l
     postDelay,
     scaledAnimFrame
   };
+}
+
+// 根据args里估算的值，计算给定duration里的攻击次数和恢复的技力
+// 不包含stunDuration，但是包含stun期间恢复的技力
+function simNormalDuration(args) {
+  let fps = 30, t = 0, sp = 0;
+  let spCost = args.spData.spCost;
+  if (args.options.charge && checkSpecs(args.skillId, "charge"))
+    spCost *= 2;
+  let last = {}, timeline = {}, count = {};
+
+  // 阻回
+  let cast_time = args.attackTime * fps;
+  let _spec = checkSpecs(args.skillId, "cast_time");
+  if (_spec) cast_time = _spec;
+  _spec = checkSpecs(args.skillId, "cast_bat");
+  if (_spec) cast_time = _spec * 100 / args.attackSpeed;
+  let skill_time = Math.max(cast_time, attackTime * fps);
+
+  function time_since(key) { return t - (last[key] || -999); }
+  function act(key) {
+    if (!timeline[t]) timeline[t] = [];
+    if (!count[key]) count[key] = 0;
+    timeline[t].push(key);
+    last[key] = t;
+    count[key] += 1;
+  }
 }
 
 AKDATA.attributes = {
