@@ -3049,7 +3049,7 @@ function calculateAttack(charAttr, enemy, raidBlackboard, isSkill, charData, lev
             if ("tachr_4046_ebnhlz_2" in buffList && options.cond) {
               extra_scale = buffList["tachr_4046_ebnhlz_2"].atk_scale;
             }
-            damage = hitDamage * (scale + extra_scale); // hitDamage已经包含了damage_scale
+            damage = hitDamage * (scale + extra_scale); // hitDamage已经包含了damage_scale和法抗
             let md = damage * nBalls + hitDamage * (1 + extra_scale);
             let delta = md - hitDamage * (1+extra_scale) * (1+nBalls);
             log.write(`[特殊] ${displayNames[buffName]}: 蓄力倍率 ${scale.toFixed(2)}, 每层伤害 ${damage.toFixed(1)}, 最大层数 ${nBalls}。
@@ -3495,7 +3495,7 @@ function calculateAttack(charAttr, enemy, raidBlackboard, isSkill, charData, lev
         break;
       case "tachr_4046_ebnhlz_2":
         if (options.cond) {
-          damage = finalFrame.atk * bb.atk_scale * (1-emrpct) * buffFrame.damage_scale;
+          damage = finalFrame.atk / buffFrame.atk_scale * bb.atk_scale * (1-emrpct) * buffFrame.damage_scale;
           pool[1] += damage * dur.hitCount;
           log.write(`[特殊] ${displayNames[buffName]} 额外伤害 ${damage.toFixed(1)} 命中 ${enemy.count}`);
         }
