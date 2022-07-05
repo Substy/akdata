@@ -8,11 +8,11 @@ const useCache = true;
 const cacheBeginTime = new Date(2019, 12, 10).getTime();
 
 window.AKDATA = {
-  akdata: "220615-v2", // jsdelivr tag version
+  akdata: "220705", // jsdelivr tag version
 
   Data: {},
 
-  new_op: ["char_4046_ebnhlz", "char_4047_pianst", "char_1024_hbisc2", "char_4043_erato"],
+  new_op: ["char_4048_doroth", "char_1027_greyy2", "char_135_halo"],
 
   professionNames: {
     "PIONEER": "先锋",

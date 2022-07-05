@@ -31,20 +31,32 @@ function getTokenAtkHp(charAttr, tokenId, log) {
   // 模组判断
   let buffHp = 0;
   let buffAtk = 0;
+  let buffAts = 0;
   //console.log(charAttr);
   if (charAttr.char.equipLevel == 3) {
-    if (charAttr.char.equipId == "uniequip_002_deepcl") {
-      // 深海色：直接乘算
-      buffHp = charAttr.basic.maxHp * charAttr.buffList["uniequip_002_deepcl"].talent.max_hp;
-    } else if (charAttr.char.equipId == "uniequip_002_ling") {
-      let blackboard = charAttr.buffList["uniequip_002_ling"].token[tokenId];
-      // 令：直接加算
-      buffHp = blackboard.max_hp;
-      buffAtk = blackboard.atk;
-    }
+    let blackboard = null;
+    switch (charAttr.char.equipId) {
+      case "uniequip_002_deepcl":
+        // 深海色：直接乘算
+        buffHp = charAttr.basic.maxHp * charAttr.buffList["uniequip_002_deepcl"].talent.max_hp;
+        break;
+      case "uniequip_002_ling":
+        blackboard = charAttr.buffList["uniequip_002_ling"].token[tokenId];
+        // 令：直接加算
+        buffHp = blackboard.max_hp;
+        buffAtk = blackboard.atk;
+        break;
+      case "uniequip_003_mgllan":
+        blackboard = charAttr.buffList["uniequip_003_mgllan"].token[tokenId];
+        if ("max_hp" in blackboard) buffHp = blackboard.max_hp;
+        if ("atk" in blackboard) buffAtk = blackboard.atk;
+        if ("attack_speed" in blackboard) buffAts = blackboard.attack_speed;
+        break;
+    } 
     charAttr.basic.maxHp += buffHp;
     charAttr.basic.atk += buffAtk;
-    log.write(`[模组] ${tokenName} maxHp + ${Math.round(buffHp)}, atk + ${buffAtk}`);
+    charAttr.basic.attackSpeed += buffAts;
+    log.write(`[模组] ${tokenName} maxHp + ${Math.round(buffHp)}, atk + ${buffAtk}, attack_speed + ${buffAts}`);
   }
   log.write(`[召唤物] ${tokenName} maxHp = ${charAttr.basic.maxHp}, atk = ${charAttr.basic.atk}, baseAttackTime = ${charAttr.basic.baseAttackTime}`);
 }
@@ -966,6 +978,8 @@ function applyBuff(charAttr, buffFrm, tag, blackbd, isSkill, isCrit, log, enemy)
       case "skchr_glady_3":
       case "skchr_gnosis_2":
       case "skchr_ebnhlz_2":
+      case "skchr_doroth_2":
+      case "skchr_doroth_3":
         buffFrame.maxTarget = 999;
         writeBuff(`最大目标数 = ${buffFrame.maxTarget}`);
         break;
@@ -1607,6 +1621,25 @@ function applyBuff(charAttr, buffFrm, tag, blackbd, isSkill, isCrit, log, enemy)
         if (isSkill && "glassb_e_t_1[skill].attack_speed" in blackboard) 
           blackboard.attack_speed += blackboard["glassb_e_t_1[skill].attack_speed"];
         break;
+      case "tachr_135_halo_trait":
+        blackboard.max_target = blackboard["attack@chain.max_target"];
+        break;
+      case "skchr_halo_1":
+        blackboard.times = Math.min(blackboard.max_target, enemy.count);
+        delete blackboard.max_target;
+        break;
+      case "skchr_halo_2":
+        blackboard.times = Math.min(blackboard["attack@max_target"], enemy.count);
+        delete blackboard["attack@max_target"];
+        break;
+      case "skchr_greyy2_2":
+        done = true; break;
+      case "skchr_doroth_1":
+        blackboard.edef_scale = blackboard.def;
+        delete blackboard.def;
+        break;
+      case "tachr_129_bluep_1":
+        done = true; break;
     }
 
   }
@@ -1747,6 +1780,27 @@ function applyBuff(charAttr, buffFrm, tag, blackbd, isSkill, isCrit, log, enemy)
       if (options.equip || skillId == "skchr_demkni_1")
         blackboard.heal_scale = blackboard.trait.heal_scale;
       break;
+    case "uniequip_002_ash":
+    case "uniequip_002_archet":
+    case "uniequip_002_aprl":
+    case "uniequip_002_swllow":
+    case "uniequip_002_bluep":
+    case "uniequip_002_jesica":
+      if (options.equip)
+        blackboard.attack_speed = 8;  // 写死。避免同名词条问题
+      break;
+    case "uniequip_002_angel":
+    case "uniequip_002_kroos2":
+    case "uniequip_002_platnm":
+    case "uniequip_002_mm":
+    case "uniequip_002_clour":
+      if (options.equip)
+        blackboard.atk_scale = blackboard.trait.atk_scale;
+      break;
+    case "uniequip_002_shotst":
+      if (options.cond) // 流星直接用cond判断
+        blackboard.atk_scale = blackboard.trait.atk_scale;
+      break;
   }
 
   if (!done) applyBuffDefault();
@@ -1867,6 +1921,8 @@ function calcDurations(isSkill, attackTime, attackSpeed, levelData, buffList, bu
       sp = (buffList["tachr_180_amgoat_2"].sp_min + buffList["tachr_180_amgoat_2"].sp_max) / 2 * fps;
     else if (buffList["tachr_222_bpipe_2"])
       sp = buffList["tachr_222_bpipe_2"].sp * fps;
+    else if (buffList["uniequip_002_archet"] && buffList["uniequip_002_archet"].talent["archet_e_t_2.sp"])
+      sp = buffList["uniequip_002_archet"].talent["archet_e_t_2.sp"] * fps;
     last["ifrit"] = last["archet"] = last["chen"] = 1; // 落地即开始计算 记为1帧
     startSp = cast_sp - sp / fps;
 
@@ -2000,10 +2056,12 @@ function calcDurations(isSkill, attackTime, attackSpeed, levelData, buffList, bu
     } else if (buffList["tachr_222_bpipe_2"]) { // 军事传统
       startSp = spData.spCost - spData.initSp - buffList["tachr_222_bpipe_2"].sp
                 - (buffList["tachr_222_bpipe_2"]["bpipe_e_2[locate].sp"] || 0);
-              //console.log(startSp);
     } else if (buffList["tachr_456_ash_2"]) {
       startSp = spData.spCost - spData.initSp - buffList["tachr_456_ash_2"].sp;
+    } else if (buffList["uniequip_002_archet"] && "archet_e_t_2.sp" in buffList["uniequip_002_archet"].talent) {
+      startSp = spData.spCost - spData.initSp - buffList["uniequip_002_archet"].talent["archet_e_t_2.sp"];
     }
+    log.write(`技能启动需要SP: ${startSp.toFixed(1)}`);
     // 重置普攻
     if (rst) {
       if (duration > (levelData.duration-prepDuration) && rst != "ogcd") {
@@ -2451,6 +2509,8 @@ function calculateAttack(charAttr, enemy, raidBlackboard, isSkill, charData, lev
   // 备注信息
   if (isSkill && checkSpecs(charId, "note"))
     log.writeNote(checkSpecs(charId, "note"));
+  if (options.equip)
+    log.writeNote("满足模组触发条件");
   //console.log(buffList);
 
   // 计算面板属性
@@ -2473,7 +2533,7 @@ function calculateAttack(charAttr, enemy, raidBlackboard, isSkill, charData, lev
   // 灰喉-特判
   if (buffList["tachr_367_swllow_1"]) {
     buffFrame.attackSpeed += buffList["tachr_367_swllow_1"].attack_speed;
-    log.write(`[特殊] ${displayNames["tachr_367_swllow_1"]} - attack_speed + ${buffList["tachr_367_swllow_1"].attack_speed}`);
+    log.write(`[特殊] ${displayNames["tachr_367_swllow_1"]}: attack_speed + ${buffList["tachr_367_swllow_1"].attack_speed}`);
   }
   // 泡泡
   if (isSkill && blackboard.id == "skchr_bubble_2") {
@@ -2481,7 +2541,7 @@ function calculateAttack(charAttr, enemy, raidBlackboard, isSkill, charData, lev
     log.write(`[特殊] ${displayNames["skchr_bubble_2"]}: 攻击力以防御计算(${basicFrame.def + buffFrame.def})`);
   }
   // 迷迭香
-  if (["char_391_rosmon", "char_421_crow", "char_431_ashlok"].includes(charId)) {
+  if (["char_391_rosmon", "char_1027_greyy2", "char_421_crow", "char_431_ashlok"].includes(charId)) {
     buffFrame.maxTarget = 999;
     log.write(`[特殊] ${displayNames[charId]}: maxTarget = 999`);
   }
@@ -2613,11 +2673,13 @@ function calculateAttack(charAttr, enemy, raidBlackboard, isSkill, charData, lev
   emr = Math.max(emr - enemyBuffFrame.emr_pene, 0);
   let emrpct = emr / 100;
   let ecount = Math.min(buffFrame.maxTarget, enemy.count);
-  if (blackboard.id == "skchr_pudd_2" && isSkill && ecount > 1)
-    ecount = buffFrame.maxTarget; 
+  if (blackboard.id == "skchr_pudd_2" && isSkill && ecount > 1) {
+    ecount = buffFrame.maxTarget;
+    log.writeNote(`相当于命中 ${ecount} 个敌人`); 
+  }
 
   // 平均化惊蛰/异客伤害
-  if (['char_306_leizi', 'char_472_pasngr', 'char_4004_pudd'].includes(charId)) {
+  if (charData.subProfessionId == "chain") {
     let scale = 0.85, s = 1; tot = 1, sks = [1];
     if (isSkill && blackboard.id == "skchr_leizi_2")
       scale = 1;
@@ -2627,9 +2689,9 @@ function calculateAttack(charAttr, enemy, raidBlackboard, isSkill, charData, lev
     for (var i=0; i<ecount-1; ++i) {
         s*=scale; tot += s; sks.push(s);
     }
-    log.write(`[特殊] 电法: 原本伤害倍率: ${buffFrame.damage_scale.toFixed(2)}`);
+    log.write(`[特殊] 链术师: 原本伤害倍率: ${buffFrame.damage_scale.toFixed(2)}`);
     buffFrame.damage_scale *= tot / ecount;
-    log.write(`[特殊] 电法: 连锁倍率: ${sks.map(x => x.toFixed(2))}, 平均伤害倍率 ${buffFrame.damage_scale.toFixed(2)}x`);
+    log.write(`[特殊] 链术师: 连锁倍率: ${sks.map(x => x.toFixed(2))}, 平均伤害倍率 ${buffFrame.damage_scale.toFixed(2)}x`);
   }
 
   // 计算攻击次数和持续时间
@@ -2900,8 +2962,13 @@ function calculateAttack(charAttr, enemy, raidBlackboard, isSkill, charData, lev
       case "tachr_188_helage_trait":
       case "tachr_337_utage_trait":
       case "tachr_475_akafyu_trait":
+        pool[2] += bb.value * dur.hitCount;
+        break;
       case "tachr_485_pallas_2":
         pool[2] += bb.value * dur.hitCount;
+        if ("pallas_e_t_2.value" in bb) {
+          pool[2] += bb["pallas_e_t_2.value"] * dur.hitCount;
+        }
         break;
       case "tachr_421_crow_trait":
         pool[2] += bb.value * dur.attackCount * Math.min(ecount, 2);
@@ -2911,6 +2978,7 @@ function calculateAttack(charAttr, enemy, raidBlackboard, isSkill, charData, lev
         pool[1] += damage * dur.hitCount;
         break;
       case "tachr_391_rosmon_trait":
+      case "tachr_1027_greyy2_trait":
         var ntimes = 1;
         if (isSkill && blackboard.id == "skchr_rosmon_2") ntimes = 3;
         var quake_atk = finalFrame.atk / buffFrame.atk_scale * bb["attack@append_atk_scale"];
@@ -3499,6 +3567,15 @@ function calculateAttack(charAttr, enemy, raidBlackboard, isSkill, charData, lev
           pool[1] += damage * dur.hitCount;
           log.write(`[特殊] ${displayNames[buffName]} 额外伤害 ${damage.toFixed(1)} 命中 ${enemy.count}`);
         }
+        break;
+      case "skchr_greyy2_2":
+        damage = finalFrame.atk * bb.atk_scale * (1-emrpct) * buffFrame.damage_scale;
+        let greyy2_2_count = bb.projectile_delay_time / bb.interval;
+        pool[1] += damage * greyy2_2_count * enemy.count;
+        damagePool[1] = 0;
+        extraDamagePool[0] = 0;
+        log.write(`[特殊] ${displayNames[buffName]}: 直接伤害为0 （以上计算无效）`);
+        log.write(`[特殊] ${displayNames[buffName]}: 额外伤害 ${damage.toFixed(1)} 命中 ${enemy.count * greyy2_2_count}`);
         break;
 
     }; // switch

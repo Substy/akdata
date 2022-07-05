@@ -1,14 +1,19 @@
 import re, json, time, os
 from bs4 import BeautifulSoup
 from contextlib import closing
-import requests
 
+import aiorequests
+import asyncio
+
+AKDATA_DIR = os.path.realpath(os.path.dirname(__file__) + "/../")
+RES_DIR = os.path.join(AKDATA_DIR, "assets/images/prts")
+EXCEL_DIR = os.path.join(AKDATA_DIR, "resources/gamedata/excel")
+working_path = os.path.abspath(os.path.realpath(os.path.dirname(__file__)))
 halfdict ={}
 icondict ={}
 
-working_path = "../resources/gamedata/excel"
-icon_dir = "../assets/images/prts/prts_icon"
-half_dir = "../assets/images/prts/prts_half"
+icon_dir = os.path.join(RES_DIR, "prts_icon")
+half_dir = os.path.join(RES_DIR, "prts_half")
 
 os.makedirs(icon_dir, exist_ok=True)
 os.makedirs(half_dir, exist_ok=True)
@@ -16,13 +21,15 @@ os.makedirs(half_dir, exist_ok=True)
 char_data = json.load(
     open(os.path.join(working_path, "character_table.json"), encoding="utf-8"))
 gacha_data = json.load(
-    open("config.json", encoding="utf-8"))
+    open(os.path.join(working_path, "config.json"), encoding="utf-8"))
+
 
 proxies={ 'http':'socks5h://127.0.0.1:1080',
-               'https':'socks5h://127.0.0.1:1080'}
+          'https':'socks5h://127.0.0.1:1080'}
 
-def update_res(): 
+async def update_res(): 
     count=0
+    print("- 更新res资源包...")
     chars = json.load(open(os.path.join(working_path, "character_table.json"), encoding="utf-8"))
 
     for k in chars.keys():
@@ -30,8 +37,8 @@ def update_res():
         if not k.startswith("char"):
             pass
 
-    r = requests.get('http://prts.wiki/w/%E5%B9%B2%E5%91%98%E4%B8%80%E8%A7%88')
-    soup = BeautifulSoup(r.text)
+    r = aiorequests.get('http://prts.wiki/w/%E5%B9%B2%E5%91%98%E4%B8%80%E8%A7%88')
+    soup = BeautifulSoup(await r.text)
     for index in soup.find(id="mw-content-text").find_all('div'):
         try:
             if index["class"]==["smwdata"]:
@@ -39,14 +46,11 @@ def update_res():
                 icondict[index['data-cn']]=index['data-icon']
         except:
             continue
-    print("- 更新halfPic ...")
+
     for key in halfdict:
         filelink = halfdict[key]
-        if filelink.startswith("//"):
+        if filelink[0] == "/":
             filelink = "https:" + filelink
-        elif len(filelink) == 0:
-            print(f"! {key} {filelink}")
-            continue
         name=str(key)
 
         id=''
@@ -67,16 +71,15 @@ def update_res():
         png_path = os.path.join(half_dir, filename)
         if os.path.exists(png_path):
             continue
-        print(f"{filelink} -> {png_path}")
-        png = (requests.get(filelink, timeout=20)).content
+        print(" - 下载", png_path)
+        png = await (await aiorequests.get(filelink, timeout=20)).content
         count+=1
         with open(png_path, 'wb') as f:
             f.write(png)
-    print("- 更新icon ...")
+
     for key in icondict:
         filelink = icondict[key]
-        print(filelink)
-        if filelink.startswith("//"):
+        if filelink[0] == "/":
             filelink = "https:" + filelink
         name=str(key)
 
@@ -98,41 +101,37 @@ def update_res():
         png_path = os.path.join(icon_dir, filename)
         if os.path.exists(png_path):
             continue
-        print(f"{filelink} -> {png_path}")
-        png = (requests.get(filelink, timeout=20)).content
+        png = await (await aiorequests.get(filelink, timeout=20)).content
         count+=1
+        print(" - 下载", png_path)
         with open(png_path, 'wb') as f:
             f.write(png)
         
     return count
 
 
-def update_chara_db():
+async def update_chara_db():
+    print("- 更新 character_table...")
     global char_data
+    print("- char_data")
     try:
-        res = requests.get("https://gitcdn.link/repo/Kengxxiao/ArknightsGameData/master/zh_CN/gamedata/excel/character_table.json", timeout=10)
+        res = aiorequests.get("https://raw.githubusercontent.com/Kengxxiao/ArknightsGameData/master/zh_CN/gamedata/excel/character_table.json", timeout=20)
     except:
-        try:
-            res = requests.get("https://gitcdn.link/repo/Kengxxiao/ArknightsGameData/master/zh_CN/gamedata/excel/character_table.json", timeout=10,proxies=proxies)
-        except:
-            try:
-                res = requests.get("https://raw.githubusercontent.com/Kengxxiao/ArknightsGameData/master/zh_CN/gamedata/excel/character_table.json", timeout=10)
-            except:
-                res = requests.get("https://raw.githubusercontent.com/Kengxxiao/ArknightsGameData/master/zh_CN/gamedata/excel/character_table.json", timeout=10,proxies=proxies)
-    new = res.json()
+        res = aiorequests.get("https://raw.githubusercontent.com/Kengxxiao/ArknightsGameData/master/zh_CN/gamedata/excel/character_table.json", proxies=proxies, timeout=20)
+    
+    new = await res.json()
     if new == char_data:
         return 0
     char_data = new
-    print("- 当前角色数量: ", len(char_data.keys()))
     with open(os.path.join(working_path, "character_table.json"), "w", encoding="utf-8") as f:
-        print("- 写入 character_table.json ...")
         f.write(json.dumps(char_data, indent=2, ensure_ascii=False))
     return 1
 
 
-def update_config():
+async def update_config():
     global gacha_data
 
+    print("- 更新方舟卡池...")
     template = {"limited": False, "no_other_6": False, "favor": '',
                 "open": '', "end": '', "up_6": [], "up_5": [], "up_4": [], "exclude": []}
 
@@ -147,7 +146,7 @@ def update_config():
         "star_3": [],
         "other_chars": [],
         "recruit_chars": ["艾丝黛尔", "清流", "火神", "因陀罗"],
-        "limited_chars": ["W", "年", "迷迭香", "夕","灰烬","霜华","闪击","浊心斯卡蒂"]
+        "limited_chars": ["W", "年", "迷迭香", "夕","灰烬","霜华","闪击","浊心斯卡蒂","假日威龙陈","耀骑士临光","令","归溟幽灵鲨"]
     }
 
     for k in chars.keys():
@@ -160,11 +159,12 @@ def update_config():
             pool["star_%d" % (chars[k]["rarity"]+1)].append(name)
 
     # get chara onlinetime
+    print("- online time")
     try:
-        res = requests.get('http://prts.wiki/w/%E5%B9%B2%E5%91%98%E4%B8%8A%E7%BA%BF%E6%97%B6%E9%97%B4%E4%B8%80%E8%A7%88', timeout=10)
+        res = await aiorequests.get('http://prts.wiki/w/%E5%B9%B2%E5%91%98%E4%B8%8A%E7%BA%BF%E6%97%B6%E9%97%B4%E4%B8%80%E8%A7%88', timeout=30)
     except:
-        res = requests.get('http://prts.wiki/w/%E5%B9%B2%E5%91%98%E4%B8%8A%E7%BA%BF%E6%97%B6%E9%97%B4%E4%B8%80%E8%A7%88', timeout=10,proxies=proxies)
-    text = res.text
+        res = await aiorequests.get('http://prts.wiki/w/%E5%B9%B2%E5%91%98%E4%B8%8A%E7%BA%BF%E6%97%B6%E9%97%B4%E4%B8%80%E8%A7%88', proxies = proxies, timeout=30)
+    text = await res.text
     text = text.replace('\n', '')
     ret = r'<tr><td>(.*?)<\/td><td>(.*?)<\/td><td>(.*?)<\/td><td>(.*?)<\/td><td>(.*?)<\/td><\/tr>'
     result = re.findall(ret, text)
@@ -175,17 +175,15 @@ def update_config():
         online[name] = onlinetime
 
     # get limited gacha
-    print("限定池 ...")
+    print("- limited gacha")
     try:
-        res = requests.get('http://prts.wiki/w/%E5%8D%A1%E6%B1%A0%E4%B8%80%E8%A7%88/%E9%99%90%E6%97%B6%E5%AF%BB%E8%AE%BF', timeout=10)
+        res = await aiorequests.get('http://prts.wiki/w/%E5%8D%A1%E6%B1%A0%E4%B8%80%E8%A7%88/%E9%99%90%E6%97%B6%E5%AF%BB%E8%AE%BF', timeout=10)
     except:
-        res = requests.get('http://prts.wiki/w/%E5%8D%A1%E6%B1%A0%E4%B8%80%E8%A7%88/%E9%99%90%E6%97%B6%E5%AF%BB%E8%AE%BF', timeout=10,proxies=proxies)
-    text = res.text
+        res = await aiorequests.get('http://prts.wiki/w/%E5%8D%A1%E6%B1%A0%E4%B8%80%E8%A7%88/%E9%99%90%E6%97%B6%E5%AF%BB%E8%AE%BF', timeout=10)
+    text = await res.text
     text = text.replace('\n', '')
     banner = {}
     limited = re.findall("<table(.*?)</table>", text)
-    print(limited)
-    os.system('pause')
     ret = r'<tr><td>(.*?)<\/td><td>(.*?)<\/td><td>(.*?)<\/td><td>(.*?)<\/td><\/tr>'
     result = re.findall(ret, limited[0])
     for gacha in result:
@@ -227,13 +225,12 @@ def update_config():
         cur["up_6"] = star6
         cur["up_5"] = star5
         cur["up_4"] = star4
-        print(name, cur)
+        print(name)
         cur["exclude"] = exclude
         banner[name] = cur
-        
 
     # get timelimit gacha
-    print("限时寻访（普池） ...")
+
     result = re.findall(ret, limited[1])
     for gacha in result:
         name = re.search('title="(.*?)"', gacha[0]).group(1)
@@ -275,20 +272,19 @@ def update_config():
         cur["up_6"] = star6
         cur["up_5"] = star5
         cur["up_4"] = star4
-        print(name, cur)
+        print(name)
         cur["exclude"] = exclude
         banner[name] = cur
 
     # get normal gacha
-    print("普池 ...")
     textn=""
-    for year in ["2021","2020","2019"]:
+    for year in ["2022","2021","2020","2019"]:
         url=f"http://prts.wiki/api.php?action=parse&format=json&page=%E5%8D%A1%E6%B1%A0%E4%B8%80%E8%A7%88%2F%E5%B8%B8%E9%A9%BB%E6%A0%87%E5%87%86%E5%AF%BB%E8%AE%BF%2F{year}"
         try:
-            res2 = requests.get(url, timeout=10)
+            res2 = await aiorequests.get(url, timeout=20)
         except:
-            res2 = requests.get(url, timeout=10, proxies=proxies)
-        resj= res2.json()
+            res2 = await aiorequests.get(url, timeout=20)
+        resj= await res2.json()
         text2=resj["parse"]["text"]["*"].replace('\n', '').replace('\\', '')
         text=text+text2
 
@@ -333,7 +329,7 @@ def update_config():
         cur["up_6"] = star6
         cur["up_5"] = star5
         cur["up_4"] = star4
-        print(gachaid, cur)
+        print(gachaid)
         cur["exclude"] = exclude
         banner[f'普池#{gachaid}'] = cur
 
@@ -341,16 +337,17 @@ def update_config():
     if new == gacha_data:
         return 0
     gacha_data = new
-#    with open(os.path.join(working_path, "config.json"), "w", encoding="utf-8") as f:
-#        print("写入 config.json ...")
-#        f.write(json.dumps(gacha_data, indent=2, ensure_ascii=False))
-#    return 1
+    with open(os.path.join(working_path, "config.json"), "w", encoding="utf-8") as f:
+        f.write(json.dumps(gacha_data, indent=2, ensure_ascii=False))
+    return 1
 
+async def work():
+    await update_chara_db()
+    await update_config()
+    await update_res()
 
 if __name__ == "__main__":
-    print("update character_table ...")
-    #update_chara_db()
-    print("update res img ...")
-    update_res()
-    print("update config.json ...")
-    update_config()
+    loop = asyncio.get_event_loop()
+    loop.run_until_complete(work())
+    loop.close()
+    
