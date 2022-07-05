@@ -42,7 +42,7 @@ function showVersion() {
         id: "update_prompt_modal",
         content: [remote, local, whatsnew].join("<br>"),
         width: 800,
-        title: "有新数据，请点击[清除缓存]更新",
+        title: "有新数据，请点击[手动刷新]更新数据",
         show: true,
       });
       $('#update_prompt').html(["有新数据，请更新", remote, local].join("<br>"));
@@ -53,7 +53,7 @@ function showVersion() {
           local += `<a href='#${op}'>${AKDATA.Data.character_table[op].name}</a>   `;
         });
       } catch (e) {
-        local = "请点击[手动刷新]更新数据";
+        local = "有新数据，请点击[手动刷新]更新数据";
       }
       $('#update_prompt').html(local);
       $("#btn_update_data").text("手动刷新");
@@ -639,6 +639,7 @@ function choosePhase() {
 
   Characters[index].phase = phase;
   $level.change();
+  getElement('skilllevel', index).change();
 }
 
 function chooseLevel() {
