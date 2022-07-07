@@ -145,6 +145,7 @@
     "skchr_ethan_1":	{ "passive": true },
     "skchr_excu_1":     { "reset_attack": true, "attack_begin": 23 },
     "skchr_excu_2":	    { "attack_begin": 23 },
+    "skchr_f12yin_1":   { "reset_attack": "false", "attack_begin": 4 },
     "skchr_f12yin_2":   { "toggle": true, "max_target": 2 }, 
     "skchr_f12yin_3":   { "times": 2 }, 
     "skchr_fartth_2":   { "reset_attack": true },
