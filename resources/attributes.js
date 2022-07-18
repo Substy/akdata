@@ -63,13 +63,13 @@ function getTokenAtkHp(charAttr, tokenId, log) {
 
 function checkChar(char) {
   let charData = AKDATA.Data.character_table[char.charId];
-  let skillData = AKDATA.Data.skill_table[char.skillId];
+  let skillData = char.skillId ? AKDATA.Data.skill_table[char.skillId] : null;
   // 默认最大属性
   let attr = {  
     phase: charData.phases.length - 1,
     level: charData.phases[charData.phases.length - 1].maxLevel,
     favor: 200,
-    skillLevel: skillData.levels.length-1,
+    skillLevel: skillData ? skillData.levels.length-1 : 0,
     options: { cond: true, crit: true, token: false, equip: true },
     potentialRank: charData.potentialRanks.length
   };

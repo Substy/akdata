@@ -142,16 +142,21 @@ function load() {
           let desc = AKDATA.formatString(levelData.description, true, bb);
           let hps = 0;
           let duration = 0;
+          let underline = false;
           if(dps.skill.isInstant)
           {
             duration = dps.normal.dur.duration + dps.skill.dur.duration;
             hps = dps.skill.hps;
+            underline = true;
           }
           else
           {
             duration = dps.skill.dur.duration;
             hps = dps.skill.hps;
           }
+          let dur_text = `${Math.round(duration*100)/100}`;
+          if (underline) dur_text = "<u>" + dur_text + "</u>";
+
 
           hpsList.push([
             `<a href="../character/#!/${charId}" target="_blank">${displayName}</a>`,
@@ -161,7 +166,7 @@ function load() {
             getEquipName(defaultChar.equipId),
             desc,
             hps.toFixed(2),
-            Math.round(duration*100)/100,
+            dur_text,
             bb.heal_scale || "-",
           ]);
         }
@@ -232,7 +237,7 @@ function load() {
 let item3 = pmBase.component.create({
   type: 'list',
 
-  columns: ['干员', '星级', '技能', '技能等级', '模组', {header:'说明',width:'25%'}, '技能费用回复', '技能周期', '100秒费用回复', '60费用需要时间'],
+  columns: ['干员', '星级', '技能', '技能等级',  {header:'说明',width:'25%'}, '技能费用回复', '技能周期', '100秒费用回复', '60费用需要时间'],
   "class":  "cost-result",
   list: costList,
 
@@ -314,6 +319,10 @@ function calculate() {
         levelData.blackboard.forEach(kv => bb[kv.key] = kv.value);
         let desc = AKDATA.formatString(levelData.description, true, bb);
 
+        let dur_text = `${dps.skill.dur.duration.toFixed(2)}s`;
+        if (dps.skill.dur.duration < 5) {
+          dur_text = "<u>" + dur_text + "</u>";
+        }
         html += '<tr><td>' + [
           `<a href="../character/#!/${charId}" target="_blank">${displayName}</a>`,
           getJobName(charData),
@@ -327,7 +336,7 @@ function calculate() {
           //Math.round(dps.skill.isInstant ? dps.globalDps : dps.skill.dps),
           Math.round(dps.skill.dps),
           `<a href="../dps/#${charId}" target="_blank">${Math.round(dps.globalDps)}</a>`,
-          dps.skill.dur.duration.toFixed(3)
+          dur_text
         ].join('</td><td>') + '</td></tr>';
       }
     });
