@@ -2,7 +2,7 @@ const stringRegex = /<[@\$](.+?)>(.+?)<\/>/g;
 const variableRegex = /{(\-)*(.+?)(?:\:(.+?))?}/g;
 
 let CacheList = null;
-let _use_local = true;
+let _use_local = false;
 
 const useCache = true;
 const cacheBeginTime = new Date(2019, 12, 10).getTime();
@@ -104,14 +104,15 @@ window.AKDATA = {
         let jsdelivr = `https://cdn.jsdelivr.net/gh/xulai1001/akdata@${window.AKDATA.akdata}/` + path;
         let local = `/akdata/` + path;
         let github = "https://raw.githubusercontent.com/xulai1001/akdata/master/" + path;
+        let aliyun = "https://akdata-site.oss-cn-guangzhou.aliyuncs.com/" + path;
 
         let urlList = [];
         if (_use_local)
           urlList = [local];
         else if (isGamedata)
-          urlList = [jsdelivr, github, local];
+          urlList = [aliyun, github, local];
         else
-          urlList = [github, local];
+          urlList = [aliyun, github, local];
 
         // convert path to Promise.race()
         paths[i] = loadJSONFromSources(name, urlList, !isGamedata, result => {
