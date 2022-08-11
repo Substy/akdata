@@ -17,7 +17,7 @@
         "annie": { "type": "bool", "displaytext": "傀儡师替身", "explain": "计算替身数据", "off": true },
         "pallas": { "type": "bool", "displaytext": "加成自身", "explain": "自身增益技能加成自己的情况", "off": true },
         "water": { "type": "bool", "displaytext": "水地形", "explain": "假日威龙陈-水地形", "off": true },
-        "equip": { "type": "bool", "displaytext": "模组效果", "explain": "触发模组效果/叠满" },
+        "equip": { "type": "bool", "displaytext": "触发模组加成", "explain": "触发模组效果/叠满" },
         "far": { "type": "bool", "displaytext": "原本范围以外", "explain": "远牙/安比尔-攻击原本范围以外的敌人" },
         "block": { "type" : "bool", "displaytext": "阻挡", "explain": "满足阻挡条件" },
         "freeze": { "type" : "bool", "displaytext": "保持冻结", "explain": "勾选时假设敌人全程被冻结（包括普攻/技能）", "off": true },
@@ -102,7 +102,11 @@
         "char_4046_ebnhlz": 2,
         "char_4046_ebnhlz_elite": { "text": "精英敌人", "tooltip": "对精英敌人额外蓄力1层" },
         "char_214_kafka": 1,
-        "char_261_sddrag_spd": { "text": "持续受到法术伤害", "tooltip": "维持攻速+x%" }
+        "char_261_sddrag_spd": { "text": "持续受到法术伤害", "tooltip": "维持攻速+x%" },
+        "char_1026_gvial2": 2,
+        "char_4055_bgsnow_near": { "text": "周围四格", "tooltip": "“打字机”放在鸿雪周围四格，第二天赋效果提升" }, 
+        "char_4055_bgsnow_def":  { "text": "打字机减防", "tooltip": "本体享受打字机减防效果" },
+        "char_4055_bgsnow_front":{ "text": "正前方", "tooltip": "敌人在正前方" }  
     },
     "char" : {
         "char_103_angel": [ "equip", "archet", "chen" ],
@@ -253,6 +257,9 @@
         "char_135_halo":    [ "stack" ],
         "char_4048_doroth": [ "stack" ],
         "char_190_clour":   [ "equip" ],
-        "char_235_jesica":  [ "equip" ]
+        "char_235_jesica":  [ "equip" ],
+        "char_4054_malist": [ "crit" ],
+        "char_1026_gvial2": [ "cond", "block" ],
+        "char_4055_bgsnow": [ "token", "cond_def", "cond_near", "cond_front", "crit" ]
     }
 }

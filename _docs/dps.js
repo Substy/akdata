@@ -315,7 +315,7 @@ function showDetail() {
   pmBase.component.create({
     type: 'modal',
     id: Characters[index].charId,
-    content: markdown.makeHtml(Characters[index].dps.log).replace(/table/g, 'table class="table"'),
+    content: markdown.makeHtml(Characters[index].dps.log).replace(/<table/g, '<table class="table"'),
     width: 750,
     title: name + " - " + Characters[index].dps.skillName,
     show: true,
@@ -570,9 +570,9 @@ function updateOptions(charId, index) {
           }
 
           if (talent) {
-            text = "触发 - " + talent.candidates[0].name;
+            text = `触发天赋[${which}] - ${talent.candidates[0].name}`;
             if (talent.candidates[0].description)
-              tooltip = talent.candidates[0].description.replace(/<.*?>/g, '').replace(/\d/g, "x");
+              tooltip = talent.candidates[0].description.replace(/<.*?>/g, '').replace(/\d+/g, "[x]");
               tooltip += " 　 (效果可能被模组改变)";
             if (which == "trait") {
               text = "触发 - 特性";

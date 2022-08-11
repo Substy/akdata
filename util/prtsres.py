@@ -2,7 +2,7 @@ import re, json, time, os
 from bs4 import BeautifulSoup
 from contextlib import closing
 
-import aiorequests
+import aiorequests, requests
 import asyncio
 
 AKDATA_DIR = os.path.realpath(os.path.dirname(__file__) + "/../")
@@ -24,8 +24,9 @@ gacha_data = json.load(
     open(os.path.join(working_path, "config.json"), encoding="utf-8"))
 
 
-proxies={ 'http':'socks5h://127.0.0.1:1080',
-          'https':'socks5h://127.0.0.1:1080'}
+#proxies={ 'http':'socks5h://127.0.0.1:1080',
+#          'https':'socks5h://127.0.0.1:1080'}
+proxies = {}
 
 async def update_res(): 
     count=0
@@ -37,8 +38,8 @@ async def update_res():
         if not k.startswith("char"):
             pass
 
-    r = aiorequests.get('http://prts.wiki/w/%E5%B9%B2%E5%91%98%E4%B8%80%E8%A7%88')
-    soup = BeautifulSoup(await r.text)
+    r = requests.get('http://prts.wiki/w/%E5%B9%B2%E5%91%98%E4%B8%80%E8%A7%88')
+    soup = BeautifulSoup(r.text)
     for index in soup.find(id="mw-content-text").find_all('div'):
         try:
             if index["class"]==["smwdata"]:
@@ -72,7 +73,7 @@ async def update_res():
         if os.path.exists(png_path):
             continue
         print(" - 下载", png_path)
-        png = await (await aiorequests.get(filelink, timeout=20)).content
+        png = requests.get(filelink, timeout=20).content
         count+=1
         with open(png_path, 'wb') as f:
             f.write(png)
@@ -101,7 +102,7 @@ async def update_res():
         png_path = os.path.join(icon_dir, filename)
         if os.path.exists(png_path):
             continue
-        png = await (await aiorequests.get(filelink, timeout=20)).content
+        png = requests.get(filelink, timeout=20).content
         count+=1
         print(" - 下载", png_path)
         with open(png_path, 'wb') as f:
@@ -115,11 +116,11 @@ async def update_chara_db():
     global char_data
     print("- char_data")
     try:
-        res = aiorequests.get("https://raw.githubusercontent.com/Kengxxiao/ArknightsGameData/master/zh_CN/gamedata/excel/character_table.json", timeout=20)
+        res = requests.get("https://raw.githubusercontent.com/Kengxxiao/ArknightsGameData/master/zh_CN/gamedata/excel/character_table.json", timeout=20)
     except:
-        res = aiorequests.get("https://raw.githubusercontent.com/Kengxxiao/ArknightsGameData/master/zh_CN/gamedata/excel/character_table.json", proxies=proxies, timeout=20)
+        res = requests.get("https://raw.githubusercontent.com/Kengxxiao/ArknightsGameData/master/zh_CN/gamedata/excel/character_table.json", proxies=proxies, timeout=20)
     
-    new = await res.json()
+    new = res.json()
     if new == char_data:
         return 0
     char_data = new
@@ -161,10 +162,10 @@ async def update_config():
     # get chara onlinetime
     print("- online time")
     try:
-        res = await aiorequests.get('http://prts.wiki/w/%E5%B9%B2%E5%91%98%E4%B8%8A%E7%BA%BF%E6%97%B6%E9%97%B4%E4%B8%80%E8%A7%88', timeout=30)
+        res = requests.get('http://prts.wiki/w/%E5%B9%B2%E5%91%98%E4%B8%8A%E7%BA%BF%E6%97%B6%E9%97%B4%E4%B8%80%E8%A7%88', timeout=30)
     except:
-        res = await aiorequests.get('http://prts.wiki/w/%E5%B9%B2%E5%91%98%E4%B8%8A%E7%BA%BF%E6%97%B6%E9%97%B4%E4%B8%80%E8%A7%88', proxies = proxies, timeout=30)
-    text = await res.text
+        res = requests.get('http://prts.wiki/w/%E5%B9%B2%E5%91%98%E4%B8%8A%E7%BA%BF%E6%97%B6%E9%97%B4%E4%B8%80%E8%A7%88', proxies = proxies, timeout=30)
+    text = res.text
     text = text.replace('\n', '')
     ret = r'<tr><td>(.*?)<\/td><td>(.*?)<\/td><td>(.*?)<\/td><td>(.*?)<\/td><td>(.*?)<\/td><\/tr>'
     result = re.findall(ret, text)
@@ -177,10 +178,10 @@ async def update_config():
     # get limited gacha
     print("- limited gacha")
     try:
-        res = await aiorequests.get('http://prts.wiki/w/%E5%8D%A1%E6%B1%A0%E4%B8%80%E8%A7%88/%E9%99%90%E6%97%B6%E5%AF%BB%E8%AE%BF', timeout=10)
+        res = requests.get('http://prts.wiki/w/%E5%8D%A1%E6%B1%A0%E4%B8%80%E8%A7%88/%E9%99%90%E6%97%B6%E5%AF%BB%E8%AE%BF', timeout=10)
     except:
-        res = await aiorequests.get('http://prts.wiki/w/%E5%8D%A1%E6%B1%A0%E4%B8%80%E8%A7%88/%E9%99%90%E6%97%B6%E5%AF%BB%E8%AE%BF', timeout=10)
-    text = await res.text
+        res = requests.get('http://prts.wiki/w/%E5%8D%A1%E6%B1%A0%E4%B8%80%E8%A7%88/%E9%99%90%E6%97%B6%E5%AF%BB%E8%AE%BF', timeout=10)
+    text = res.text
     text = text.replace('\n', '')
     banner = {}
     limited = re.findall("<table(.*?)</table>", text)
@@ -281,10 +282,10 @@ async def update_config():
     for year in ["2022","2021","2020","2019"]:
         url=f"http://prts.wiki/api.php?action=parse&format=json&page=%E5%8D%A1%E6%B1%A0%E4%B8%80%E8%A7%88%2F%E5%B8%B8%E9%A9%BB%E6%A0%87%E5%87%86%E5%AF%BB%E8%AE%BF%2F{year}"
         try:
-            res2 = await aiorequests.get(url, timeout=20)
+            res2 = requests.get(url, timeout=20)
         except:
-            res2 = await aiorequests.get(url, timeout=20)
-        resj= await res2.json()
+            res2 = requests.get(url, timeout=20)
+        resj= res2.json()
         text2=resj["parse"]["text"]["*"].replace('\n', '').replace('\\', '')
         text=text+text2
 
@@ -342,8 +343,8 @@ async def update_config():
     return 1
 
 async def work():
-    await update_chara_db()
-    await update_config()
+    # await update_chara_db()
+    # await update_config()
     await update_res()
 
 if __name__ == "__main__":

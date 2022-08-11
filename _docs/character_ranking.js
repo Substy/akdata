@@ -38,7 +38,7 @@ function getEquipName(eid) {
 }
 
 function getJobName(char) {
-  return ProfessionNames[char.profession] + "-" + getSubName(char.subProfessionId);
+  return "<span style='font-weight: 600'>" + ProfessionNames[char.profession] + "</span><br>" + getSubName(char.subProfessionId);
 }
 
 function load() {

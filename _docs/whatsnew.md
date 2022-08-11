@@ -5,6 +5,14 @@ order: 4
 category: 其他功能
 icon: info-circle
 ---
+## 22.08.12
+- [update] 百炼嘉维尔等
+- [update] 改进了条件复选框的文字描述
+- [note] 至简的暴击使用期望值进行计算
+- [fix] 红豆模组计算错误 @某小达
+- [fix] 芙兰卡模组天赋概率 @CelesteTheWitch
+- [fix] 温蒂位移伤害计算增伤系数
+
 ## 22.07.05-07
 - [update] 新干员-多萝西等
 - [equip] 更新狙击模组、帕拉斯和麦哲伦的第二模组等计算
