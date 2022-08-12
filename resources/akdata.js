@@ -2,7 +2,7 @@ const stringRegex = /<[@\$](.+?)>(.+?)<\/>/g;
 const variableRegex = /{(\-)*(.+?)(?:\:(.+?))?}/g;
 
 let CacheList = null;
-let _use_local = false;
+let _use_local = true;
 
 const useCache = true;
 const cacheBeginTime = new Date(2019, 12, 10).getTime();

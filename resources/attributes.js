@@ -1688,8 +1688,10 @@ function applyBuff(charAttr, buffFrm, tag, blackbd, isSkill, isCrit, log, enemy)
         if (!isCrit) delete blackboard.atk_scale;
         break;
       case "skchr_bgsnow_3":
-        if (options.cond_front)
+        if (options.cond_front || options.token) {
           blackboard.atk_scale = blackboard["bgsnow_s_3[atk_up].atk_scale"];
+          log.writeNote("正前方敌人");
+        }
         break;
     }
 
@@ -1855,9 +1857,9 @@ function applyBuff(charAttr, buffFrm, tag, blackbd, isSkill, isCrit, log, enemy)
         blackboard.atk_scale = blackboard.trait.atk_scale;
       break;
     case "uniequip_002_bgsnow":
-      if (options.cond_front) {
+      if (options.cond_front && !options.token) {
+        // 模组效果对token不生效
         blackboard.atk_scale = blackboard.trait.atk_scale;
-        log.writeNote("正前方敌人");
       }
   }
 
