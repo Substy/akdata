@@ -21,9 +21,9 @@
     "char_144_red":     { "mod_update_time": "2022/6/15" },
     "char_243_waaifu":  { "mod_update_time": "2022/6/15" },
     "char_237_gravel":  { "mod_update_time": "2022/6/15" },
-    "char_472_pasngr":  { "mod_update_time": "2022/6/15" },
-    "char_306_leizi":   { "mod_update_time": "2022/6/15" },
-    "char_4004_pudd":   { "mod_update_time": "2022/6/15" },
+    "char_472_pasngr":  { "mod_update_time": "2022/6/15", "ecount": 2 },
+    "char_306_leizi":   { "mod_update_time": "2022/6/15", "ecount": 2 },
+    "char_4004_pudd":   { "mod_update_time": "2022/6/15", "ecount": 2 },
     "char_459_tachak":  { "mod_update_time": "2022/6/15" },
     "char_252_bibeak":  { "mod_update_time": "2022/6/15" },
     "char_301_cutter":  { "mod_update_time": "2022/6/15" },
@@ -94,9 +94,10 @@
     "char_355_ethan":   { "mod_update_time":  "2022/8/12" },
     "char_478_kirara":  { "mod_update_time":  "2022/8/12" },
     "char_215_mantic":  { "mod_update_time":  "2022/8/12" },
-    "char_437_mizuki":  { "mod_update_time":  "2022/8/12" },
+    "char_437_mizuki":  { "mod_update_time":  "2022/8/12", "ecount": 2 },
     "char_236_rope":    { "mod_update_time":  "2022/8/12" },
     "char_173_slchan":  { "mod_update_time":  "2022/8/12" },
     "char_383_snsant":  { "mod_update_time":  "2022/8/12" },
-    "char_474_glady":   { "mod_update_time":  "2022/8/12" }
+    "char_474_glady":   { "mod_update_time":  "2022/8/12" },
+    "char_4025_aprot":  { "ecount": 2 }
 }

@@ -3266,10 +3266,10 @@ function calculateAttack(charAttr, enemy, raidBlackboard, isSkill, charData, lev
           scale *= buffList.skill.talent_scale;
         log.write(`法伤倍率: ${scale.toFixed(2)}x`);
         damage = finalFrame.atk / buffFrame.atk_scale * scale * (1-emrpct) * buffFrame.damage_scale;
-        let nHit = 1;
+        let nHit = bb["attack@max_target"];
         if (isSkill) {
-          if (blackboard.id == "skchr_mizuki_2") nHit = 2;
-          else if (blackboard.id == "skchr_mizuki_3") nHit = 3;
+          if (blackboard.id == "skchr_mizuki_2") nHit += 1;
+          else if (blackboard.id == "skchr_mizuki_3") nHit += 2;
         }
         nHit = dur.attackCount * Math.min(ecount, nHit);
         pool[1] += damage * nHit;

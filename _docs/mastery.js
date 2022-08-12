@@ -512,7 +512,8 @@ function buildChar(charId, skillId, recipe) {
   char.skillName = skilldb.levels[char.skillLevel].name;
   //console.log(char);
   let _opts = AKDATA.Data.dps_options.char[charId];
-  if (checkSpecs(charId, "use_token_for_mastery") || checkSpecs(skillId, "use_token_for_mastery"))
+  if (checkSpecs(charId, "use_token_for_mastery") || checkSpecs(skillId, "use_token_for_mastery")
+      || checkSpecs(charId, "token", "mastery"))
     char.options.token = true;
   else char.options.token = false;
 
@@ -550,11 +551,12 @@ function calculate(charId) {
   let raidBuff = { atk: 0, atkpct: 0, ats: 0, cdr: 0, base_atk: 0, damage_scale: 0 };
   let result = {}, mats = {};
   let equipId = null, equipName = null;
-  let extraNote = "";
+  let extraNotes = [];
 
-  if (['char_306_leizi', 'char_472_pasngr', 'char_4004_pudd', "char_4025_aprot2"].includes(charId)) {
-    enemy.count = 2;
-    extraNote = "按2目标计算";
+  let masterySpecs = AKDATA.Data.mastery[charId] || {};
+  if ("ecount" in masterySpecs) {
+    enemy.count = masterySpecs.ecount;
+    extraNotes.push(`${enemy.count}目标`);
   } else enemy.count = 1;
 
   window.vue_app.calculating = true;
@@ -567,6 +569,9 @@ function calculate(charId) {
       $.extend(recipe, stages[st]);
       let ch = buildChar(charId, skill.skillId, recipe);
       ch.dps = AKDATA.attributes.calculateDps(ch, enemy, raidBuff);
+      if (ch.options.token && !extraNotes.includes("召唤物")) {
+        extraNotes.push("召唤物");
+      }
       entry[st] = ch;
       if (ch.equipId) {
         equipId = ch.equipId; equipName = ch.equipName;
@@ -594,7 +599,7 @@ function calculate(charId) {
     mats_e: {},
     cost: {},
     cost_e: {},
-    extraNote
+    extraNotes
   };
   for (let k in result) {
     resultView.skill[k] = result[k]["满潜"].skillName;
@@ -711,8 +716,8 @@ function buildChartView(resultView, key) {
   for (let skill in view.skill) {
     skill_names.push(view.skill[skill]);
     let line = view.notes[skill];
-    if (resultView.extraNote.length > 0)
-      line += "\n" + resultView.extraNote;
+    if (resultView.extraNotes.length > 0)
+      line += "\n" + resultView.extraNotes.join("/");
     
     if (view.dps[skill]["满潜"].spType != 8) {
       if (line != "") line += "\n";
@@ -966,6 +971,9 @@ function plot2(chartView) {
   };
   series.push(notesTemplate); 
 
+  let extraNotes = window.vue_app.resultView.extraNotes;
+  let extraTitle = (extraNotes.length > 0 ? `- ${extraNotes.join(" ")}` : "");
+
   // 指定图表的配置项和数据
   let option = {
     toolbox: {
@@ -1017,7 +1025,7 @@ function plot2(chartView) {
     },
     xAxis: {
       type: 'value',
-      name: `${window.vue_app.txt_char} - ${ChartKeys[window.vue_app.chartKey]}`,
+      name: `${window.vue_app.txt_char} - ${ChartKeys[window.vue_app.chartKey]} ${extraTitle}`,
       nameLocation: "middle",
       nameGap: -24,
       nameTextStyle: {
@@ -1074,9 +1082,11 @@ function plot2Update(chartView) {
       ["注记", ...(chartView.notes.map(x => x.content))]  // 把注记也放在这里，使用自定义数据系列显示
     ]
   };
+  let extraNotes = window.vue_app.resultView.extraNotes;
+  let extraTitle = (extraNotes.length > 0 ? `- ${extraNotes.join(" ")}` : "");
   window.eChart.setOption({
     dataset: dataset,
-    xAxis: { name: `${window.vue_app.txt_char} - ${ChartKeys[window.vue_app.chartKey]}` }
+    xAxis: { name: `${window.vue_app.txt_char} - ${ChartKeys[window.vue_app.chartKey]} ${extraTitle}` }
  });
 }
 
