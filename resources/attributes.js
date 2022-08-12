@@ -2293,6 +2293,13 @@ function calcDurations(isSkill, attackTime, attackSpeed, levelData, buffList, bu
     } else if (skillId == "skchr_takila_2" && options.charge) {
       duration = blackboard.enhance_duration;
       attackCount = Math.ceil(duration / attackTime);
+    } else if (charId == "char_4055_bgsnow" && options.token) {
+      // 不管精英化等级 统一按25秒计算
+      if (duration > 25) {
+        duration = 25;
+        attackCount = Math.ceil(duration / attackTime);
+        log.writeNote("[打字机]按持续25秒计算");
+      }
     }
   } else { // 普攻
     // 眩晕处理
@@ -3305,7 +3312,8 @@ function calculateAttack(charAttr, enemy, raidBlackboard, isSkill, charData, lev
       case "uniequip_002_snsant":
       case "uniequip_002_glady":
         if (isSkill) {
-          move = buffList.skill.force+1;
+          let force = buffList.skill.force || buffList.skill["attack@force"];
+          move = force+1;
           log.writeNote(`以位移${move}格计算`);
           pool[1] += bb.trait.value * move * (1-emrpct) * ecount * buffFrame.damage_scale;
         }
