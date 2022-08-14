@@ -1693,6 +1693,15 @@ function applyBuff(charAttr, buffFrm, tag, blackbd, isSkill, isCrit, log, enemy)
           log.writeNote("正前方敌人");
         }
         break;
+      case "tachr_497_ctable_1":
+        if (options.noblock) {
+          delete blackboard.atk;
+          log.writeNote("未阻挡");
+        } else {
+          delete blackboard.attack_speed;
+          log.writeNote("阻挡");
+        }
+        break;
     }
 
   }
