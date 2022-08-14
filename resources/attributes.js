@@ -708,8 +708,6 @@ function applyBuff(charAttr, buffFrm, tag, blackbd, isSkill, isCrit, log, enemy)
         case "tachr_472_pasngr_1":
           blackboard.damage_scale = blackboard["pasngr_t_1[enhance].damage_scale"];
           break;
-        case "tachr_472_pasngr_2":
-          if (!options.cond_2) done = true; break;
         case "tachr_1012_skadi2_2":
           log.writeNote("有深海猎人");
           blackboard.atk = blackboard["skadi2_t_2[atk][2].atk"];
@@ -1702,6 +1700,8 @@ function applyBuff(charAttr, buffFrm, tag, blackbd, isSkill, isCrit, log, enemy)
           log.writeNote("阻挡");
         }
         break;
+      case "tachr_472_pasngr_2":
+        if (!options.cond_2) done = true; break;
     }
 
   }
