@@ -116,7 +116,7 @@ let page_html = `
         <td><b>条件</b><br>
           <label v-for="opt in opt_options" class="form-check-label" data-toggle="tooltip"
                  :title="opt.tooltip" style="margin-left: 30px" >
-            <input class="form-check-input" type="checkbox" checked :value="opt.tag" :id="opt.tag" v-model="details.options">
+            <input class="form-check-input" type="checkbox" checked :value="opt.tag" :id="opt.tag" v-model="details.options" :disabled="opt.disabled">
             {{ opt.text }}
           </label>
         </td>
@@ -404,7 +404,9 @@ function load() {
               } else tooltip = `触发条件${suffix}`;
               return { tag: x, text, tooltip };
             } else {
-              return { tag: x, text: optionDB.tags[x].displaytext, tooltip: optionDB.tags[x].explain };
+              let ret = { tag: x, text: optionDB.tags[x].displaytext, tooltip: optionDB.tags[x].explain };
+              if (ret.tag == "crit") ret.disabled = true;
+              return ret;
             }
           });
         opts.push({ tag: "buff", text: "计算团辅", tooltip: ""});

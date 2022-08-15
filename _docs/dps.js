@@ -550,6 +550,7 @@ function updateOptions(charId, index) {
     for (var t of opts.char[charId]) {
       let u = (t.startsWith("cond") ? "cond" : t);  // wildcard cond
       let checked = opts.tags[u].off ? "" : "checked";
+      let disabled = (u == "crit" ? "disabled" : "");
       let text = opts.tags[u].displaytext;
       let tooltip = opts.tags[u].explain;
 
@@ -584,7 +585,7 @@ function updateOptions(charId, index) {
       let html_bool = `
       <div class="form-check">
         <label class="form-check-label" data-toggle="tooltip" data-placement="right" title="${tooltip}">
-          <input class="form-check-input dps__${t}" type="checkbox" value="" data-index="${index}" ${checked}>
+          <input class="form-check-input dps__${t}" type="checkbox" value="" data-index="${index}" ${checked} ${disabled}>
             ${text}
         </label> </div>`;
       html += html_bool;
