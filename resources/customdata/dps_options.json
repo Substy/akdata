@@ -260,7 +260,7 @@
         "char_235_jesica":  [ "equip" ],
         "char_4054_malist": [ "crit" ],
         "char_1026_gvial2": [ "cond", "block" ],
-        "char_4055_bgsnow": [ "token", "cond_def", "cond_near", "cond_front", "crit" ],
+        "char_4055_bgsnow": [ "token", "short_mode", "cond_def", "cond_near", "cond_front", "crit" ],
         "char_497_ctable":  [ "noblock" ],
         "char_4032_provs":  [ "equip" ],
         "char_4064_mlynar": [ "cond", "stack" ],
