@@ -1,5 +1,5 @@
 {
-    "char_4046_ebnhlz": { "mod_update_time": "2022/6/14" },
+    "char_4046_ebnhlz": { "mod_update_time": "2022/9/11" },
     "char_338_iris":    { "mod_update_time": "2022/6/14" },
     "char_469_indigo":  { "mod_update_time": "2022/6/14" },
     "char_248_mgllan":  { "mod_update_time": "2022/6/14" },
@@ -70,7 +70,7 @@
     "char_348_ceylon":  { "mod_update_time": "2022/6/18" },
     "char_436_whispr":  { "mod_update_time": "2022/6/18" },
     "char_385_finlpp":  { "mod_update_time": "2022/6/18" },
-    "char_416_zumama":  { "mod_update_time": "2022/6/18" },
+    "char_416_zumama":  { "mod_update_time": "2022/9/11" },
     "char_422_aurora":  { "mod_update_time": "2022/6/18" },
     "char_202_demkni":  { "mod_update_time": "2022/6/18" },
     "char_196_sunbr":   { "mod_update_time": "2022/6/18" },
@@ -99,5 +99,14 @@
     "char_173_slchan":  { "mod_update_time":  "2022/8/12" },
     "char_383_snsant":  { "mod_update_time":  "2022/8/12" },
     "char_474_glady":   { "mod_update_time":  "2022/8/12" },
-    "char_4025_aprot":  { "ecount": 2 }
+    "char_4025_aprot":  { "ecount": 2 },
+    "char_2014_nian":   { "mod_update_time": "2022/9/11" },
+    "char_136_hsguma":  { "mod_update_time": "2022/9/11" },
+    "char_304_zebra":   { "mod_update_time": "2022/9/11" },
+    "char_325_bison":   { "mod_update_time": "2022/9/11" },
+    "char_201_moeshd":  { "mod_update_time": "2022/9/11" },
+    "char_381_bubble":  { "mod_update_time": "2022/9/11" },
+    "char_150_snakek":  { "mod_update_time": "2022/9/11" },
+    "char_199_yak":     { "mod_update_time": "2022/9/11" },
+    "char_4032_provs":  { "mod_update_time": "2022/9/11" }
 }

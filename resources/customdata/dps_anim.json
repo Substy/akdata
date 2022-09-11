@@ -4790,6 +4790,44 @@
     },
     "Die": 30
   },
+  "char_264_f12yin_epoque#15": {
+    "version": "3.8.99",
+    "Attack_A": {
+      "duration": 12,
+      "OnAttack": 5
+    },
+    "Attack_B": {
+      "duration": 12,
+      "OnAttack": 5
+    },
+    "Default": 0,
+    "Idle": 57,
+    "Skill": {
+      "duration": 23,
+      "OnAttack": 4
+    },
+    "Skill_2_Begin": 12,
+    "Skill_2_End": 12,
+    "Skill_2_Idle": 57,
+    "Skill_2_Loop": {
+      "duration": 18,
+      "OnPlayAudio": 10,
+      "OnAttack": 10
+    },
+    "Skill_3_Begin": 5,
+    "Skill_3_End": 5,
+    "Skill_3_Idle": 60,
+    "Skill_3_Loop": {
+      "duration": 38,
+      "OnAttack": 14,
+      "OnPlayAudio": 14
+    },
+    "Start": {
+      "duration": 30,
+      "OnStart": 6
+    },
+    "Die": 30
+  },
   "char_265_sophia": {
     "version": "3.8.99",
     "Attack_End": 8,
@@ -6132,6 +6170,23 @@
       "OnStart": 7
     }
   },
+  "char_337_utage_epoque#15": {
+    "version": "3.8.99",
+    "Attack": {
+      "duration": 36,
+      "OnAttack": 13
+    },
+    "Default": 0,
+    "Die": 30,
+    "Idle": 30,
+    "Skill_End": 15,
+    "Skill_Loop": 45,
+    "Skill_Start": 15,
+    "Start": {
+      "duration": 35,
+      "OnStart": 7
+    }
+  },
   "char_337_utage_summer#4": {
     "version": "3.8.99",
     "Attack": {
@@ -6612,6 +6667,36 @@
       "OnStart": 5
     },
     "Stun": 26
+  },
+  "char_356_broca_marthe#4": {
+    "version": "3.8.99",
+    "Attack": {
+      "duration": 30,
+      "OnAttack": 14
+    },
+    "Default": 0,
+    "Idle": 40,
+    "Skill_Begin": 30,
+    "Skill_End": 30,
+    "Skill_Idle": 30,
+    "Skill_Loop": {
+      "duration": 37,
+      "OnAttack": 14
+    },
+    "Start": {
+      "duration": 30,
+      "OnStart": 5
+    },
+    "Attack_Down": {
+      "duration": 30,
+      "OnAttack": 14
+    },
+    "Die": 30,
+    "Skill_Down_Loop": {
+      "duration": 37,
+      "OnAttack": 14
+    },
+    "Skill_Stun": 30
   },
   "char_358_lisa": {
     "version": "3.8.99",
@@ -7507,6 +7592,62 @@
       "OnAttack": 13
     }
   },
+  "char_4032_provs": {
+    "version": "3.8.99",
+    "Attack": {
+      "duration": 38,
+      "OnAttack": 13
+    },
+    "Default": 0,
+    "F_Attack": {
+      "duration": 38,
+      "OnAttack": 13
+    },
+    "F_Default": 0,
+    "F_Die": 0,
+    "F_Idle": 40,
+    "F_Skill_2_Begin": {
+      "duration": 23,
+      "OnAttack": 14
+    },
+    "F_Skill_2_End": 10,
+    "F_Skill_2_Idle": 30,
+    "F_Skill_2_Loop": {
+      "duration": 30,
+      "OnAttack": 13
+    },
+    "F_Start": 0,
+    "Idle": 40,
+    "Skill_2_Begin": {
+      "duration": 23,
+      "OnAttack": 14
+    },
+    "Skill_2_End": 10,
+    "Skill_2_Idle": 30,
+    "Skill_2_Loop": {
+      "duration": 30,
+      "OnAttack": 13
+    },
+    "Start": 30,
+    "B_Attack": {
+      "duration": 38,
+      "OnAttack": 13
+    },
+    "B_Default": 0,
+    "B_Idle": 0,
+    "B_Skill_2_Begin": {
+      "duration": 23,
+      "OnAttack": 14
+    },
+    "B_Skill_2_End": 10,
+    "B_Skill_2_Idle": 30,
+    "B_Skill_2_Loop": {
+      "duration": 30,
+      "OnAttack": 13
+    },
+    "B_Start": 30,
+    "Die": 30
+  },
   "char_4036_forcer": {
     "version": "3.8.99",
     "Attack_Begin": 5,
@@ -7906,6 +8047,38 @@
       "duration": 30,
       "OnAttack": 1
     },
+    "Start": {
+      "duration": 30,
+      "OnStart": 6
+    }
+  },
+  "char_4064_mlynar": {
+    "version": "3.8.99",
+    "Default": 0,
+    "Die": 30,
+    "Idle": 60,
+    "Idle_2": 30,
+    "Skill_1_End": 10,
+    "Skill_1_Idle": 30,
+    "Skill_1_Loop": {
+      "duration": 36,
+      "OnAttack": 16
+    },
+    "Skill_1_Start": 10,
+    "Skill_2_End": 10,
+    "Skill_2_Idle": 30,
+    "Skill_2_Loop": {
+      "duration": 48,
+      "OnAttack": 17
+    },
+    "Skill_2_Start": 10,
+    "Skill_3_End": 10,
+    "Skill_3_Idle": 30,
+    "Skill_3_Loop": {
+      "duration": 36,
+      "OnAttack": 16
+    },
+    "Skill_3_Start": 10,
     "Start": {
       "duration": 30,
       "OnStart": 6
@@ -9294,6 +9467,45 @@
       "OnStart": 6
     }
   },
+  "char_475_akafyu_epoque#15": {
+    "version": "3.8.99",
+    "Attack": {
+      "duration": 50,
+      "OnAttack": 14
+    },
+    "Attack_Begin": 1,
+    "Attack_Down": {
+      "duration": 50,
+      "OnAttack": 14
+    },
+    "Attack_End": 90,
+    "Default": 0,
+    "Die": 30,
+    "Idle": 160,
+    "Skill": {
+      "duration": 50,
+      "OnAttack": 14
+    },
+    "Skill2": {
+      "duration": 29,
+      "OnAttack": 9
+    },
+    "Skill2_Begin": 1,
+    "Skill2_Down": {
+      "duration": 29,
+      "OnAttack": 9
+    },
+    "Skill2_End": 36,
+    "Skill2_Idle": 160,
+    "Skill_Down": {
+      "duration": 50,
+      "OnAttack": 14
+    },
+    "Start": {
+      "duration": 30,
+      "OnStart": 6
+    }
+  },
   "char_476_blkngt": {
     "version": "3.8.99",
     "Attack": {
@@ -9453,6 +9665,24 @@
       "duration": 30,
       "OnStart": 6
     }
+  },
+  "char_484_robrta_summer#10": {
+    "version": "3.8.99",
+    "Attack": {
+      "duration": 46,
+      "OnAttack": 15
+    },
+    "Default": 0,
+    "Idle": 120,
+    "Skill2_Begin": 5,
+    "Skill2_End": 20,
+    "Skill2_Loop": 145,
+    "Start": {
+      "duration": 30,
+      "OnStart": 6
+    },
+    "Die": 30,
+    "Skill2_Die": 31
   },
   "char_485_pallas": {
     "version": "3.8.99",
@@ -10149,6 +10379,25 @@
     "Start": {
       "duration": 30,
       "OnStart": 15
+    }
+  },
+  "token_10018_robrta_mach_summer#10": {
+    "version": "3.8.99",
+    "Default": {
+      "duration": 0,
+      "OnStart": 0
+    },
+    "End": {
+      "duration": 20,
+      "OnStart": 0
+    },
+    "Idle": {
+      "duration": 8,
+      "OnAttack": 0
+    },
+    "Start": {
+      "duration": 10,
+      "OnStart": 5
     }
   },
   "token_10021_blkngt_hypnos_summer#8": {

@@ -8,11 +8,11 @@ const useCache = true;
 const cacheBeginTime = new Date(2019, 12, 10).getTime();
 
 window.AKDATA = {
-  akdata: "220812-v2", // jsdelivr tag version
+  akdata: "220911", // jsdelivr tag version
 
   Data: {},
 
-  new_op: ["char_1026_gvial2", "char_4055_bgsnow", "char_497_ctable", "char_4054_malist"],
+  new_op: ["char_4064_mlynar", "char_4032_provs" ],
 
   professionNames: {
     "PIONEER": "先锋",
@@ -36,6 +36,7 @@ window.AKDATA = {
 
   showReport: function () {
     var text = `
+    - <a href="https://docs.qq.com/sheet/DYk1CR2FVZW1ES21D?tab=BB08J2" target="_blank">计算器AKData 已知问题记录表</a><br>
     - <a href="https://space.bilibili.com/274013" target="_blank">私信作者（B站）</a><br>
     - <a href="https://github.com/xulai1001/akdata/issues" target="_blank">Github Issue</a><br>
     感谢您的热心反馈！`;
