@@ -3773,7 +3773,12 @@ function calculateAttack(charAttr, enemy, raidBlackboard, isSkill, charData, lev
         log.write(`[特殊] ${displayNames[buffName]}: 额外伤害 ${damage.toFixed(1)} 命中 ${enemy.count}`);
         break;
       case "tachr_4064_mlynar_2":
-        damage = finalFrame.atk / buffFrame.atk_scale * bb.atk_scale * buffFrame.damage_scale;
+        let mlynar_t2_scale = bb.atk_scale;
+        if (isSkill && blackboard.id == "skchr_mlynar_3") {
+          mlynar_t2_scale += buffList.skill.atk_scale;
+          log.writeNote("额外真伤对反弹也生效");
+        }
+        damage = finalFrame.atk / buffFrame.atk_scale * mlynar_t2_scale * buffFrame.damage_scale;
         log.write(`反弹伤害 ${damage.toFixed(1)}`);
         if (isSkill) log.writeNote(`反弹伤害 ${damage.toFixed(1)}`);
         break;
