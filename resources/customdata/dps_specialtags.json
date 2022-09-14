@@ -248,6 +248,7 @@
     "skchr_myrtle_2":	{ "reset_attack": true, "sec": true },
     "skchr_ncdeer_1":   { "damage_type": 2 },
     "skchr_ncdeer_2":   { "damage_type": 2 },
+    "skchr_nearl2_2":   { "attack_begin": 13, "reset_attack": true, "note": "第18次攻击容差为2帧" },
     "skchr_nian_2":     { "reflect": true },
     "skchr_nightm_1":	{ "damage_type": 1 },
     "skchr_pallas_1":   { "times": 2, "sim": true },
