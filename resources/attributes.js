@@ -1755,6 +1755,22 @@ function applyBuff(charAttr, buffFrm, tag, blackbd, isSkill, isCrit, log, enemy)
         charAttr.basic.def += blackboard.def;
         writeBuff(`防御力直接加算: +${blackboard.def}`);
         done = true; break;
+      case "skchr_lolxh_1":
+        buffFrame.maxTarget = 2;
+        writeBuff(`最大目标数 = ${buffFrame.maxTarget}`);
+        if (options.ranged_penalty) {
+          buffFrame.atk_scale = 1;
+          log.writeNote(`技能不受距离惩罚`);
+        }
+        break;
+      case "skchr_lolxh_2":
+        buffFrame.maxTarget = 2;
+        writeBuff(`最大目标数 = ${buffFrame.maxTarget}`);
+        if (options.ranged_penalty) {
+          buffFrame.atk_scale = 1;
+          log.writeNote(`技能不受距离惩罚`);
+        }
+        break;
     }
 
   }
@@ -2250,11 +2266,13 @@ function calcDurations(isSkill, attackTime, attackSpeed, levelData, buffList, bu
         log.write(`损失100%血量耗时: ${Math.sqrt(600).toFixed(1)}s，锁血时间: ${lock_time}s`);
         log.writeNote("不治疗最大维持时间");
       } else {
-        var d = (options.short_mode ? 180 : 1800);
+        var d = (options.short_mode ? 180 : 1000);
         attackCount = Math.ceil(d / attackTime);
         duration = attackCount * attackTime;
         if (checkSpecs(skillId, "toggle")) {
-          log.writeNote(`永续技能 (以${d}s计算)`); tags.push("toggle", "infinity");
+          log.writeNote(`切换类技能 (以${d}s计算)`); tags.push("toggle", "infinity");
+        } else {
+          log.writeNote(`永续技能 (以${d}s计算)`); tags.push("infinity");
         }
       }
     } else if (spData.spType == 8) {
@@ -3787,6 +3805,15 @@ function calculateAttack(charAttr, enemy, raidBlackboard, isSkill, charData, lev
           damage = finalFrame.atk / buffFrame.atk_scale * bb.atk_scale * buffFrame.damage_scale;
           pool[3] += damage * dur.hitCount;
           log.write(`[特殊] ${displayNames[buffName]}: 额外伤害 ${damage.toFixed(1)} 命中 ${dur.hitCount}`);
+        }
+        break;
+      case "skchr_lolxh_2":
+        if (isSkill && options.cond) {
+          let lolxh_2_edef = Math.max(0, edef - bb["attack@def_penetrate_fixed"]);
+          damage = Math.max(finalFrame.atk-lolxh_2_edef, finalFrame.atk * 0.05) * buffFrame.damage_scale;
+          log.write(`[特殊] ${displayNames[buffName]}: 额外攻击伤害 ${damage.toFixed(1)} 命中 ${dur.hitCount}`);
+          log.writeNote("半血敌人");
+          pool[0] += damage * dur.hitCount;
         }
         break;
     }; // switch

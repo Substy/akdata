@@ -106,7 +106,8 @@
         "char_4055_bgsnow_near": { "text": "周围四格", "tooltip": "“打字机”放在鸿雪周围四格，第二天赋效果提升" }, 
         "char_4055_bgsnow_def":  { "text": "打字机减防", "tooltip": "本体享受打字机减防效果" },
         "char_4055_bgsnow_front":{ "text": "正前方", "tooltip": "敌人在正前方" },
-        "char_4064_mlynar": 1
+        "char_4064_mlynar": 1,
+        "char_4067_lolxh":  { "text": "[s2]半血敌人", "tooltip": "勾选表示2技能攻击半血以下敌人" }
     },
     "char" : {
         "char_103_angel": [ "equip", "archet", "chen" ],
@@ -268,6 +269,7 @@
         "char_136_hsguma":  [ "equip" ],
         "char_325_bison":   [ "block" ],
         "char_381_bubble":  [ "block" ],
-        "char_150_snakek":  [ "block" ] 
+        "char_150_snakek":  [ "block" ],
+        "char_4067_lolxh":  [ "ranged_penalty", "cond" ]
     }
 }

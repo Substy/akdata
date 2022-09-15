@@ -12,7 +12,7 @@ window.AKDATA = {
 
   Data: {},
 
-  new_op: ["char_4064_mlynar", "char_4032_provs" ],
+  new_op: ["char_4064_mlynar", "char_4032_provs", "char_4067_lolxh" ],
 
   professionNames: {
     "PIONEER": "先锋",

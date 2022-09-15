@@ -496,11 +496,6 @@ function buildChar(charId, skillId, recipe) {
     options: recipe.options
   };
 
-  if (charId == "char_230_savage")
-    char.potentialRank = Math.min(char.potentialRank, 2);
-  if (charId == "char_4019_ncdeer")
-    char.potentialRank = Math.min(char.potentialRank, 0);
-
   let db = AKDATA.Data.character_table[charId];
   let skilldb = AKDATA.Data.skill_table[skillId];
   let maxLevel = db.phases[recipe.phase].maxLevel;
@@ -510,6 +505,7 @@ function buildChar(charId, skillId, recipe) {
     char.level = recipe.level;
   char.name = db.name;
   char.skillName = skilldb.levels[char.skillLevel].name;
+  char.potentialRank = Math.min(char.potentialRank, db.maxPotentialLevel);
   //console.log(char);
   let _opts = AKDATA.Data.dps_options.char[charId];
   if (checkSpecs(charId, "use_token_for_mastery") || checkSpecs(skillId, "use_token_for_mastery")

@@ -39,7 +39,7 @@ async def update_res():
             pass
 
     r = requests.get('http://prts.wiki/w/%E5%B9%B2%E5%91%98%E4%B8%80%E8%A7%88')
-    soup = BeautifulSoup(r.text)
+    soup = BeautifulSoup(r.text, "html.parser")
     for index in soup.find(id="mw-content-text").find_all('div'):
         try:
             if index["class"]==["smwdata"]:
@@ -343,8 +343,8 @@ async def update_config():
     return 1
 
 async def work():
-    # await update_chara_db()
-    # await update_config()
+  #  await update_chara_db()
+    await update_config()
     await update_res()
 
 if __name__ == "__main__":
