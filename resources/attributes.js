@@ -2044,6 +2044,7 @@ function calcDurations(isSkill, attackTime, attackSpeed, levelData, buffList, bu
   // 需要模拟的技能（自动回复+自动释放+有充能）
   if (checkSpecs(skillId, "sim")) {
     log.writeNote("模拟120s时间轴");
+    tags.push("sim");
     duration = 120;
     let fps = 30;
     let now = fps, sp = spData.initSp * fps, max_sp = 999 * fps;

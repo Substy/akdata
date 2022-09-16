@@ -192,7 +192,7 @@ function load() {
   let item2 = pmBase.component.create({
     type: 'list',
 
-    columns: ['干员', '职业', '伤害', '技能攻击', '技能攻速', '技能', '模组', {header:'说明',width:'25%'}, '攻击DPS<br>触发天赋/下同', '技能DPS', '平均DPS', "技能持续"],
+    columns: ['干员', '职业', '伤害', '技能攻击', '技能攻速', '技能', {header:'模组',width:'10%'}, {header:'说明',width:'25%'}, '普攻DPS', '技能DPS<br>理想情况', '平均DPS', '技能总伤害', "技能持续"],
     "class":  "dps-result",
     list: [],
 
@@ -320,7 +320,8 @@ function calculate() {
         let desc = AKDATA.formatString(levelData.description, true, bb);
 
         let dur_text = `${dps.skill.dur.duration.toFixed(2)}s`;
-        if (dps.skill.dur.duration < 5) {
+        // 标记瞬发，永续和时间轴模拟类技能
+        if (dps.skill.dur.duration < 5 || dps.skill.dur.duration > 999 || dps.skill.dur.tags.includes("sim")) {
           dur_text = "<u>" + dur_text + "</u>";
         }
         html += '<tr><td>' + [
@@ -336,6 +337,7 @@ function calculate() {
           //Math.round(dps.skill.isInstant ? dps.globalDps : dps.skill.dps),
           Math.round(dps.skill.dps),
           `<a href="../dps/#${charId}" target="_blank">${Math.round(dps.globalDps)}</a>`,
+          Math.round(dps.skill.totalDamage),
           dur_text
         ].join('</td><td>') + '</td></tr>';
       }
