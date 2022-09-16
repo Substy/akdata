@@ -1948,7 +1948,7 @@ function applyBuff(charAttr, buffFrm, tag, blackbd, isSkill, isCrit, log, enemy)
       break;
     case "uniequip_002_nian":
       blackboard.def = options.block ? blackboard.trait.def : 0;
-      if ("talent" in blackboard) {
+      if (blackboard.talent.atk) {
         blackboard.atk = blackboard.talent.atk * blackboard.talent.max_stack_cnt;
         blackboard.def += blackboard.talent.def * blackboard.talent.max_stack_cnt;
         log.writeNote("按模组效果叠满计算");
