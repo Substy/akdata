@@ -1,5 +1,5 @@
 ---
-title: 专精收益计算器
+title: 专精/模组收益计算
 withjs: true
 order: 2
 category: 计算器
