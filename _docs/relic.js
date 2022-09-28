@@ -19,17 +19,20 @@ function rank(x) {
 
 var DisplayType = {
   RELIC:    "收藏品",
-  UPGRADE_TICKET: "进阶卷",
+  UPGRADE_TICKET: "进阶券",
   CAPSULE:  "剧目",
-  RECRUIT_TICKET: "招募卷",
-  ACTIVE_TOOL: "战术道具"
+  RECRUIT_TICKET: "招募券",
+  ACTIVE_TOOL: "战术道具",
+  CUSTOM_TICKET: "净化券",
+  LOCKED_TREASURE: "上锁的宝箱"
 };
 
-function load() {
-  let rogue1 = AKDATA.Data.roguelike_topic_table.details.rogue_1;
-  let relicArchive = rogue1.archiveComp.relic.relic;
-  let relicBlackboard = rogue1.relics;
-  let rogueItems = rogue1.items;
+function makeList(which=1) {
+  let rogue = AKDATA.Data.roguelike_topic_table.details[`rogue_${which}`];
+  
+  let relicArchive = rogue.archiveComp.relic.relic;
+  let relicBlackboard = rogue.relics;
+  let rogueItems = rogue.items;
   let relics = {};
 
   // join
@@ -60,7 +63,7 @@ function load() {
               {header:'价值',width:'8%'}, "效果/描述", "解锁方式", {header:'数值',width:'15%'} ],
     list: Object.values(relics).orderby(x=>rank(x)).map( item=> [
       item.orderId || "-",
-      (item.orderId ? `<img class="figure" src="/akdata/assets/images/relic/${item.orderId}.png" /><br>` : "")
+      (item.orderId ? `<img class="figure" loading="lazy" src="/akdata/assets/images/relic/${which}/${item.orderId}.png" /><br>` : "")
        + "<strong>" + item.name + "</strong>",
       DisplayType[item.type],
       item.value || "-",
@@ -69,12 +72,28 @@ function load() {
       JSON.stringify(item.blackboard, null, 2)
     ]),
     sortable: true,
-    card:true,
+    card: true,
   });
 
-	pmBase.content.build({
+  return list;
+}
+
+function load() {
+  let tabs = pmBase.component.create({
+    type: 'tabs',
+    tabs: [{
+      text: '傀影与猩红孤钻',
+      content: makeList(1),
+    },{
+      text: '水月与深蓝之树',
+      content: makeList(2),
+    }],
+    active: 1
+  });
+
+  pmBase.content.build({
 	  pages: [{
-      content: list,
+      content: tabs
     }]
 	});
 }

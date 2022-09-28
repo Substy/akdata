@@ -5,6 +5,11 @@ order: 4
 category: 其他功能
 icon: info-circle
 ---
+## 22.09.28
+- [update] 海沫，郁金香
+- [note] 模组数据暂未更新
+- [relic] 收藏品更新水月肉鸽数据，同时增加图片
+
 ## 22.09.15-16
 - [ranking] DPS表格增加总伤栏
 - [update] 罗小黑

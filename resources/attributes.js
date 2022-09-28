@@ -682,6 +682,7 @@ function applyBuff(charAttr, buffFrm, tag, blackbd, isSkill, isCrit, log, enemy)
           delete blackboard.times;
           break;
         case "tachr_197_poca_1": // 早露
+        case "skchr_apionr_1":
           blackboard.edef_pene_scale = blackboard["def_penetrate"];
           break;
         case "tachr_358_lisa_2":  // 铃兰2
@@ -2724,7 +2725,8 @@ function calculateAttack(charAttr, enemy, raidBlackboard, isSkill, charData, lev
     log.write(`[特殊] ${displayNames["skchr_bubble_2"]}: 攻击力以防御计算(${basicFrame.def + buffFrame.def})`);
   }
   // 迷迭香
-  if (["char_391_rosmon", "char_1027_greyy2", "char_421_crow", "char_431_ashlok"].includes(charId)) {
+  if (["char_391_rosmon", "char_1027_greyy2", "char_421_crow",
+       "char_431_ashlok", "char_4066_highmo"].includes(charId)) {
     buffFrame.maxTarget = 999;
     log.write(`[特殊] ${displayNames[charId]}: maxTarget = 999`);
   }
@@ -3158,6 +3160,7 @@ function calculateAttack(charAttr, enemy, raidBlackboard, isSkill, charData, lev
         }
         break;
       case "tachr_421_crow_trait":
+      case "tachr_4066_highmo_trait":
         pool[2] += bb.value * dur.attackCount * Math.min(ecount, 2);
         break;
       case "tachr_2013_cerber_1":
@@ -3946,6 +3949,10 @@ function calculateAttack(charAttr, enemy, raidBlackboard, isSkill, charData, lev
             pool[2] -= finalFrame.maxHp * bb.hp_ratio;
             log.writeNote(`自爆伤害 ${pool[2].toFixed(1)}`);
           }
+          break;
+        case "skchr_highmo_2":
+          heal = bb.hp_ratio * finalFrame.maxHp;
+          log.writeNote(`击杀恢复HP ${heal.toFixed(1)}`);
           break;
         default:
           pool[2] += bb.hp_ratio * finalFrame.maxHp * dur.attackCount;
