@@ -526,5 +526,12 @@
     "uniequip_002_moeshd":  { "override_talent": 1 },
     "uniequip_002_bubble":  { "override_talent": 1 },
     "uniequip_002_snakek":  { "override_talent": 1 },
-    "uniequip_002_yak":     { "override_talent": 1 }
+    "uniequip_002_yak":     { "override_talent": 1 },
+    "uniequip_002_shining": { "override_talent": 1 },
+    "uniequip_002_kalts":   { "override_talent": 2 },
+    "uniequip_002_tuye":    { "override_talent": 1 },
+    "uniequip_002_silent":  { "override_talent": 1 },
+    "uniequip_002_susuro":  { "override_talent": 1 },
+    "uniequip_002_ccheal":  { "override_talent": 1 },
+    "uniequip_002_myrrh":   { "override_talent": 1 }
 }
