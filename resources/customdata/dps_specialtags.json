@@ -164,6 +164,7 @@
     "skchr_flamtl_2":   { "cast_time": 35 },
     "skchr_flint_2":    { "note": "阻挡0，天赋一定触发"},
     "skchr_fmout_2":    { "reset_attack": true, "attack_begin": 17 },
+    "skchr_folnic_2":   { "reset_attack": true, "attack_begin": 13 },
     "skchr_franka_2":	{ "reset_attack": true },
     "skchr_frostl_1":   { "sim": true}, 
     "skchr_gdglow_1":   { "funnel": 2 },

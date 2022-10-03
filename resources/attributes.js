@@ -2780,9 +2780,12 @@ function calculateAttack(charAttr, enemy, raidBlackboard, isSkill, charData, lev
   }
   // 迷迭香
   if (["char_391_rosmon", "char_1027_greyy2", "char_421_crow",
-       "char_431_ashlok", "char_4066_highmo"].includes(charId)) {
-    buffFrame.maxTarget = 999;
-    log.write(`[特殊] ${displayNames[charId]}: maxTarget = 999`);
+       "char_431_ashlok", "char_4066_highmo", "char_4039_horn"].includes(charId)) {
+    if (charId == "char_4039_horn" && options.melee) {}
+    else {
+        buffFrame.maxTarget = 999;
+        log.write(`[特殊] ${displayNames[charId]}: maxTarget = 999`);
+    }
   }
   // 连击特判
   if (!isSkill && checkSpecs(charId, "times")) {
