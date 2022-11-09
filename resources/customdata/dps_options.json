@@ -109,7 +109,13 @@
         "char_4064_mlynar": 1,
         "char_4067_lolxh":  { "text": "[s2]半血敌人", "tooltip": "勾选表示2技能攻击半血以下敌人" },
         "char_513_apionr":  1,
-        "char_4066_highmo": 2
+        "char_4066_highmo": 2,
+        "char_466_qanik":   1,
+        "char_4062_totter": 1,
+        "char_157_dagda":   2,
+        "char_4071_peper":  1,
+        "char_1028_texas2": 2,
+        "char_427_vigil":   { "text": "特性/阻挡", "tooltip": "本体攻击被狼群阻挡的目标" }
     },
     "char" : {
         "char_103_angel": [ "equip", "archet", "chen" ],
@@ -126,7 +132,7 @@
         "char_188_helage" : [ "noblock", "stack" ],
         "char_166_skfire" : [ "cond" ],
         "char_145_prove" : [ "cond", "crit" ],
-        "char_340_shwaz" : [ "cond", "crit", "archet", "chen" ],
+        "char_340_shwaz" : [ "cond", "crit", "equip", "archet", "chen" ],
         "char_356_broca" : [ "cond" ],
         "char_274_astesi" : [ "stack" ],
         "char_298_susuro" : [ "cond", "equip" ],
@@ -279,6 +285,17 @@
         "char_345_folnic":  [ "equip" ],
         "char_171_bldsk":   [ "equip" ],
         "char_117_myrrh":   [ "equip" ],
-        "char_291_aglina":  [ "equip" ]
+        "char_291_aglina":  [ "equip" ],
+        "char_466_qanik":   [ "cond" ],
+        "char_4062_totter": [ "cond" ],
+        "char_157_dagda":   [ "stack", "crit", "cond" ],
+        "char_4063_quartz": [ "crit" ],
+        "char_4071_peper":  [ "cond" ],
+        "char_4014_lunacu": [ "equip" ],
+        "char_4065_judge":  [ "charge" ],
+        "char_1028_texas2": [ "cond", "equip" ],
+        "char_427_vigil":   [ "token", "cond", "stack" ],
+        "char_4072_ironmn": [ "token" ],
+        "char_112_siege":   [ "equip" ]
     }
 }
