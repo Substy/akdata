@@ -2422,10 +2422,9 @@ function calcDurations(isSkill, attackTime, attackSpeed, levelData, buffList, bu
         prepDuration = 0.767; break;
       case "skchr_texas2_2":
       case "skchr_red_1":
+      case "skchr_texas2_3":
         log.writeNote("落地1s，不影响技能时间");
         break;
-      case "skchr_texas2_3":
-        prepDuration = 2; break;
     }
 
     // 快速估算
@@ -4803,11 +4802,9 @@ function applyEquip(char, basic, log) {
     // 查询额外数据，获得修改的是哪个天赋的面板
     // which = 1, 2, "1+"
     var which = checkSpecs(equipId, "override_talent");
-    if (which && which.length > 0) {
-      blackboard.override_talent = which;
-      if (~~which > 0)
-        blackboard.override_talent = ~~which;
-    }
+    console.log(which);
+    if (which && which.toString().length > 0)
+      blackboard.override_talent = which.toString();
     // override_trait 为true时才把装备特性面板覆盖到原本特性上，否则把装备和特性作为不同buff处理。
     blackboard.override_trait = checkSpecs(equipId, "override_trait");
   }
