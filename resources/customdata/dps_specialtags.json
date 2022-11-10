@@ -330,7 +330,7 @@
     "skchr_texas_2":    { "cast_time": 65, "anim_key": "Skill", "anim_cast": true, "anim_max_scale": 1 },
     "skchr_texas2_1":   { "reset_attack": true, "attack_begin": 11, "damage_type": "0" },
     "skchr_texas2_2":   { "reset_attack": true, "attack_begin": 11, "times": 2 },
-    "skchr_texas2_3":   { "sec": true, "reset_attack": true, "attack_begin": 20 },
+    "skchr_texas2_3":   { "reset_attack": true, "attack_begin": 11, "damage_type": "0" },
     "skchr_thorns_2":   { "reset_attack": true },
     "skchr_thorns_3":   { "reset_attack": true },
     "skchr_tknogi_2":   { "sec": true },

@@ -1901,6 +1901,10 @@ function applyBuff(charAttr, buffFrm, tag, blackbd, isSkill, isCrit, log, enemy)
       case "tachr_420_flamtl_1+":
         blackboard.atk_scale = blackboard["attack@atkscale_t1+.atk_scale"] || 1;
         break;
+      case "skchr_texas2_3":
+        done = true;
+        log.writeNote("落地1s，不影响技能时间");
+        break;
     }
 
   }
@@ -2422,7 +2426,6 @@ function calcDurations(isSkill, attackTime, attackSpeed, levelData, buffList, bu
         prepDuration = 0.767; break;
       case "skchr_texas2_2":
       case "skchr_red_1":
-      case "skchr_texas2_3":
         log.writeNote("落地1s，不影响技能时间");
         break;
     }
@@ -4131,10 +4134,12 @@ function calculateAttack(charAttr, enemy, raidBlackboard, isSkill, charData, lev
         log.write(`落地法伤 ${damage.toFixed(1)}, 命中 ${enemy.count}`);
         break;
       case "skchr_texas2_3":
-        damage = finalFrame.atk / buffFrame.atk_scale * bb["appear.atk_scale"]
-                 * (1-emrpct) * buffFrame.damage_scale;
-        pool[1] += damage * enemy.count * 2;
-        log.write(`落地法伤 ${damage.toFixed(1)}, 命中 ${enemy.count * 2}`);
+        let texas2_s3_aoe = finalFrame.atk * bb["appear.atk_scale"] * (1-emrpct) * buffFrame.damage_scale;
+        let texas2_s3_target = Math.min(enemy.count, bb.max_target);
+        damage = finalFrame.atk * bb.atk_scale * (1-emrpct) * buffFrame.damage_scale;
+        pool[1] += texas2_s3_aoe * enemy.count * 2 + damage * texas2_s3_target * dur.duration;
+        log.write(`落地法伤 ${texas2_s3_aoe.toFixed(1)}, 命中 ${enemy.count * 2}`);
+        log.write(`剑雨法伤 ${damage.toFixed(1)}, 命中 ${texas2_s3_target * dur.duration}`);
         break;
       case "skchr_vigil_2":
         if (options.token) {
