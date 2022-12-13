@@ -2424,9 +2424,12 @@ function calcDurations(isSkill, attackTime, attackSpeed, levelData, buffList, bu
         prepDuration = 1.33; break;
       case "skchr_provs_2":
         prepDuration = 0.767; break;
-      case "skchr_texas2_2":
       case "skchr_red_1":
         log.writeNote("落地1s，不影响技能时间");
+        break;
+      case "skchr_texas2_2":
+        log.writeNote("落地1s，不影响技能时间");
+        prepDuration = 0.167;
         break;
     }
 
@@ -4668,7 +4671,7 @@ function getAttributes(char, log) { //charId, phase = -1, level = -1
               let ebb = attributesKeyFrames.equip_blackboard; 
               if (ebb.override_talent == cd.prefabKey) {
                 var tb = ebb.talent;
-                //console.log({cd, old: blackboard, new: tb });
+               // console.log({cd, old: blackboard, new: tb });
                 Object.keys(tb).forEach(k => {
                   blackboard[k] = tb[k];
                 });
@@ -4807,13 +4810,13 @@ function applyEquip(char, basic, log) {
     // 查询额外数据，获得修改的是哪个天赋的面板
     // which = 1, 2, "1+"
     var which = checkSpecs(equipId, "override_talent");
-    console.log(which);
-    if (which && which.toString().length > 0)
+    // console.log(which);
+    if (which && which.toString().length > 0 && char.equipLevel > 1)
       blackboard.override_talent = which.toString();
     // override_trait 为true时才把装备特性面板覆盖到原本特性上，否则把装备和特性作为不同buff处理。
     blackboard.override_trait = checkSpecs(equipId, "override_trait");
   }
-  //console.log(attr, blackboard);
+//  console.log(attr, blackboard);
   var attrKeys = {
     max_hp: "maxHp",
     atk: "atk",
