@@ -1,7 +1,7 @@
 ---
-title: 后勤技能
+title: 基建技能
 withjs: true
-order: 4
-category: 基建
-icon: hard-hat
+order: 7
+category: 游戏数据速查
+icon: cogs
 ---

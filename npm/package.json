@@ -1,0 +1,30 @@
+{
+  "name": "akdata",
+  "type": "module",
+  "version": "3.0.0-alpha",
+  "description": "Arknights DPS calculator core",
+  "main": "dist/akdata.esm.js",
+  "types": "dist/akdata.esm.d.ts",
+  "scripts": {
+    "test": "node dist/test.js",
+    "prepublish": "babel src --out-dir dist"
+  },
+  "repository": {
+    "type": "git",
+    "url": "git+https://github.com/xulai1001/akdata.git"
+  },
+  "keywords": [
+    "Arknights"
+  ],
+  "devDependencies": {
+    "babel-cli": "^6.26.0",
+    "babel-plugin-transform-object-rest-spread": "^6.26.0",
+    "babel-preset-env": "^1.6.1"
+  },
+  "author": "curran",
+  "license": "CC-BY-NC-SA-4.0",
+  "bugs": {
+    "url": "https://github.com/xulai1001/akdata/issues"
+  },
+  "homepage": "http://viktorlab.cn/akdata/"
+}

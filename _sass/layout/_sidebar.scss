@@ -1,5 +1,5 @@
 ﻿.l-layout__sidebar {
-  flex: 0 0 300px;
+  flex: 0 0 250px;
   background: $side-background-color;
   box-shadow: inset -1px 0 0 $layout-border-color;
 
@@ -43,11 +43,11 @@
     text-overflow: ellipsis;
     overflow: hidden;
     white-space: nowrap;
-    
+    font-size: 1.2rem;
   }
 
   &__item--level-0 {
-    font-size: small;
+    font-size: 1em;
     color: #666;
     padding: 1em 0.5em 0.5em 1em;
   }

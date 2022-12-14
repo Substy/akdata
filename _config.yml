@@ -13,7 +13,7 @@
 # you will see them accessed via {{ site.title }}, {{ site.email }}, and so on.
 # You can create any custom variable you would like, and they will be accessible
 # in the templates via {{ site.myvariable }}.
-title: AKDATA
+title: "明日方舟DPS计算器 - Arknights DPS"
 email: your-email@example.com
 description: >- # this means to ignore newlines until "baseurl:"
   Write an awesome description for your new site here. You can edit this
@@ -21,28 +21,17 @@ description: >- # this means to ignore newlines until "baseurl:"
   Google search results) and in your feed.xml site description.
 baseurl: "/akdata" # the subpath of your site, e.g. /blog
 url: "" # the base hostname & protocol for your site, e.g. http://example.com
-repository: Substy/akdata
+repository: xulai1001/akdata
+logo: penguin.gif
 
 analytics:
-  google: UA-143023875-1
+  baidu: true
 
 # Build settings
 markdown: kramdown
 theme: minima
 plugins:
 #  - jekyll-feed
-
-# Exclude from processing.
-# The following items will not be processed, by default. Create a custom list
-# to override the default setting.
-# exclude:
-#   - Gemfile
-#   - Gemfile.lock
-#   - node_modules
-#   - vendor/bundle/
-#   - vendor/cache/
-#   - vendor/gems/
-#   - vendor/ruby/
 
 collections:
   docs:
@@ -56,3 +45,6 @@ defaults:
       type: "docs"
     values:
       layout: "page"
+
+exclude:
+  - npm

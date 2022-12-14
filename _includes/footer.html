@@ -1,18 +1,16 @@
 <footer class="l-layout__footer l-footer">
   <div class="l-footer__body">
     <div class="l-footer__logo">
-      <a href="{{ "/" | relative_url }}">{{- site.title | escape -}}</a>
-      <span>© 2018 </span>
+      <a target="_blank" href="https://github.com/xulai1001/akdata">{{- site.title | escape -}}</a>
+      <span>© 2020 - 2021 &nbsp;&nbsp; 备案号:
+        <a href="https://beian.miit.gov.cn" target="_blank">鄂ICP备20009147号-1</a></span>
+      <a target="_blank" href="http://www.beian.gov.cn/portal/registerSystemInfo?recordcode=42011102003942" >
+        <img src="/akdata/ghs.png"/>
+        <span style="color:#939393;">鄂公网安备 42011102003942号</span>
+      </a>
     </div>
     <div class="l-footer__list">
       {{page.footer}}
-    </div>
-    <div class="js-marker">
-      <span class="js-marker__icon js-marker__icon--js" title="JavaScript"></span>
-      <span class="js-marker__icon js-marker__icon--es6" title="ES6"></span>
-      <span class="js-marker__icon js-marker__icon--module" title="Module"></span>
-      <span class="js-marker__icon js-marker__icon--loader" title="Loader"></span>
-      <span class="js-marker__icon js-marker__icon--extra" title="Extra"></span>
     </div>
   </div>
 </footer>

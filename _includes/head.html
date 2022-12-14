@@ -3,7 +3,7 @@
   <meta http-equiv="X-UA-Compatible" content="IE=edge">
   <meta name="viewport" content="width=device-width, initial-scale=1">
   <meta http-equiv="Cache-Control" content="max-age=604800">
-
+  <meta name="referrer" content="strict-origin-when-cross-origin">
   <title>
 {%- if page.layout == 'home' -%}
   {{site.title}}
@@ -28,10 +28,7 @@
     document.documentElement.className += ' js-module';
   </script>
 
-{%- if jekyll.environment == 'production' -%}
-  {%- include google-analytics.html -%}
-  {%- include baidu-analytics.html -%}
-{%- endif -%}
+  <link rel="shortcut icon" href="/akdata/favicon.ico">
 
 {%- for url in site.data.config.css -%}
   {% if url contains "://" %}
@@ -90,7 +87,7 @@
       name: "{{page.name}}",
       collection: "{{page.collection}}",
       category: "{{page.category}}",
-      dir: "{{page.dir}}",
+      dir: "{{page.dir}}"
     };
   </script>
 {{site.tags.TAG}}

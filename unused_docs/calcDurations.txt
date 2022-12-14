@@ -1,0 +1,636 @@
+
+// 计算攻击次数和持续时间
+function calcDurations(isSkill, attackTime, attackSpeed, levelData, buffList, buffFrame, enemyCount, options, charId, log) {
+  let blackboard = buffList.skill;
+  let skillId = blackboard.id;
+  let spData = levelData.spData;
+  let duration = 0;
+  let attackCount = 0;
+  let stunDuration = 0;
+  let prepDuration = 0;
+  let startSp = 0;
+  let rst = checkResetAttack(skillId, blackboard, options);
+
+  log.write("\n**【循环计算】**");
+
+  const spTypeTags = {
+    1: "time",
+    2: "attack",
+    4: "hit",
+    8: "special"
+  };
+  let tags = [spTypeTags[spData.spType]];  // 技能类型标记
+
+  // 需要模拟的技能（自动回复+自动释放+有充能）
+  if (checkSpecs(skillId, "sim")) {
+    log.writeNote("模拟120s时间轴");
+    duration = 120;
+    let fps = 30;
+    let now = fps, sp = spData.initSp * fps, max_sp = 999 * fps;
+    let last = {}, timeline = {}, total = {};
+    let extra_sp = 0;
+    const TimelineMarks = {
+      "attack": "-",
+      "skill": "+",
+      "ifrit": "",
+      "archet": "",
+      "chen": "",
+      "recover_sp": "\\*",
+      "recover_overflow": "x",
+      "reset_animation": "\\*",
+    };
+    // 技能动画(阻回)时间-帧
+    let cast_time = checkSpecs(skillId, "cast_time") ||
+                    checkSpecs(skillId, "cast_bat") * 100 / attackSpeed ||
+                    attackTime * fps;
+    let skill_time = Math.max(cast_time, attackTime * fps);
+
+    function time_since(key) { return now - (last[key] || -999); }
+    function action(key) {
+      if (!timeline[now]) timeline[now] = [];
+      timeline[now].push(key);
+      last[key] = now;
+      total[key] = (total[key] || 0) + 1;
+      //console.log(now, key);
+    }
+
+    // charge 
+    var cast_sp = (options.charge && checkSpecs(skillId, "charge") ? spData.spCost*2 : spData.spCost);
+    // init sp
+    if (skillId == "skchr_amgoat_2" && buffList["tachr_180_amgoat_2"])
+      sp = (buffList["tachr_180_amgoat_2"].sp_min + buffList["tachr_180_amgoat_2"].sp_max) / 2 * fps;
+    else if (buffList["tachr_222_bpipe_2"])
+      sp = buffList["tachr_222_bpipe_2"].sp * fps;
+    last["ifrit"] = last["archet"] = last["chen"] = 1; // 落地即开始计算 记为1帧
+    startSp = cast_sp - sp / fps;
+
+    // sp barrier
+    max_sp = cast_sp * fps;
+    if (!options.charge && checkSpecs(skillId, "charge")) max_sp *= 2;  // 充能技能1层直接放的情况
+    if (blackboard.ct) max_sp = spData.spCost * fps * blackboard.ct;
+    if (blackboard.cnt) max_sp = spData.spCost * fps * blackboard.cnt;
+
+    log.write(`[模拟] T = 120s, 初始sp = ${(sp/fps).toFixed(1)}, 技能sp = ${cast_sp}, 技能动画时间 = ${Math.round(cast_time)} 帧, sp上限设为 ${max_sp / fps}`);
+    log.write(`[模拟] 攻击间隔 ${attackTime.toFixed(3)}s`);
+    let attackAnim = checkSpecs(skillId, "attack_animation");
+    if (attackAnim) {
+      // 缩放至攻击间隔
+      attackAnim = Math.min(Math.round(attackTime * fps), attackAnim);
+      log.write(`[模拟] 攻击动画 = ${attackAnim} 帧`);
+    }
+
+    if (spData.spType == 1) {
+      sp+=fps;  // 落地时恢复1sp
+      log.write("[模拟] +1落地sp");
+    }
+    while (now <= duration * fps) {
+      // normal attack
+      if (sp < cast_sp * fps &&
+          time_since("attack") >= attackTime * fps &&
+          time_since("skill")  >= skill_time) {
+        action("attack");
+        if (spData.spType == 2) sp += fps;
+      }
+      // skill
+      if (sp >= cast_sp * fps &&
+          time_since("skill") >= skill_time &&
+          (time_since("attack") >= attackTime * fps || (attackAnim && time_since("attack") == attackAnim) ) ) {
+        if (time_since("attack") < attackTime * fps)
+          action("reset_animation");
+        action("skill");
+      }
+      // sp recover
+      if (time_since("skill") == 0)
+        sp -= cast_sp * fps;
+      if (time_since("skill") >= cast_time && sp < max_sp) {
+        if (spData.spType == 1) sp += (1 + buffFrame.spRecoveryPerSec);
+      }
+      // 乱火
+      if (buffList["tachr_134_ifrit_2"] && time_since("ifrit") >= buffList["tachr_134_ifrit_2"].interval * fps) {
+        action("ifrit");
+        extra_sp = buffList["tachr_134_ifrit_2"].sp;
+      }
+      // 兰登战术/呵斥
+      let intv_archet = (buffList["tachr_332_archet_1"] ? buffList["tachr_332_archet_1"].interval : 2.5);
+      let intv_chen = buffList["tachr_010_chen_1"] ? buffList["tachr_010_chen_1"].interval : 4;
+      if ((buffList["tachr_332_archet_1"] || options.archet) && time_since("archet") >= intv_archet * fps) {
+        action("archet");
+        extra_sp += 1;
+      }
+      if ((buffList["tachr_010_chen_1"] || options.chen) && time_since("chen") >= intv_chen * fps) {
+        action("chen");
+        extra_sp += 1;
+      }
+      if (time_since("skill") >= cast_time && extra_sp > 0) {
+        sp += extra_sp * fps;
+        if (sp <= max_sp) action("recover_sp");
+        else {
+          sp = max_sp;
+          action("recover_overflow");
+        }
+      } 
+      extra_sp = 0;
+      ++now;
+    }
+
+    if (isSkill) {
+      attackCount = total.skill;
+      duration = attackCount * skill_time / fps;
+    } else {
+      attackCount = total.attack;
+      duration -= total.skill * skill_time / fps;
+
+      // 打印时间轴和特殊动作
+      var line_str = "";
+      Object.keys(timeline).forEach(t => {
+        line_str += timeline[t].map(x => TimelineMarks[x]).join("");
+      });
+      log.write(`[模拟] 时间轴: `);
+      log.write(`${line_str}`);
+      log.write(`( \-: 普攻, \+: 技能, \\*: 充能, x: sp溢出 )`)
+      
+      if (total.ifrit)
+        log.write(`[模拟] 莱茵回路(\\*): 触发 ${total.recover_sp} / ${total.ifrit} 次, sp + ${buffList["tachr_134_ifrit_2"].sp * total.recover_sp}`);
+      if (total.archet)
+        log.write(`[模拟] 兰登战术: 触发 ${total.archet} 次`);
+      if (total.chen)
+        log.write(`[模拟] 呵斥: 触发 ${total.chen} 次`);
+      if (total.recover_sp)
+        log.write(`[模拟] sp恢复成功 ${total.recover_sp} 次, 溢出 ${total.recover_overflow || 0} 次, 其余为技能期间无法恢复sp`);
+      if (total.reset_animation)
+        log.write(`[模拟] 取消攻击间隔(\\*) ${total.reset_animation} 次`);
+    }
+  } else {
+
+  if (isSkill) {
+    
+    // 准备时间
+    switch (skillId) {
+      case "skchr_mudrok_3":
+        prepDuration = blackboard.sleep; break;
+      case "skchr_amiya2_2":
+        prepDuration = 3.33; break;
+      case "skchr_surtr_3":
+        prepDuration = 0.67; break;
+      case "skchr_ash_2":
+      case "skchr_nearl2_2":
+        prepDuration = 1; break;
+      case "skchr_gnosis_3":
+        prepDuration = 1.167; break;
+      case "skchr_mint_2":
+        prepDuration = 1.33; break;
+      case "skchr_blemsh_2":
+        prepDuration = 1; break;
+    }
+
+    // 快速估算
+    attackCount = Math.ceil((levelData.duration - prepDuration) / attackTime);
+    duration = attackCount * attackTime;
+    startSp = spData.spCost - spData.initSp;
+
+    if (buffList["tachr_180_amgoat_2"]) { // 乱火
+      var init_sp = spData.initSp + (buffList["tachr_180_amgoat_2"].sp_min + buffList["tachr_180_amgoat_2"].sp_max) / 2;
+      startSp = spData.spCost - init_sp;
+    } else if (buffList["tachr_222_bpipe_2"]) { // 军事传统
+      startSp = spData.spCost - spData.initSp - buffList["tachr_222_bpipe_2"].sp
+                - (buffList["tachr_222_bpipe_2"]["bpipe_e_2[locate].sp"] || 0);
+              //console.log(startSp);
+    } else if (buffList["tachr_456_ash_2"]) {
+      startSp = spData.spCost - spData.initSp - buffList["tachr_456_ash_2"].sp;
+    }
+    // 重置普攻
+    if (rst) {
+      if (duration > (levelData.duration-prepDuration) && rst != "ogcd") {
+        if (options.overdrive_mode)
+          log.write("[结束时重置普攻] 截断最后一个攻击间隔");
+        else
+          log.write(`[重置普攻] 截断最后一个攻击间隔`);
+      }
+      duration = levelData.duration - prepDuration;
+      // 抬手时间
+      var frameBegin = Math.round((checkSpecs(skillId, "attack_begin") || 12));
+      if (skillId == "skchr_glaze_2" && options.far) {
+        log.writeNote("技能前摇增加至27帧");
+        frameBegin = 27;
+      }
+      var t = frameBegin / 30;
+      attackCount = Math.ceil((duration - t) / attackTime);
+      log.write(`技能前摇: ${t.toFixed(3)}s, ${frameBegin} 帧`);
+      if (!checkSpecs(skillId, "attack_begin")) log.write("（计算器默认值；请参考动画时间）");
+      else log.writeNote(`技能前摇: ${frameBegin} 帧`);
+      if (spData.spType == 2) {
+        log.writeNote("考虑普攻穿插技能");
+        duration -= attackTime;
+      }
+    }
+    // 技能类型
+    if (levelData.description.includes("持续时间无限") || checkSpecs(skillId, "toggle")) {
+      if (skillId == "skchr_thorns_3" && !options.warmup) {}
+      else if (skillId == "skchr_tuye_2") {
+        log.writeNote("取技能时间=暖机时间");
+        duration = spData.spCost / (1 + buffFrame.spRecoveryPerSec);
+        attackCount = Math.ceil(duration / attackTime);
+      } else if (skillId == "skchr_surtr_3") {
+        var lock_time = buffList["tachr_350_surtr_2"]["surtr_t_2[withdraw].interval"];
+        duration = Math.sqrt(600) + lock_time;
+        attackCount = Math.ceil(duration / attackTime);
+        log.write(`损失100%血量耗时: ${Math.sqrt(600).toFixed(1)}s，锁血时间: ${lock_time}s`);
+        log.writeNote("不治疗最大维持时间");
+      } else {
+        var d = (options.short_mode ? 180 : 1800);
+        attackCount = Math.ceil(d / attackTime);
+        duration = attackCount * attackTime;
+        if (checkSpecs(skillId, "toggle")) {
+          log.writeNote(`永续技能 (以${d}s计算)`); tags.push("toggle", "infinity");
+        }
+      }
+    } else if (spData.spType == 8) {
+      if (levelData.duration <= 0 && blackboard.duration > 0) {
+        // 砾的技能也是落地点火，但是持续时间在blackboard里
+        levelData.duration = blackboard.duration;
+	     	duration = blackboard.duration;
+        attackCount = Math.ceil(levelData.duration / attackTime);
+      }
+      if (levelData.duration > 0) { // 自动点火
+        tags.push("auto"); log.write('落地点火');
+        if (prepDuration > 0) duration = levelData.duration - prepDuration;
+      } else if (checkSpecs(skillId, "passive")) { // 被动
+        attackCount = 1;
+        duration = attackTime;
+        tags.push("passive"); log.write("被动");
+      } else if (skillId == "skchr_phatom_2") { // 傀影2
+        attackCount = blackboard.times;
+        duration = attackTime * attackCount;
+      } else {  // 摔炮
+        attackCount = 1;
+        duration = 0;
+        tags.push("auto", "instant"); log.write("落地点火, 瞬发")
+      }
+    } else if (levelData.duration <= 0) { 
+      if (checkSpecs(skillId, "instant_buff")) { // 瞬发的有持续时间的buff，例如血浆
+        duration = blackboard.duration || checkSpecs(skillId, "duration");
+        attackCount = Math.ceil(duration / attackTime);
+        tags.push("instant", "buff"); log.writeNote("瞬发Buff，技能周期为Buff持续时间");
+      } else if (checkSpecs(skillId, "magazine")) { // 弹药技能
+        let mag = checkSpecs(skillId, "magazine");
+        if (options.charge && skillId == "skchr_chen2_2")
+          mag = 20;        
+        if (buffList["tachr_1013_chen2_1"]) {
+          var prob = buffList["tachr_1013_chen2_1"]["spareshot_chen.prob"];
+          var new_mag = Math.floor(mag / (1-prob));
+          log.writeNote(`计入 ${new_mag - mag} 发额外弹药`);
+          mag = new_mag;
+        }
+        log.write(`弹药类技能: ${displayNames[skillId]}: 攻击 ${mag} 次`);
+        attackCount = mag;
+        duration = attackTime * attackCount;
+        if (rst) duration -= attackTime;
+      } else if (skillId == "skchr_blkngt_2" && options.token) {
+        duration = blackboard["blkngt_s_2.duration"];
+        attackCount = Math.ceil(duration / attackTime);
+      } else { // 普通瞬发
+        attackCount = 1;
+        // 不占用普攻的瞬发技能，持续时间等于动画时间。否则持续时间为一次普攻间隔
+        if (checkSpecs(skillId, "reset_attack") != "ogcd")
+          duration = attackTime;
+        tags.push("instant"); log.write("瞬发");
+        // 施法时间-基于动画
+        if (checkSpecs(skillId, "anim_key") && checkSpecs(skillId, "anim_cast")) {
+          let animKey = checkSpecs(skillId, "anim_key");
+          let animData = AKDATA.Data.dps_anim[charId][animKey];
+          let ct = animData.duration || animData;
+
+          log.write(`技能动画：${animKey}, 释放时间 ${ct} 帧`);
+          log.writeNote(`技能动画: ${ct} 帧`);
+          if ((duration < ct/30 && spData.spType == 1) || rst == "ogcd")
+            duration = ct/30;
+        }
+        // 施法时间
+        if (checkSpecs(skillId, "cast_time")) {
+          let ct = checkSpecs(skillId, "cast_time");
+          if (duration < ct/30 || rst == "ogcd") {
+            log.write(`技能动画: ${ct} 帧(基于动画数据)`);
+            log.writeNote(`技能动画: ${ct} 帧`);
+            if (spData.spType == 1 || rst == "ogcd")
+              duration = ct / 30;
+          }
+        }
+
+      }
+    } else if (skillId == "skchr_glady_3") {
+      attackCount = 6;
+      attackTime = 1.5;
+      log.writeNote("[特殊] 持续9秒，第7次拖拽无伤害");
+    } else if (options.annie) {
+      duration = 20;
+      attackCount = Math.ceil(duration / attackTime);
+      log.write("傀儡师替身 - 持续20s");
+    }
+    
+    // 过载
+    if (checkSpecs(skillId, "overdrive")) {
+      // 重新估算前半时间
+      var attackCountHalf = Math.ceil((levelData.duration - prepDuration) / 2 / attackTime);
+      var durationHalf = attackCountHalf * attackTime;
+      if (checkSpecs(skillId, "magazine")) {
+        attackCountHalf = Math.ceil(attackCount / 2);
+        durationHalf = attackCountHalf * attackTime;
+        log.write(`一半弹药攻击 ${attackCountHalf} 次`);
+      }
+      if (options.overdrive_mode) {
+        // 过载: 减去前半部分
+        duration -= durationHalf;
+        attackCount -= attackCountHalf;
+        if (options.od_trigger) {
+          // 立即结束
+          log.writeNote("立即结束过载");
+          duration = attackCount = 0;
+          if (skillId == "skchr_horn_2") {
+            duration = 1.066; // 32f
+            attackCount = attackCountHalf;
+          }
+        }
+      } else {
+        // 前半
+        duration = durationHalf;
+        attackCount = attackCountHalf;
+      }
+    }
+
+    // 特判
+    if (skillId == "skchr_huang_3") {
+      attackCount -= 2;
+      log.write(`[特殊] ${displayNames["skchr_huang_3"]}: 实际攻击 ${attackCount}段+终结`);
+    } else if (skillId == "skchr_sunbr_2") { // 古米2准备时间延长技能时间
+      prepDuration = blackboard.disarm;
+    } else if (skillId == "skchr_takila_2" && options.charge) {
+      duration = blackboard.enhance_duration;
+      attackCount = Math.ceil(duration / attackTime);
+    }
+  } else { // 普攻
+    // 眩晕处理
+    if (skillId == "skchr_fmout_2") {
+      stunDuration = blackboard.time;
+    } else if (skillId == "skchr_peacok_2") {
+      stunDuration = blackboard["failure.stun"] * (1 - blackboard.prob);
+      log.write(`[特殊] 计算平均晕眩时间`);
+    } else if (["skchr_amiya_2", "skchr_liskam_2", "skchr_ghost_2",
+                "skchr_broca_2", "skchr_serum_1", "skchr_aurora_1"].includes(skillId)) {
+      stunDuration = blackboard.stun;
+    } else if (skillId == "skchr_folivo_2" && options.token) {
+      stunDuration = blackboard.stun;
+    } else if (skillId == "skchr_rockr_2" && !options.od_trigger) {
+      stunDuration = 20;
+    }
+    if (stunDuration > 0) log.write(`晕眩: ${stunDuration}s`);
+    
+    // 快速估算
+    let spRatio = 1;
+    if (buffFrame.spRecoverRatio != 0) {
+      spRatio += buffFrame.spRecoverRatio;
+      log.write(`技力回复 ${((1 + buffFrame.spRecoveryPerSec) * spRatio).toFixed(2)}/s`);
+    }
+    let attackDuration = spData.spCost / ((1 + buffFrame.spRecoveryPerSec) * spRatio) - stunDuration;
+    // 施法时间
+    if (checkSpecs(skillId, "cast_time")) {
+      let ct = checkSpecs(skillId, "cast_time");
+      if (attackTime > ct/30 && rst != "ogcd") {
+        attackDuration -= (attackTime - ct/30);
+        log.write(`[特殊] 技能释放时间: ${ct} 帧, 普攻时间偏移 ${(ct/30 - attackTime).toFixed(3)}s (${attackDuration.toFixed(3)}s)`);
+        log.writeNote(`技能动画(阻回): ${ct} 帧`);
+      }
+    }
+
+    attackCount = Math.ceil(attackDuration / attackTime);
+    duration = attackCount * attackTime;
+    // 重置普攻（瞬发/ogcd除外）
+    if (rst && rst != "ogcd" && spData.spType != 8) {
+      var dd = spData.spCost / ((1 + buffFrame.spRecoveryPerSec) * spRatio) - stunDuration;
+      if (duration > dd)
+        log.write(`[重置普攻] 截断最后一个攻击间隔`);
+      duration = dd;
+      // 抬手时间
+      var frameBegin = Math.round((checkSpecs(skillId, "attack_begin") || 12));
+      var t = frameBegin / 30;
+      attackCount = Math.ceil((duration - t) / attackTime);
+      log.write(`技能前摇: ${t.toFixed(3)}s, ${frameBegin} 帧`);
+      if (!checkSpecs(skillId, "attack_begin")) log.write("（计算器默认值；请参考动画时间）");
+    }
+    
+    // June 20: 额外sp计算mixin
+    let _args = {
+      buffFrame,
+      buffList, 
+      spData,
+      stunDuration,
+      attackCount,
+      attackTime,
+      duration,
+      rst,
+      options,
+      skillId,
+      enemyCount
+    };
+
+    // 技能类型
+    switch (spData.spType) {
+      case 8: // 被动或落地点火
+        if (levelData.duration <= 0 && blackboard.duration > 0) {
+          console.log("Duration? l/b", skillId, levelData.duration, blackboard.duration);
+          levelData.duration = blackboard.duration;
+        }
+        if (levelData.duration > 0) {
+          tags.push("auto");
+          if (skillId == "skchr_nearl2_2") {
+            attackCount = 0; duration = 1;
+            log.writeNote("不进行普攻");
+          } else {
+            log.write(`[特殊] 落地点火 - 取普攻时间=技能持续时间`);
+            log.writeNote("取普攻时间=技能持续时间");
+		        attackDuration = levelData.duration;
+            attackCount = Math.ceil(attackDuration / attackTime);
+            duration = attackCount * attackTime;
+          }
+        } else if (checkSpecs(skillId, "passive")) { // 被动
+          attackCount = 10;
+          duration = attackCount * attackTime;
+          tags.push("passive");
+          log.write(`[特殊] 被动 - 以10次普攻计算`);
+          log.writeNote("以10次普攻计算");
+        } else {
+          attackDuration = 10;
+          attackCount = Math.ceil(attackDuration / attackTime);
+          duration = attackCount * attackTime;
+          tags.push("auto", "instant");
+          log.write(`[特殊] 落地点火/瞬发 - 以10s普攻计算`);
+          log.writeNote("以10s普攻计算");
+        }
+        break;
+      case 4: // 受击回复
+        log.write(`受击回复`);
+        break;
+      case 2: // 攻击恢复
+        log.write(`攻击回复`);
+        attackCount = spData.spCost;
+
+        let intv_chen = buffList["tachr_010_chen_1"] ? buffList["tachr_010_chen_1"].interval : 4;
+        let intv_archet = buffList["tachr_332_archet_1"] ? buffList["tachr_332_archet_1"].interval : 2.5;
+        let extra_sp = 0, next = true;
+
+        // 枚举所需的最少攻击次数
+        while (attackCount > 0 && next) {
+          duration = attackCount * attackTime;
+          extra_sp = 0;
+          if (buffList["tachr_010_chen_1"] || options.chen)
+            extra_sp += Math.floor(duration / intv_chen);
+          if (buffList["tachr_332_archet_1"] || options.archet)
+            extra_sp += Math.floor(duration / intv_archet);
+          if (buffList["tachr_301_cutter_1"]) {
+            let p = buffList["tachr_301_cutter_1"].prob;
+            extra_sp += (skillId == "skchr_cutter_1" ? (attackCount*2+1)*p : attackCount*2*p); 
+          }
+          next = (attackCount + extra_sp >= spData.spCost);
+          if (next) attackCount -= 1;
+        }
+        if (!next) attackCount += 1;
+        duration = attackCount * attackTime;
+        let line = [];
+        if (buffList["tachr_010_chen_1"] || options.chen)
+          line.push(`呵斥触发 ${Math.floor(duration / intv_chen)} 次`);
+        if (buffList["tachr_332_archet_1"] || options.archet)
+          line.push(`兰登战术触发 ${Math.floor(duration / intv_archet)} 次`);
+        if (buffList["tachr_301_cutter_1"]) {
+          let p = buffList["tachr_301_cutter_1"].prob;
+          let _n = ( skillId == "skchr_cutter_1" ? (attackCount*2+1)*p : attackCount*2*p )
+          line.push(`光蚀刻痕触发 ${_n.toFixed(2)} 次`);
+        }
+        if (line.length > 0) log.write(`[特殊] ${line.join(", ")}`);
+        if (rst) {
+          duration -= attackTime;
+        }
+        break;
+      case 1: // 普通，前面已经算过一遍了，这里只特判
+        let sp_rate = 1 + buffFrame.spRecoveryPerSec;
+        if (buffList["tachr_002_amiya_1"]) { // 情绪吸收
+          attackCount = Math.ceil((spData.spCost - stunDuration*sp_rate) / (buffList["tachr_002_amiya_1"]["amiya_t_1[atk].sp"] + attackTime*sp_rate));
+          log.write(`[特殊] ${displayNames["tachr_002_amiya_1"]}: attack sp = ${attackCount * buffList["tachr_002_amiya_1"]["amiya_t_1[atk].sp"]}`);
+          duration = attackCount * attackTime;
+        } else if (buffList["tachr_134_ifrit_2"]) { // [莱茵回路]. 需要解出攻击次数
+          let i = buffList["tachr_134_ifrit_2"].interval;
+          let isp = i * sp_rate + buffList["tachr_134_ifrit_2"].sp;
+          let recoverCount = Math.ceil((spData.spCost - i) / isp); // recoverCount >= (spCost - i) / isp
+          let r = (spData.spCost - recoverCount * isp) / sp_rate;
+          attackDuration = recoverCount * i + r;
+          attackCount = Math.ceil(attackDuration / attackTime);
+          //console.log(i, isp, recoverCount, r, attackDuration, attackCount);
+          duration = attackDuration;
+          log.write(`[特殊] ${displayNames["tachr_134_ifrit_2"]}: sp + ${recoverCount * buffList["tachr_134_ifrit_2"].sp}`); 
+        } else if (checkSpecs(skillId, "instant_buff")) { // 不稳定血浆: 减去buff持续时间
+          attackDuration -= blackboard.duration || checkSpecs(skillId, "duration");
+          attackCount = Math.ceil(attackDuration / attackTime);
+          duration = attackCount * attackTime;
+          log.writeNote("瞬发Buff，技能周期为Buff持续时间");
+        } else if (buffList["tachr_400_weedy_2"] && options.cannon) { // 水炮充能，持续20s/cd35s
+          let m = Math.floor(spData.spCost / 55);
+          let a = m * 6 + m * 55 * sp_rate; // 前m个水炮充能+自然恢复的sp量
+          let b = 6 + 20 * sp_rate; // 最后一个水炮持续期间最多恢复的sp
+          let c = 6;  // 最后一个水炮充的sp
+          let r = 0; // 计算还需要多少时间充满
+          if (a + b > spData.spCost) { // 技能会在b期间蓄好
+            let y = Math.floor((spData.spCost - a) / (3 * sp_rate + 1.0));
+            let z = (spData.spCost - a - y) / sp_rate - y*3;
+            r = 3*y+z;
+            c = Math.floor(r/3);
+          } else {
+            r = (spData.spCost - a - b) / sp_rate + 20;
+          }
+          attackDuration = m*55+r;
+          attackCount = Math.ceil(attackDuration / attackTime);
+          duration = attackDuration;
+          log.write(`[特殊] ${displayNames["tachr_400_weedy_2"]}: 使用${m+1}个水炮, 充能sp=${m * 6 + c}`);
+        } else if (options.charge && checkSpecs(skillId, "charge")) { // 蓄力
+          let chargeDuration = spData.spCost;
+          if (buffList["tachr_426_billro_2"]) {
+            chargeDuration /= (1 + buffFrame.spRecoveryPerSec + buffList["tachr_426_billro_2"].sp_recovery_per_sec);
+            log.write(`[特殊] ${displayNames["tachr_426_billro_2"]}: 二段蓄力时间 ${chargeDuration.toFixed(1)} s`);
+          }
+          attackDuration += chargeDuration;
+          duration = attackDuration;
+          attackCount = Math.ceil(attackDuration / attackTime);
+        } else if (buffList["uniequip_002_milu"] && options.equip) { // 守林模组
+          log.writeNote("每次攻击恢复1sp");
+          attackCount = Math.ceil((spData.spCost - stunDuration*sp_rate) / (buffList["uniequip_002_milu"].trait.sp + attackTime*sp_rate));
+          log.write(`[特殊] ${displayNames["uniequip_002_milu"]}: 攻击恢复SP = ${attackCount * buffList["uniequip_002_milu"].trait.sp}`);
+          duration = attackCount * attackTime;
+        } else if ("uniequip_002_leizi" in buffList && options.cond
+                   && "sp" in buffList["uniequip_002_leizi"].talent) { // 惊蛰模组
+          log.writeNote("每次命中恢复1sp");
+          attackCount = Math.ceil((spData.spCost - stunDuration*sp_rate) / (enemyCount + attackTime*sp_rate));
+          log.write(`[特殊] ${displayNames["uniequip_002_leizi"]}: 攻击恢复SP = ${attackCount * enemyCount}`);
+          duration = attackCount * attackTime;
+        } else if (buffList["tachr_489_serum_1"] && skillId == "skchr_serum_1") {
+          let esp = buffList["tachr_489_serum_1"].sp_recovery_per_sec *
+                    (stunDuration - buffList["tachr_489_serum_1"].delay);
+          log.write(`眩晕时额外恢复 ${esp.toFixed(1)}sp`);
+          attackDuration = (spData.spCost - esp) / (1 + buffFrame.spRecoveryPerSec) - stunDuration;
+          attackCount = Math.ceil(attackDuration / attackTime);
+          duration = attackDuration;
+        } else if (buffList["tachr_422_aurora_1"]) {
+          attackDuration = spData.spCost / ((1 + buffFrame.spRecoveryPerSec) * spRatio) / 2;
+          if (attackDuration < stunDuration) attackDuration = 0;
+          attackCount = Math.ceil(attackDuration / attackTime);
+          duration = spData.spCost / ((1 + buffFrame.spRecoveryPerSec) * spRatio);
+          log.write(`[特殊] ${displayNames["tachr_422_aurora_1"]}: 普攻时间 ${attackDuration.toFixed(3)}s / ${duration.toFixed(3)}s, 攻击 ${attackCount} 次`);
+          log.write("(晕眩期间不回复技力)");
+        } else if (skillId == "skchr_blkngt_2" && options.token) {
+          duration = attackDuration - blackboard["blkngt_s_2.duration"];
+          attackCount = Math.ceil(duration / attackTime);
+        }
+        break;
+        // todo: cast time
+    } // switch
+
+    // ogcd穿插收益
+    if (rst == "ogcd") {
+      var _ct = (checkSpecs(skillId, "cast_time") || 12) / 30;
+      var weavingGain = (duration - spData.spCost - _ct) / duration * 100;
+      log.write("[提示] 非GCD技能（技能不影响普攻间隔），计算器不计入穿插收益");
+      if (weavingGain > 0) {
+        log.writeNote(`OGCD技能/穿插收益: ${weavingGain.toFixed(1)}%`);
+      }
+    }
+  } // else
+  } // sim else
+
+  // 计算实际命中次数
+  // attackCount = 发动攻击的次数(swings), hitCount = 命中敌人的次数(hits)
+  let hitCount = attackCount * buffFrame.times * enemyCount;
+  // 蓝毒2
+  if (isSkill) {
+    if (skillId == "skchr_bluep_2") {
+      hitCount += attackCount * (blackboard["attack@times"] - 1);
+    } else if (["skcom_assist_cost[2]", "skchr_utage_1", "skchr_tachak_1"].includes(skillId)) { // 投降类
+      hitCount = 0;
+    } else if (skillId == "skchr_kroos2_2") {
+      let extra_atk_count = attackCount - blackboard["attack@max_stack_count"] / 2;
+      if (extra_atk_count > 0) {
+        hitCount += extra_atk_count * 2;
+        log.writeNote(`4连击次数: ${extra_atk_count}`);
+      }
+    }
+  }
+
+  log.write(`持续: ${duration.toFixed(3)} s`);
+  log.write(`攻击次数: ${attackCount*buffFrame.times} (${buffFrame.times} 连击 x ${attackCount})`);
+
+  return {
+    attackCount,
+    times: buffFrame.times,
+    hitCount,
+    duration,
+    stunDuration,
+    prepDuration,
+    tags,
+    startSp
+  };
+}

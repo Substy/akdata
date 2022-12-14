@@ -67,6 +67,7 @@ function showCallback(levelId) {
   let stageData = Object.values(AKDATA.Data.stage_table.stages).find(x => x.levelId == levelId);
   let hardStageData;
   if (stageData.hardStagedId) hardStageData = AKDATA.Data.stage_table.stages[stageData.hardStagedId];
+  //console.log("hard", hardStageData);
   let hasHard = !!hardStageData;
   console.log(levelData);
   console.log(stageData);
@@ -367,11 +368,11 @@ function showCallback(levelId) {
     let dropList = {
       type: 'list',
       header: ['道具', '掉落类型', '掉落概率'],
-      list: stageData.stageDropInfo.displayDetailRewards.map(x => [
-        AKDATA.getItem(x.type, x.id),
-        dropTypes[x.dropType],
-        x.occPercent,
-      ]),
+      list: stageData.stageDropInfo.displayDetailRewards.map(x => {
+        let it = x.id;
+        try { it = AKDATA.getItem(x.type, x.id); } catch { }
+        return [ it, dropTypes[x.dropType], x.occPercent ];
+      }),
       card:true,
     };
     htmlDrop = pmBase.component.create(dropList);
@@ -398,16 +399,30 @@ function showCallback(levelId) {
   };
 
   let tileAttr = '', hardAttr = '';
+  //console.log(levelData.runes);
   if (hasHard) {
-    hardAttr += levelData.runes
-      .find(x => x.key === 'ebuff_attribute')
+    if ("ebuff_attribute" in levelData.runes) {
+        hardAttr += levelData.runes
+        .find(x => x.key === 'ebuff_attribute')
+        .blackboard
+        .filter(x=>x.value!==1)
+        .map(x=>`<li>${hardAttrLabel[x.key]||x.key}: ${(x.value*100).toFixed()}%</li>`)
+        .join('');
+    }
+    if ("enemy_attribute_mul" in levelData.runes) {
+      hardAttr += levelData.runes
+      .find(x => x.key === 'enemy_attribute_mul')
       .blackboard
       .filter(x=>x.value!==1)
-      .map(x=>`<li>${hardAttrLabel[x.key]||x.key}: ${(x.value*100).toFixed()}%</li>`)
+      .map(x=>`<li>${hardAttrLabel[x.key]||x.key}: * ${(x.value*100).toFixed()}%</li>`)
       .join('');
-    hardAttr += levelData.runes.filter(x => x.key === 'ebuff_talent_blackb_mul')
-      .map(x=>`<li>${finalEnemyData[x.blackboard[0].valueStr].name}: ${x.blackboard[1].key}: ${x.blackboard[1].value}</li>`)
-      .join('');
+
+    }
+    if ("ebuff_talent_blackb_mul" in levelData.runes) {
+      hardAttr += levelData.runes.filter(x => x.key === 'ebuff_talent_blackb_mul')
+        .map(x=>`<li>${finalEnemyData[x.blackboard[0].valueStr].name}: ${x.blackboard[1].key}: ${x.blackboard[1].value}</li>`)
+        .join('');
+    }
     hardAttr += levelData.runes.filter(x => x.key === 'ebuff_attribute' && x.blackboard[0].key === 'enemy' )
       .flatMap(x=> x.blackboard.filter(x=>x.key!=='enemy').map(y=>`<li>${finalEnemyData[x.blackboard[0].valueStr].name}: ${hardAttrLabel[y.key]||y.key}: ${(y.value*100).toFixed()}%</li>`))
       .join('');

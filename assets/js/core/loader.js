@@ -37,6 +37,7 @@ function loadItem ( item ) {
   if ( item.js ) {
     if ( typeof item.js == 'string' ) item.js = [item.js];
     item.js.map( url=> {
+      console.log(`Loading script -> ${url}`);
       let request = $.getScript(url);
       queue.push(request);
     });
@@ -45,6 +46,7 @@ function loadItem ( item ) {
   if ( item.css ) {
     if ( typeof item.css == 'string' ) item.css = [item.css];
     item.css.map( url=> {
+      console.log(`Loading css -> ${url}`);
       $('<link>')
       .attr({
           type: 'text/css', 

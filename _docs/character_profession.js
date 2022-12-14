@@ -13,6 +13,7 @@ const ProfessionNames = {
 function init() {
   AKDATA.load([
     'excel/character_table.json',
+    'excel/char_patch_table.json',
     'excel/gacha_table.json',
   ], load);
 }
@@ -20,19 +21,8 @@ function init() {
 function load() {
   let upCharNames = [];
   let nowTime = new Date().getTime() / 1000;
-  AKDATA.Data.gacha_table.gachaPoolClient
-    .filter(x => x.endTime > nowTime)
-    .forEach(data => {
-      let m6 = data.gachaPoolDetail.match( /\n★★★★★★\\n(.+?)（/);
-      let m5 = data.gachaPoolDetail.match( /\n★★★★★\\n(.+?)（/);
-      let m4 = data.gachaPoolDetail.match( /\n★★★★\\n(.+?)（/);
-      let m3 = data.gachaPoolDetail.match( /\n★★★\\n(.+?)（/);
-      if (m6) upCharNames.push(...m6[1].split(' / '));
-      if (m5) upCharNames.push(...m5[1].split(' / '));
-      if (m4) upCharNames.push(...m4[1].split(' / '));
-      if (m3) upCharNames.push(...m3[1].split(' / '));
-    });
-  
+  AKDATA.patchAllChars();
+
   let upCharHtml = '';
   let proKeys = Object.keys(ProfessionNames);
   let charPools = Array.from(Array(6), () => Array(proKeys.length).fill(''));
@@ -40,14 +30,24 @@ function load() {
     let proIndex = proKeys.indexOf(charData.profession);
     if ( proIndex > -1 ) {
       let isUp = upCharNames.includes(charData.name);
-      let a = `<a href="${pmBase.url.getHref('character', charId)}">${charData.name}</a>`;
-      charPools[5-charData.rarity][proIndex] += `<div>
-        ${AKDATA.getBadge('placeholder', '&nbsp;', '', 'min-width:16px;' )}
-        ${AKDATA.getBadge('char', a, charData.rarity)}
-        ${AKDATA.getBadge('placeholder', isUp ? 'UP' : '&nbsp;', '', 'min-width:16px;' )}
-      </div>`;
+      var displayName = charData.name;
+      if (!charData.displayNumber) displayName = "[集成战略]" + displayName;
+
+      charPools[5-charData.rarity][proIndex] += `
+      <figure class="figure m-0 p-1 col-lg-6 col-md-12">
+        <a href="/akdata/character/#!/${charId}">
+        <img class="img_char figure-img" loading="lazy" style="max-width: 90%; height: auto; background:#e1e1e1;"
+             src="/akdata/assets/images/char/${charId}.png" title="${displayName}"></img>
+        </a>
+      </figure>
+      `;
     }
   });
+
+  // decorate
+  for (var i=0; i<charPools.length; ++i)
+    for (var j=0; j<charPools[i].length; ++j)
+      charPools[i][j] = "<div class='row'>" + charPools[i][j] + "</div>";
   console.log(charPools);
 
   let list = pmBase.component.create({
