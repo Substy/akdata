@@ -12,7 +12,7 @@ const DefaultAttribute = {
 const DefaultEnemy = { def: 0, magicResistance: 0, count: 1, hp: 0 };
 
 const Stages = {
-  "基准": { level: 1, potential: 0, skillLevel: 6, desc: "精2 1级 潜能1 技能7级" },
+  "2017": { level: 1, potential: 0, skillLevel: 6, desc: "精2 1级 潜能1 技能7级" },
   "满级": { level: "max", desc: "精2 满级 潜能1 技能7级" },
   "专1": { skillLevel: 7, desc: "满级 潜能1 专精1" },
   "专2": { skillLevel: 8, desc: "满级 潜能1 专精2" },
@@ -64,7 +64,7 @@ function init() {
     '../customdata/dps_options.json',
     '../customdata/leveling_cost.json',
     '../resources/attributes.js',
-    '../customdata/green.json',
+    '../customdata/itemValue.json',
     '../customdata/dps_anim.json',
     '../customdata/subclass.json',
     '../customdata/mastery.json'
@@ -128,7 +128,9 @@ function buildVueModel() {
     equipId: null,
     equipList: [],
     equip_hint: "",
-    calculating: false
+    calculating: false,
+    pivotStageId: 0,
+    stageKeys: [0, ...Object.keys(Stages)]
   };
 }
 
@@ -216,13 +218,29 @@ function load() {
         </span>
       </div>
     </div>
-   <!-- <div id="chart"></div> -->
    <div id="echarts_chart"> </div>
   </div>
   <div class="card mb-2 col-12">
     <div class="card-header">
+      <div class="card-title mb-0">专精提升率对比</div>
+    </div>
+    <div class="toolbar mb-2" role="toolbar">
+      <span class="ml-2">选择比较基准练度</span>
+      <div class="btn-group ml-4 btn-group-toggle" data-toggle="buttons">
+        <template v-for="st in Array(stageKeys.length).keys()">
+          <label class="btn btn-outline-primary">
+            <input type="radio" name="btn_comp" :value="st" v-model="pivotStageId">
+            {{ stageKeys[st] }}          
+          </label> 
+        </template>
+      </div>
+    </div>
+    <div id="echarts_chart_2"> </div>
+  </div>
+  <div class="card mb-2 col-12">
+    <div class="card-header">
       <div class="card-title mb-0">专精材料（绿票算法）
-        <a href="http://ark.yituliu.site/" target="_blank">绿票材料一图流</a>
+        <a href="http://yituliu.site/" target="_blank">绿票材料一图流</a>
       </div>
     </div>
     <div id="mats_table"></div>
@@ -240,8 +258,8 @@ function load() {
     </div>
     <div id="pie_chart" class="row">
     </div>
-  </div>    
--->
+  </div>
+  -->    
   <div class="card mb-2 col-12">
     <div class="card-header">
       <a class="card-title mb-0" data-toggle="collapse" data-target="#txt_json">JSON数据（点击展开）</a>
@@ -403,7 +421,7 @@ function load() {
       },
       updateLevelingTable: function () {
         let db = AKDATA.Data.character_table[this.charId];
-        let r = {}; $.extend(r, DefaultAttribute); $.extend(r, Stages["基准"]);
+        let r = {}; $.extend(r, DefaultAttribute); $.extend(r, Stages["2017"]);
         let ch0 = buildChar(this.charId, db.skills[0].skillId, r);
         r.level = "max";
         let ch1 = buildChar(this.charId, db.skills[0].skillId, r);
@@ -444,6 +462,7 @@ function load() {
         let cv = buildChartView(_new, this.chartKey);
         //plot(cv);
         plot2(cv);
+        plotPivotCompare(cv);
         let pv = buildPieView(cv);
         //plotPie(pv);
         this.updateMats();
@@ -453,7 +472,7 @@ function load() {
       chartKey: function(_new, _old) {
         let cv = buildChartView(this.resultView, _new);
         plot2Update(cv);
-        let pv = buildPieView(cv);
+        //let pv = buildPieView(cv);
         //plotPie(pv);
         //updatePlot(cv);
         //this.txt_gain_title = `提升率分布图 - ${ChartKeys[_new]}`;
@@ -461,6 +480,10 @@ function load() {
       equipId: function(_new, _old) {
         if (!this.calculating)  // 避免嵌套
           this.resultView = calculate(this.charId);
+      },
+      pivotStageId: function(_new, _old) {
+        let cv = buildChartView(this.resultView, this.chartKey);
+        plotPivotCompare(cv);
       }
     }
   });
@@ -663,7 +686,12 @@ function calculate(charId) {
   }
 
   // 绿票算法
-  let greenTable = AKDATA.Data.green;
+  let greenTable = {};
+  AKDATA.Data.itemValue.forEach(item => {
+    if (item.version == "auto0.625")
+      greenTable[item.itemName] = item.itemValueGreen;
+  });
+  //console.log(greenTable);
   const calculateGreen = (matObj) => 
     [0, ...Object.keys(matObj)].reduce((sum, x) =>
       (x!=0 && x!="龙门币" && x in greenTable) ? sum + greenTable[x] * matObj[x] : sum
@@ -692,7 +720,7 @@ function buildChartView(resultView, key) {
   // rotate data for plot columns
   let view = resultView;
   let k = key;
-  let columns = [], groups = [], skill_names = [], notes = [];
+  let columns = [], groups = [], skill_names = [], notes = [], pivots = [];
   let last = {};
   for (let stg in Stages) {
     let entry = [stg];
@@ -704,6 +732,8 @@ function buildChartView(resultView, key) {
       else
         entry.push(value.toFixed(1));
       last[skill] = value;
+      if (stg == window.vue_app.stageKeys[window.vue_app.pivotStageId])
+        pivots.push(value);
     }
     columns.push(entry);
     groups.push(stg);
@@ -717,7 +747,7 @@ function buildChartView(resultView, key) {
     
     if (view.dps[skill]["满潜"].spType != 8) {
       if (line != "") line += "\n";
-      line += `启动技力 ${view.dps[skill]["基准"].s_ssp}s -> ${view.dps[skill]["满潜"].s_ssp}s`;
+      line += `启动技力 ${view.dps[skill]["2017"].s_ssp}s -> ${view.dps[skill]["满潜"].s_ssp}s`;
       if (view.dps[skill]["满潜"].s_ssp <= 0)
         line += " （落地点火）";
     }
@@ -726,7 +756,7 @@ function buildChartView(resultView, key) {
   }
   //console.log(columns, groups, skill_names, notes);
 
-  return { columns, groups, skill_names, notes };
+  return { columns, groups, skill_names, notes, pivots };
 }
 
 function plot(chartView) {
@@ -767,14 +797,14 @@ function plot(chartView) {
 
   window.chart["chart"].load({ columns: chartView.columns });
   setTimeout(function() {
-    $(".c3-chart-bar.c3-target-基准").css("opacity", 0.4);
+    $(".c3-chart-bar.c3-target-2017").css("opacity", 0.4);
   }, 100);
 }
 
 function updatePlot(chartView) {
   window.chart["chart"].load({ columns: chartView.columns, groups: chartView.groups });
   setTimeout(function() {
-    $(".c3-chart-bar.c3-target-基准").css("opacity", 0.4);
+    $(".c3-chart-bar.c3-target-2017").css("opacity", 0.4);
   }, 200);
 }
 
@@ -819,7 +849,10 @@ function plotPie(pieView) {
       },
       zoom: { enabled: false },
       color: {
-        pattern: ["#4169e1", "#ff7f50", "#ffd700", "#dc143c", "#ba55d3", "#eea0ee"]
+        pattern: ["#7c1f66",
+        "#a03989", "#c558be", "#e9adce",
+        "#ff7e5a", "#fdaa67", "#ffc78f",
+        "#aaaaaa"].reverse()
       },
       title: sk
     });
@@ -1084,6 +1117,214 @@ function plot2Update(chartView) {
     dataset: dataset,
     xAxis: { name: `${window.vue_app.txt_char} - ${ChartKeys[window.vue_app.chartKey]} ${extraTitle}` }
  });
+}
+
+function plotPivotCompare(chartView) {
+  let colors = ["#7c1f66", "#a03989", "#c558be", "#e9adce", "#ff7e5a",
+                "#fdaa67", "#ffc78f", "#fff8bc", "#eeeeee"].reverse();
+
+  // 处理chartView基于pivot的平移
+  // pivotStageId == 0时不进行平移
+  if (window.vue_app.pivotStageId > 0) {
+    console.log(window.vue_app.resultView);
+    let part = window.vue_app.pivotStageId - 1;
+    for (let col=1; col<=3; ++col) {
+      let pivot = chartView.pivots[col-1];
+      for (let i=0; i<part; ++i)
+        chartView.columns[i][col] = -chartView.columns[i+1][col];
+      chartView.columns[part][col] = 0;
+      for (let i=0; i<chartView.columns.length; ++i)
+        chartView.columns[i][col] /= pivot;
+    }
+    // 倒置
+    // (把前半部分拆下来倒置再插入回去)
+    chartView.columns.splice(0, 0, ...chartView.columns.splice(0, part).reverse());
+    chartView.groups.splice(0, 0, ...chartView.groups.splice(0, part).reverse());
+    colors.splice(0, 0, ...colors.splice(0, part).reverse());
+    console.log("New ->", chartView);
+  }
+
+  let myChart = echarts.init($("#echarts_chart_2")[0]);
+  myChart.clear();
+  /* chartView是按行的
+  技能 1 2 3 skill_names
+  groups
+  基准 * * * columns[i]
+  满级 * * *
+  专1  * * *
+  专2  * * *
+  专3  * * *
+  模组 * * *
+  满潜 * * *
+  */
+  let dataset = { 
+    source: [
+      ["技能", ...chartView.skill_names],
+      ...chartView.columns,
+      ["注记", ...(chartView.notes.map(x => x.content))]  // 把注记也放在这里，使用自定义数据系列显示
+    ]
+  };
+  //console.log(dataset);
+  console.log(chartView);
+
+  let seriesTemplate = {
+    type: 'bar',
+    stack: 'total',
+    label: {
+      show: true,
+      //fontWeight: 'bold',
+      fontSize: 15,
+      formatter: function (args) {
+        if (window.vue_app.pivotStageId == 0) {
+          let sum = args.value.map(x => parseFloat(x) || 0).reduce((s, x) => s+x);
+          let v = parseFloat(args.value[args.seriesIndex+1]);
+          return v/sum > 0.04 ? `${args.seriesName}\n+${Math.round(v)}`: "";
+        } else {
+          let v = parseFloat(args.value[args.seriesIndex+1]) * 100;
+          let prefix = (v>0) ? "+" : "";
+          args.seriesName = args.dimensionNames[args.seriesIndex+1];
+        // return Math.abs(v/sum) > 0.04 ? `${args.seriesName}\n${prefix}${Math.round(v)}`: "";
+          return Math.abs(v) > 1 ? `${args.seriesName}\n${prefix}${Math.round(v)}%`: "";
+        }
+      }
+    },
+    emphasis: { focus: 'series' },
+    blur: { itemStyle: { opacity: 0.3 } },
+    seriesLayoutBy: 'row',
+    barWidth: '35%',
+    itemStyle: {
+      shadowColor: 'rgba(0, 0, 0, 0.4)',
+      shadowBlur: 3,
+      shadowOffsetX: 1,
+      shadowOffsetY: 2,
+    }
+  };
+  let series = [];
+  for (let i=0; i<chartView.groups.length; ++i)
+    series.push(seriesTemplate);
+
+  // notes
+  let notesTemplate = {
+    type: 'custom',
+    seriesLayoutBy: 'row',
+    encode: {x: null, y: 0, tooltip: 0},  // x 不映射，y 对应表头(第0行)
+    renderItem: function (params, api) {
+      let value = api.value(10).replace(/\n/g, "; ").replace(/; ; /g, "\n"); // 第10行为注记值
+      let index = params.dataIndex;  // 第几行
+      //console.log({params, api, ids, value});
+
+      let barLayout = api.barLayout({   // 计算系列高度
+        barGap: '30%',
+        barCategoryGap: '20%',
+        barWidth: '50%',
+        count: params.dataInsideLength
+      });
+      let point = api.coord([20, api.value(0)]);  // 放在坐标轴的对应位置
+      //console.log(barLayout[index].bandWidth);
+      return {
+        type: 'text',
+        x: point[0],
+        y: point[1] - 10,
+        style: { text: "", font: '14px sans-serif' }  // 不显示note
+      }
+    },
+    z: 10
+  };
+  series.push(notesTemplate); 
+
+  let extraNotes = [...window.vue_app.resultView.extraNotes];
+  if (window.vue_app.pivotStageId > 0) {
+    extraNotes.push(`与${window.vue_app.stageKeys[window.vue_app.pivotStageId]}相比`);
+  }
+  let extraTitle = (extraNotes.length > 0 ? `- ${extraNotes.join(" ")}` : "");
+
+  // 指定图表的配置项和数据
+  let option = {
+    toolbox: {
+      show: true,
+      feature: {
+        dataView: {},
+        saveAsImage: {}
+      }
+    },
+    tooltip: {
+      trigger: 'axis',
+      axisPointer: {
+        // Use axis to trigger tooltip
+        type: 'shadow' // 'shadow' as default; can also be 'line' or 'shadow'
+      },
+      valueFormatter: function (value) {
+        if (!isNaN(value)) {
+          if (window.vue_app.pivotStageId == 0) {
+            return Math.round(value);
+          } else {
+            let v = Math.round(parseFloat(value) * 1000)/10;
+            let prefix = (v>0 ? "+" : "");
+            return `${prefix}${v}%`;
+          }
+        } else return "";
+      },
+    },
+    legend: {
+      top: 'bottom',
+    },
+    grid: {
+      left: '0px',
+      right: '5%',
+      top: '3%',
+      bottom: '8%',
+      containLabel: true
+    },
+    xAxis: {
+      type: 'value',
+      name: `${window.vue_app.txt_char} - ${ChartKeys[window.vue_app.chartKey]} ${extraTitle}`,
+      nameLocation: "middle",
+      nameGap: -24,
+      nameTextStyle: {
+        fontSize: 24,
+        fontWeight: 600
+      },
+      axisLine: { show: true },
+      minorTick: { show: true },
+      majorTick: { show: false },
+      splitLine: {
+        lineStyle: { color: "#e0e0e0" }
+      },
+      minorSplitLine: {
+        show: true,
+        lineStyle: { color: "#f4f4f4" }
+      },
+      axisLabel: {
+        fontSize: 16,
+        fontWeight: 600,
+        margin: 5,
+        formatter: function (value, index) {
+          return window.vue_app.pivotStageId == 0 ? value : (Math.round(value*100) + "%");
+        }
+      }
+    },
+    yAxis: {
+      type: 'category',
+      axisLine: { show: true },
+      axisLabel: {
+        fontSize: 16,
+        fontWeight: 'bold',
+        margin: 5,
+        formatter: function (v, i) {
+          return `${["I", "II", "III"][i]}-${v}`;
+        }
+      }
+    },
+    dataset: dataset,
+    series: series,
+    color: colors
+  };
+
+  // 使用刚指定的配置项和数据显示图表。
+  myChart.setOption(option);
+  myChart.resize({height: chartView.skill_names.length * 200});
+
+  window.eChart2 = myChart;
 }
 
 pmBase.hook.on('init', init);

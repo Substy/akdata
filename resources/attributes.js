@@ -3459,9 +3459,11 @@ function calculateAttack(charAttr, enemy, raidBlackboard, isSkill, charData, lev
         pool[3] += bb.value * move * ecount * buffFrame.damage_scale;
         break;
       case "skchr_weedy_3":
-        if (options.token)
+        if (options.token) {
           move = bb.force*bb.force/3 + bb.duration / 5;
-        else
+          log.writeNote("召唤物伤害计算无效");
+          log.writeNote("应为本体技能伤害");
+        } else
           move = bb.force*bb.force/4 + bb.duration / 5;
         log.writeNote(`以位移${move.toFixed(1)}格计算`);
         pool[3] += bb.value * move * ecount * buffFrame.damage_scale;
