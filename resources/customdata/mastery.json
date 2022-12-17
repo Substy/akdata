@@ -79,7 +79,7 @@
     "char_423_blemsh":  { "mod_update_time": "2022/6/18" },
     "char_135_halo":    { "mod_update_time": "2022/7/5" },
     "char_456_ash":     { "mod_update_time": "2022/7/5" },
-    "char_332_archet":  { "mod_update_time": "2022/7/5" },
+    "char_332_archet":  { "mod_update_time": "2022/12/18" },
     "char_103_angel":   { "mod_update_time": "2022/7/5" },
     "char_1021_kroos2": { "mod_update_time": "2022/7/5" },
     "char_365_aprl":    { "mod_update_time": "2022/7/5" },
@@ -94,7 +94,7 @@
     "char_355_ethan":   { "mod_update_time":  "2022/8/12" },
     "char_478_kirara":  { "mod_update_time":  "2022/8/12" },
     "char_215_mantic":  { "mod_update_time":  "2022/8/12" },
-    "char_437_mizuki":  { "mod_update_time":  "2022/8/12", "ecount": 2 },
+    "char_437_mizuki":  { "mod_update_time":  "2022/12/18", "ecount": 2 },
     "char_236_rope":    { "mod_update_time":  "2022/8/12" },
     "char_173_slchan":  { "mod_update_time":  "2022/8/12" },
     "char_383_snsant":  { "mod_update_time":  "2022/8/12" },
@@ -126,5 +126,13 @@
     "char_349_chiave":  { "mod_update_time": "2022/11/9" },
     "char_115_headbr":  { "mod_update_time": "2022/11/9" },
     "char_198_blackd":  { "mod_update_time": "2022/11/9" },
-    "char_149_scave":  { "mod_update_time": "2022/11/9" }
+    "char_149_scave":  { "mod_update_time": "2022/11/9" },    
+    "char_297_hamoni":  { "mod_update_time": "2022/12/18" },
+    "char_197_poca":  { "mod_update_time": "2022/12/18" },
+    "char_363_toddi":  { "mod_update_time": "2022/12/18" },
+    "char_4043_erato":  { "mod_update_time": "2022/12/18" },
+    "char_4062_totter":  { "mod_update_time": "2022/12/18" },
+    "char_188_helage":  { "mod_update_time": "2022/12/18" },
+    "char_475_akafyu":  { "mod_update_time": "2022/12/18" },
+    "char_337_utage":  { "mod_update_time": "2022/12/18" }
 }

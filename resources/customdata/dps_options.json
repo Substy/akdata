@@ -10,7 +10,7 @@
         "buff":  { "type": "bool", "displaytext": "计算团辅", "explain": "加算页面下方[团辅]行内填写的属性增益" },
         "warmup":  { "type": "bool", "displaytext": "多段暖机完成", "explain": "勾选计算特定技能开启第二次和以后的效果，否则计算第一次启动效果" },
         "thorns_ranged":  { "type": "bool", "displaytext": "远程敌人", "explain": "棘刺-对远程敌人毒伤翻倍" },
-        "rosmon_double":  { "type": "bool", "displaytext": "双剑重叠", "explain": "迷迭香-3技能2把剑同时命中同一目标", "off": true },
+        "rosmon_double":  { "type": "bool", "displaytext": "目标重叠", "explain": "迷迭香3/苇草2-技能命中2次", "off": true },
         "archet":  { "type": "bool", "displaytext": "兰登战术", "explain": "空弦在场时，攻回技能每2.5s恢复1sp", "off": true },
         "chen":  { "type": "bool", "displaytext": "呵斥(团辅)", "explain": "陈在场时，攻回技能每4s恢复1sp", "off": true },
         "charge":  { "type": "bool", "displaytext": "蓄力", "explain": "积攒2层技能再释放" },
@@ -24,7 +24,8 @@
         "ling_fusion": { "type" : "bool", "displaytext": "融合大龙", "explain": "计算融合高级召唤物的输出", "off": true },
         "od_trigger": { "type" : "bool", "displaytext": "过载立即结束", "explain": "勾选时立即结束过载", "off": true },
         "melee":   { "type" : "bool", "displaytext": "近战攻击", "explain": "勾选时使用近战攻击", "off": true },
-        "short_mode":   { "type" : "bool", "displaytext": "永续按180s计算", "explain": "勾选时永续技能按180s计算，否则为1800s", "off": true }
+        "short_mode":   { "type" : "bool", "displaytext": "永续按180s计算", "explain": "勾选时永续技能按180s计算，否则为1800s", "off": true },
+        "reed2_fast":   { "type" : "bool", "displaytext": "火球立即触发", "explain": "火球刷新立即引爆（理想情况下，不考虑旋转时间）", "off": true }
     },
     "cond_info": {
         "char_126_shotst": 1,
@@ -115,7 +116,8 @@
         "char_157_dagda":   2,
         "char_4071_peper":  1,
         "char_1028_texas2": 2,
-        "char_427_vigil":   { "text": "特性/阻挡", "tooltip": "本体攻击被狼群阻挡的目标" }
+        "char_427_vigil":   { "text": "特性/阻挡", "tooltip": "本体攻击被狼群阻挡的目标" },
+        "char_297_hamoni":  1
     },
     "char" : {
         "char_103_angel": [ "equip", "archet", "chen" ],
@@ -162,7 +164,7 @@
         "char_306_leizi" : [ "cond" ],
         "char_385_finlpp": [ "ranged_penalty" ],
         "char_222_bpipe" : [ "crit" ],
-        "char_337_utage" : [ "stack" ],
+        "char_337_utage" : [ "stack", "equip" ],
         "char_379_sesa" : [ "cond", "equip" ],
         "char_252_bibeak" : [ "stack" ],
         "char_159_peacok" : [ "crit", "equip" ],
@@ -207,7 +209,7 @@
         "char_457_blitz":   [ "cond" ],
         "char_459_tachak":  [ "crit" ],
         "char_472_pasngr":  [ "cond", "cond_2" ],
-        "char_363_toddi":   [ "cond" ],
+        "char_363_toddi":   [ "cond", "equip" ],
         "char_003_kalts":   [ "token", "equip" ],
         "char_474_glady":   [ "cond" ],
         "char_475_akafyu" : [ "stack" ],
@@ -260,7 +262,7 @@
         "char_204_platnm":  [ "equip", "short_mode" ],
         "char_492_quercu":  [ "short_mode" ],
         "char_017_huang":   [ "short_mode" ],
-        "char_4043_erato":  [ "cond" ],
+        "char_4043_erato":  [ "cond", "equip" ],
         "char_4046_ebnhlz": [ "equip", "cond_elite" ],
         "char_128_plosis":  [ "equip" ],
         "char_135_halo":    [ "stack" ],
@@ -287,7 +289,7 @@
         "char_117_myrrh":   [ "equip" ],
         "char_291_aglina":  [ "equip" ],
         "char_466_qanik":   [ "cond" ],
-        "char_4062_totter": [ "cond" ],
+        "char_4062_totter": [ "cond", "equip" ],
         "char_157_dagda":   [ "stack", "crit", "cond" ],
         "char_4063_quartz": [ "crit" ],
         "char_4071_peper":  [ "cond" ],
@@ -296,6 +298,8 @@
         "char_1028_texas2": [ "cond", "equip" ],
         "char_427_vigil":   [ "token", "cond", "stack" ],
         "char_4072_ironmn": [ "token" ],
-        "char_112_siege":   [ "equip" ]
+        "char_112_siege":   [ "equip" ],
+        "char_1020_reed2":  [ "rosmon_double", "reed2_fast" ],
+        "char_297_hamoni":  [ "cond" ]
     }
 }

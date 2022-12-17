@@ -113,8 +113,9 @@ function load() {
   <tbody class="">
     <tr class="dps__row-damagepool"> <th>伤害表<i class="fas fa-info-circle pull-right" data-toggle="tooltip" title="详细的伤害表格"></i></th></tr>
     <tr class="dps__row-anim"> <th>动画帧数</th></tr>
-    <tr class="dps__row-results"> <th>计算过程 (用于验算)</th> </tr>
-    <tr class="dps__row-note"> <th>说明</th> </tr>
+    <tr class="dps__row-note"> <th>注记</th> </tr>
+    <tr class="dps__row-results"> <th>计算过程（用于验算）</th> </tr>
+    <tr class="dps__row-explain"> <th>算法解释（筹备中）</th></tr>
   </tbody>
   </table>
 </div>
@@ -225,6 +226,7 @@ function load() {
     $dps.find('.dps__row-period').append(`<td><div class="dps__period" data-index="${i}"></div></td>`);
     $dps.find('.dps__row-results').append(`<td><a class="dps__results" data-index="${i}" href="#">[点击显示]</a></td>`);
     $dps.find('.dps__row-note').append(`<td><div class="dps__note" data-index="${i}"></div></td>`);
+    $dps.find('.dps__row-explain').append(`<td><a class="dps__explain" data-index="${i}" href="###">[点击显示]</a></td>`);
     $dps.find('.dps__row-prts').append(`<td></td>`);  
     $dps.find('.dps__row-option').append(`<td></td>`);
     $dps.find('.dps__row-damagepool').append(`<td><a class="dps__damagepool" data-index="${i}" href="###">[点击显示]</a></td>`);
@@ -256,6 +258,7 @@ function load() {
   $('.dps__buff-atk, .dps__buff-atkpct, .dps__buff-ats, .dps__buff-cdr, .dps__buff-batk, .dps__buff-scale').change(calculateAll);
 
   $('.dps__results').click(showDetail);
+  $('.dps__explain').click(showExplain);
   $('.dps__damagepool').click(showDamage);
   $('.dps__anim').click(showAnim);
   $('.dps__goto').click(goto);
@@ -318,6 +321,22 @@ function showDetail() {
     content: markdown.makeHtml(Characters[index].dps.log).replace(/<table/g, '<table class="table"'),
     width: 750,
     title: name + " - " + Characters[index].dps.skillName,
+    show: true,
+  });
+  return false;
+}
+
+function showExplain() {
+  let $this = $(this);
+  let index = ~~$this.data('index');
+  let name = Characters[index].name;
+  //console.log(Characters[index].dps.log);
+  pmBase.component.create({
+    type: 'modal',
+    id: Characters[index].charId,
+    content: "筹备中，敬请期待",
+    width: 750,
+    title: "算法解释 - " + name + "/" + Characters[index].dps.skillName,
     show: true,
   });
   return false;
