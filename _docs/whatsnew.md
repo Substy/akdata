@@ -5,7 +5,9 @@ order: 4
 category: 其他功能
 icon: info-circle
 ---
-## 22.12.18
+## 22.12.18-23
+- [fix] 焰影苇草2技能火球立即触发时的攻击应为每1.567s触发三次，总共39
+- [fix] 宴1级模组计算问题
 - [update] 焰影苇草；武者、攻城模组，水月、空弦新模组.
 - [update] 更新头像资源，使用Arknights-Bot-Resource库
 - [update] 更新抬手时间参考值：空弦，赫拉格

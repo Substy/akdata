@@ -2181,8 +2181,8 @@ function applyBuff(charAttr, buffFrm, tag, blackbd, isSkill, isCrit, log, enemy)
       break;
     case "uniequip_002_utage":
       if (options.equip) {
-        blackboard.atk = blackboard.talent.atk;
-        blackboard.def = blackboard.talent.def;
+        blackboard.atk = blackboard.talent.atk || 0;
+        blackboard.def = blackboard.talent.def || 0;
       }
       break;
   }
@@ -4252,15 +4252,20 @@ function calculateAttack(charAttr, enemy, raidBlackboard, isSkill, charData, lev
         if (isSkill) {
           damage = finalFrame.atk * bb.atk_scale * (1-emrpct) * buffFrame.damage_scale;
           heal = damage * buffList["tachr_1020_reed2_trait"].scale;
-          let reed2_interval = options.reed2_fast ? 0.5 : 0.8;
-          let reed2_hitCount = Math.round(dur.duration / reed2_interval);
+          let reed2_interval = options.reed2_fast ? 1.567 : 0.8;
+          let reed2_hitCount = Math.ceil((dur.duration - 0.167) / reed2_interval); // 减去抬手时间
 
+          if (options.reed2_fast) {
+            log.writeNote("理想情况, 火球立即引爆");
+            log.writeNote(`每${reed2_interval}s命中三个火球`);
+            reed2_hitCount = Math.ceil((dur.duration - 0.167) / reed2_interval) * 3;
+          } else {
+            log.writeNote(`每${reed2_interval}s命中一个火球`);
+          }
           if (options.rosmon_double) {
             log.writeNote("计算两组火球伤害");
             reed2_hitCount *= 2;
           }
-          if (options.reed2_fast) log.writeNote("理想情况, 火球立即引爆");
-          log.writeNote(`以${reed2_interval.toFixed(1)}s计算火球间隔`);
           log.write(`火球伤害 ${damage.toFixed(1)}, 治疗 ${heal.toFixed(1)}, 命中 ${reed2_hitCount}`);
           pool[1] += damage * reed2_hitCount;
           pool[2] += heal * reed2_hitCount;

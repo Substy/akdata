@@ -298,6 +298,7 @@
     "skchr_quercu_1":   { "damage_type": 2 },
     "skchr_quercu_2":   { "reset_attack": true },
     "skchr_red_1":      { "reset_attack": true, "attack_begin": 16 },
+    "skchr_reed2_2":    { "attack_begin": 5 },
     "skchr_reed2_3":    { "attack_begin": 14 },
     "skchr_rockr_2":    { "overdrive": true, "reset_attack": true },
     "skchr_rope_1":     { "cast_time": 50 },
