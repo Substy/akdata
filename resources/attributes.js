@@ -924,6 +924,7 @@ function applyBuff(charAttr, buffFrm, tag, blackbd, isSkill, isCrit, log, enemy)
       case "tachr_344_beewax_trait":
       case "tachr_388_mint_trait":
       case "tachr_388_mint_1":
+      case "tachr_4080_lin_trait":
         if (isSkill) done = true; break;
       case "tachr_426_billro_2":
         done = true; break;
@@ -1151,6 +1152,7 @@ function applyBuff(charAttr, buffFrm, tag, blackbd, isSkill, isCrit, log, enemy)
       case "skchr_windft_2":
       case "skchr_mlynar_2":
       case "skchr_judge_3":
+      case "skchr_lin_1":
         buffFrame.baseAttackTime += blackboard.base_attack_time;
         writeBuff(`base_attack_time + ${blackboard.base_attack_time}s`);
         blackboard.base_attack_time = 0;
@@ -1929,6 +1931,30 @@ function applyBuff(charAttr, buffFrm, tag, blackbd, isSkill, isCrit, log, enemy)
         break;
       case "tachr_4017_puzzle_1":
         done = true; break;
+      case "tachr_493_firwhl_1":
+        if (options.noblock)
+          delete blackboard.def;
+        else
+          delete blackboard.atk;
+        break;
+      case "tachr_4080_lin_1":
+        done = true; break;
+      case "skchr_chyue_1":
+        if (!options.charge)
+          delete blackboard.times;
+        break;
+      case "skchr_chyue_2":
+        if (options.cond)
+          log.writeNote("触发浮空和二段伤害");
+        else 
+          log.writeNote("不触发浮空和二段伤害");
+        break;
+      case "skchr_chyue_3":
+        buffFrame.maxTarget = 999;
+        break;
+      case "skchr_apionr_1":
+        blackboard.edef_pene_scale = blackboard.def_penetrate;
+        break;
     }
 
   }
@@ -1985,6 +2011,7 @@ function applyBuff(charAttr, buffFrm, tag, blackbd, isSkill, isCrit, log, enemy)
     case "uniequip_002_phenxi":
     case "uniequip_002_meteo":
     case "uniequip_002_irene":
+    case "uniequip_002_bdhkgt":
       blackboard = blackboard.trait;
       blackboard.edef_pene = blackboard.def_penetrate_fixed;
       break;
@@ -2185,6 +2212,12 @@ function applyBuff(charAttr, buffFrm, tag, blackbd, isSkill, isCrit, log, enemy)
         blackboard.def = blackboard.talent.def || 0;
       }
       break;
+    case "uniequip_002_amgoat":
+    case "uniequip_002_cerber":
+    case "uniequip_002_absin":
+    case "uniequip_002_nights":  
+      blackboard.emr_pene = blackboard.trait.magic_resist_penetrate_fixed;
+      break;
   }
   // -- uniequip switch ends here --
 
@@ -2319,7 +2352,12 @@ function calcDurations(isSkill, attackTime, attackSpeed, levelData, buffList, bu
     }
 
     // charge 
-    var cast_sp = (options.charge && checkSpecs(skillId, "charge") ? spData.spCost*2 : spData.spCost);
+    var cast_sp = spData.spCost;
+    if (options.charge && checkSpecs(skillId, "charge"))
+      if (skillId == "skchr_chyue_1")
+        cast_sp = spData.spCost * blackboard.cnt;
+      else
+        cast_sp = spData.spCost*2;
     // init sp
     if (skillId == "skchr_amgoat_2" && buffList["tachr_180_amgoat_2"])
       sp = (buffList["tachr_180_amgoat_2"].sp_min + buffList["tachr_180_amgoat_2"].sp_max) / 2 * fps;
@@ -2778,8 +2816,19 @@ function calcDurations(isSkill, attackTime, attackSpeed, levelData, buffList, bu
         break;
       case 2: // 攻击恢复
         log.write(`攻击回复`);
-        attackCount = spData.spCost;
-
+        let realSp = spData.spCost;
+        if (options.charge && checkSpecs(skillId, "charge")) {
+          if (skillId == "skchr_chyue_1")
+            realSp = spData.spCost * blackboard.cnt;
+          else
+            realSp = spData.spCost*2;
+        }
+        if (skillId == "skchr_chyue_3" && options.warmup)
+          realSp = spData.spCost / 2;
+        if (realSp != spData.spCost)
+          log.write(`实际需要SP: ${realSp.toFixed(1)}`);
+        attackCount = realSp;
+        
         let intv_chen = buffList["tachr_010_chen_1"] ? buffList["tachr_010_chen_1"].interval : 4;
         let intv_archet = buffList["tachr_332_archet_1"] ? buffList["tachr_332_archet_1"].interval : 2.5;
         let extra_sp = 0, next = true;
@@ -2796,7 +2845,7 @@ function calcDurations(isSkill, attackTime, attackSpeed, levelData, buffList, bu
             let p = buffList["tachr_301_cutter_1"].prob;
             extra_sp += (skillId == "skchr_cutter_1" ? (attackCount*2+1)*p : attackCount*2*p); 
           }
-          next = (attackCount + extra_sp >= spData.spCost);
+          next = (attackCount + extra_sp >= realSp);
           if (next) attackCount -= 1;
         }
         if (!next) attackCount += 1;
@@ -2814,6 +2863,13 @@ function calcDurations(isSkill, attackTime, attackSpeed, levelData, buffList, bu
         if (line.length > 0) log.write(`[特殊] ${line.join(", ")}`);
         if (rst) {
           duration -= attackTime;
+          if (checkSpecs(charId, "attack_begin")) {
+            let t = checkSpecs(charId, "attack_begin");
+            duration += t / 30;
+            log.write(`普攻前摇${t}帧，技能取消后摇`);
+          } else {
+            log.write('不计最后一次普攻时间(需要前摇数据)');
+          }
         }
         break;
       case 1: // 普通，前面已经算过一遍了，这里只特判
@@ -2929,6 +2985,11 @@ function calcDurations(isSkill, attackTime, attackSpeed, levelData, buffList, bu
       }
     }
   }
+  // 重岳3
+  if (!isSkill && skillId == "skchr_chyue_3" && options.warmup) {
+    hitCount -= 1;
+    log.writeNote("最后一次普攻只有1段伤害");
+  }
 
   log.write(`持续: ${duration.toFixed(3)} s`);
   log.write(`攻击次数: ${attackCount*buffFrame.times} (${buffFrame.times} 连击 x ${attackCount})`);
@@ -3015,13 +3076,18 @@ function calculateAttack(charAttr, enemy, raidBlackboard, isSkill, charData, lev
   if (!isSkill && checkSpecs(charId, "times")) {
     var t = checkSpecs(charId, "times");
     buffFrame.times = t;
-    log.write(`[连击] ${displayNames[charId]} - 攻击 ${t} 次`);
+
   }
   if (isSkill && checkSpecs(blackboard.id, "times")) {
     var t = checkSpecs(blackboard.id, "times");
     buffFrame.times = t;
-    log.write(`[连击] ${displayNames[blackboard.id]} - 攻击 ${t} 次`);
   }
+  if (blackboard.id == "skchr_chyue_3" && options.warmup) {
+    // 重岳3：暖机后普攻/技能均攻击2次
+    buffFrame.times = 2;
+  }
+  if (buffFrame.times > 1)
+    log.write(`[连击] ${displayNames[charId]} - 攻击 ${buffFrame.times} 次`);
   
   // 瞬发技能的实际基础攻击间隔
   /*
@@ -3365,6 +3431,9 @@ function calculateAttack(charAttr, enemy, raidBlackboard, isSkill, charData, lev
         case "skchr_billro_3":
         case "skchr_mint_1":
         case "skchr_mint_2":
+        case "skchr_lin_1":
+        case "skchr_lin_2":
+        case "skchr_lin_3":
           damagePool[1] = 0;
           log.write(`[特殊] ${displayNames[buffName]}: 不普攻，伤害为0`);
           break;
@@ -3463,8 +3532,18 @@ function calculateAttack(charAttr, enemy, raidBlackboard, isSkill, charData, lev
         pool[2] += bb.value * dur.attackCount * Math.min(ecount, 2);
         break;
       case "tachr_2013_cerber_1":
-        damage = bb.atk_scale * edef * Math.max(1-emrpct, 0.05);
-        pool[1] += damage * dur.hitCount;
+        let cerber_t1_scale = bb.atk_scale;
+        let cerber_t1_loss = 0;
+        if ("max_atk_scale" in bb) {
+          cerber_t1_scale = bb.max_atk_scale;
+          cerber_t1_loss = 0.75;
+        }  
+        damage = cerber_t1_scale * edef * (1-emrpct) * buffFrame.damage_scale;
+        let damage_loss = cerber_t1_loss * edef * (1-emrpct) * buffFrame.damage_scale;
+        pool[1] += damage * dur.hitCount - damage_loss;
+        log.write(`${displayNames[buffName]}: 额外法伤 ${damage.toFixed(1)}, 命中 ${dur.hitCount}`);
+        if (damage_loss)
+          log.write(`叠层损失伤害: ${damage_loss.toFixed(1)} (75%防御)`);
         break;
       case "tachr_391_rosmon_trait":
       case "tachr_1027_greyy2_trait":
@@ -3968,7 +4047,9 @@ function calculateAttack(charAttr, enemy, raidBlackboard, isSkill, charData, lev
       case "skchr_kazema_1":
         if (options.annie) {
           let kazema_scale = buffList["tachr_4016_kazema_1"].damage_scale;
-          if ("uniequip_002_kazema" in buffList && buffList["uniequip_002_kazema"].talent && !options.token)
+          if ("uniequip_002_kazema" in buffList && 
+              "damage_scale" in buffList["uniequip_002_kazema"].talent &&
+              !options.token)
             kazema_scale = buffList["uniequip_002_kazema"].talent.damage_scale;
           damage = finalFrame.atk / buffFrame.atk_scale * kazema_scale
                   * (1-emrpct) * buffFrame.damage_scale;
@@ -3985,7 +4066,9 @@ function calculateAttack(charAttr, enemy, raidBlackboard, isSkill, charData, lev
         let kz_invalid = false;
         if (options.annie) {
           kz_name = "[替身]";
-          if ("uniequip_002_kazema" in buffList && buffList["uniequip_002_kazema"].talent && !options.token)
+          if ("uniequip_002_kazema" in buffList && 
+              "damage_scale" in buffList["uniequip_002_kazema"].talent &&
+              !options.token)
             kazema_scale = buffList["uniequip_002_kazema"].talent.damage_scale;
         } else if (!options.token) {
           log.writeNote("落地伤害需要勾选\n[替身]或[召唤物]进行计算");
@@ -4297,6 +4380,34 @@ function calculateAttack(charAttr, enemy, raidBlackboard, isSkill, charData, lev
           damage = Math.max(poca_t1_atk - edef, poca_t1_atk * 0.05) * buffFrame.damage_scale;
           log.write(`额外伤害 ${damage.toFixed(1)}, 命中 ${dur.hitCount}`);
           pool[0] += damage * dur.hitCount;
+        }
+        break;
+      case "skchr_firwhl_1":
+        damage = finalFrame.atk * bb["burn.atk_scale"] * (1-emrpct) * buffFrame.damage_scale;
+        pool[1] += damage * bb.burn_duration * ecount;
+        break;
+      case "skchr_firwhl_2":
+        let firwhl_burn_time = dur.duration + bb.projectile_life_time - 1;
+        damage = finalFrame.atk * bb["attack@burn.atk_scale"] * (1-emrpct) * buffFrame.damage_scale;
+        pool[1] += damage * firwhl_burn_time * ecount;
+        log.writeNote(`燃烧时间以${firwhl_burn_time.toFixed(1)}s计算`);
+        log.write(`燃烧伤害 ${damage.toFixed(1)}, 命中 ${firwhl_burn_time * ecount}`);
+        break;
+      case "tachr_4080_lin_1":
+        damage = finalFrame.atk * bb.atk_scale * (1-emrpct) * buffFrame.damage_scale;
+        log.writeNote(`破壁伤害 ${damage.toFixed(1)}`);
+        let lin_shield = bb.value;
+        if (blackboard.id == "skchr_lin_3" && isSkill)
+          lin_shield *= buffList["skill"].talent_scale;
+        log.writeNote(`琉璃璧抵挡伤害 ${lin_shield.toFixed(1)}`);
+        break;
+      case "skchr_chyue_2":
+        if (options.cond) {
+          let chyue_s2_atk = finalFrame.atk / bb.atk_scale * bb.atk_scale_down;
+          damage = Math.max(chyue_s2_atk * 0.05, chyue_s2_atk - edef) * buffFrame.damage_scale;
+          log.write(`落地伤害 ${damage.toFixed(1)}, 命中 ${ecount}`);
+          pool[0] += damage * ecount;
+          break;
         }
         break;
     }; // extraDamage switch ends here

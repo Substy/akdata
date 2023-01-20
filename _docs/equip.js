@@ -221,12 +221,45 @@ function buildEquipList() {
   return list;
 }
 
+function showSubclassDialog() {
+  edb = AKDATA.Data.uniequip_table;
+  let excludeKeys = ["notchar1", "notchar2", "none1", "none2"];
+  let names = {};
+  Object.keys(edb["subProfDict"]).filter(x => !excludeKeys.includes(x))
+        .forEach(x => {
+          names[x] = edb["subProfDict"][x].subProfessionName;
+        });
+  
+  let href_list = Object.keys(names).map(x => `<div class="col-3"><a href="#${x}" onclick="$('#subclass_dialog').modal('hide');">${names[x]}</a></div>`)
+  let html = '<div class="row">' + href_list.join("\n") + '</div>';
+  
+  pmBase.component.create({
+    type: 'modal',
+    id: "subclass_dialog",
+    content: html,
+    width: 600,
+    title: "选择分支职业",
+    show: true,
+  });
+}
+
+window.showSubclassDialog = showSubclassDialog;
+
 function updateView() {
   var subList = equipList;
   var eid = window.location.hash.replace(/\#/g, "");
+  //console.log(eid);
   if (eid) {
-    var charName = chardb[edb["equipDict"][eid].charId].name;
-    subList = equipList.filter(x => x[1].includes(charName));
+    if (eid in edb["equipDict"]) {
+      // 过滤干员名字
+      var charName = chardb[edb["equipDict"][eid].charId].name;
+      subList = equipList.filter(x => x[1].includes(charName));
+    } else if (eid in edb["subProfDict"]) {
+      // 过滤子职业名字
+      let subName = edb["subProfDict"][eid].subProfessionName;
+      subList = equipList.filter(x => x[0].includes(subName));
+      $(".l-page__title a").text(`专用模组 - ${subName}`);
+    }
   }
   if ($("#opt_hidebase").is(":checked"))
     subList = subList.filter(x => x[3] != 0);  
@@ -265,3 +298,5 @@ function load() {
 }
 
 pmBase.hook.on( 'init', init );
+window.onhashchange = updateView;
+

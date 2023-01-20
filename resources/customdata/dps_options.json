@@ -117,7 +117,9 @@
         "char_4071_peper":  1,
         "char_1028_texas2": 2,
         "char_427_vigil":   { "text": "特性/阻挡", "tooltip": "本体攻击被狼群阻挡的目标" },
-        "char_297_hamoni":  1
+        "char_297_hamoni":  1,
+        "char_4078_bdhkgt": 1,
+        "char_2024_chyue":  1
     },
     "char" : {
         "char_103_angel": [ "equip", "archet", "chen" ],
@@ -300,6 +302,9 @@
         "char_4072_ironmn": [ "token" ],
         "char_112_siege":   [ "equip" ],
         "char_1020_reed2":  [ "rosmon_double", "reed2_fast" ],
-        "char_297_hamoni":  [ "cond" ]
+        "char_297_hamoni":  [ "cond" ],
+        "char_4078_bdhkgt": [ "cond", "archet", "chen" ],
+        "char_493_firwhl":  [ "noblock" ],
+        "char_2024_chyue":  [ "cond", "charge", "warmup", "chen" ]
     }
 }

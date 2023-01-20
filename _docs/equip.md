@@ -12,5 +12,8 @@ new: true
             <input class="form-check-input" id="opt_hidebase" type="checkbox" value="" checked>
             隐藏基础模组
         </label>
+        <a class="ml-2" onclick="showSubclassDialog()" role="button">
+            分支职业过滤
+        </a>
     </div>
 </div>

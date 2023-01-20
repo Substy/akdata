@@ -8,11 +8,11 @@ const useCache = true;
 const cacheBeginTime = new Date(2019, 12, 10).getTime();
 
 window.AKDATA = {
-  akdata: "221218", // jsdelivr tag version
+  akdata: "230120", // jsdelivr tag version
 
   Data: {},
 
-  new_op: ["char_1020_reed2", "char_297_hamoni", "char_4017_puzzle"],
+  new_op: ["char_2024_chyue", "char_4080_lin", "char_4078_bdhkgt", "char_493_firwhl"],
 
   professionNames: {
     "PIONEER": "先锋",
@@ -240,11 +240,32 @@ window.AKDATA = {
     let html = "";
     ["新干员", "同分支干员", ...Object.values(AKDATA.professionNames)].forEach(k => {
       let entry = `<h2>${k}</h2>`;
-      var r = 6;
-      charPools[k].sort((a, b) => b.rarity - a.rarity).forEach(x => {
-        if (x.rarity < r && !k.endsWith("干员")) { entry += `<br>☆${r} `; r-=1; }
-        entry += `<a class="btn-outline-light p-2" href="#" onclick="AKDATA.selectChar('${x.id}')" role="button">${x.name}</a>`;
-      });
+      if (k.endsWith("干员")) {
+        entry += '<div class="row row-cols-6">';
+        charPools[k].sort((a, b) => b.rarity - a.rarity).forEach(x => {
+          entry += `<div class="col-auto">
+                      <a class="btn-outline-light p-2" href="#" onclick="AKDATA.selectChar('${x.id}')" role="button">${x.name}</a>
+                    </div>`;
+        });
+        entry += "</div>";
+      } else {
+        var r = 6;
+        entry += "<div><div><div>";
+        charPools[k].sort((a, b) => b.rarity - a.rarity).forEach(x => {
+          if (x.rarity < r) {
+            entry += `</div></div></div>
+                      <div class="row justify-content-start">
+                        <div class="col-1">☆${r}</div>
+                        <div class="col-10">
+                          <div class="row row-cols-4 justify-content-start">`;
+            r-=1;
+          }
+          entry += `<div class="col-auto">
+                      <a class="btn-outline-light p-2" href="#" onclick="AKDATA.selectChar('${x.id}')" role="button">${x.name}</a>
+                    </div>`;
+        });
+        entry += "</div></div></div>";
+      }
       html += entry;
     });
 

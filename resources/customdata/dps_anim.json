@@ -636,6 +636,31 @@
     },
     "Die": 48
   },
+  "char_1021_kroos2_nian#8": {
+    "version": "3.8.99",
+    "Attack": {
+      "duration": 30,
+      "OnAttack": 11
+    },
+    "Default": 0,
+    "Idle": 80,
+    "Skill_Begin": 10,
+    "Skill_End": 10,
+    "Skill_Idle": 80,
+    "Skill_Loop": {
+      "duration": 18,
+      "OnAttack": 3
+    },
+    "Skill_Loop_2": {
+      "duration": 18,
+      "OnAttack": 7
+    },
+    "Start": {
+      "duration": 30,
+      "OnStart": 4
+    },
+    "Die": 30
+  },
   "char_1023_ghost2": {
     "version": "3.8.99",
     "Attack": {
@@ -697,11 +722,16 @@
   },
   "char_1026_gvial2": {
     "version": "3.8.99",
+    "Default": 0,
+    "Interact": 140,
+    "Move": 40,
+    "Relax": 80,
+    "Sit": 100,
+    "Sleep": 120,
     "Attack": {
       "duration": 35,
       "OnAttack": 12
     },
-    "Default": 0,
     "Idle": 80,
     "Skill_1": {
       "duration": 35,
@@ -3493,6 +3523,86 @@
       "OnStart": 5
     }
   },
+  "char_2023_ling_nian#9": {
+    "version": "3.8.99",
+    "Attack": {
+      "duration": 48,
+      "OnAttack": 18
+    },
+    "Default": 0,
+    "Idle": 240,
+    "Skill_02": {
+      "duration": 36,
+      "OnAttack": 15
+    },
+    "Skill_03_Begin": 15,
+    "Skill_03_End": 15,
+    "Skill_03_Idle": 240,
+    "Skill_03_Loop": {
+      "duration": 49,
+      "OnAttack": 14
+    },
+    "Start": {
+      "duration": 30,
+      "OnStart": 5
+    },
+    "Die": 30
+  },
+  "char_2024_chyue": {
+    "version": "3.8.99",
+    "Attack_A": {
+      "duration": 30,
+      "OnAttack": 5
+    },
+    "Attack_B": {
+      "duration": 30,
+      "OnAttack": 5
+    },
+    "Default": 0,
+    "Idle": 60,
+    "Skill_1": {
+      "duration": 30,
+      "OnAttack": 5
+    },
+    "Skill_1_Charged": {
+      "duration": 30,
+      "OnAttack": 5
+    },
+    "Skill_2_Begin": {
+      "duration": 25,
+      "OnAttack": 11
+    },
+    "Skill_2_End": {
+      "duration": 35,
+      "OnAttack": 1
+    },
+    "Skill_3": {
+      "duration": 35,
+      "OnAttack": 10
+    },
+    "Skill_3_Change": {
+      "duration": 35,
+      "OnAttack": 10
+    },
+    "Skill_3_Charged": {
+      "duration": 35,
+      "OnAttack": 10
+    },
+    "Skill_3_Idle": 60,
+    "Skill_3_Loop_A": {
+      "duration": 30,
+      "OnAttack": 5
+    },
+    "Skill_3_Loop_B": {
+      "duration": 30,
+      "OnAttack": 5
+    },
+    "Start": {
+      "duration": 30,
+      "OnStart": 15
+    },
+    "Die": 30
+  },
   "char_202_demkni": {
     "version": "3.8.99",
     "Attack": {
@@ -5498,21 +5608,21 @@
       "duration": 35,
       "OnAttack": 14
     },
-    "Combat_Up": {
+    "Combat_Down": {
       "duration": 35,
       "OnAttack": 14
     },
     "Default": 0,
+    "Die": 30,
     "Idle": 60,
     "Start": {
       "duration": 30,
       "OnStart": 12
     },
-    "Combat_Down": {
+    "Combat_Up": {
       "duration": 35,
       "OnAttack": 14
     },
-    "Die": 30,
     "Interact": 30,
     "Move": 30,
     "Relax": 120,
@@ -7770,6 +7880,24 @@
     },
     "Die": 30
   },
+  "char_4004_pudd_snow#5": {
+    "version": "3.8.99",
+    "Attack": {
+      "duration": 40,
+      "OnAttack": 12
+    },
+    "Default": 0,
+    "Idle": 50,
+    "Skill": {
+      "duration": 40,
+      "OnAttack": 12
+    },
+    "Start": {
+      "duration": 30,
+      "OnStart": 5
+    },
+    "Die": 30
+  },
   "char_4009_irene": {
     "version": "3.8.99",
     "Attack": {
@@ -7911,6 +8039,12 @@
   },
   "char_4014_lunacu": {
     "version": "3.8.99",
+    "Default": 0,
+    "Interact": 86,
+    "Move": 40,
+    "Relax": 240,
+    "Sit": 140,
+    "Sleep": 180,
     "Attack": {
       "duration": 50,
       "OnAttack": 21
@@ -7919,7 +8053,6 @@
       "duration": 50,
       "OnAttack": 21
     },
-    "Default": 0,
     "Die": 30,
     "Idle": 90,
     "Skill_2_Begin": 10,
@@ -8598,11 +8731,16 @@
   },
   "char_4054_malist": {
     "version": "3.8.99",
+    "Default": 0,
+    "Interact": 45,
+    "Move": 30,
+    "Relax": 90,
+    "Sit": 150,
+    "Sleep": 80,
     "Attack": {
       "duration": 39,
       "OnAttack": 13
     },
-    "Default": 0,
     "Die": 30,
     "Idle": 90,
     "Skill_2": {
@@ -8898,6 +9036,72 @@
     "Start": {
       "duration": 30,
       "OnStart": 5
+    }
+  },
+  "char_4078_bdhkgt": {
+    "version": "3.8.99",
+    "Attack": {
+      "duration": 84,
+      "OnAttack": 15
+    },
+    "Attack_Down": {
+      "duration": 84,
+      "OnAttack": 15
+    },
+    "Default": 0,
+    "Die": 30,
+    "Idle": 80,
+    "Skill_2_Begin": {
+      "duration": 46,
+      "OnAttack": 11
+    },
+    "Skill_2_Die": 30,
+    "Skill_2_End": 27,
+    "Skill_2_Loop": 120,
+    "Skill_Down_2_Begin": {
+      "duration": 46,
+      "OnAttack": 11
+    },
+    "Skill_Down_2_End": 27,
+    "Skill_Down_2_Loop": 120,
+    "Start": {
+      "duration": 30,
+      "OnStart": 10
+    }
+  },
+  "char_4080_lin": {
+    "version": "3.8.99",
+    "Default": 0,
+    "Die": 30,
+    "Idle": 90,
+    "Skill_1_Begin": 10,
+    "Skill_1_End": 60,
+    "Skill_1_Idle": 90,
+    "Skill_1_Loop": {
+      "duration": 90,
+      "OnAttack": 12
+    },
+    "Skill_2_Begin": 10,
+    "Skill_2_End": 30,
+    "Skill_2_Loop": 70,
+    "Skill_3_Attack_A": {
+      "duration": 60,
+      "OnAttack": 10
+    },
+    "Skill_3_Attack_B": {
+      "duration": 60,
+      "OnAttack": 10
+    },
+    "Skill_3_Attack_C": {
+      "duration": 60,
+      "OnAttack": 10
+    },
+    "Skill_3_Begin": 8,
+    "Skill_3_End": 60,
+    "Skill_3_Idle": 90,
+    "Start": {
+      "duration": 30,
+      "OnStart": 15
     }
   },
   "char_411_tomimi": {
@@ -10303,6 +10507,27 @@
       "OnStart": 7
     }
   },
+  "char_473_mberry_nian#9": {
+    "version": "3.8.99",
+    "Attack": {
+      "duration": 35,
+      "OnAttack": 17
+    },
+    "Default": 0,
+    "Idle": 376,
+    "Skill": {
+      "duration": 35,
+      "OnAttack": 17
+    },
+    "Skill1_End": 13,
+    "Skill1_Loop": 120,
+    "Skill1_Start": 10,
+    "Start": {
+      "duration": 30,
+      "OnStart": 7
+    },
+    "Die": 30
+  },
   "char_474_glady": {
     "version": "3.8.99",
     "Attack": {
@@ -10485,6 +10710,33 @@
       "OnAttack": 5
     },
     "Die": 56
+  },
+  "char_476_blkngt_nian#8": {
+    "version": "3.8.99",
+    "Attack": {
+      "duration": 43,
+      "OnAttack": 8,
+      "OnPlayAudio": 26
+    },
+    "Default": 0,
+    "Idle": 100,
+    "Skill_1": {
+      "duration": 35,
+      "OnAttack": 5
+    },
+    "Skill_2": {
+      "duration": 34,
+      "OnAttack": 16
+    },
+    "Start": {
+      "duration": 30,
+      "OnStart": 7
+    },
+    "Attack_Down": {
+      "duration": 43,
+      "OnAttack": 5
+    },
+    "Die": 30
   },
   "char_476_blkngt_summer#8": {
     "version": "3.8.99",
@@ -10862,6 +11114,43 @@
       "OnStart": 25
     }
   },
+  "char_493_firwhl": {
+    "version": "3.8.99",
+    "Attack": {
+      "duration": 85,
+      "OnAttack": 15
+    },
+    "Combat_A": {
+      "duration": 85,
+      "OnAttack": 15
+    },
+    "Combat_B": {
+      "duration": 85,
+      "OnAttack": 15
+    },
+    "Default": 0,
+    "Idle": 120,
+    "Skill_1": {
+      "duration": 75,
+      "OnAttack": 15
+    },
+    "Skill_2_Begin": 10,
+    "Skill_2_End": 10,
+    "Skill_2_Idle": 60,
+    "Skill_2_Loop": {
+      "duration": 85,
+      "OnAttack": 15
+    },
+    "Start": {
+      "duration": 30,
+      "OnStart": 6
+    },
+    "Attack_Down": {
+      "duration": 85,
+      "OnAttack": 15
+    },
+    "Die": 30
+  },
   "char_496_wildmn": {
     "version": "3.8.99",
     "Attack": {
@@ -10969,6 +11258,39 @@
       "OnAttack": 13
     }
   },
+  "char_497_ctable_nian#9": {
+    "version": "3.8.99",
+    "Attack": {
+      "duration": 30,
+      "OnAttack": 13
+    },
+    "Combat": {
+      "duration": 30,
+      "OnAttack": 13
+    },
+    "Default": 0,
+    "Idle": 80,
+    "Skill_2_Attack": {
+      "duration": 30,
+      "OnAttack": 13
+    },
+    "Skill_2_Begin": 5,
+    "Skill_2_Combat": {
+      "duration": 30,
+      "OnAttack": 13
+    },
+    "Skill_2_End": 4,
+    "Skill_2_Idle": 80,
+    "Start": {
+      "duration": 30,
+      "OnStart": 6
+    },
+    "Die": 26,
+    "Skill_2_Down": {
+      "duration": 30,
+      "OnAttack": 13
+    }
+  },
   "char_500_noirc": {
     "version": "3.8.99",
     "Attack": {
@@ -11004,12 +11326,12 @@
       "OnAttack": 8
     },
     "Default": 0,
-    "Die": 28,
     "Idle": 30,
     "Start": {
       "duration": 30,
       "OnStart": 5
-    }
+    },
+    "Die": 28
   },
   "char_503_rang": {
     "version": "3.8.99",
@@ -11459,6 +11781,91 @@
     "End": 20,
     "Idle": 0,
     "Start": 10
+  },
+  "token_10020_ling_soul1_nian#9": {
+    "version": "3.8.99",
+    "Attack": {
+      "duration": 30,
+      "OnAttack": 11
+    },
+    "Default": 0,
+    "Die": 30,
+    "Idle": 60,
+    "Start": {
+      "duration": 30,
+      "OnStart": 5
+    },
+    "Stun": 30
+  },
+  "token_10020_ling_soul2_nian#9": {
+    "version": "3.8.99",
+    "Attack": {
+      "duration": 30,
+      "OnAttack": 11
+    },
+    "Default": 0,
+    "Die": 30,
+    "Idle": 60,
+    "Skill": {
+      "duration": 35,
+      "OnAttack": 15
+    },
+    "Start": {
+      "duration": 30,
+      "OnStart": 5
+    },
+    "Stun": 30
+  },
+  "token_10020_ling_soul3_nian#9": {
+    "version": "3.8.99",
+    "Attack": {
+      "duration": 30,
+      "OnAttack": 11
+    },
+    "Attack_02": {
+      "duration": 50,
+      "OnAttack": 15
+    },
+    "Default": 0,
+    "Die": 30,
+    "Die_02": 30,
+    "Die_Skill": 10,
+    "Idle": 60,
+    "Idle_02": 180,
+    "Start": {
+      "duration": 30,
+      "OnStart": 5
+    },
+    "Start_02": {
+      "duration": 20,
+      "OnStart": 8
+    },
+    "Stun": 30,
+    "Stun_02": 30
+  },
+  "token_10021_blkngt_hypnos_nian#8": {
+    "version": "3.8.99",
+    "Attack": {
+      "duration": 30,
+      "OnAttack": 15
+    },
+    "Default": 0,
+    "Die_1": 36,
+    "Die_2": 28,
+    "Idle_1": 80,
+    "Idle_2": 50,
+    "Skill_2": {
+      "duration": 30,
+      "OnAttack": 15
+    },
+    "Skill_Begin": 13,
+    "Skill_End": 10,
+    "Skill_Loop": 80,
+    "Start": {
+      "duration": 30,
+      "OnStart": 4
+    },
+    "Stun": 80
   },
   "token_10021_blkngt_hypnos_summer#8": {
     "version": "3.8.99",

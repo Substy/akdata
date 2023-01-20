@@ -281,22 +281,22 @@ function load() {
           </figure>
         </td>
         <td style="padding: 0">
-          <button class="btn btn-outline-secondary dps__goto float-right" type="button" v-on:click="goto"><i class="fas fa-address-card"></i> 详细属性</button>
+          <button class="btn btn-outline-secondary dps__goto float-right w-75" type="button" v-on:click="goto"><i class="fas fa-address-card"></i> 详细属性</button>
         </td>
       </tr>
       <tr>
         <td style="padding: 0">
-          <button class="btn btn-outline-secondary dps__goequip float-right" type="button" v-on:click="goequip"><i class="fas fa-share-alt"></i> 模组信息</button>
+          <button class="btn btn-outline-secondary dps__goequip float-right w-75" type="button" v-on:click="goequip"><i class="fas fa-share-alt"></i> 模组信息</button>
         </td>
       </tr>
       <tr>
         <td style="padding: 0">
-          <button class="btn btn-outline-secondary dps__godps float-right" type="button" v-on:click="godps"><i class="fas fa-calculator"></i> DPS计算</button>
+          <button class="btn btn-outline-secondary dps__godps float-right w-75" type="button" v-on:click="godps"><i class="fas fa-calculator"></i> DPS计算</button>
         </td>
       </tr>
       <tr>
         <td style="padding: 0">
-          <button class="btn btn-outline-secondary dps__goprts float-right" type="button" v-on:click="goprts"><i class="fas fa-search"></i>　PRTS　</button>
+          <button class="btn btn-outline-secondary dps__goprts float-right w-75" type="button" v-on:click="goprts"><i class="fas fa-search"></i>　PRTS　</button>
         </td>
       </tr>
     </table>
@@ -573,10 +573,21 @@ function calculate(charId) {
   let extraNotes = [];
 
   let masterySpecs = AKDATA.Data.mastery[charId] || {};
+
   if ("ecount" in masterySpecs) {
     enemy.count = masterySpecs.ecount;
     extraNotes.push(`${enemy.count}目标`);
   } else enemy.count = 1;
+
+  if ("emr" in masterySpecs) {
+    enemy.magicResistance = masterySpecs.emr;
+    extraNotes.push(`${enemy.magicResistance}法抗`);
+  }
+
+  if ("edef" in masterySpecs) {
+    enemy.def = masterySpecs.edef;
+    extraNotes.push(`${enemy.def}防御`);
+  }
 
   window.vue_app.calculating = true;
 
