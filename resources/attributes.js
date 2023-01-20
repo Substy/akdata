@@ -4383,7 +4383,7 @@ function calculateAttack(charAttr, enemy, raidBlackboard, isSkill, charData, lev
         }
         break;
       case "skchr_firwhl_1":
-        damage = finalFrame.atk * bb["burn.atk_scale"] * (1-emrpct) * buffFrame.damage_scale;
+        damage = finalFrame.atk / buffFrame.atk_scale * bb["burn.atk_scale"] * (1-emrpct) * buffFrame.damage_scale;
         pool[1] += damage * bb.burn_duration * ecount;
         break;
       case "skchr_firwhl_2":
