@@ -323,7 +323,7 @@ function load() {
       changeChar: function(event) {
         if (AKDATA.Data.character_table[this.charId]) {
           this.resultView = calculate(this.charId);
-          this.img_char = `https://akdata-site.oss-cn-guangzhou.aliyuncs.com/akdata/assets/images/char/${this.charId}.png`;
+          this.img_char = `https://akdata-site.oss-cn-guangzhou.aliyuncs.com/assets/images/char/${this.charId}.png`;
           this.txt_char = AKDATA.Data.character_table[this.charId].name;
           if (this.resultView.rhodes) {
             $("#mats_table").text("集成战略临时干员");

@@ -37,7 +37,7 @@ function load() {
       <figure class="figure m-0 p-1 col-lg-6 col-md-12">
         <a href="/akdata/character/#!/${charId}">
         <img class="img_char figure-img" loading="lazy" style="max-width: 90%; height: auto; background:#e1e1e1;"
-             src="https://akdata-site.oss-cn-guangzhou.aliyuncs.com/akdata/assets/images/char/${charId}.png" title="${displayName}"></img>
+             src="https://akdata-site.oss-cn-guangzhou.aliyuncs.com/assets/images/char/${charId}.png" title="${displayName}"></img>
         </a>
       </figure>
       `;

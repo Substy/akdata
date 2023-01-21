@@ -138,7 +138,7 @@ function show(hash) {
     card: true,
     title: charData.name,
     ignoreNull: true,
-    image: `<img class='img_char' src='https://akdata-site.oss-cn-guangzhou.aliyuncs.com/akdata/assets/images/char/${charId}.png' />`,
+    image: `<img class='img_char' src='https://akdata-site.oss-cn-guangzhou.aliyuncs.com/assets/images/char/${charId}.png' />`,
     imageCol: 3
   });
   
