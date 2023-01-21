@@ -192,7 +192,7 @@ function buildEquipList() {
     let charName = `
     <figure class="figure">
       <a href='/akdata/character/#!/${item.charId}' name='${key}' target='_blank'>
-        <img class="figure-img" loading="lazy" style="max-width: 60px; height: auto;" src="/akdata/assets/images/char/${item.charId}.png"></img>
+        <img class="figure-img" loading="lazy" style="max-width: 60px; height: auto;" src="https://akdata-site.oss-cn-guangzhou.aliyuncs.com/akdata/assets/images/char/${item.charId}.png"></img>
         <figcaption>${chardb[item.charId].name}</figcaption>
       </a>
     </figure>`;

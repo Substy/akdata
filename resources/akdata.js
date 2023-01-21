@@ -8,7 +8,7 @@ const useCache = true;
 const cacheBeginTime = new Date(2019, 12, 10).getTime();
 
 window.AKDATA = {
-  akdata: "230120", // jsdelivr tag version
+  akdata: "230120-v2", // jsdelivr tag version
 
   Data: {},
 
@@ -100,6 +100,7 @@ window.AKDATA = {
         let name = paths[i].split('/').pop().replace('.json', '');
         let path = `resources/gamedata/${paths[i]}`;
         let isGamedata = (paths[i].includes("excel") || paths[i].includes("levels"));
+        let isCustomData = (paths[i].includes("customdata") || paths[i].includes("version"));
 
         // mirrors
         let jsdelivr = `https://cdn.jsdelivr.net/gh/xulai1001/akdata@${window.AKDATA.akdata}/` + path;
@@ -108,7 +109,7 @@ window.AKDATA = {
         let aliyun = "https://akdata-site.oss-cn-guangzhou.aliyuncs.com/" + path;
 
         let urlList = [];
-        if (_use_local)
+        if (_use_local || isCustomData)
           urlList = [local];
         else if (isGamedata)
           urlList = [aliyun, github, local];

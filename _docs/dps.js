@@ -281,7 +281,7 @@ function selectChar(charId, i) {
   if (charId && charId != "-") {
     var name = AKDATA.Data.character_table[charId].name;
     $(`.txt_char:eq(${i})`).text(name);
-    $(`.img_char:eq(${i})`).attr("src", `/akdata/assets/images/char/${charId}.png`);
+    $(`.img_char:eq(${i})`).attr("src", `https://akdata-site.oss-cn-guangzhou.aliyuncs.com/akdata/assets/images/char/${charId}.png`);
     updateChar(charId, i);
   }
 }
