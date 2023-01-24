@@ -806,6 +806,9 @@ function applyBuff(charAttr, buffFrm, tag, blackbd, isSkill, isCrit, log, enemy)
         case "tachr_4062_totter_1":
           delete blackboard.atk_scale;
           break;
+        case "tachr_2024_chyue_1":
+          log.writeNote("假设全程覆盖Debuff");
+          break;
       }
       // -- cond switch ends here --
     }
@@ -1948,9 +1951,6 @@ function applyBuff(charAttr, buffFrm, tag, blackbd, isSkill, isCrit, log, enemy)
           log.writeNote("触发浮空和二段伤害");
         else 
           log.writeNote("不触发浮空和二段伤害");
-        break;
-      case "skchr_chyue_3":
-        buffFrame.maxTarget = 999;
         break;
       case "skchr_apionr_1":
         blackboard.edef_pene_scale = blackboard.def_penetrate;
@@ -4408,6 +4408,14 @@ function calculateAttack(charAttr, enemy, raidBlackboard, isSkill, charData, lev
           log.write(`落地伤害 ${damage.toFixed(1)}, 命中 ${ecount}`);
           pool[0] += damage * ecount;
           break;
+        }
+        break;
+      case "skchr_chyue_3":
+        if (enemy.count > 1) {
+          let chyue_t1_scale = (options.cond ? buffList["tachr_2024_chyue_1"].damage_scale : 1);
+          damage = Math.max(finalFrame.atk * 0.05, finalFrame.atk - edef) * buffFrame.damage_scale / chyue_t1_scale;
+          pool[0] += damage * (enemy.count - 1) * dur.hitCount;
+          log.write(`范围伤害 ${damage.toFixed(1)} (不计第一天赋), 命中 ${(enemy.count-1) * dur.hitCount}`);
         }
         break;
     }; // extraDamage switch ends here
