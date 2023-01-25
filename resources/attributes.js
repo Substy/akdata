@@ -195,6 +195,8 @@ function calculateDps(char, enemy, raidBuff) {
   let blackboard = getBlackboard(skillData.levels[char.skillLevel].blackboard) || {};
 
   console.log(charData.name, levelData.name);
+  log.write("说明：计算结果可能存在因为逻辑错误或者数据不全导致的计算错误，作者会及时修正。");
+  log.write("　　　计算结果仅供参考，请仔细核对以下的计算过程：");
   log.write(`| 角色 | 等级 | 技能 | 模组 |`);
   log.write(`| :--: | :--: | :--: | :--: |`);
   log.write(`| **${charData.name}**<br>~${charId}~ | 潜能 ${char.potentialRank+1}<br>精英 ${char.phase}, 等级 ${char.level} | **${levelData.name}**<br>等级 ${char.skillLevel+1} | **${equipData.uniEquipName}**<br>等级 ${char.equipLevel} |`);
@@ -1141,6 +1143,7 @@ function applyBuff(charAttr, buffFrm, tag, blackbd, isSkill, isCrit, log, enemy)
         blackboard.atk = 0; // 1技能不加攻击
         break;
       case "skchr_ccheal_2": // hot记为额外治疗，不在这里计算
+        buffFrame.dpsDuration = blackboard.duration;
       case "skchr_ccheal_1":
         delete blackboard["heal_scale"];
         break;
@@ -1455,6 +1458,7 @@ function applyBuff(charAttr, buffFrm, tag, blackbd, isSkill, isCrit, log, enemy)
       case "skchr_tachak_1":
         blackboard.edef_pene = blackboard.def_penetrate_fixed;
         delete blackboard.atk_scale;
+        buffFrame.dpsDuration = blackboard.projectile_delay_time;
         break;
       case "skchr_tachak_2":
         writeBuff(`base_attack_time: ${blackboard.base_attack_time}x`);
@@ -1466,6 +1470,7 @@ function applyBuff(charAttr, buffFrm, tag, blackbd, isSkill, isCrit, log, enemy)
         blackboard.atk_scale = blackboard['pasngr_s_1.atk_scale'];
         break;
       case "skchr_pasngr_3":
+        buffFrame.dpsDuration = 4;
         done = true; break;
       case "skchr_toddi_1":
         blackboard.edef_scale = blackboard.def;
@@ -1725,6 +1730,7 @@ function applyBuff(charAttr, buffFrm, tag, blackbd, isSkill, isCrit, log, enemy)
         delete blackboard["attack@max_target"];
         break;
       case "skchr_greyy2_2":
+        buffFrame.dpsDuration = blackboard.projectile_delay_time;
         done = true; break;
       case "skchr_doroth_1":
         blackboard.edef_scale = blackboard.def;
@@ -1954,6 +1960,18 @@ function applyBuff(charAttr, buffFrm, tag, blackbd, isSkill, isCrit, log, enemy)
         break;
       case "skchr_apionr_1":
         blackboard.edef_pene_scale = blackboard.def_penetrate;
+        break;
+      case "skchr_firwhl_1":
+        buffFrame.dpsDuration = blackboard.burn_duration;
+        break;
+      case "skchr_firwhl_2":
+        buffFrame.dpsDurationDelta = blackboard.projectile_life_time - 1;
+        break;
+      case "skchr_podego_2":
+        buffFrame.dpsDuration = blackboard.projectile_delay_time;
+        break;
+      case "skchr_lumen_1":
+        buffFrame.dpsDuration = blackboard["aura.projectile_life_time"];
         break;
     }
 
@@ -2286,6 +2304,7 @@ function calcDurations(isSkill, attackTime, attackSpeed, levelData, buffList, bu
   let attackCount = 0;
   let stunDuration = 0;
   let prepDuration = 0;
+  let dpsDuration = -1;
   let startSp = 0;
   let rst = checkResetAttack(skillId, blackboard, options);
   let subProf = AKDATA.Data.character_table[charId].subProfessionId;
@@ -2708,6 +2727,18 @@ function calcDurations(isSkill, attackTime, attackSpeed, levelData, buffList, bu
       duration = 15;
       log.writeNote("以攻击10次计算");
     }
+
+    // Jan 26: 处理伤害时间与技能持续时间不同的情况
+    if (buffFrame.dpsDuration) {
+      dpsDuration = buffFrame.dpsDuration;
+      log.writeNote(`技能${duration}s, 伤害持续${dpsDuration}s`);
+      tags.push("diff");
+    }
+    if (buffFrame.dpsDurationDelta) {
+      dpsDuration = buffFrame.dpsDurationDelta + duration;
+      log.writeNote(`技能${duration}s, 伤害持续${dpsDuration}s`);
+      tags.push("diff");
+    }
   } else { // 普攻
     // 眩晕处理
     if (skillId == "skchr_fmout_2") {
@@ -3001,6 +3032,7 @@ function calcDurations(isSkill, attackTime, attackSpeed, levelData, buffList, bu
     duration,
     stunDuration,
     prepDuration,
+    dpsDuration,
     tags,
     startSp
   };
@@ -4602,8 +4634,12 @@ function calculateAttack(charAttr, enemy, raidBlackboard, isSkill, charData, lev
   log.write(`总伤害: ${totalDamage.toFixed(2)}`);
   if (totalHeal != 0) log.write(`总治疗: ${totalHeal.toFixed(2)}`);
 
-  let dps = totalDamage / (dur.duration + dur.stunDuration + dur.prepDuration);
-  let hps = totalHeal / (dur.duration + dur.stunDuration + dur.prepDuration);
+  let dpsDuration = dur.dpsDuration > 0 ? dur.dpsDuration : dur.duration;
+  dpsDuration += dur.prepDuration + dur.stunDuration;
+  if (dpsDuration != dur.duration) 
+    log.write(`以 ${dpsDuration.toFixed(1)}s 计算DPS/HPS`);
+  let dps = totalDamage / dpsDuration;
+  let hps = totalHeal / dpsDuration;
   // 均匀化重置普攻时的普攻dps
   if (!isSkill && checkResetAttack(blackboard.id, blackboard, options)) {
     let d = dur.attackCount * attackTime;

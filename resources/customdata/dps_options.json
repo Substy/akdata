@@ -241,7 +241,7 @@
         "char_4013_kjera":  [ "cond", "freeze" ],
         "char_261_sddrag":  [ "equip", "cond_spd" ],
         "char_4025_aprot2": [ "cond" ],
-        "char_1021_kroos2": [ "crit" ],
+        "char_1021_kroos2": [ "crit", "equip" ],
         "char_322_lmlee":   [ "block", "cond", "short_mode" ],
         "char_476_blkngt":  [ "cond", "token" ],
         "char_2023_ling":   [ "token", "stack", "ling_fusion" ],

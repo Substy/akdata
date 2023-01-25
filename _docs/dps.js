@@ -673,9 +673,8 @@ function chooseLevel() {
     pot_elem.val(max_pot);
 
   Characters[index].level = level;
-  Characters[index].potentialRank = ~~(pot_elem.val());
+  Characters[index].potentialRank = parseInt(pot_elem.val());
   Characters[index].favor = ~~(getElement('favor', index).val());
-
   calculate(index);
 }
 
@@ -815,6 +814,8 @@ function calculate(index) {
     getElement('period', index).html(`${Math.round(dps.normal.dur.duration*100)/100}s + 持续时间无限(记为${Math.floor(dps.skill.dur.duration)}s)`);
   if (s.dur.tags.includes("instant"))
     getElement('s_dps', index).append(" / 瞬发");
+  if (s.dur.tags.includes("diff"))
+    getElement('s_dps', index).append(` / 持续 ${s.dur.dpsDuration}s`);
   if (s.dur.tags.includes("passive")) {
     getElement('s_damage', index).html("-");
     getElement('g_dps', index).html("-");
@@ -869,7 +870,7 @@ function chooseSkill() {
   let max_pot = AKDATA.Data.character_table[Characters[index].charId].maxPotentialLevel;
   if (pot_elem.val() > max_pot)
     pot_elem.val(max_pot);
-  Characters[index].potentialRank = pot_elem.val();
+  Characters[index].potentialRank = parseInt(pot_elem.val());
 
   Characters[index].favor = ~~(getElement('favor', index).val());
   if (index == 0) calculateAll();
