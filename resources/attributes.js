@@ -1954,9 +1954,10 @@ function applyBuff(charAttr, buffFrm, tag, blackbd, isSkill, isCrit, log, enemy)
         break;
       case "skchr_chyue_2":
         if (options.cond)
-          log.writeNote("触发浮空和二段伤害");
+          log.writeNote("只对主目标触发第一天赋和二段伤害");
         else 
           log.writeNote("不触发浮空和二段伤害");
+        delete blackboard.max_target;
         break;
       case "skchr_apionr_1":
         blackboard.edef_pene_scale = blackboard.def_penetrate;
@@ -4434,11 +4435,20 @@ function calculateAttack(charAttr, enemy, raidBlackboard, isSkill, charData, lev
         log.writeNote(`琉璃璧抵挡伤害 ${lin_shield.toFixed(1)}`);
         break;
       case "skchr_chyue_2":
+        // 第一段aoe, 不计第一天赋
+        if (enemy.count > 1) {
+          let chyue_t1_scale = options.cond ? buffList["tachr_2024_chyue_1"].damage_scale : 1;
+          damage = Math.max(finalFrame.atk * 0.05, finalFrame.atk - edef) * buffFrame.damage_scale / chyue_t1_scale;
+          let chyue_s2_hitc = Math.min(enemy.count - 1, bb.max_target - 1);
+          pool[0] += damage * chyue_s2_hitc;
+          log.write(`范围伤害 ${damage.toFixed(1)} (不计第一天赋), 命中 ${chyue_s2_hitc}`);
+        }
+        // 第二段伤害，只计算主目标
         if (options.cond) {
           let chyue_s2_atk = finalFrame.atk / bb.atk_scale * bb.atk_scale_down;
           damage = Math.max(chyue_s2_atk * 0.05, chyue_s2_atk - edef) * buffFrame.damage_scale;
           log.write(`落地伤害 ${damage.toFixed(1)}, 命中 ${ecount}`);
-          pool[0] += damage * ecount;
+          pool[0] += damage;
           break;
         }
         break;
