@@ -343,7 +343,7 @@
     "skchr_strong_2":   { "damage_type": "0" },
     "skchr_sunbr_2":    { "note": "实际持续40s" },
     "skchr_surtr_1":    { "damage_type": 1 },
-    "skchr_surtr_3":    { "damage_type": 1, "attack_begin": 10 },
+    "skchr_surtr_3":    { "damage_type": 1, "attack_begin": 10, "frame_corr": 1 },
     "skchr_svrash_2":   { "toggle": true },
     "skchr_swllow_1":   { "sim": true },
     "skchr_swllow_2":   { "reset_attack": true, "attack_begin": 2 },

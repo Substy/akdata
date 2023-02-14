@@ -2405,7 +2405,7 @@ function calcDurations(isSkill, attackTime, attackSpeed, levelData, buffList, bu
     }
 
     if (spData.spType == 1) {
-      sp+=fps;  // 落地时恢复1sp
+      sp = Math.min(sp + fps, max_sp);  // 落地时恢复1sp
       log.write("[模拟] +1落地sp");
     }
     while (now <= duration * fps) {
@@ -2581,7 +2581,7 @@ function calcDurations(isSkill, attackTime, attackSpeed, levelData, buffList, bu
         duration = Math.sqrt(600) + lock_time;
         attackCount = Math.ceil(duration / attackTime);
         log.write(`损失100%血量耗时: ${Math.sqrt(600).toFixed(1)}s，锁血时间: ${lock_time}s`);
-        log.writeNote("不治疗最大维持时间");
+        log.writeNote(`不治疗最大维持 ${duration.toFixed(1)}s`);
       } else {
         var d = (options.short_mode ? 180 : 1000);
         attackCount = Math.ceil(d / attackTime);
