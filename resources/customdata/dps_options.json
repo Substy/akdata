@@ -12,7 +12,7 @@
         "thorns_ranged":  { "type": "bool", "displaytext": "远程敌人", "explain": "棘刺-对远程敌人毒伤翻倍" },
         "rosmon_double":  { "type": "bool", "displaytext": "目标重叠", "explain": "迷迭香3/苇草2-技能命中2次", "off": true },
         "archet":  { "type": "bool", "displaytext": "兰登战术", "explain": "空弦在场时，攻回技能每2.5s恢复1sp", "off": true },
-        "chen":  { "type": "bool", "displaytext": "呵斥(团辅)", "explain": "陈在场时，攻回技能每4s恢复1sp", "off": true },
+        "chen":  { "type": "bool", "displaytext": "呵斥(4s/1sp)", "explain": "无模组陈在场时，攻回技能每4s恢复1sp", "off": true },
         "charge":  { "type": "bool", "displaytext": "蓄力", "explain": "积攒2层技能再释放" },
         "annie": { "type": "bool", "displaytext": "傀儡师替身", "explain": "计算替身数据", "off": true },
         "pallas": { "type": "bool", "displaytext": "加成自身", "explain": "自身增益技能加成自己的情况", "off": true },
@@ -22,7 +22,7 @@
         "block": { "type" : "bool", "displaytext": "阻挡", "explain": "满足阻挡条件" },
         "freeze": { "type" : "bool", "displaytext": "保持冻结", "explain": "勾选时假设敌人全程被冻结（包括普攻/技能）", "off": true },
         "ling_fusion": { "type" : "bool", "displaytext": "融合大龙", "explain": "计算融合高级召唤物的输出", "off": true },
-        "od_trigger": { "type" : "bool", "displaytext": "过载立即结束", "explain": "勾选时立即结束过载", "off": true },
+        "od_trigger": { "type" : "bool", "displaytext": "技能/过载立即结束", "explain": "勾选时立即结束技能或过载状态", "off": true },
         "melee":   { "type" : "bool", "displaytext": "近战攻击", "explain": "勾选时使用近战攻击", "off": true },
         "short_mode":   { "type" : "bool", "displaytext": "永续按180s计算", "explain": "勾选时永续技能按180s计算，否则为1800s", "off": true },
         "reed2_fast":   { "type" : "bool", "displaytext": "火球立即触发", "explain": "火球刷新立即引爆（理想情况下，不考虑旋转时间）", "off": true }
@@ -119,7 +119,9 @@
         "char_427_vigil":   { "text": "特性/阻挡", "tooltip": "本体攻击被狼群阻挡的目标" },
         "char_297_hamoni":  1,
         "char_4078_bdhkgt": 1,
-        "char_2024_chyue":  1
+        "char_2024_chyue":  1,
+        "char_4083_chimes": 1,
+        "char_4082_qiubai": 1
     },
     "char" : {
         "char_103_angel": [ "equip", "archet", "chen" ],
@@ -305,6 +307,8 @@
         "char_297_hamoni":  [ "cond" ],
         "char_4078_bdhkgt": [ "cond", "archet", "chen" ],
         "char_493_firwhl":  [ "noblock" ],
-        "char_2024_chyue":  [ "cond", "charge", "warmup", "chen" ]
+        "char_2024_chyue":  [ "cond", "charge", "warmup", "chen" ],
+        "char_4083_chimes": [ "cond", "od_trigger" ],
+        "char_4082_qiubai": [ "cond", "ranged_penalty", "chen" ]
     }
 }

@@ -805,7 +805,7 @@ function calculate(index) {
   if (dps.normal.dur.stunDuration > 0)
     getElement('period', index).html(`眩晕${dps.normal.dur.stunDuration}s + ${Math.round(dps.normal.dur.duration*100)/100}s + ${Math.round(s.dur.duration*100)/100}s`);
   else if (dps.skill.dur.prepDuration > 0)
-    getElement('period', index).html(`${Math.round(dps.normal.dur.duration*100)/100}s + 准备${dps.skill.dur.prepDuration}s + ${Math.round(s.dur.duration*100)/100}s`);
+    getElement('period', index).html(`${Math.round(dps.normal.dur.duration*100)/100}s + 准备${dps.skill.dur.prepDuration.toFixed(3)}s + ${Math.round(s.dur.duration*100)/100}s`);
   else
     getElement('period', index).html(`${Math.round(dps.normal.dur.duration*100)/100}s + ${Math.round(s.dur.duration*100)/100}s`);
 
@@ -815,7 +815,7 @@ function calculate(index) {
   if (s.dur.tags.includes("instant"))
     getElement('s_dps', index).append(" / 瞬发");
   if (s.dur.tags.includes("diff"))
-    getElement('s_dps', index).append(` / 持续 ${s.dur.dpsDuration}s`);
+    getElement('s_dps', index).append(` / 持续 ${s.dur.dpsDuration.toFixed(3)}s`);
   if (s.dur.tags.includes("passive")) {
     getElement('s_damage', index).html("-");
     getElement('g_dps', index).html("-");

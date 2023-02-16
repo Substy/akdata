@@ -1113,6 +1113,20 @@
     },
     "Die": 30
   },
+  "char_110_deepcl_winter#3": {
+    "version": "3.8.99",
+    "Attack": {
+      "duration": 54,
+      "OnAttack": 35
+    },
+    "Default": 0,
+    "Idle": 60,
+    "Start": {
+      "duration": 30,
+      "OnStart": 5
+    },
+    "Die": 30
+  },
   "char_112_siege": {
     "version": "3.8.99",
     "Attack": {
@@ -2873,6 +2887,24 @@
       "OnStart": 4
     }
   },
+  "char_185_frncat_wild#7": {
+    "version": "3.8.99",
+    "Attack": {
+      "duration": 36,
+      "OnAttack": 14
+    },
+    "Attack_2": {
+      "duration": 36,
+      "OnAttack": 19
+    },
+    "Default": 0,
+    "Idle": 80,
+    "Start": {
+      "duration": 30,
+      "OnStart": 4
+    },
+    "Die": 30
+  },
   "char_186_snwfox": {
     "version": "3.8.99",
     "Attack": {
@@ -4039,6 +4071,24 @@
     "Skill": {
       "duration": 58,
       "OnAttack": 35
+    }
+  },
+  "char_215_mantic_epoque#19": {
+    "version": "3.8.99",
+    "Attack": {
+      "duration": 40,
+      "OnAttack": 19
+    },
+    "Default": 0,
+    "Die": 30,
+    "Idle": 120,
+    "Skill": {
+      "duration": 58,
+      "OnAttack": 35
+    },
+    "Start": {
+      "duration": 25,
+      "OnStart": 6
     }
   },
   "char_215_mantic_epoque#4": {
@@ -8377,6 +8427,27 @@
     "B_Start": 30,
     "Die": 30
   },
+  "char_4032_provs_wild#7": {
+    "version": "3.8.99",
+    "Attack": {
+      "duration": 38,
+      "OnAttack": 13
+    },
+    "Default": 0,
+    "Idle": 120,
+    "Skill_2_Begin": {
+      "duration": 23,
+      "OnAttack": 14
+    },
+    "Skill_2_End": 10,
+    "Skill_2_Idle": 90,
+    "Skill_2_Loop": {
+      "duration": 30,
+      "OnAttack": 13
+    },
+    "Start": 30,
+    "Die": 30
+  },
   "char_4036_forcer": {
     "version": "3.8.99",
     "Attack_Begin": 5,
@@ -8802,6 +8873,55 @@
       "OnAttack": 4
     }
   },
+  "char_4055_bgsnow_wild#7": {
+    "version": "3.8.99",
+    "Attack_Begin": 15,
+    "Attack_End": 15,
+    "Attack_Loop": {
+      "duration": 48,
+      "OnAttack": 4
+    },
+    "Default": 0,
+    "Idle": 60,
+    "Skill_1_Begin": 15,
+    "Skill_1_Idle": 60,
+    "Skill_1_Loop": {
+      "duration": 48,
+      "OnAttack": 4
+    },
+    "Skill_2": {
+      "duration": 48,
+      "OnAttack": 16
+    },
+    "Skill_3_Begin": 20,
+    "Skill_3_End": 15,
+    "Skill_3_Idle": 60,
+    "Skill_3_Loop": {
+      "duration": 30,
+      "OnAttack": 4
+    },
+    "Start": {
+      "duration": 30,
+      "OnStart": 10
+    },
+    "Attack_Loop_Down": {
+      "duration": 48,
+      "OnAttack": 4
+    },
+    "Die": 30,
+    "Skill_1_Loop_Down": {
+      "duration": 48,
+      "OnAttack": 4
+    },
+    "Skill_2_Down": {
+      "duration": 48,
+      "OnAttack": 16
+    },
+    "Skill_3_Loop_Down": {
+      "duration": 30,
+      "OnAttack": 4
+    }
+  },
   "char_405_absin": {
     "version": "3.8.99",
     "Attack_End": 8,
@@ -9103,6 +9223,56 @@
       "duration": 30,
       "OnStart": 15
     }
+  },
+  "char_4082_qiubai": {
+    "version": "3.8.99",
+    "Attack": {
+      "duration": 35,
+      "OnAttack": 15
+    },
+    "Combat_A": {
+      "duration": 35,
+      "OnAttack": 15
+    },
+    "Combat_B": {
+      "duration": 35,
+      "OnAttack": 15
+    },
+    "Default": 0,
+    "Die": 25,
+    "Idle": 120,
+    "Skill_2": {
+      "duration": 35,
+      "OnAttack": 15
+    },
+    "Skill_3_End": 2,
+    "Skill_3_Idle": 30,
+    "Skill_3_Loop": {
+      "duration": 35,
+      "OnAttack": 13
+    },
+    "Skill_3_Start": 2,
+    "Start": {
+      "duration": 30,
+      "OnStart": 15
+    }
+  },
+  "char_4083_chimes": {
+    "version": "3.8.99",
+    "Attack": {
+      "duration": 50,
+      "OnAttack": 17
+    },
+    "Default": 0,
+    "Die": 30,
+    "Idle": 40,
+    "Skill_Begin": 10,
+    "Skill_End": {
+      "duration": 51,
+      "OnAttack": 15
+    },
+    "Skill_Idle": 40,
+    "Start": 30
   },
   "char_411_tomimi": {
     "version": "3.8.99",
@@ -10963,6 +11133,43 @@
       "OnAttack": 15
     }
   },
+  "char_485_pallas_epoque#19": {
+    "version": "3.8.99",
+    "Attack": {
+      "duration": 40,
+      "OnAttack": 14
+    },
+    "Default": 0,
+    "Idle": 120,
+    "Skill_02": {
+      "duration": 40,
+      "OnAttack": 15
+    },
+    "Skill_03_Begin": 15,
+    "Skill_03_End": 15,
+    "Skill_03_Idle": 120,
+    "Skill_03_Loop": {
+      "duration": 40,
+      "OnAttack": 15
+    },
+    "Start": {
+      "duration": 30,
+      "OnStart": 5
+    },
+    "Attack_Down": {
+      "duration": 40,
+      "OnAttack": 14
+    },
+    "Die": 30,
+    "Skill_02_Down": {
+      "duration": 40,
+      "OnAttack": 15
+    },
+    "Skill_03_Loop_Down": {
+      "duration": 40,
+      "OnAttack": 15
+    }
+  },
   "char_486_takila": {
     "version": "3.8.99",
     "Default": 0,
@@ -11527,6 +11734,24 @@
     "Default": 0,
     "Idle": 30
   },
+  "token_10001_deepcl_tentac_winter#3": {
+    "version": "3.8.99",
+    "Attack": {
+      "duration": 45,
+      "OnAttack": 14
+    },
+    "Attack2": {
+      "duration": 45,
+      "OnAttack": 14
+    },
+    "Default": 0,
+    "Die": 30,
+    "Idle": 30,
+    "x_Attack": {
+      "duration": 45,
+      "OnAttack": 14
+    }
+  },
   "token_10003_cgbird_bird_witch#1": {
     "version": "3.8.99",
     "Default": 0,
@@ -11903,6 +12128,29 @@
     "Start": {
       "duration": 30,
       "OnAttack": 8
+    }
+  },
+  "token_10026_bgsnow_subbow_wild#7": {
+    "version": "3.8.99",
+    "Attack": {
+      "duration": 35,
+      "OnAttack": 2
+    },
+    "Default": 0,
+    "Idle": 10,
+    "Start": {
+      "duration": 20,
+      "OnStart": 5
+    },
+    "Attack_Down": {
+      "duration": 48,
+      "OnAttack": 2
+    },
+    "Default_Down": 0,
+    "Idle_Down": 10,
+    "Start_Down": {
+      "duration": 20,
+      "OnStart": 5
     }
   }
 }

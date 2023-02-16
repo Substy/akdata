@@ -144,5 +144,6 @@
     "char_411_tomimi":  { "mod_update_time": "2023/1/19", "emr": 10 },
     "char_141_nights":  { "mod_update_time": "2023/1/19", "emr": 10 },
     "char_4078_bdhkgt": { "mod_update_time": "2023/1/19", "edef": 100 },
-    "char_2024_chyue":  { "ecount": 2 }
+    "char_2024_chyue":  { "ecount": 2 },
+    "char_4082_qiubai": { "ecount": 2 }
 }

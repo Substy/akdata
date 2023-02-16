@@ -1245,7 +1245,7 @@ function plotPivotCompare(chartView) {
 
   let extraNotes = [...window.vue_app.resultView.extraNotes];
   if (window.vue_app.pivotStageId > 0) {
-    extraNotes.push(`与${window.vue_app.stageKeys[window.vue_app.pivotStageId]}相比`);
+    extraNotes.push(`与${window.vue_app.stageKeys[window.vue_app.pivotStageId]}相比的提升率`);
   }
   let extraTitle = (extraNotes.length > 0 ? `- ${extraNotes.join(" ")}` : "");
 

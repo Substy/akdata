@@ -1974,6 +1974,27 @@ function applyBuff(charAttr, buffFrm, tag, blackbd, isSkill, isCrit, log, enemy)
       case "skchr_lumen_1":
         buffFrame.dpsDuration = blackboard["aura.projectile_life_time"];
         break;
+      case "skchr_chimes_2":
+        if (options.od_trigger)
+          delete blackboard.atk;
+        buffFrame.maxTarget = 999;
+        break;
+      case "tachr_4082_qiubai_1":
+        done = true; break;
+      case "skchr_qiubai_1":
+        if (options.ranged_penalty) {
+          buffFrame.atk_scale = 1;
+          log.writeNote(`技能不受距离惩罚`);
+        }
+        break;
+      case "skchr_qiubai_3":
+        blackboard.attack_speed *= blackboard.max_stack_cnt;
+        buffFrame.maxTarget = 3;
+        if (options.ranged_penalty) {
+          buffFrame.atk_scale = 1;
+          log.writeNote(`技能不受距离惩罚`);
+        }
+        break;
     }
 
   }
@@ -2713,6 +2734,8 @@ function calcDurations(isSkill, attackTime, attackSpeed, levelData, buffList, bu
       log.write(`[特殊] ${displayNames["skchr_huang_3"]}: 实际攻击 ${attackCount}段+终结`);
     } else if (skillId == "skchr_sunbr_2") { // 古米2准备时间延长技能时间
       prepDuration = blackboard.disarm;
+    } else if (skillId == "skchr_qiubai_2") {
+      prepDuration = checkSpecs(skillId, "cast_time") / 30.0;
     } else if (skillId == "skchr_takila_2" && options.charge) {
       duration = blackboard.enhance_duration;
       attackCount = Math.ceil(duration / attackTime);
@@ -2727,17 +2750,51 @@ function calcDurations(isSkill, attackTime, attackSpeed, levelData, buffList, bu
       attackCount = (isSkill ? 10 : 0);
       duration = 15;
       log.writeNote("以攻击10次计算");
+    } else if (skillId == "skchr_chimes_2") {
+      attackCount = 1;  // 只有一刀
+      if (options.od_trigger) duration = 0; // 选择立即结束，时间为0
+      let chimes_s2_cast = checkSpecs(skillId, "cast_time"); // 再加上尾刀时间，以动画时间计
+      log.writeNote(`尾刀时间 ${chimes_s2_cast} 帧`);
+      duration += chimes_s2_cast / 30.0;
+    } else if (skillId == "skchr_qiubai_3") { // 仇白3
+      // 计算当前普攻攻速
+      let fps = 30;
+      let base_attack_time = 39;  // 原本39帧
+      let anim_time = 35; // 动画35帧，如果攻击间隔大于这个数字 则补帧
+      let normal_aspd = attackSpeed - blackboard.attack_speed * blackboard.max_stack_cnt;
+
+      let aspd_list = [...Array(blackboard.max_stack_cnt+1).keys()].map(x => normal_aspd + blackboard.attack_speed * x);
+      let frame_list = aspd_list.map(x => {
+        let f = base_attack_time * 100 / x;
+        if (f > anim_time + 0.5)
+          f = Math.ceil(f) + 1;
+        else 
+          f = Math.round(f);
+        return f;
+      });
+      let stack_frame = frame_list.reduce((x, y) => x+y);
+      let stack_attack_count = frame_list.length;
+
+      let stack_predelay = Math.ceil((checkSpecs(skillId, "attack_begin")-1) * 100 / attackSpeed + 1);  // ceil(15 / 204% + 1)
+      let remain_frame = duration * fps - stack_predelay - stack_frame;
+      let remain_attack_count = Math.ceil(remain_frame / (fps * attackTime));
+      let edge = remain_frame - fps * attackTime * (remain_attack_count-1); // 给calcEdges调用
+      tags["edge"] = edge;
+      attackCount = stack_attack_count + remain_attack_count;
+      log.write(`攻速: ${aspd_list}...`);
+      log.write(`叠层攻击帧数(考虑帧数对齐补正): ${frame_list}...`);
+      log.write(`叠层时间 ${stack_frame} 帧(包括第${stack_attack_count}次攻击)`);
     }
 
     // Jan 26: 处理伤害时间与技能持续时间不同的情况
     if (buffFrame.dpsDuration) {
       dpsDuration = buffFrame.dpsDuration;
-      log.writeNote(`技能${duration}s, 伤害持续${dpsDuration}s`);
+      log.writeNote(`技能伤害持续${dpsDuration.toFixed(3)}s`);
       tags.push("diff");
     }
     if (buffFrame.dpsDurationDelta) {
       dpsDuration = buffFrame.dpsDurationDelta + duration;
-      log.writeNote(`技能${duration}s, 伤害持续${dpsDuration}s`);
+      log.writeNote(`技能伤害持续${dpsDuration.toFixed(3)}s`);
       tags.push("diff");
     }
   } else { // 普攻
@@ -3028,6 +3085,7 @@ function calcDurations(isSkill, attackTime, attackSpeed, levelData, buffList, bu
 
   return {
     attackCount,
+    attackSpeed,
     times: buffFrame.times,
     hitCount,
     duration,
@@ -3042,15 +3100,23 @@ function calcDurations(isSkill, attackTime, attackSpeed, levelData, buffList, bu
 // 计算边缘情况
 function calcEdges(blackboard, frame, dur, log) {
   let skillId = blackboard.id;
-  let attackBegin = checkSpecs(skillId, "attack_begin") || 12;  // 抬手时间
+  let attackBegin = checkSpecs(skillId, "attack_begin") || 12;  // specialtags记载的抬手时间，=前摇时间+1
+  attackBegin = Math.ceil((attackBegin-1) * 100 / dur.attackSpeed + 1);  // 前摇部分受攻速影响
   let durationF = Math.round(30 * dur.duration);
   let remainF = attackBegin + frame * dur.attackCount - durationF;
   let passF = frame - remainF;
 
+  if (dur.tags.edge) {
+    passF = dur.tags.edge;
+    remainF = frame - passF;
+  }
+
   log.write("**【边缘情况估算(测试)】**");
-  log.write(`技能持续时间: ${durationF} 帧, 抬手 ${attackBegin} 帧, 攻击间隔 ${frame} 帧`);
+  log.write(`技能持续时间: ${durationF} 帧, 攻速 ${dur.attackSpeed}%, 抬手 ${attackBegin} 帧, 攻击间隔 ${frame} 帧`);
   log.write(`技能结束时，前一次攻击经过: **${passF} 帧**`);
-  log.write(`技能结束时，下一次攻击还需: **${remainF} 帧**`);
+  log.write(`技能结束时，下一次攻击判定还需: **${remainF} 帧**`);
+  if (remainF <= attackBegin)
+    log.write('** 技能结束时，可能正在抬手 **');
 
   dur.remain = remainF;
 }
@@ -4459,6 +4525,59 @@ function calculateAttack(charAttr, enemy, raidBlackboard, isSkill, charData, lev
           pool[0] += damage * (enemy.count - 1) * dur.hitCount;
           log.write(`范围伤害 ${damage.toFixed(1)} (不计第一天赋), 命中 ${(enemy.count-1) * dur.hitCount}`);
         }
+        break;
+      case "tachr_4082_qiubai_1":
+        let qiubai_t1_hit_skill = 0;
+        let qiubai_t1_hit_extra = 0;
+        if (isSkill) {
+          // 根据技能和触发选项，设定攻击次数
+          // s1 不触发：技能攻击1 结束伤害 不计
+          // s1 触发：技能1 结束伤害 enemy.count
+          // s2 无论触发与否都计额外伤害 技能 hitCount，额外伤害 enemy.count*2
+          // s3 不触发：不计，触发：计
+          switch (blackboard.id) {
+            case "skchr_qiubai_1":
+              qiubai_t1_hit_skill = dur.hitCount;  
+              qiubai_t1_hit_extra = (options.cond ? parseInt(enemy.count) : 0);
+              log.write("技能伤害触发第一天赋，范围伤害跟随选项");
+              break;
+            case "skchr_qiubai_2":
+              log.writeNote("全程触发第一天赋");
+              qiubai_t1_hit_skill = dur.hitCount;
+              qiubai_t1_hit_extra = parseInt(enemy.count)*2;
+              break;
+            case "skchr_qiubai_3":
+              if (options.cond) {
+                qiubai_t1_hit_skill = dur.hitCount;
+                log.writeNote("全程触发第一天赋");
+              } else 
+                log.writeNote("不计第一天赋伤害");
+              break;
+          }
+
+          damage = finalFrame.atk / buffFrame.atk_scale * bb.atk_scale * (1-emrpct) * buffFrame.damage_scale;
+          pool[1] += damage * (qiubai_t1_hit_skill + qiubai_t1_hit_extra);
+
+          log.write(`${displayNames[buffName]}: 法术伤害 ${damage.toFixed(1)}`);
+          log.write(`${displayNames[buffName]}: 额外伤害次数: 攻击 ${qiubai_t1_hit_skill} 额外 ${qiubai_t1_hit_extra}`);
+        } else if (options.cond) {
+          damage = finalFrame.atk * bb.atk_scale * (1-emrpct) * buffFrame.damage_scale;
+          pool[1] += damage * dur.hitCount;
+        }
+        break;
+      case "skchr_qiubai_1":
+        damage = finalFrame.atk * bb.aoe_scale * (1-emrpct) * buffFrame.damage_scale;
+        pool[1] += damage * enemy.count;
+        break;
+      case "skchr_qiubai_2":
+        let qiubai_s2_a1 = finalFrame.atk / buffFrame.atk_scale - bb.atk * basicFrame.atk;
+        let qiubai_s2_a2 = finalFrame.atk / buffFrame.atk_scale * bb.sword_end_atk_scale;
+        let qiubai_s2_d1 = qiubai_s2_a1 * bb.sword_begin_atk_scale * (1-emrpct) * buffFrame.damage_scale;
+        let qiubai_s2_d2 = Math.max(qiubai_s2_a2 - edef, qiubai_s2_a2*0.05) * buffFrame.damage_scale;
+        log.write(`${displayNames[buffName]}: 初始伤害攻击力 ${qiubai_s2_a1.toFixed(1)}`);
+        log.write(`${displayNames[buffName]}: 初始伤害-法术: ${qiubai_s2_d1.toFixed(1)}, 收尾伤害-物理: ${qiubai_s2_d2.toFixed(1)}`);
+        pool[1] += qiubai_s2_d1 * enemy.count;
+        pool[0] += qiubai_s2_d2 * enemy.count;
         break;
     }; // extraDamage switch ends here
 
