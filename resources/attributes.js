@@ -4529,6 +4529,7 @@ function calculateAttack(charAttr, enemy, raidBlackboard, isSkill, charData, lev
       case "tachr_4082_qiubai_1":
         let qiubai_t1_hit_skill = 0;
         let qiubai_t1_hit_extra = 0;
+        let talent_scale = 1;
         if (isSkill) {
           // 根据技能和触发选项，设定攻击次数
           // s1 不触发：技能攻击1 结束伤害 不计
@@ -4552,13 +4553,14 @@ function calculateAttack(charAttr, enemy, raidBlackboard, isSkill, charData, lev
                 log.writeNote("全程触发第一天赋");
               } else 
                 log.writeNote("不计第一天赋伤害");
+              if (buffList.skill.talent_scale) talent_scale = buffList.skill.talent_scale;
               break;
           }
 
-          damage = finalFrame.atk / buffFrame.atk_scale * bb.atk_scale * (1-emrpct) * buffFrame.damage_scale;
+          damage = finalFrame.atk / buffFrame.atk_scale * bb.atk_scale * talent_scale * (1-emrpct) * buffFrame.damage_scale;
           pool[1] += damage * (qiubai_t1_hit_skill + qiubai_t1_hit_extra);
 
-          log.write(`${displayNames[buffName]}: 法术伤害 ${damage.toFixed(1)}`);
+          log.write(`${displayNames[buffName]}: 法术伤害 ${damage.toFixed(1)} (天赋倍率 ${talent_scale.toFixed(1)})`);
           log.write(`${displayNames[buffName]}: 额外伤害次数: 攻击 ${qiubai_t1_hit_skill} 额外 ${qiubai_t1_hit_extra}`);
         } else if (options.cond) {
           damage = finalFrame.atk * bb.atk_scale * (1-emrpct) * buffFrame.damage_scale;
