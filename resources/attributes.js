@@ -3112,7 +3112,7 @@ function calcEdges(blackboard, frame, dur, log) {
   }
 
   log.write("**【边缘情况估算(测试)】**");
-  log.write(`技能持续时间: ${durationF} 帧, 攻速 ${dur.attackSpeed}%, 抬手 ${attackBegin} 帧, 攻击间隔 ${frame} 帧`);
+  log.write(`技能持续时间: ${durationF} 帧, 攻速 ${dur.attackSpeed}%, 抬手 ${attackBegin} 帧(受攻速影响), 攻击间隔 ${frame} 帧`);
   log.write(`技能结束时，前一次攻击经过: **${passF} 帧**`);
   log.write(`技能结束时，下一次攻击判定还需: **${remainF} 帧**`);
   if (remainF <= attackBegin)
