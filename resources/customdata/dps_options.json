@@ -234,7 +234,7 @@
         "char_302_glaze":   [ "equip", "far" ],
         "char_430_fartth":  [ "cond", "equip", "far" ],
         "char_431_ashlok":  [ "cond" ],
-        "char_1014_nearl2": [ "cond", "block", "equip", "short_mode" ],
+        "char_1014_nearl2": [ "cond", "block", "short_mode" ],
         "char_420_flamtl":  [ "crit" ],
         "char_144_red":     [ "equip" ],
         "char_214_kafka":   [ "cond", "equip" ],

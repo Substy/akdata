@@ -1995,6 +1995,9 @@ function applyBuff(charAttr, buffFrm, tag, blackbd, isSkill, isCrit, log, enemy)
           log.writeNote(`技能不受距离惩罚`);
         }
         break;
+      case "skchr_bison_2":
+        blackboard.def = blackboard["bison_s_2[self].def"];
+        break;
     }
 
   }
@@ -2068,7 +2071,7 @@ function applyBuff(charAttr, buffFrm, tag, blackbd, isSkill, isCrit, log, enemy)
     case "uniequip_002_cqbw":
     case "uniequip_002_sesa":
     case "uniequip_003_skadi":
-      if (options.equip)
+      if (options.equip || options.block)
         blackboard = blackboard.trait;
       break;
     case "uniequip_002_skadi":
@@ -2548,6 +2551,10 @@ function calcDurations(isSkill, attackTime, attackSpeed, levelData, buffList, bu
       case "skchr_texas2_2":
         log.writeNote("落地1s，不影响技能时间");
         prepDuration = 0.167;
+        break;
+      case "skchr_lin_2":
+        prepDuration = 1.333;
+        log.writeNote("技能开关耗费40帧");
         break;
     }
 
@@ -3880,7 +3887,7 @@ function calculateAttack(charAttr, enemy, raidBlackboard, isSkill, charData, lev
                 break;
             case "skchr_nearl2_2":
                 if (isSkill) {
-                    pool[3] += damage * ecount * _nHit;
+                    pool[3] += damage * enemy.count * _nHit;
                     log.write(`[特殊] ${displayNames[buffName]}: 落地伤害 ${damage.toFixed(1)}, 命中 ${ecount*_nHit}`);
                 }
                 break;
@@ -3890,7 +3897,7 @@ function calculateAttack(charAttr, enemy, raidBlackboard, isSkill, charData, lev
                 else {
                     _scale = buffList.skill.value;
                     damage = finalFrame.atk * _scale * buffFrame.damage_scale;
-                    pool[3] += damage * ecount * _nHit;
+                    pool[3] += damage * enemy.count * _nHit;
                     log.write(`[特殊] ${displayNames[buffName]}: 落地伤害 ${damage.toFixed(1)}, 命中 ${ecount*_nHit}`);
                 }
             break;
@@ -3925,7 +3932,10 @@ function calculateAttack(charAttr, enemy, raidBlackboard, isSkill, charData, lev
         // console.log(finalFrame);
         pool[2] += bb.heal_scale * finalFrame.maxHp; break;
       case "skchr_nightm_1":
-        pool[2] += damagePool[1] * bb["attack@heal_scale"] * Math.min(enemy.count, bb["attack@max_target"]); break;
+        damage = finalFrame.atk * bb["attack@heal_scale"];
+        pool[2] += damage * dur.hitCount * Math.min(enemy.count, bb["attack@max_target"]); 
+        log.writeNote("以攻击力计算治疗量，而非伤害");
+        break;
       case "tachr_1024_hbisc2_trait":
       case "tachr_1020_reed2_trait":
         pool[2] += damagePool[1] * bb.scale; break;
@@ -4425,9 +4435,11 @@ function calculateAttack(charAttr, enemy, raidBlackboard, isSkill, charData, lev
       case "sktok_ironmn_pile3":
         if (isSkill) {
           let pile3_atk = finalFrame.atk / 2;
-          damage = Math.max(pile3_atk - edef, pile3_atk * 0.05)* buffFrame.damage_scale;
-          log.write(`范围伤害 ${damage.toFixed(1)}, 命中 ${enemy.count * dur.hitCount}`);
-          pool[0] += damage * enemy.count * dur.hitCount;
+          if (enemy.count > 1) {
+            damage = Math.max(pile3_atk - edef, pile3_atk * 0.05)* buffFrame.damage_scale;
+            log.write(`范围伤害 ${damage.toFixed(1)}, 命中 ${(enemy.count-1) * dur.hitCount}`);
+            pool[0] += damage * (enemy.count-1) * dur.hitCount;
+          }
         }
         break;
       case "skchr_reed2_2":
@@ -4529,12 +4541,14 @@ function calculateAttack(charAttr, enemy, raidBlackboard, isSkill, charData, lev
       case "tachr_4082_qiubai_1":
         let qiubai_t1_hit_skill = 0;
         let qiubai_t1_hit_extra = 0;
+        let qiubai_t1_atk_extra = finalFrame.atk;
         let talent_scale = 1;
         if (isSkill) {
           // 根据技能和触发选项，设定攻击次数
           // s1 不触发：技能攻击1 结束伤害 不计
           // s1 触发：技能1 结束伤害 enemy.count
           // s2 无论触发与否都计额外伤害 技能 hitCount，额外伤害 enemy.count*2
+          // 但是额外伤害不计攻击加成
           // s3 不触发：不计，触发：计
           switch (blackboard.id) {
             case "skchr_qiubai_1":
@@ -4545,7 +4559,8 @@ function calculateAttack(charAttr, enemy, raidBlackboard, isSkill, charData, lev
             case "skchr_qiubai_2":
               log.writeNote("全程触发第一天赋");
               qiubai_t1_hit_skill = dur.hitCount;
-              qiubai_t1_hit_extra = parseInt(enemy.count)*2;
+              qiubai_t1_hit_extra = parseInt(enemy.count) * 2;
+              qiubai_t1_atk_extra = finalFrame.atk / buffFrame.atk_scale - buffList.skill.atk * basicFrame.atk;
               break;
             case "skchr_qiubai_3":
               if (options.cond) {
@@ -4557,13 +4572,17 @@ function calculateAttack(charAttr, enemy, raidBlackboard, isSkill, charData, lev
               break;
           }
 
-          damage = finalFrame.atk / buffFrame.atk_scale * bb.atk_scale * talent_scale * (1-emrpct) * buffFrame.damage_scale;
-          pool[1] += damage * (qiubai_t1_hit_skill + qiubai_t1_hit_extra);
+          let damage_atk = finalFrame.atk / buffFrame.atk_scale * bb.atk_scale * talent_scale * (1-emrpct) * buffFrame.damage_scale;
+          let damage_extra = qiubai_t1_atk_extra * bb.atk_scale * talent_scale * (1-emrpct) * buffFrame.damage_scale;
+          pool[1] += damage_atk * qiubai_t1_hit_skill + damage_extra * qiubai_t1_hit_extra;
 
-          log.write(`${displayNames[buffName]}: 法术伤害 ${damage.toFixed(1)} (天赋倍率 ${talent_scale.toFixed(1)})`);
+          log.write(`${displayNames[buffName]}: 额外伤害 ${damage_atk.toFixed(1)} (天赋倍率 ${talent_scale.toFixed(1)})`);
+          if (blackboard.id == "skchr_qiubai_2")
+            log.write(`${displayNames[buffName]}: 首尾刀额外伤害 ${damage_extra.toFixed(1)} (不计攻击力加成)`);
           log.write(`${displayNames[buffName]}: 额外伤害次数: 攻击 ${qiubai_t1_hit_skill} 额外 ${qiubai_t1_hit_extra}`);
+
         } else if (options.cond) {
-          damage = finalFrame.atk * bb.atk_scale * (1-emrpct) * buffFrame.damage_scale;
+          damage = finalFrame.atk / buffFrame.atk_scale * bb.atk_scale * (1-emrpct) * buffFrame.damage_scale;
           pool[1] += damage * dur.hitCount;
         }
         break;
@@ -5027,7 +5046,8 @@ function getAttributes(char, log) { //charId, phase = -1, level = -1
   applyPotential(char.charId, charData, char.potentialRank, attributesKeyFrames, log);
   if (char.equipId && char.phase >= 2) {
     applyEquip(char, attributesKeyFrames, log);
-    buffList[char.equipId] = attributesKeyFrames.equip_blackboard;
+    if (!checkSpecs(char.equipId, "defer")) // 普通模组，在天赋前添加
+      buffList[char.equipId] = attributesKeyFrames.equip_blackboard;
   }
 
   // 计算天赋/特性，记为Buff
@@ -5084,6 +5104,10 @@ function getAttributes(char, log) { //charId, phase = -1, level = -1
     }); // foreach
   }
 
+  if (checkSpecs(char.equipId, "defer")) { // 特殊模组，buff在天赋后结算
+    buffList[char.equipId] = attributesKeyFrames.equip_blackboard;
+    log.write("延后结算模组效果");
+  }
   // 令3
   if (char.skillId == "skchr_ling_3" && char.options.ling_fusion && char.options.token) {
     log.write("“弦惊” - 高级形态: 添加合体Buff");
