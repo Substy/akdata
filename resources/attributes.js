@@ -2897,34 +2897,55 @@ function calcDurations(isSkill, attackTime, attackSpeed, levelData, buffList, bu
     } else if (skillId == "skchr_yato2_1") {
       // 这部分代码需要统一化
       let fps = 30;
-      let base_attack_time = 28;  // 原本39帧
-      let atb_12 = 15, atb_3 = 19, atb_4 = 9; // 原本前摇
-      let real_atb_12 = Math.round(atb_12 * 100 / attackSpeed);
-      let real_atb_3 = Math.round(atb_3 * 100 / attackSpeed);
-      let real_atb_4 = Math.round(atb_4 * 100 / attackSpeed);
-      let f = base_attack_time * 100 / attackSpeed;
-      let f_third = Math.round(f) * 2; // 第三刀不补帧
-      if (Math.round(f) < Math.ceil(f)) // -- 无ResetCDStrategy时，无论动画帧数多少都根据round和ceil的大小判断是否补帧（存疑）
-        f = Math.ceil(f) + 1;
-      else 
-        f = Math.round(f);
-      log.writeNote(`连击帧数 ${f}-${f}-${f_third}`);
-      let rotationFrame = f + f + f_third;
+      let base_attack_time = 0.93;  // 原本攻击间隔/s
+      let atb = [15, 15, 19, 9];  // 4刀各自的原本前摇
+      let anim = [30, 30, 31, 32]; // 各自动画时间
+      let real_atb = atb.map(x => Math.round(x * 100 / attackSpeed)); // 各自实际前摇
+      let real_attack_time = base_attack_time * 100 / attackSpeed;
+      let frameCorrection = function(realAttackTime, origAnimFrame, maxAnimScale, resetCDStrategy, relyOnAttackSpeed, speed) { // realAttackTime
+        // resetCD = False, maxAnimScale = 1, speed = 1, rely = False
+        origAnimFrame /= speed; // 调速
+        // 计算scale
+        let attackFrame = Math.round(realAttackTime * fps * 100000)/100000; // 攻击帧数（不舍入但保留小数位）
+        let scale = attackFrame / origAnimFrame;
+        if (maxAnimScale > 0) scale = Math.min(maxAnimScale, scale);
+        if (!relyOnAttackSpeed) scale = 1;
+        //console.log("scale: ", scale);
 
+        // animation frame (混合了前后摇，并且四舍五入)
+        let animFrame = Math.round(origAnimFrame * scale);
+        // resetCDStrategy为True时舍入，False时只能ceil
+        let attackFrameInt = (resetCDStrategy ? Math.round(attackFrame) : Math.ceil(attackFrame));
+        // 补帧判断
+        if (attackFrameInt > animFrame) attackFrameInt += 1;
+        attackFrameInt = Math.max(animFrame, attackFrameInt); // 不能比缩放后的动画短，以此拉长攻击间隔
+        // duration: 动画帧数, interval: 补帧后的攻击间隔
+        console.log({animFrame, attackFrameInt, attackFrame, real_attack_time});
+        return { duration: animFrame, interval: attackFrameInt};
+      };
+
+      let f_12 = frameCorrection(real_attack_time, anim[0], 1, false, true, 1).interval; // 前两刀补帧
+      let f_3 = frameCorrection(real_attack_time, anim[2], 1, false, true, 1).duration; // 3-4刀只计算动画时间
+      let f_4 = frameCorrection(real_attack_time, anim[3], 1, false, true, 1).duration;
+      let f_34 = frameCorrection(real_attack_time, f_3+f_4, 1, false, false, 1).interval; // 之后在relyAttackSpeed=False的环境中一起补帧
+      log.writeNote(`连击帧数 ${f_12}-${f_12}-${f_34}`);
+
+      let rotationFrame = f_12 + f_12 + f_34;
+      // 尾刀计算
       let n = Math.floor(duration * fps / rotationFrame);
       attackCount = n * 5;
       let r = duration * fps - n * rotationFrame;
-      if (r > real_atb_12) {
-        r -= f; attackCount += 1;
+      if (r > real_atb[0]) {
+        r -= f_12; attackCount += 1;
       }
-      if (r > real_atb_12) {
-        r -= f; attackCount += 1;
+      if (r > real_atb[0]) {
+        r -= f_12; attackCount += 1;
       }
-      if (r > real_atb_3) {
-        r -= f_third / 2; attackCount += 2;
+      if (r > real_atb[2]) {
+        r -= f_3; attackCount += 2;
       }
-      if (r > real_atb_4) {
-        r -= f_third / 2; attackCount += 1;
+      if (r > real_atb[3]) {
+        r = r+f_3-f_34; attackCount += 1;
       }
       log.write(`攻击次数 ${n} * 10 + ${(attackCount-n*5)*2}`);
       tags["edge"] = r;

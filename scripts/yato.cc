@@ -1,5 +1,6 @@
 #include <iostream>
 #include <math.h>
+#include "cstdlib"
 
 using namespace std;
 
@@ -104,10 +105,11 @@ void AttackInterval::CalculateAndPrintAll(){
     cout<<"real_interval: "<<interval<<endl; //实际攻击间隔（帧）
 }
 
-int main ()
+int main (int argc, char **argv)
 {
     float base_interval = 0.93f;
-    float atk_speed = 100.0f + 0.0f;
+    float atk_speed = atof(argv[1]);
+    cout << "Attack speed: " << atk_speed << endl;
     float atk_interval = 100.0f * base_interval / atk_speed;
     
     AttackInterval yato_12(atk_interval, 30.0f/30.0f, 1.0f, 12.0f/30.0f, 0, 1.0f, 1);
@@ -125,6 +127,7 @@ int main ()
     int yato_3_duration = yato_3_1_f + yato_3_2_f;
     
     AttackInterval yato_3(atk_interval, yato_3_duration/30.0f, 1.0f, 0.0f, 0, 1.0f, 0);
+    cout << "--- yato 3-merge: "; yato_3.CalculateAndPrintAll();
     int yato_3_f = yato_3.CalculateRealIntervalInFrame();
     
     cout<<"1st and 2nd atk interval: "<< yato_12_f <<endl;
