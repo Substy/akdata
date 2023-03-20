@@ -2,17 +2,19 @@ const stringRegex = /<[@\$](.+?)>(.+?)<\/>/g;
 const variableRegex = /{(\-)*(.+?)(?:\:(.+?))?}/g;
 
 let CacheList = null;
-let _use_local = false;
+let _use_local = true;
+let _use_todo_list = true;
 
 const useCache = true;
 const cacheBeginTime = new Date(2019, 12, 10).getTime();
 
 window.AKDATA = {
-  akdata: "230217", // jsdelivr tag version
+  akdata: "230320", // jsdelivr tag version
 
   Data: {},
 
-  new_op: ["char_4082_qiubai", "char_4083_chimes"],
+  new_op: ["char_1029_yato2", "char_1030_noirc2"],
+  todo_list: ["char_400_weedy", "char_4072_ironmn"],
 
   professionNames: {
     "PIONEER": "先锋",
@@ -176,7 +178,7 @@ window.AKDATA = {
       let data = AKDATA.Data.item_table.items[id];
       text = data.name;
       rarity = data.rarity;
-      if (id == "30145") rarity = "crystal";
+      if (id == "30145" || id == "30155") rarity = "crystal";
     }
     let s = createBadge('item', text, rarity);
     if ( count !== null ) s += createBadge('count', '×' + count);
@@ -281,9 +283,21 @@ window.AKDATA = {
   },
 
   selectChar: function(id) {
-    AKDATA.selChar = id;
     $("#select_char_dialog").modal("hide");
-    if (AKDATA.selectCharCallback) AKDATA.selectCharCallback(id);
+    if (_use_todo_list && AKDATA.todo_list.includes(id)) {
+      let charName = AKDATA.Data.character_table[id].name;
+      pmBase.component.create({
+        type: 'modal',
+        id: "error_dialog",
+        content: "计算结果调整中，敬请期待",
+        width: 600,
+        title: `施工中 - ${charName}`,
+        show: true,
+      });
+    } else {
+      AKDATA.selChar = id;
+      if (AKDATA.selectCharCallback) AKDATA.selectCharCallback(id);
+    }
   },
   selectCharCallback: null,
 

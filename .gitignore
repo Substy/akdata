@@ -13,3 +13,6 @@ assets/images/relic/
 */build/*
 resources/gamedata/story
 npm/node_modules
+a.exe
+*.zip
+

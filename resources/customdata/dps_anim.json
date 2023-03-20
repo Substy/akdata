@@ -837,6 +837,61 @@
     },
     "Die": 30
   },
+  "char_1029_yato2": {
+    "version": "3.8.99",
+    "Attack1": {
+      "duration": 30,
+      "OnAttack": 15
+    },
+    "Attack2": {
+      "duration": 30,
+      "OnAttack": 15
+    },
+    "Attack3": {
+      "duration": 30,
+      "OnAttack": 15
+    },
+    "Default": 0,
+    "Idle": 300,
+    "Skill_2": {
+      "duration": 103,
+      "OnAttack": 89
+    },
+    "Skill_3_End": 20,
+    "Skill_Attack1": {
+      "duration": 30,
+      "OnAttack": 12
+    },
+    "Skill_Attack2": {
+      "duration": 30,
+      "OnAttack": 12
+    },
+    "Skill_Attack3": {
+      "duration": 31,
+      "OnAttack": 19
+    },
+    "Skill_Attack4": {
+      "duration": 32,
+      "OnAttack": 9
+    },
+    "Skill_End": 15,
+    "Skill_Idle": 120,
+    "Start_1": {
+      "duration": 30,
+      "OnStart": 13
+    },
+    "Start_2": {
+      "duration": 30,
+      "OnStart": 16
+    },
+    "Start_3": {
+      "duration": 30,
+      "OnStart": 16
+    },
+    "Die": 30,
+    "Stun": 187,
+    "Stun_Begin": 30
+  },
   "char_102_texas": {
     "version": "3.8.99",
     "Attack_End": 15,
@@ -888,6 +943,42 @@
     "Die": 30,
     "Skill": 65
   },
+  "char_1030_noirc2": {
+    "version": "3.8.99",
+    "Attack_1": {
+      "duration": 36,
+      "OnAttack": 14
+    },
+    "Attack_2": {
+      "duration": 36,
+      "OnAttack": 14
+    },
+    "Attack_3": {
+      "duration": 36,
+      "OnAttack": 14
+    },
+    "Attack_4": {
+      "duration": 36,
+      "OnAttack": 13
+    },
+    "Default": 0,
+    "Idle": 36,
+    "Skill_1_Begin": 30,
+    "Skill_1_End": {
+      "duration": 30,
+      "OnAttack": 2
+    },
+    "Skill_1_Loop": 30,
+    "Skill_2": {
+      "duration": 42,
+      "OnAttack": 26
+    },
+    "Start": {
+      "duration": 30,
+      "OnStart": 8
+    },
+    "Die": 30
+  },
   "char_103_angel": {
     "version": "3.8.99",
     "Attack": {
@@ -911,6 +1002,20 @@
     "Default": 0,
     "Die": 30,
     "Idle": 30,
+    "Start": {
+      "duration": 30,
+      "OnStart": 4
+    }
+  },
+  "char_103_angel_sale#8": {
+    "version": "3.8.99",
+    "Attack": {
+      "duration": 30,
+      "OnAttack": 9
+    },
+    "Default": 0,
+    "Die": 30,
+    "Idle": 120,
     "Start": {
       "duration": 30,
       "OnStart": 4
@@ -6676,6 +6781,28 @@
     },
     "Die": 21
   },
+  "char_336_folivo_epoque#22": {
+    "version": "3.8.99",
+    "Attack": {
+      "duration": 31,
+      "OnAttack": 16
+    },
+    "Default": 0,
+    "Idle": 80,
+    "Skill_1": {
+      "duration": 24,
+      "OnAttack": 8
+    },
+    "Skill_2": {
+      "duration": 25,
+      "OnAttack": 13
+    },
+    "Start": {
+      "duration": 25,
+      "OnStart": 6
+    },
+    "Die": 31
+  },
   "char_337_utage": {
     "version": "3.8.99",
     "Attack": {
@@ -7270,6 +7397,30 @@
       "OnAttack": 17
     }
   },
+  "char_358_lisa_epoque#22": {
+    "version": "3.8.99",
+    "Attack": {
+      "duration": 43,
+      "OnAttack": 14
+    },
+    "Default": 0,
+    "Idle": 251,
+    "Skill2": {
+      "duration": 52,
+      "OnAttack": 24
+    },
+    "Start": {
+      "duration": 30,
+      "OnStart": 7
+    },
+    "Die": 29,
+    "Skill3_Begin": 15,
+    "Skill3_End": 27,
+    "Skill3_Loop": {
+      "duration": 34,
+      "OnAttack": 17
+    }
+  },
   "char_358_lisa_lxh#1": {
     "version": "3.8.99",
     "Attack": {
@@ -7831,6 +7982,32 @@
       "duration": 30,
       "OnStart": 5
     }
+  },
+  "char_388_mint_epoque#22": {
+    "version": "3.8.99",
+    "Default": 0,
+    "Idle": 80,
+    "Skill_1_Begin": 15,
+    "Skill_1_End": 20,
+    "Skill_1_Idle": 60,
+    "Skill_1_Loop": {
+      "duration": 30,
+      "OnAttack": 5
+    },
+    "Skill_2_Begin": 15,
+    "Skill_2_End": {
+      "duration": 40,
+      "OnAttack": 18
+    },
+    "Skill_2_Loop": {
+      "duration": 40,
+      "OnAttack": 5
+    },
+    "Start": {
+      "duration": 30,
+      "OnStart": 5
+    },
+    "Die": 30
   },
   "char_391_rosmon": {
     "version": "3.8.99",
@@ -8449,6 +8626,34 @@
     "Die": 30
   },
   "char_4036_forcer": {
+    "version": "3.8.99",
+    "Attack_Begin": 5,
+    "Attack_End": 5,
+    "Attack_Loop": {
+      "duration": 36,
+      "OnAttack": 10
+    },
+    "Attack_Loop_Down": {
+      "duration": 36,
+      "OnAttack": 10
+    },
+    "Default": 0,
+    "Die": 30,
+    "Idle": 90,
+    "Skill": {
+      "duration": 36,
+      "OnAttack": 12
+    },
+    "Skill_Down": {
+      "duration": 36,
+      "OnAttack": 12
+    },
+    "Start": {
+      "duration": 30,
+      "OnStart": 8
+    }
+  },
+  "char_4036_forcer_epoque#20": {
     "version": "3.8.99",
     "Attack_Begin": 5,
     "Attack_End": 5,
@@ -9157,6 +9362,54 @@
       "duration": 30,
       "OnStart": 5
     }
+  },
+  "char_4077_palico": {
+    "version": "3.8.99",
+    "Attack_Begin": {
+      "duration": 35,
+      "OnDeactivateEffect": 0,
+      "OnActivateEffect": 20
+    },
+    "Attack_End": {
+      "duration": 22,
+      "OnActivateEffect": 0,
+      "OnDeactivateEffect": 13
+    },
+    "Attack_Loop": {
+      "duration": 63,
+      "OnAttack": 6,
+      "OnDeactivateEffect": 6,
+      "OnActivateEffect": 50
+    },
+    "Default": 0,
+    "Idle": 120,
+    "Start": 30,
+    "Die": 30,
+    "Stun": 120
+  },
+  "char_4077_palico_mh#1": {
+    "version": "3.8.99",
+    "Attack_Begin": {
+      "duration": 35,
+      "OnDeactivateEffect": 0,
+      "OnActivateEffect": 20
+    },
+    "Attack_End": {
+      "duration": 22,
+      "OnActivateEffect": 0,
+      "OnDeactivateEffect": 13
+    },
+    "Attack_Loop": {
+      "duration": 63,
+      "OnAttack": 6,
+      "OnDeactivateEffect": 6,
+      "OnActivateEffect": 50
+    },
+    "Default": 0,
+    "Die": 30,
+    "Idle": 120,
+    "Start": 30,
+    "Stun": 120
   },
   "char_4078_bdhkgt": {
     "version": "3.8.99",
@@ -11902,6 +12155,17 @@
       "duration": 26,
       "OnAttack": 10
     }
+  },
+  "token_10010_folivo_car_epoque#22": {
+    "version": "3.8.99",
+    "Attack": {
+      "duration": 26,
+      "OnAttack": 10
+    },
+    "Default": 0,
+    "Die": 42,
+    "Idle": 8,
+    "Stun": 27
   },
   "token_10011_beewax_oblisk_epoque#9": {
     "version": "3.8.99",

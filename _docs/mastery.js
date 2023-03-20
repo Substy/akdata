@@ -572,22 +572,27 @@ function calculate(charId) {
   let equipId = null, equipName = null;
   let extraNotes = [];
 
+  enemy.count = 1;
   let masterySpecs = AKDATA.Data.mastery[charId] || {};
-
-  if ("ecount" in masterySpecs) {
-    enemy.count = masterySpecs.ecount;
-    extraNotes.push(`${enemy.count}目标`);
-  } else enemy.count = 1;
-
-  if ("emr" in masterySpecs) {
-    enemy.magicResistance = masterySpecs.emr;
-    extraNotes.push(`${enemy.magicResistance}法抗`);
-  }
-
-  if ("edef" in masterySpecs) {
-    enemy.def = masterySpecs.edef;
-    extraNotes.push(`${enemy.def}防御`);
-  }
+  Object.keys(masterySpecs).forEach(key => {
+    switch (key) {
+      case "ecount":
+        enemy.count = masterySpecs.ecount;
+        extraNotes.push(`${enemy.count}目标`);
+        break;
+      case "emr":
+        enemy.magicResistance = masterySpecs.emr;
+        extraNotes.push(`${enemy.magicResistance}法抗`);
+        break;
+      case "edef":
+        enemy.def = masterySpecs.edef;
+        extraNotes.push(`${enemy.def}防御`);
+        break;
+      case "note":
+        extraNotes.push(masterySpecs.note);
+        break;
+    }
+  });
 
   window.vue_app.calculating = true;
 
@@ -598,6 +603,9 @@ function calculate(charId) {
     for (let st in Stages) {
       $.extend(recipe, stages[st]);
       let ch = buildChar(charId, skill.skillId, recipe);
+      if ("options" in masterySpecs) {
+        Object.assign(ch.options, masterySpecs.options);
+      }
       ch.dps = AKDATA.attributes.calculateDps(ch, enemy, raidBuff);
       if (ch.options.token && !extraNotes.includes("召唤物")) {
         extraNotes.push("召唤物");
@@ -699,7 +707,7 @@ function calculate(charId) {
   // 绿票算法
   let greenTable = {};
   AKDATA.Data.itemValue.forEach(item => {
-    if (item.version == "auto0.625")
+    if (item.expCoefficient == 0.625)
       greenTable[item.itemName] = item.itemValueGreen;
   });
   //console.log(greenTable);

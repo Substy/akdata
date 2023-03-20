@@ -110,7 +110,7 @@
     "char_199_yak":     { "mod_update_time": "2022/9/11" },
     "char_4032_provs":  { "mod_update_time": "2022/9/11" },
     "char_003_kalts":   { "mod_update_time": "2022/10/2" },
-    "char_147_shining": { "mod_update_time": "2022/10/2" },
+    "char_147_shining": { "mod_update_time": "2022/3/20" },
     "char_171_bldsk":   { "mod_update_time": "2022/10/2" },
     "char_402_tuye":    { "mod_update_time": "2022/10/2" },
     "char_117_myrrh":   { "mod_update_time": "2022/10/2" },
@@ -145,5 +145,14 @@
     "char_141_nights":  { "mod_update_time": "2023/1/19", "emr": 10 },
     "char_4078_bdhkgt": { "mod_update_time": "2023/1/19", "edef": 100 },
     "char_2024_chyue":  { "ecount": 2 },
-    "char_4082_qiubai": { "ecount": 2 }
+    "char_4082_qiubai": { "ecount": 2 },
+    "char_1030_noirc2": { "mod_update_time": "2023/3/14", "options": { "od_trigger": true }, "note": "1技能立即拔刀" },
+    "char_1029_yato2":  { "mod_update_time": "2023/3/19", "options": { "cond": false }, "ecount": 2 },
+    "char_400_weedy":   { "mod_update_time": "2023/3/20" },
+    "char_4036_forcer": { "mod_update_time": "2023/3/20", "edef": 100 },
+    "char_241_panda":   { "mod_update_time": "2023/3/20" },
+    "char_277_sqrrel":  { "mod_update_time": "2023/3/20" },
+    "char_112_siege":   { "mod_update_time": "2023/3/20" },
+    "char_489_serum":   { "mod_update_time": "2023/3/20" },
+    "char_134_ifrit":   { "mod_update_time": "2023/3/20" }
 }

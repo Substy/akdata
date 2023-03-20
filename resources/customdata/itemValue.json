@@ -1,738 +1,778 @@
 [
 	{
+		"expCoefficient":0.625,
 		"itemId":"30135",
 		"itemName":"D32钢",
 		"itemType":"orange",
-		"itemValueGreen":332.7211,
-		"itemValueReason":266.1769,
-		"version":"auto0.625"
+		"itemValueGreen":329.852,
+		"itemValueReason":263.8816
 	},
 	{
+		"expCoefficient":0.625,
 		"itemId":"30125",
 		"itemName":"双极纳米片",
 		"itemType":"orange",
-		"itemValueGreen":300.9045,
-		"itemValueReason":240.7236,
-		"version":"auto0.625"
+		"itemValueGreen":298.6458,
+		"itemValueReason":238.9166
 	},
 	{
+		"expCoefficient":0.625,
 		"itemId":"30115",
 		"itemName":"聚合剂",
 		"itemType":"orange",
-		"itemValueGreen":321.3795,
-		"itemValueReason":257.1036,
-		"version":"auto0.625"
+		"itemValueGreen":320.0594,
+		"itemValueReason":256.0475
 	},
 	{
+		"expCoefficient":0.625,
 		"itemId":"30145",
 		"itemName":"晶体电子单元",
 		"itemType":"orange",
-		"itemValueGreen":402.0995,
-		"itemValueReason":321.6796,
-		"version":"auto0.625"
+		"itemValueGreen":405.5305,
+		"itemValueReason":324.4244
 	},
 	{
+		"expCoefficient":0.625,
 		"itemId":"30155",
 		"itemName":"烧结核凝晶",
 		"itemType":"orange",
-		"itemValueGreen":397.5168,
-		"itemValueReason":318.0134,
-		"version":"auto0.625"
+		"itemValueGreen":391.9983,
+		"itemValueReason":313.5986
 	},
 	{
+		"expCoefficient":0.625,
 		"itemId":"30064",
 		"itemName":"改量装置",
 		"itemType":"purple",
-		"itemValueGreen":122.3769,
-		"itemValueReason":97.9015,
-		"version":"auto0.625"
+		"itemValueGreen":121.6272,
+		"itemValueReason":97.3018
 	},
 	{
+		"expCoefficient":0.625,
 		"itemId":"30044",
 		"itemName":"异铁块",
 		"itemType":"purple",
-		"itemValueGreen":136.529,
-		"itemValueReason":109.2232,
-		"version":"auto0.625"
+		"itemValueGreen":136.3533,
+		"itemValueReason":109.0826
 	},
 	{
+		"expCoefficient":0.625,
 		"itemId":"30084",
 		"itemName":"三水锰矿",
 		"itemType":"purple",
-		"itemValueGreen":121.7412,
-		"itemValueReason":97.393,
-		"version":"auto0.625"
+		"itemValueGreen":120.8414,
+		"itemValueReason":96.6731
 	},
 	{
+		"expCoefficient":0.625,
 		"itemId":"31014",
 		"itemName":"聚合凝胶",
 		"itemType":"purple",
-		"itemValueGreen":98.8511,
-		"itemValueReason":79.0809,
-		"version":"auto0.625"
+		"itemValueGreen":99.868,
+		"itemValueReason":79.8944
 	},
 	{
+		"expCoefficient":0.625,
 		"itemId":"30074",
 		"itemName":"白马醇",
 		"itemType":"purple",
-		"itemValueGreen":100.0734,
-		"itemValueReason":80.0587,
-		"version":"auto0.625"
+		"itemValueGreen":99.3189,
+		"itemValueReason":79.4551
 	},
 	{
+		"expCoefficient":0.625,
 		"itemId":"30054",
 		"itemName":"酮阵列",
 		"itemType":"purple",
-		"itemValueGreen":126.3828,
-		"itemValueReason":101.1062,
-		"version":"auto0.625"
+		"itemValueGreen":125.2121,
+		"itemValueReason":100.1697
 	},
 	{
+		"expCoefficient":0.625,
 		"itemId":"30104",
 		"itemName":"RMA70-24",
 		"itemType":"purple",
-		"itemValueGreen":118.9172,
-		"itemValueReason":95.1338,
-		"version":"auto0.625"
+		"itemValueGreen":117.6571,
+		"itemValueReason":94.1257
 	},
 	{
+		"expCoefficient":0.625,
 		"itemId":"31024",
 		"itemName":"炽合金块",
 		"itemType":"purple",
-		"itemValueGreen":111.5134,
-		"itemValueReason":89.2107,
-		"version":"auto0.625"
+		"itemValueGreen":111.3934,
+		"itemValueReason":89.1147
 	},
 	{
+		"expCoefficient":0.625,
 		"itemId":"30094",
 		"itemName":"五水研磨石",
 		"itemType":"purple",
-		"itemValueGreen":113.6818,
-		"itemValueReason":90.9454,
-		"version":"auto0.625"
+		"itemValueGreen":112.9725,
+		"itemValueReason":90.378
 	},
 	{
+		"expCoefficient":0.625,
 		"itemId":"30024",
 		"itemName":"糖聚块",
 		"itemType":"purple",
-		"itemValueGreen":120.1489,
-		"itemValueReason":96.1191,
-		"version":"auto0.625"
+		"itemValueGreen":120.1553,
+		"itemValueReason":96.1242
 	},
 	{
+		"expCoefficient":0.625,
 		"itemId":"30034",
 		"itemName":"聚酸酯块",
 		"itemType":"purple",
-		"itemValueGreen":114.1411,
-		"itemValueReason":91.3129,
-		"version":"auto0.625"
+		"itemValueGreen":113.2435,
+		"itemValueReason":90.5948
 	},
 	{
+		"expCoefficient":0.625,
 		"itemId":"31034",
 		"itemName":"晶体电路",
 		"itemType":"purple",
-		"itemValueGreen":114.5029,
-		"itemValueReason":91.6023,
-		"version":"auto0.625"
+		"itemValueGreen":116.0202,
+		"itemValueReason":92.8162
 	},
 	{
+		"expCoefficient":0.625,
 		"itemId":"30014",
 		"itemName":"提纯源岩",
 		"itemType":"purple",
-		"itemValueGreen":80.0868,
-		"itemValueReason":64.0694,
-		"version":"auto0.625"
+		"itemValueGreen":80.1132,
+		"itemValueReason":64.0906
 	},
 	{
+		"expCoefficient":0.625,
 		"itemId":"31044",
 		"itemName":"精炼溶剂",
 		"itemType":"purple",
-		"itemValueGreen":109.7915,
-		"itemValueReason":87.8332,
-		"version":"auto0.625"
+		"itemValueGreen":107.822,
+		"itemValueReason":86.2576
 	},
 	{
+		"expCoefficient":0.625,
 		"itemId":"31054",
 		"itemName":"切削原液",
 		"itemType":"purple",
-		"itemValueGreen":96.4707,
-		"itemValueReason":77.1766,
-		"version":"auto0.625"
+		"itemValueGreen":96.6593,
+		"itemValueReason":77.3274
 	},
 	{
+		"expCoefficient":0.625,
 		"itemId":"31064",
 		"itemName":"转质盐聚块",
 		"itemType":"purple",
-		"itemValueGreen":103.0823,
-		"itemValueReason":82.4658,
-		"version":"auto0.625"
+		"itemValueGreen":101.3143,
+		"itemValueReason":81.0514
 	},
 	{
+		"expCoefficient":0.625,
 		"itemId":"30063",
 		"itemName":"全新装置",
 		"itemType":"blue",
-		"itemValueGreen":46.1526,
-		"itemValueReason":36.9221,
-		"version":"auto0.625"
+		"itemValueGreen":46.0163,
+		"itemValueReason":36.813
 	},
 	{
+		"expCoefficient":0.625,
 		"itemId":"30043",
 		"itemName":"异铁组",
 		"itemType":"blue",
-		"itemValueGreen":34.1418,
-		"itemValueReason":27.3134,
-		"version":"auto0.625"
+		"itemValueGreen":34.1954,
+		"itemValueReason":27.3563
 	},
 	{
+		"expCoefficient":0.625,
 		"itemId":"30083",
 		"itemName":"轻锰矿",
 		"itemType":"blue",
-		"itemValueGreen":34.8294,
-		"itemValueReason":27.8635,
-		"version":"auto0.625"
+		"itemValueGreen":34.5085,
+		"itemValueReason":27.6068
 	},
 	{
+		"expCoefficient":0.625,
 		"itemId":"31013",
 		"itemName":"凝胶",
 		"itemType":"blue",
-		"itemValueGreen":38.3228,
-		"itemValueReason":30.6582,
-		"version":"auto0.625"
+		"itemValueGreen":38.6434,
+		"itemValueReason":30.9147
 	},
 	{
+		"expCoefficient":0.625,
 		"itemId":"30073",
 		"itemName":"扭转醇",
 		"itemType":"blue",
-		"itemValueGreen":29.9898,
-		"itemValueReason":23.9918,
-		"version":"auto0.625"
+		"itemValueGreen":29.8783,
+		"itemValueReason":23.9026
 	},
 	{
+		"expCoefficient":0.625,
 		"itemId":"30053",
 		"itemName":"酮凝集组",
 		"itemType":"blue",
-		"itemValueGreen":34.3791,
-		"itemValueReason":27.5033,
-		"version":"auto0.625"
+		"itemValueGreen":33.8857,
+		"itemValueReason":27.1086
 	},
 	{
+		"expCoefficient":0.625,
 		"itemId":"30103",
 		"itemName":"RMA70-12",
 		"itemType":"blue",
-		"itemValueGreen":47.2883,
-		"itemValueReason":37.8306,
-		"version":"auto0.625"
+		"itemValueGreen":46.5083,
+		"itemValueReason":37.2066
 	},
 	{
+		"expCoefficient":0.625,
 		"itemId":"31023",
 		"itemName":"炽合金",
 		"itemType":"blue",
-		"itemValueGreen":31.9735,
-		"itemValueReason":25.5788,
-		"version":"auto0.625"
+		"itemValueGreen":32.6162,
+		"itemValueReason":26.093
 	},
 	{
+		"expCoefficient":0.625,
 		"itemId":"30093",
 		"itemName":"研磨石",
 		"itemType":"blue",
-		"itemValueGreen":38.9743,
-		"itemValueReason":31.1794,
-		"version":"auto0.625"
+		"itemValueGreen":38.3479,
+		"itemValueReason":30.6783
 	},
 	{
+		"expCoefficient":0.625,
 		"itemId":"30023",
 		"itemName":"糖组",
 		"itemType":"blue",
-		"itemValueGreen":28.3823,
-		"itemValueReason":22.7058,
-		"version":"auto0.625"
+		"itemValueGreen":28.5192,
+		"itemValueReason":22.8154
 	},
 	{
+		"expCoefficient":0.625,
 		"itemId":"30033",
 		"itemName":"聚酸酯组",
 		"itemType":"blue",
-		"itemValueGreen":27.6797,
-		"itemValueReason":22.1438,
-		"version":"auto0.625"
+		"itemValueGreen":27.5332,
+		"itemValueReason":22.0266
 	},
 	{
+		"expCoefficient":0.625,
 		"itemId":"31033",
 		"itemName":"晶体元件",
 		"itemType":"blue",
-		"itemValueGreen":24.8968,
-		"itemValueReason":19.9174,
-		"version":"auto0.625"
+		"itemValueGreen":25.1738,
+		"itemValueReason":20.139
 	},
 	{
+		"expCoefficient":0.625,
 		"itemId":"30013",
 		"itemName":"固源岩组",
 		"itemType":"blue",
-		"itemValueGreen":21.4185,
-		"itemValueReason":17.1348,
-		"version":"auto0.625"
+		"itemValueGreen":21.425,
+		"itemValueReason":17.14
 	},
 	{
+		"expCoefficient":0.625,
 		"itemId":"31043",
 		"itemName":"半自然溶剂",
 		"itemType":"blue",
-		"itemValueGreen":38.2177,
-		"itemValueReason":30.5742,
-		"version":"auto0.625"
+		"itemValueGreen":36.3365,
+		"itemValueReason":29.0692
 	},
 	{
+		"expCoefficient":0.625,
 		"itemId":"31053",
 		"itemName":"化合切削液",
 		"itemType":"blue",
-		"itemValueGreen":38.838,
-		"itemValueReason":31.0704,
-		"version":"auto0.625"
+		"itemValueGreen":38.4291,
+		"itemValueReason":30.7433
 	},
 	{
+		"expCoefficient":0.625,
 		"itemId":"31063",
 		"itemName":"转质盐组",
 		"itemType":"blue",
-		"itemValueGreen":42.0693,
-		"itemValueReason":33.6554,
-		"version":"auto0.625"
+		"itemValueGreen":42.0456,
+		"itemValueReason":33.6365
 	},
 	{
+		"expCoefficient":0.625,
 		"itemId":"30012",
 		"itemName":"固源岩",
 		"itemType":"green",
-		"itemValueGreen":4.4114,
-		"itemValueReason":3.5291,
-		"version":"auto0.625"
+		"itemValueGreen":4.4127,
+		"itemValueReason":3.5302
 	},
 	{
+		"expCoefficient":0.625,
 		"itemId":"30022",
 		"itemName":"糖",
 		"itemType":"green",
-		"itemValueGreen":7.2552,
-		"itemValueReason":5.8042,
-		"version":"auto0.625"
+		"itemValueGreen":7.2894,
+		"itemValueReason":5.8315
 	},
 	{
+		"expCoefficient":0.625,
 		"itemId":"30032",
 		"itemName":"聚酸酯",
 		"itemType":"green",
-		"itemValueGreen":7.0796,
-		"itemValueReason":5.6637,
-		"version":"auto0.625"
+		"itemValueGreen":7.0429,
+		"itemValueReason":5.6343
 	},
 	{
+		"expCoefficient":0.625,
 		"itemId":"30042",
 		"itemName":"异铁",
 		"itemType":"green",
-		"itemValueGreen":8.6951,
-		"itemValueReason":6.9561,
-		"version":"auto0.625"
+		"itemValueGreen":8.7085,
+		"itemValueReason":6.9668
 	},
 	{
+		"expCoefficient":0.625,
 		"itemId":"30052",
 		"itemName":"酮凝集",
 		"itemType":"green",
-		"itemValueGreen":8.7544,
-		"itemValueReason":7.0035,
-		"version":"auto0.625"
+		"itemValueGreen":8.6311,
+		"itemValueReason":6.9049
 	},
 	{
+		"expCoefficient":0.625,
 		"itemId":"30062",
 		"itemName":"装置",
 		"itemType":"green",
-		"itemValueGreen":11.6978,
-		"itemValueReason":9.3582,
-		"version":"auto0.625"
+		"itemValueGreen":11.6637,
+		"itemValueReason":9.331
 	},
 	{
+		"expCoefficient":0.625,
 		"itemId":"30011",
 		"itemName":"源岩",
 		"itemType":"grey",
-		"itemValueGreen":1.4915,
-		"itemValueReason":1.1932,
-		"version":"auto0.625"
+		"itemValueGreen":1.492,
+		"itemValueReason":1.1936
 	},
 	{
+		"expCoefficient":0.625,
 		"itemId":"30021",
 		"itemName":"代糖",
 		"itemType":"grey",
-		"itemValueGreen":2.4395,
-		"itemValueReason":1.9516,
-		"version":"auto0.625"
+		"itemValueGreen":2.4509,
+		"itemValueReason":1.9607
 	},
 	{
+		"expCoefficient":0.625,
 		"itemId":"30031",
 		"itemName":"酯原料",
 		"itemType":"grey",
-		"itemValueGreen":2.3809,
-		"itemValueReason":1.9047,
-		"version":"auto0.625"
+		"itemValueGreen":2.3687,
+		"itemValueReason":1.895
 	},
 	{
+		"expCoefficient":0.625,
 		"itemId":"30041",
 		"itemName":"异铁碎片",
 		"itemType":"grey",
-		"itemValueGreen":2.9194,
-		"itemValueReason":2.3355,
-		"version":"auto0.625"
+		"itemValueGreen":2.9239,
+		"itemValueReason":2.3391
 	},
 	{
+		"expCoefficient":0.625,
 		"itemId":"30051",
 		"itemName":"双酮",
 		"itemType":"grey",
-		"itemValueGreen":2.9392,
-		"itemValueReason":2.3514,
-		"version":"auto0.625"
+		"itemValueGreen":2.8981,
+		"itemValueReason":2.3185
 	},
 	{
+		"expCoefficient":0.625,
 		"itemId":"30061",
 		"itemName":"破损装置",
 		"itemType":"grey",
-		"itemValueGreen":3.9203,
-		"itemValueReason":3.1362,
-		"version":"auto0.625"
+		"itemValueGreen":3.909,
+		"itemValueReason":3.1272
 	},
 	{
+		"expCoefficient":0.625,
 		"itemId":"3301",
 		"itemName":"技巧概要·卷1",
 		"itemType":"purple",
 		"itemValueGreen":2.111,
-		"itemValueReason":1.6888,
-		"version":"auto0.625"
+		"itemValueReason":1.6888
 	},
 	{
+		"expCoefficient":0.625,
 		"itemId":"3302",
 		"itemName":"技巧概要·卷2",
 		"itemType":"blue",
 		"itemValueGreen":5.278,
-		"itemValueReason":4.2224,
-		"version":"auto0.625"
+		"itemValueReason":4.2224
 	},
 	{
+		"expCoefficient":0.625,
 		"itemId":"3303",
 		"itemName":"技巧概要·卷3",
 		"itemType":"green",
 		"itemValueGreen":13.196,
-		"itemValueReason":10.5568,
-		"version":"auto0.625"
+		"itemValueReason":10.5568
 	},
 	{
+		"expCoefficient":0.625,
 		"itemId":"2004",
 		"itemName":"高级作战记录",
 		"itemType":"orange",
 		"itemValueGreen":5.625,
-		"itemValueReason":4.5,
-		"version":"auto0.625"
+		"itemValueReason":4.5
 	},
 	{
+		"expCoefficient":0.625,
 		"itemId":"2003",
 		"itemName":"中级作战记录",
 		"itemType":"purple",
 		"itemValueGreen":2.8125,
-		"itemValueReason":2.25,
-		"version":"auto0.625"
+		"itemValueReason":2.25
 	},
 	{
+		"expCoefficient":0.625,
 		"itemId":"2002",
 		"itemName":"初级作战记录",
 		"itemType":"blue",
 		"itemValueGreen":1.125,
-		"itemValueReason":0.9,
-		"version":"auto0.625"
+		"itemValueReason":0.9
 	},
 	{
+		"expCoefficient":0.625,
 		"itemId":"2001",
 		"itemName":"基础作战记录",
 		"itemType":"green",
 		"itemValueGreen":0.5625,
-		"itemValueReason":0.45,
-		"version":"auto0.625"
+		"itemValueReason":0.45
 	},
 	{
+		"expCoefficient":0.625,
 		"itemId":"4001",
 		"itemName":"龙门币",
 		"itemType":"purple",
 		"itemValueGreen":0.0045,
-		"itemValueReason":0.0036,
-		"version":"auto0.625"
+		"itemValueReason":0.0036
 	},
 	{
+		"expCoefficient":0.625,
 		"itemId":"3261",
 		"itemName":"医疗芯片",
 		"itemType":"blue",
-		"itemValueGreen":17.8425,
-		"itemValueReason":14.274,
-		"version":"auto0.625"
+		"itemValueGreen":21.42,
+		"itemValueReason":17.136
 	},
 	{
+		"expCoefficient":0.625,
 		"itemId":"3271",
 		"itemName":"辅助芯片",
 		"itemType":"blue",
 		"itemValueGreen":21.42,
-		"itemValueReason":17.136,
-		"version":"auto0.625"
+		"itemValueReason":17.136
 	},
 	{
+		"expCoefficient":0.625,
 		"itemId":"3211",
 		"itemName":"先锋芯片",
 		"itemType":"blue",
 		"itemValueGreen":21.42,
-		"itemValueReason":17.136,
-		"version":"auto0.625"
+		"itemValueReason":17.136
 	},
 	{
+		"expCoefficient":0.625,
 		"itemId":"3281",
 		"itemName":"特种芯片",
 		"itemType":"blue",
 		"itemValueGreen":17.8425,
-		"itemValueReason":14.274,
-		"version":"auto0.625"
+		"itemValueReason":14.274
 	},
 	{
+		"expCoefficient":0.625,
 		"itemId":"3221",
 		"itemName":"近卫芯片",
 		"itemType":"blue",
 		"itemValueGreen":24.9962,
-		"itemValueReason":19.997,
-		"version":"auto0.625"
+		"itemValueReason":19.997
 	},
 	{
+		"expCoefficient":0.625,
 		"itemId":"3231",
 		"itemName":"重装芯片",
 		"itemType":"blue",
-		"itemValueGreen":24.9962,
-		"itemValueReason":19.997,
-		"version":"auto0.625"
+		"itemValueGreen":21.42,
+		"itemValueReason":17.136
 	},
 	{
+		"expCoefficient":0.625,
 		"itemId":"3241",
 		"itemName":"狙击芯片",
 		"itemType":"blue",
 		"itemValueGreen":21.42,
-		"itemValueReason":17.136,
-		"version":"auto0.625"
+		"itemValueReason":17.136
 	},
 	{
+		"expCoefficient":0.625,
 		"itemId":"3251",
 		"itemName":"术师芯片",
 		"itemType":"blue",
 		"itemValueGreen":21.42,
-		"itemValueReason":17.136,
-		"version":"auto0.625"
+		"itemValueReason":17.136
 	},
 	{
+		"expCoefficient":0.625,
 		"itemId":"3262",
 		"itemName":"医疗芯片组",
 		"itemType":"blue",
-		"itemValueGreen":35.685,
-		"itemValueReason":28.548,
-		"version":"auto0.625"
+		"itemValueGreen":42.84,
+		"itemValueReason":34.272
 	},
 	{
+		"expCoefficient":0.625,
 		"itemId":"3272",
 		"itemName":"辅助芯片组",
 		"itemType":"blue",
 		"itemValueGreen":42.84,
-		"itemValueReason":34.272,
-		"version":"auto0.625"
+		"itemValueReason":34.272
 	},
 	{
+		"expCoefficient":0.625,
 		"itemId":"3212",
 		"itemName":"先锋芯片组",
 		"itemType":"blue",
 		"itemValueGreen":42.84,
-		"itemValueReason":34.272,
-		"version":"auto0.625"
+		"itemValueReason":34.272
 	},
 	{
+		"expCoefficient":0.625,
 		"itemId":"3282",
 		"itemName":"特种芯片组",
 		"itemType":"blue",
 		"itemValueGreen":35.685,
-		"itemValueReason":28.548,
-		"version":"auto0.625"
+		"itemValueReason":28.548
 	},
 	{
+		"expCoefficient":0.625,
 		"itemId":"3222",
 		"itemName":"近卫芯片组",
 		"itemType":"blue",
 		"itemValueGreen":49.9925,
-		"itemValueReason":39.994,
-		"version":"auto0.625"
+		"itemValueReason":39.994
 	},
 	{
+		"expCoefficient":0.625,
 		"itemId":"3232",
 		"itemName":"重装芯片组",
 		"itemType":"blue",
-		"itemValueGreen":49.9925,
-		"itemValueReason":39.994,
-		"version":"auto0.625"
+		"itemValueGreen":42.84,
+		"itemValueReason":34.272
 	},
 	{
+		"expCoefficient":0.625,
 		"itemId":"3242",
 		"itemName":"狙击芯片组",
 		"itemType":"blue",
 		"itemValueGreen":42.84,
-		"itemValueReason":34.272,
-		"version":"auto0.625"
+		"itemValueReason":34.272
 	},
 	{
+		"expCoefficient":0.625,
 		"itemId":"3252",
 		"itemName":"术师芯片组",
 		"itemType":"blue",
 		"itemValueGreen":42.84,
-		"itemValueReason":34.272,
-		"version":"auto0.625"
+		"itemValueReason":34.272
 	},
 	{
+		"expCoefficient":0.625,
 		"itemId":"4003",
 		"itemName":"合成玉",
 		"itemType":"orange",
 		"itemValueGreen":0.9375,
-		"itemValueReason":0.75,
-		"version":"auto0.625"
+		"itemValueReason":0.75
 	},
 	{
+		"expCoefficient":0.625,
 		"itemId":"7001",
 		"itemName":"招聘许可",
 		"itemType":"purple",
 		"itemValueGreen":30.085,
-		"itemValueReason":24.068,
-		"version":"auto0.625"
+		"itemValueReason":24.068
 	},
 	{
+		"expCoefficient":0.625,
 		"itemId":"4006",
 		"itemName":"采购凭证",
 		"itemType":"blue",
 		"itemValueGreen":1.7,
-		"itemValueReason":1.36,
-		"version":"auto0.625"
+		"itemValueReason":1.36
 	},
 	{
+		"expCoefficient":0.625,
 		"itemId":"7003",
 		"itemName":"寻访凭证",
 		"itemType":"orange",
 		"itemValueGreen":562.5,
-		"itemValueReason":450.0,
-		"version":"auto0.625"
+		"itemValueReason":450.0
 	},
 	{
+		"expCoefficient":0.625,
 		"itemId":"32001",
 		"itemName":"芯片助剂",
 		"itemType":"purple",
 		"itemValueGreen":152.99,
-		"itemValueReason":122.392,
-		"version":"auto0.625"
+		"itemValueReason":122.392
 	},
 	{
+		"expCoefficient":0.625,
 		"itemId":"3003",
 		"itemName":"赤金",
 		"itemType":"purple",
 		"itemValueGreen":1.25,
-		"itemValueReason":1.0,
-		"version":"auto0.625"
+		"itemValueReason":1.0
 	},
 	{
+		"expCoefficient":0.625,
 		"itemId":"4002",
 		"itemName":"至纯源石",
 		"itemType":"purple",
 		"itemValueGreen":168.75,
-		"itemValueReason":135.0,
-		"version":"auto0.625"
+		"itemValueReason":135.0
 	},
 	{
+		"expCoefficient":0.625,
 		"itemId":"STORY_REVIEW_COIN",
 		"itemName":"事相碎片",
 		"itemType":"orange",
 		"itemValueGreen":34.0,
-		"itemValueReason":27.2,
-		"version":"auto0.625"
+		"itemValueReason":27.2
 	},
 	{
+		"expCoefficient":0.625,
 		"itemId":"mod_unlock_token",
 		"itemName":"模组数据块",
 		"itemType":"orange",
 		"itemValueGreen":204.0,
-		"itemValueReason":163.2,
-		"version":"auto0.625"
+		"itemValueReason":163.2
 	},
 	{
+		"expCoefficient":0.625,
 		"itemId":"base_ap",
 		"itemName":"无人机",
 		"itemType":"purple",
 		"itemValueGreen":0.0469,
-		"itemValueReason":0.0375,
-		"version":"auto0.625"
+		"itemValueReason":0.0375
 	},
 	{
+		"expCoefficient":0.625,
 		"itemId":"charm_coin_1",
 		"itemName":"黄金筹码",
 		"itemType":"grey",
 		"itemValueGreen":9.0,
-		"itemValueReason":7.2,
-		"version":"auto0.625"
+		"itemValueReason":7.2
 	},
 	{
+		"expCoefficient":0.625,
 		"itemId":"charm_coin_2",
 		"itemName":"错版硬币",
 		"itemType":"blue",
 		"itemValueGreen":12.0,
-		"itemValueReason":9.6,
-		"version":"auto0.625"
+		"itemValueReason":9.6
 	},
 	{
+		"expCoefficient":0.625,
 		"itemId":"charm_coin_3",
 		"itemName":"双日城大乐透",
 		"itemType":"purple",
 		"itemValueGreen":18.0,
-		"itemValueReason":14.4,
-		"version":"auto0.625"
+		"itemValueReason":14.4
 	},
 	{
+		"expCoefficient":0.625,
 		"itemId":"charm_coin_4",
 		"itemName":"翡翠庭院至臻",
 		"itemType":"orange",
 		"itemValueGreen":100.0,
-		"itemValueReason":80.0,
-		"version":"auto0.625"
+		"itemValueReason":80.0
 	},
 	{
+		"expCoefficient":0.625,
 		"itemId":"charm_r1",
 		"itemName":"标志物 - 20代金券",
 		"itemType":"grey",
 		"itemValueGreen":15.0,
-		"itemValueReason":12.0,
-		"version":"auto0.625"
+		"itemValueReason":12.0
 	},
 	{
+		"expCoefficient":0.625,
 		"itemId":"charm_r2",
 		"itemName":"标志物 - 40代金券",
 		"itemType":"blue",
 		"itemValueGreen":30.0,
-		"itemValueReason":24.0,
-		"version":"auto0.625"
+		"itemValueReason":24.0
 	},
 	{
+		"expCoefficient":0.625,
 		"itemId":"trap_oxygen_3",
 		"itemName":"沙兹专业镀膜装置",
 		"itemType":"orange",
 		"itemValueGreen":45.0,
-		"itemValueReason":36.0,
-		"version":"auto0.625"
+		"itemValueReason":36.0
 	},
 	{
+		"expCoefficient":0.625,
+		"itemId":"act24side_melding_5",
+		"itemName":"兽之泪",
+		"itemType":"orange",
+		"itemValueGreen":20.0,
+		"itemValueReason":16.0
+	},
+	{
+		"expCoefficient":0.625,
+		"itemId":"act24side_melding_4",
+		"itemName":"凶豕兽的厚实皮",
+		"itemType":"orange",
+		"itemValueGreen":10.0,
+		"itemValueReason":8.0
+	},
+	{
+		"expCoefficient":0.625,
+		"itemId":"act24side_melding_3",
+		"itemName":"鬣犄兽的尖锐齿",
+		"itemType":"orange",
+		"itemValueGreen":5.0,
+		"itemValueReason":4.0
+	},
+	{
+		"expCoefficient":0.625,
+		"itemId":"act24side_melding_2",
+		"itemName":"源石虫的硬壳",
+		"itemType":"orange",
+		"itemValueGreen":3.0,
+		"itemValueReason":2.4
+	},
+	{
+		"expCoefficient":0.625,
+		"itemId":"act24side_melding_1",
+		"itemName":"破碎的骨片",
+		"itemType":"orange",
+		"itemValueGreen":2.0,
+		"itemValueReason":1.6
+	},
+	{
+		"expCoefficient":0.625,
 		"itemId":"ap_supply_lt_010",
 		"itemName":"应急理智小样",
 		"itemType":"purple",
 		"itemValueGreen":0.0,
-		"itemValueReason":0.0,
-		"version":"auto0.625"
+		"itemValueReason":0.0
 	},
 	{
+		"expCoefficient":0.625,
 		"itemId":"randomMaterial_7",
 		"itemName":"罗德岛物资补给Ⅳ",
 		"itemType":"green",
 		"itemValueGreen":14.0,
-		"itemValueReason":11.2,
-		"version":"auto0.625"
+		"itemValueReason":11.2
 	}
 ]

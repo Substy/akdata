@@ -224,13 +224,33 @@ function buildEquipList() {
 function showSubclassDialog() {
   edb = AKDATA.Data.uniequip_table;
   let excludeKeys = ["notchar1", "notchar2", "none1", "none2"];
-  let names = {};
-  Object.keys(edb["subProfDict"]).filter(x => !excludeKeys.includes(x))
-        .forEach(x => {
-          names[x] = edb["subProfDict"][x].subProfessionName;
-        });
+  let jobRanges = { // index < Key -> job is Value
+    "先锋": 0,
+    "近卫": 4,
+    "重装": 14,
+    "狙击": 20,
+    "术师": 27,
+    "医疗": 34,
+    "辅助": 38,
+    "特种": 44,
+    "其他新职业": 52,
+    "_": -1
+  };
+  let nameKeys = {};
+  let subProfKeys = Object.keys(edb["subProfDict"]).filter(x => !excludeKeys.includes(x))
+  let jobs = Object.keys(jobRanges);
+  for (let i=0; i<jobs.length-1; ++i) {
+    nameKeys[i] = subProfKeys.slice(jobRanges[jobs[i]], jobRanges[jobs[i+1]]);
+  };
   
-  let href_list = Object.keys(names).map(x => `<div class="col-3"><a href="#${x}" onclick="$('#subclass_dialog').modal('hide');">${names[x]}</a></div>`)
+  // emmmmm...
+  let href_list = Object.keys(nameKeys).map(x => 
+    `<div class="col-12"><h2>${jobs[x]}</h2></div>` + 
+    nameKeys[x].map(y => `
+      <div class="col-3">
+        <a href="#${y}" onclick="$('#subclass_dialog').modal('hide');">${edb["subProfDict"][y].subProfessionName}</a>
+      </div>`).join("\n")
+  );
   let html = '<div class="row">' + href_list.join("\n") + '</div>';
   
   pmBase.component.create({
