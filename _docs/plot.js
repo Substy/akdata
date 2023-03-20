@@ -517,17 +517,21 @@ function load() {
       columns: function() {      
         window.chart.load({
           columns: this.columns,
-          unload: true
+          unload: true,
         });
         window.chart.axis.labels({ x: this.explainArgs(), y: LabelNames[this.chartKey] });
+        window.chart.axis.x.min = 0;
       },
       chartKey: function() {  
         this.buildChartView();
         window.chart.load({
           columns: this.columns,
-          unload: true
+          unload: true,
+          axis: { x: {min: 0} }
         });
         window.chart.axis.labels({x: this.explainArgs(), y: LabelNames[this.chartKey]});
+        window.chart.axis.x.min = 0;
+        window.chart.axis.x.padding = 0;
       }, 
     }
   });
@@ -545,11 +549,13 @@ function load() {
               text: LabelNames[window.vue_app.enemyKey],
               position: "inner-center"
            },
+           min: 0,
+           padding: 0
          },
       y: { label: {
               text: LabelNames[window.vue_app.chartKey],
               position: "outer-middle"
-           },
+           }
          }
     },
     grid: {
