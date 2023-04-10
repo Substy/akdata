@@ -36,4 +36,4 @@ css:
 
 modules:
   - /assets/js/common.js
-  - /resources/akdata.js?ver=230320
+  - /resources/akdata.js?ver=230410

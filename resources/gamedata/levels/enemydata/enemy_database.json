@@ -126709,6 +126709,2319 @@
       ]
     },
     {
+      "Key": "enemy_1539_reid",
+      "Value": [
+        {
+          "level": 0,
+          "enemyData": {
+            "name": {
+              "m_defined": true,
+              "m_value": "“复仇者”"
+            },
+            "description": {
+              "m_defined": true,
+              "m_value": "曾经遭遇过的整合运动干部，使用令人印象深刻的炙热长刀进行攻击"
+            },
+            "prefabKey": {
+              "m_defined": true,
+              "m_value": "enemy_1539_reid"
+            },
+            "attributes": {
+              "maxHp": {
+                "m_defined": true,
+                "m_value": 23000
+              },
+              "atk": {
+                "m_defined": true,
+                "m_value": 800
+              },
+              "def": {
+                "m_defined": true,
+                "m_value": 650
+              },
+              "magicResistance": {
+                "m_defined": true,
+                "m_value": 60.0
+              },
+              "cost": {
+                "m_defined": false,
+                "m_value": 0
+              },
+              "blockCnt": {
+                "m_defined": false,
+                "m_value": 0
+              },
+              "moveSpeed": {
+                "m_defined": true,
+                "m_value": 0.65
+              },
+              "attackSpeed": {
+                "m_defined": false,
+                "m_value": 100.0
+              },
+              "baseAttackTime": {
+                "m_defined": true,
+                "m_value": 3.0
+              },
+              "respawnTime": {
+                "m_defined": false,
+                "m_value": 0
+              },
+              "hpRecoveryPerSec": {
+                "m_defined": false,
+                "m_value": 0.0
+              },
+              "spRecoveryPerSec": {
+                "m_defined": false,
+                "m_value": 0.0
+              },
+              "maxDeployCount": {
+                "m_defined": false,
+                "m_value": 0
+              },
+              "massLevel": {
+                "m_defined": true,
+                "m_value": 3
+              },
+              "baseForceLevel": {
+                "m_defined": false,
+                "m_value": 0
+              },
+              "tauntLevel": {
+                "m_defined": false,
+                "m_value": 0
+              },
+              "stunImmune": {
+                "m_defined": false,
+                "m_value": false
+              },
+              "silenceImmune": {
+                "m_defined": true,
+                "m_value": true
+              },
+              "sleepImmune": {
+                "m_defined": true,
+                "m_value": true
+              },
+              "frozenImmune": {
+                "m_defined": false,
+                "m_value": false
+              },
+              "levitateImmune": {
+                "m_defined": false,
+                "m_value": false
+              }
+            },
+            "lifePointReduce": {
+              "m_defined": true,
+              "m_value": 2
+            },
+            "levelType": {
+              "m_defined": true,
+              "m_value": 2
+            },
+            "rangeRadius": {
+              "m_defined": false,
+              "m_value": 0.0
+            },
+            "numOfExtraDrops": {
+              "m_defined": false,
+              "m_value": 0
+            },
+            "viewRadius": {
+              "m_defined": false,
+              "m_value": 0.0
+            },
+            "talentBlackboard": [
+              {
+                "key": "AtkUp.atk",
+                "value": 1.8,
+                "valueStr": null
+              },
+              {
+                "key": "atkup.hp_ratio",
+                "value": 0.5,
+                "valueStr": null
+              },
+              {
+                "key": "AtkUp.damage_resistance",
+                "value": 0.0,
+                "valueStr": null
+              },
+              {
+                "key": "Reborn.duration",
+                "value": 5.0,
+                "valueStr": null
+              },
+              {
+                "key": "Reborn.hp_ratio",
+                "value": 0.5,
+                "valueStr": null
+              },
+              {
+                "key": "Reborn.invincible",
+                "value": 0.0,
+                "valueStr": null
+              }
+            ],
+            "skills": [
+              {
+                "prefabKey": "Rush",
+                "priority": 0,
+                "cooldown": 5.0,
+                "initCooldown": 0.0,
+                "spCost": 0,
+                "blackboard": [
+                  {
+                    "key": "duration",
+                    "value": 4.5,
+                    "valueStr": null
+                  },
+                  {
+                    "key": "move_speed",
+                    "value": 2.0,
+                    "valueStr": null
+                  },
+                  {
+                    "key": "range_radius",
+                    "value": 1.5,
+                    "valueStr": null
+                  }
+                ]
+              }
+            ],
+            "spData": null
+          }
+        }
+      ]
+    },
+    {
+      "Key": "enemy_5012_mstntd",
+      "Value": [
+        {
+          "level": 0,
+          "enemyData": {
+            "name": {
+              "m_defined": true,
+              "m_value": "巨大丑东西（愚人节）"
+            },
+            "description": {
+              "m_defined": false,
+              "m_value": null
+            },
+            "prefabKey": {
+              "m_defined": true,
+              "m_value": "enemy_5012_mstntd"
+            },
+            "attributes": {
+              "maxHp": {
+                "m_defined": true,
+                "m_value": 10000
+              },
+              "atk": {
+                "m_defined": false,
+                "m_value": 0
+              },
+              "def": {
+                "m_defined": false,
+                "m_value": 0
+              },
+              "magicResistance": {
+                "m_defined": false,
+                "m_value": 0.0
+              },
+              "cost": {
+                "m_defined": false,
+                "m_value": 0
+              },
+              "blockCnt": {
+                "m_defined": false,
+                "m_value": 0
+              },
+              "moveSpeed": {
+                "m_defined": true,
+                "m_value": 0.8
+              },
+              "attackSpeed": {
+                "m_defined": false,
+                "m_value": 0.0
+              },
+              "baseAttackTime": {
+                "m_defined": false,
+                "m_value": 0.0
+              },
+              "respawnTime": {
+                "m_defined": false,
+                "m_value": 0
+              },
+              "hpRecoveryPerSec": {
+                "m_defined": false,
+                "m_value": 0.0
+              },
+              "spRecoveryPerSec": {
+                "m_defined": false,
+                "m_value": 0.0
+              },
+              "maxDeployCount": {
+                "m_defined": false,
+                "m_value": 0
+              },
+              "massLevel": {
+                "m_defined": false,
+                "m_value": 0
+              },
+              "baseForceLevel": {
+                "m_defined": false,
+                "m_value": 0
+              },
+              "tauntLevel": {
+                "m_defined": false,
+                "m_value": 0
+              },
+              "stunImmune": {
+                "m_defined": false,
+                "m_value": false
+              },
+              "silenceImmune": {
+                "m_defined": false,
+                "m_value": false
+              },
+              "sleepImmune": {
+                "m_defined": false,
+                "m_value": false
+              },
+              "frozenImmune": {
+                "m_defined": false,
+                "m_value": false
+              },
+              "levitateImmune": {
+                "m_defined": false,
+                "m_value": false
+              }
+            },
+            "lifePointReduce": {
+              "m_defined": false,
+              "m_value": 0
+            },
+            "levelType": {
+              "m_defined": false,
+              "m_value": 0
+            },
+            "rangeRadius": {
+              "m_defined": false,
+              "m_value": 0.0
+            },
+            "numOfExtraDrops": {
+              "m_defined": false,
+              "m_value": 0
+            },
+            "viewRadius": {
+              "m_defined": false,
+              "m_value": 0.0
+            },
+            "talentBlackboard": null,
+            "skills": null,
+            "spData": null
+          }
+        }
+      ]
+    },
+    {
+      "Key": "enemy_5013_daikis",
+      "Value": [
+        {
+          "level": 0,
+          "enemyData": {
+            "name": {
+              "m_defined": true,
+              "m_value": "大祭司（愚人节）"
+            },
+            "description": {
+              "m_defined": false,
+              "m_value": null
+            },
+            "prefabKey": {
+              "m_defined": true,
+              "m_value": "enemy_5013_daikis"
+            },
+            "attributes": {
+              "maxHp": {
+                "m_defined": true,
+                "m_value": 50000
+              },
+              "atk": {
+                "m_defined": false,
+                "m_value": 0
+              },
+              "def": {
+                "m_defined": false,
+                "m_value": 0
+              },
+              "magicResistance": {
+                "m_defined": false,
+                "m_value": 0.0
+              },
+              "cost": {
+                "m_defined": false,
+                "m_value": 0
+              },
+              "blockCnt": {
+                "m_defined": false,
+                "m_value": 0
+              },
+              "moveSpeed": {
+                "m_defined": true,
+                "m_value": 2.2
+              },
+              "attackSpeed": {
+                "m_defined": false,
+                "m_value": 0.0
+              },
+              "baseAttackTime": {
+                "m_defined": false,
+                "m_value": 0.0
+              },
+              "respawnTime": {
+                "m_defined": false,
+                "m_value": 0
+              },
+              "hpRecoveryPerSec": {
+                "m_defined": false,
+                "m_value": 0.0
+              },
+              "spRecoveryPerSec": {
+                "m_defined": false,
+                "m_value": 0.0
+              },
+              "maxDeployCount": {
+                "m_defined": false,
+                "m_value": 0
+              },
+              "massLevel": {
+                "m_defined": false,
+                "m_value": 0
+              },
+              "baseForceLevel": {
+                "m_defined": false,
+                "m_value": 0
+              },
+              "tauntLevel": {
+                "m_defined": false,
+                "m_value": 0
+              },
+              "stunImmune": {
+                "m_defined": false,
+                "m_value": false
+              },
+              "silenceImmune": {
+                "m_defined": false,
+                "m_value": false
+              },
+              "sleepImmune": {
+                "m_defined": false,
+                "m_value": false
+              },
+              "frozenImmune": {
+                "m_defined": false,
+                "m_value": false
+              },
+              "levitateImmune": {
+                "m_defined": false,
+                "m_value": false
+              }
+            },
+            "lifePointReduce": {
+              "m_defined": false,
+              "m_value": 0
+            },
+            "levelType": {
+              "m_defined": false,
+              "m_value": 0
+            },
+            "rangeRadius": {
+              "m_defined": false,
+              "m_value": 0.0
+            },
+            "numOfExtraDrops": {
+              "m_defined": false,
+              "m_value": 0
+            },
+            "viewRadius": {
+              "m_defined": false,
+              "m_value": 0.0
+            },
+            "talentBlackboard": null,
+            "skills": null,
+            "spData": null
+          }
+        }
+      ]
+    },
+    {
+      "Key": "enemy_5014_dmanfd",
+      "Value": [
+        {
+          "level": 0,
+          "enemyData": {
+            "name": {
+              "m_defined": true,
+              "m_value": "酒类爱好者（愚人节）"
+            },
+            "description": {
+              "m_defined": false,
+              "m_value": null
+            },
+            "prefabKey": {
+              "m_defined": true,
+              "m_value": "enemy_5014_dmanfd"
+            },
+            "attributes": {
+              "maxHp": {
+                "m_defined": true,
+                "m_value": 10000
+              },
+              "atk": {
+                "m_defined": false,
+                "m_value": 0
+              },
+              "def": {
+                "m_defined": false,
+                "m_value": 0
+              },
+              "magicResistance": {
+                "m_defined": false,
+                "m_value": 0.0
+              },
+              "cost": {
+                "m_defined": false,
+                "m_value": 0
+              },
+              "blockCnt": {
+                "m_defined": false,
+                "m_value": 0
+              },
+              "moveSpeed": {
+                "m_defined": true,
+                "m_value": 1.0
+              },
+              "attackSpeed": {
+                "m_defined": false,
+                "m_value": 0.0
+              },
+              "baseAttackTime": {
+                "m_defined": false,
+                "m_value": 0.0
+              },
+              "respawnTime": {
+                "m_defined": false,
+                "m_value": 0
+              },
+              "hpRecoveryPerSec": {
+                "m_defined": false,
+                "m_value": 0.0
+              },
+              "spRecoveryPerSec": {
+                "m_defined": false,
+                "m_value": 0.0
+              },
+              "maxDeployCount": {
+                "m_defined": false,
+                "m_value": 0
+              },
+              "massLevel": {
+                "m_defined": false,
+                "m_value": 0
+              },
+              "baseForceLevel": {
+                "m_defined": false,
+                "m_value": 0
+              },
+              "tauntLevel": {
+                "m_defined": false,
+                "m_value": 0
+              },
+              "stunImmune": {
+                "m_defined": false,
+                "m_value": false
+              },
+              "silenceImmune": {
+                "m_defined": false,
+                "m_value": false
+              },
+              "sleepImmune": {
+                "m_defined": false,
+                "m_value": false
+              },
+              "frozenImmune": {
+                "m_defined": false,
+                "m_value": false
+              },
+              "levitateImmune": {
+                "m_defined": false,
+                "m_value": false
+              }
+            },
+            "lifePointReduce": {
+              "m_defined": false,
+              "m_value": 0
+            },
+            "levelType": {
+              "m_defined": false,
+              "m_value": 0
+            },
+            "rangeRadius": {
+              "m_defined": false,
+              "m_value": 0.0
+            },
+            "numOfExtraDrops": {
+              "m_defined": false,
+              "m_value": 0
+            },
+            "viewRadius": {
+              "m_defined": false,
+              "m_value": 0.0
+            },
+            "talentBlackboard": null,
+            "skills": null,
+            "spData": null
+          }
+        }
+      ]
+    },
+    {
+      "Key": "enemy_5015_ccsbrf",
+      "Value": [
+        {
+          "level": 0,
+          "enemyData": {
+            "name": {
+              "m_defined": true,
+              "m_value": "提亚卡乌鳄鱼（愚人节）"
+            },
+            "description": {
+              "m_defined": false,
+              "m_value": null
+            },
+            "prefabKey": {
+              "m_defined": true,
+              "m_value": "enemy_5015_ccsbrf"
+            },
+            "attributes": {
+              "maxHp": {
+                "m_defined": true,
+                "m_value": 10000
+              },
+              "atk": {
+                "m_defined": false,
+                "m_value": 0
+              },
+              "def": {
+                "m_defined": false,
+                "m_value": 0
+              },
+              "magicResistance": {
+                "m_defined": false,
+                "m_value": 0.0
+              },
+              "cost": {
+                "m_defined": false,
+                "m_value": 0
+              },
+              "blockCnt": {
+                "m_defined": false,
+                "m_value": 0
+              },
+              "moveSpeed": {
+                "m_defined": true,
+                "m_value": 1.0
+              },
+              "attackSpeed": {
+                "m_defined": false,
+                "m_value": 0.0
+              },
+              "baseAttackTime": {
+                "m_defined": false,
+                "m_value": 0.0
+              },
+              "respawnTime": {
+                "m_defined": false,
+                "m_value": 0
+              },
+              "hpRecoveryPerSec": {
+                "m_defined": false,
+                "m_value": 0.0
+              },
+              "spRecoveryPerSec": {
+                "m_defined": false,
+                "m_value": 0.0
+              },
+              "maxDeployCount": {
+                "m_defined": false,
+                "m_value": 0
+              },
+              "massLevel": {
+                "m_defined": false,
+                "m_value": 0
+              },
+              "baseForceLevel": {
+                "m_defined": false,
+                "m_value": 0
+              },
+              "tauntLevel": {
+                "m_defined": false,
+                "m_value": 0
+              },
+              "stunImmune": {
+                "m_defined": false,
+                "m_value": false
+              },
+              "silenceImmune": {
+                "m_defined": false,
+                "m_value": false
+              },
+              "sleepImmune": {
+                "m_defined": false,
+                "m_value": false
+              },
+              "frozenImmune": {
+                "m_defined": false,
+                "m_value": false
+              },
+              "levitateImmune": {
+                "m_defined": false,
+                "m_value": false
+              }
+            },
+            "lifePointReduce": {
+              "m_defined": false,
+              "m_value": 0
+            },
+            "levelType": {
+              "m_defined": false,
+              "m_value": 0
+            },
+            "rangeRadius": {
+              "m_defined": false,
+              "m_value": 0.0
+            },
+            "numOfExtraDrops": {
+              "m_defined": false,
+              "m_value": 0
+            },
+            "viewRadius": {
+              "m_defined": false,
+              "m_value": 0.0
+            },
+            "talentBlackboard": null,
+            "skills": [
+              {
+                "prefabKey": "Talk",
+                "priority": 0,
+                "cooldown": 99.0,
+                "initCooldown": 5.0,
+                "spCost": 0,
+                "blackboard": [
+                  {
+                    "key": "talk_duration",
+                    "value": 5.0,
+                    "valueStr": null
+                  }
+                ]
+              }
+            ],
+            "spData": null
+          }
+        }
+      ]
+    },
+    {
+      "Key": "enemy_5016_ciprfd",
+      "Value": [
+        {
+          "level": 0,
+          "enemyData": {
+            "name": {
+              "m_defined": true,
+              "m_value": "提亚卡乌好战者（愚人节）"
+            },
+            "description": {
+              "m_defined": false,
+              "m_value": null
+            },
+            "prefabKey": {
+              "m_defined": true,
+              "m_value": "enemy_5016_ciprfd"
+            },
+            "attributes": {
+              "maxHp": {
+                "m_defined": true,
+                "m_value": 10000
+              },
+              "atk": {
+                "m_defined": false,
+                "m_value": 0
+              },
+              "def": {
+                "m_defined": false,
+                "m_value": 0
+              },
+              "magicResistance": {
+                "m_defined": false,
+                "m_value": 0.0
+              },
+              "cost": {
+                "m_defined": false,
+                "m_value": 0
+              },
+              "blockCnt": {
+                "m_defined": false,
+                "m_value": 0
+              },
+              "moveSpeed": {
+                "m_defined": true,
+                "m_value": 1.0
+              },
+              "attackSpeed": {
+                "m_defined": false,
+                "m_value": 0.0
+              },
+              "baseAttackTime": {
+                "m_defined": false,
+                "m_value": 0.0
+              },
+              "respawnTime": {
+                "m_defined": false,
+                "m_value": 0
+              },
+              "hpRecoveryPerSec": {
+                "m_defined": false,
+                "m_value": 0.0
+              },
+              "spRecoveryPerSec": {
+                "m_defined": false,
+                "m_value": 0.0
+              },
+              "maxDeployCount": {
+                "m_defined": false,
+                "m_value": 0
+              },
+              "massLevel": {
+                "m_defined": false,
+                "m_value": 0
+              },
+              "baseForceLevel": {
+                "m_defined": false,
+                "m_value": 0
+              },
+              "tauntLevel": {
+                "m_defined": false,
+                "m_value": 0
+              },
+              "stunImmune": {
+                "m_defined": false,
+                "m_value": false
+              },
+              "silenceImmune": {
+                "m_defined": false,
+                "m_value": false
+              },
+              "sleepImmune": {
+                "m_defined": false,
+                "m_value": false
+              },
+              "frozenImmune": {
+                "m_defined": false,
+                "m_value": false
+              },
+              "levitateImmune": {
+                "m_defined": false,
+                "m_value": false
+              }
+            },
+            "lifePointReduce": {
+              "m_defined": false,
+              "m_value": 0
+            },
+            "levelType": {
+              "m_defined": false,
+              "m_value": 0
+            },
+            "rangeRadius": {
+              "m_defined": false,
+              "m_value": 0.0
+            },
+            "numOfExtraDrops": {
+              "m_defined": false,
+              "m_value": 0
+            },
+            "viewRadius": {
+              "m_defined": false,
+              "m_value": 0.0
+            },
+            "talentBlackboard": null,
+            "skills": [
+              {
+                "prefabKey": "Talk",
+                "priority": 0,
+                "cooldown": 99.0,
+                "initCooldown": 5.0,
+                "spCost": 0,
+                "blackboard": [
+                  {
+                    "key": "talk_duration",
+                    "value": 5.0,
+                    "valueStr": null
+                  }
+                ]
+              }
+            ],
+            "spData": null
+          }
+        }
+      ]
+    },
+    {
+      "Key": "enemy_5017_dwarfd",
+      "Value": [
+        {
+          "level": 0,
+          "enemyData": {
+            "name": {
+              "m_defined": true,
+              "m_value": "湖畔志愿者（愚人节）"
+            },
+            "description": {
+              "m_defined": false,
+              "m_value": null
+            },
+            "prefabKey": {
+              "m_defined": true,
+              "m_value": "enemy_5017_dwarfd"
+            },
+            "attributes": {
+              "maxHp": {
+                "m_defined": true,
+                "m_value": 10000
+              },
+              "atk": {
+                "m_defined": false,
+                "m_value": 0
+              },
+              "def": {
+                "m_defined": false,
+                "m_value": 0
+              },
+              "magicResistance": {
+                "m_defined": false,
+                "m_value": 0.0
+              },
+              "cost": {
+                "m_defined": false,
+                "m_value": 0
+              },
+              "blockCnt": {
+                "m_defined": false,
+                "m_value": 0
+              },
+              "moveSpeed": {
+                "m_defined": true,
+                "m_value": 1.0
+              },
+              "attackSpeed": {
+                "m_defined": false,
+                "m_value": 0.0
+              },
+              "baseAttackTime": {
+                "m_defined": false,
+                "m_value": 0.0
+              },
+              "respawnTime": {
+                "m_defined": false,
+                "m_value": 0
+              },
+              "hpRecoveryPerSec": {
+                "m_defined": false,
+                "m_value": 0.0
+              },
+              "spRecoveryPerSec": {
+                "m_defined": false,
+                "m_value": 0.0
+              },
+              "maxDeployCount": {
+                "m_defined": false,
+                "m_value": 0
+              },
+              "massLevel": {
+                "m_defined": false,
+                "m_value": 0
+              },
+              "baseForceLevel": {
+                "m_defined": false,
+                "m_value": 0
+              },
+              "tauntLevel": {
+                "m_defined": false,
+                "m_value": 0
+              },
+              "stunImmune": {
+                "m_defined": false,
+                "m_value": false
+              },
+              "silenceImmune": {
+                "m_defined": false,
+                "m_value": false
+              },
+              "sleepImmune": {
+                "m_defined": false,
+                "m_value": false
+              },
+              "frozenImmune": {
+                "m_defined": false,
+                "m_value": false
+              },
+              "levitateImmune": {
+                "m_defined": false,
+                "m_value": false
+              }
+            },
+            "lifePointReduce": {
+              "m_defined": false,
+              "m_value": 0
+            },
+            "levelType": {
+              "m_defined": false,
+              "m_value": 0
+            },
+            "rangeRadius": {
+              "m_defined": false,
+              "m_value": 0.0
+            },
+            "numOfExtraDrops": {
+              "m_defined": false,
+              "m_value": 0
+            },
+            "viewRadius": {
+              "m_defined": false,
+              "m_value": 0.0
+            },
+            "talentBlackboard": null,
+            "skills": null,
+            "spData": null
+          }
+        }
+      ]
+    },
+    {
+      "Key": "enemy_5018_tethfd",
+      "Value": [
+        {
+          "level": 0,
+          "enemyData": {
+            "name": {
+              "m_defined": true,
+              "m_value": "流浪者（愚人节）"
+            },
+            "description": {
+              "m_defined": false,
+              "m_value": null
+            },
+            "prefabKey": {
+              "m_defined": true,
+              "m_value": "enemy_5018_tethfd"
+            },
+            "attributes": {
+              "maxHp": {
+                "m_defined": true,
+                "m_value": 10000
+              },
+              "atk": {
+                "m_defined": false,
+                "m_value": 0
+              },
+              "def": {
+                "m_defined": false,
+                "m_value": 0
+              },
+              "magicResistance": {
+                "m_defined": false,
+                "m_value": 0.0
+              },
+              "cost": {
+                "m_defined": false,
+                "m_value": 0
+              },
+              "blockCnt": {
+                "m_defined": false,
+                "m_value": 0
+              },
+              "moveSpeed": {
+                "m_defined": true,
+                "m_value": 0.8
+              },
+              "attackSpeed": {
+                "m_defined": false,
+                "m_value": 0.0
+              },
+              "baseAttackTime": {
+                "m_defined": false,
+                "m_value": 0.0
+              },
+              "respawnTime": {
+                "m_defined": false,
+                "m_value": 0
+              },
+              "hpRecoveryPerSec": {
+                "m_defined": false,
+                "m_value": 0.0
+              },
+              "spRecoveryPerSec": {
+                "m_defined": false,
+                "m_value": 0.0
+              },
+              "maxDeployCount": {
+                "m_defined": false,
+                "m_value": 0
+              },
+              "massLevel": {
+                "m_defined": false,
+                "m_value": 0
+              },
+              "baseForceLevel": {
+                "m_defined": false,
+                "m_value": 0
+              },
+              "tauntLevel": {
+                "m_defined": false,
+                "m_value": 0
+              },
+              "stunImmune": {
+                "m_defined": false,
+                "m_value": false
+              },
+              "silenceImmune": {
+                "m_defined": false,
+                "m_value": false
+              },
+              "sleepImmune": {
+                "m_defined": false,
+                "m_value": false
+              },
+              "frozenImmune": {
+                "m_defined": false,
+                "m_value": false
+              },
+              "levitateImmune": {
+                "m_defined": false,
+                "m_value": false
+              }
+            },
+            "lifePointReduce": {
+              "m_defined": false,
+              "m_value": 0
+            },
+            "levelType": {
+              "m_defined": false,
+              "m_value": 0
+            },
+            "rangeRadius": {
+              "m_defined": false,
+              "m_value": 0.0
+            },
+            "numOfExtraDrops": {
+              "m_defined": false,
+              "m_value": 0
+            },
+            "viewRadius": {
+              "m_defined": false,
+              "m_value": 0.0
+            },
+            "talentBlackboard": null,
+            "skills": null,
+            "spData": null
+          }
+        }
+      ]
+    },
+    {
+      "Key": "enemy_5019_hmotfd",
+      "Value": [
+        {
+          "level": 0,
+          "enemyData": {
+            "name": {
+              "m_defined": true,
+              "m_value": "码头重艇（愚人节）"
+            },
+            "description": {
+              "m_defined": false,
+              "m_value": null
+            },
+            "prefabKey": {
+              "m_defined": true,
+              "m_value": "enemy_5019_hmotfd"
+            },
+            "attributes": {
+              "maxHp": {
+                "m_defined": true,
+                "m_value": 10000
+              },
+              "atk": {
+                "m_defined": false,
+                "m_value": 0
+              },
+              "def": {
+                "m_defined": false,
+                "m_value": 0
+              },
+              "magicResistance": {
+                "m_defined": false,
+                "m_value": 0.0
+              },
+              "cost": {
+                "m_defined": false,
+                "m_value": 0
+              },
+              "blockCnt": {
+                "m_defined": false,
+                "m_value": 0
+              },
+              "moveSpeed": {
+                "m_defined": true,
+                "m_value": 1.5
+              },
+              "attackSpeed": {
+                "m_defined": false,
+                "m_value": 0.0
+              },
+              "baseAttackTime": {
+                "m_defined": false,
+                "m_value": 0.0
+              },
+              "respawnTime": {
+                "m_defined": false,
+                "m_value": 0
+              },
+              "hpRecoveryPerSec": {
+                "m_defined": false,
+                "m_value": 0.0
+              },
+              "spRecoveryPerSec": {
+                "m_defined": false,
+                "m_value": 0.0
+              },
+              "maxDeployCount": {
+                "m_defined": false,
+                "m_value": 0
+              },
+              "massLevel": {
+                "m_defined": false,
+                "m_value": 0
+              },
+              "baseForceLevel": {
+                "m_defined": false,
+                "m_value": 0
+              },
+              "tauntLevel": {
+                "m_defined": false,
+                "m_value": 0
+              },
+              "stunImmune": {
+                "m_defined": false,
+                "m_value": false
+              },
+              "silenceImmune": {
+                "m_defined": false,
+                "m_value": false
+              },
+              "sleepImmune": {
+                "m_defined": false,
+                "m_value": false
+              },
+              "frozenImmune": {
+                "m_defined": false,
+                "m_value": false
+              },
+              "levitateImmune": {
+                "m_defined": false,
+                "m_value": false
+              }
+            },
+            "lifePointReduce": {
+              "m_defined": false,
+              "m_value": 0
+            },
+            "levelType": {
+              "m_defined": false,
+              "m_value": 0
+            },
+            "rangeRadius": {
+              "m_defined": false,
+              "m_value": 0.0
+            },
+            "numOfExtraDrops": {
+              "m_defined": false,
+              "m_value": 0
+            },
+            "viewRadius": {
+              "m_defined": false,
+              "m_value": 0.0
+            },
+            "talentBlackboard": null,
+            "skills": null,
+            "spData": null
+          }
+        }
+      ]
+    },
+    {
+      "Key": "enemy_5020_hslrfd",
+      "Value": [
+        {
+          "level": 0,
+          "enemyData": {
+            "name": {
+              "m_defined": true,
+              "m_value": "水手（愚人节）"
+            },
+            "description": {
+              "m_defined": false,
+              "m_value": null
+            },
+            "prefabKey": {
+              "m_defined": true,
+              "m_value": "enemy_5020_hslrfd"
+            },
+            "attributes": {
+              "maxHp": {
+                "m_defined": true,
+                "m_value": 10000
+              },
+              "atk": {
+                "m_defined": false,
+                "m_value": 0
+              },
+              "def": {
+                "m_defined": false,
+                "m_value": 0
+              },
+              "magicResistance": {
+                "m_defined": false,
+                "m_value": 0.0
+              },
+              "cost": {
+                "m_defined": false,
+                "m_value": 0
+              },
+              "blockCnt": {
+                "m_defined": false,
+                "m_value": 0
+              },
+              "moveSpeed": {
+                "m_defined": true,
+                "m_value": 0.7
+              },
+              "attackSpeed": {
+                "m_defined": false,
+                "m_value": 0.0
+              },
+              "baseAttackTime": {
+                "m_defined": false,
+                "m_value": 0.0
+              },
+              "respawnTime": {
+                "m_defined": false,
+                "m_value": 0
+              },
+              "hpRecoveryPerSec": {
+                "m_defined": false,
+                "m_value": 0.0
+              },
+              "spRecoveryPerSec": {
+                "m_defined": false,
+                "m_value": 0.0
+              },
+              "maxDeployCount": {
+                "m_defined": false,
+                "m_value": 0
+              },
+              "massLevel": {
+                "m_defined": false,
+                "m_value": 0
+              },
+              "baseForceLevel": {
+                "m_defined": false,
+                "m_value": 0
+              },
+              "tauntLevel": {
+                "m_defined": false,
+                "m_value": 0
+              },
+              "stunImmune": {
+                "m_defined": false,
+                "m_value": false
+              },
+              "silenceImmune": {
+                "m_defined": false,
+                "m_value": false
+              },
+              "sleepImmune": {
+                "m_defined": false,
+                "m_value": false
+              },
+              "frozenImmune": {
+                "m_defined": false,
+                "m_value": false
+              },
+              "levitateImmune": {
+                "m_defined": false,
+                "m_value": false
+              }
+            },
+            "lifePointReduce": {
+              "m_defined": false,
+              "m_value": 0
+            },
+            "levelType": {
+              "m_defined": false,
+              "m_value": 0
+            },
+            "rangeRadius": {
+              "m_defined": false,
+              "m_value": 0.0
+            },
+            "numOfExtraDrops": {
+              "m_defined": false,
+              "m_value": 0
+            },
+            "viewRadius": {
+              "m_defined": false,
+              "m_value": 0.0
+            },
+            "talentBlackboard": null,
+            "skills": null,
+            "spData": null
+          }
+        }
+      ]
+    },
+    {
+      "Key": "enemy_5021_tmagfd",
+      "Value": [
+        {
+          "level": 0,
+          "enemyData": {
+            "name": {
+              "m_defined": true,
+              "m_value": "控潮术士（愚人节）"
+            },
+            "description": {
+              "m_defined": false,
+              "m_value": null
+            },
+            "prefabKey": {
+              "m_defined": true,
+              "m_value": "enemy_5021_tmagfd"
+            },
+            "attributes": {
+              "maxHp": {
+                "m_defined": true,
+                "m_value": 10000
+              },
+              "atk": {
+                "m_defined": false,
+                "m_value": 0
+              },
+              "def": {
+                "m_defined": false,
+                "m_value": 0
+              },
+              "magicResistance": {
+                "m_defined": false,
+                "m_value": 0.0
+              },
+              "cost": {
+                "m_defined": false,
+                "m_value": 0
+              },
+              "blockCnt": {
+                "m_defined": false,
+                "m_value": 0
+              },
+              "moveSpeed": {
+                "m_defined": true,
+                "m_value": 0.7
+              },
+              "attackSpeed": {
+                "m_defined": false,
+                "m_value": 0.0
+              },
+              "baseAttackTime": {
+                "m_defined": false,
+                "m_value": 0.0
+              },
+              "respawnTime": {
+                "m_defined": false,
+                "m_value": 0
+              },
+              "hpRecoveryPerSec": {
+                "m_defined": false,
+                "m_value": 0.0
+              },
+              "spRecoveryPerSec": {
+                "m_defined": false,
+                "m_value": 0.0
+              },
+              "maxDeployCount": {
+                "m_defined": false,
+                "m_value": 0
+              },
+              "massLevel": {
+                "m_defined": false,
+                "m_value": 0
+              },
+              "baseForceLevel": {
+                "m_defined": false,
+                "m_value": 0
+              },
+              "tauntLevel": {
+                "m_defined": false,
+                "m_value": 0
+              },
+              "stunImmune": {
+                "m_defined": false,
+                "m_value": false
+              },
+              "silenceImmune": {
+                "m_defined": false,
+                "m_value": false
+              },
+              "sleepImmune": {
+                "m_defined": false,
+                "m_value": false
+              },
+              "frozenImmune": {
+                "m_defined": false,
+                "m_value": false
+              },
+              "levitateImmune": {
+                "m_defined": false,
+                "m_value": false
+              }
+            },
+            "lifePointReduce": {
+              "m_defined": false,
+              "m_value": 0
+            },
+            "levelType": {
+              "m_defined": false,
+              "m_value": 0
+            },
+            "rangeRadius": {
+              "m_defined": false,
+              "m_value": 0.0
+            },
+            "numOfExtraDrops": {
+              "m_defined": false,
+              "m_value": 0
+            },
+            "viewRadius": {
+              "m_defined": false,
+              "m_value": 0.0
+            },
+            "talentBlackboard": null,
+            "skills": null,
+            "spData": null
+          }
+        }
+      ]
+    },
+    {
+      "Key": "enemy_5022_smbone",
+      "Value": [
+        {
+          "level": 0,
+          "enemyData": {
+            "name": {
+              "m_defined": true,
+              "m_value": "不法分子（愚人节）"
+            },
+            "description": {
+              "m_defined": false,
+              "m_value": null
+            },
+            "prefabKey": {
+              "m_defined": true,
+              "m_value": "enemy_5022_smbone"
+            },
+            "attributes": {
+              "maxHp": {
+                "m_defined": true,
+                "m_value": 10000
+              },
+              "atk": {
+                "m_defined": false,
+                "m_value": 0
+              },
+              "def": {
+                "m_defined": false,
+                "m_value": 0
+              },
+              "magicResistance": {
+                "m_defined": false,
+                "m_value": 0.0
+              },
+              "cost": {
+                "m_defined": false,
+                "m_value": 0
+              },
+              "blockCnt": {
+                "m_defined": false,
+                "m_value": 0
+              },
+              "moveSpeed": {
+                "m_defined": true,
+                "m_value": 0.8
+              },
+              "attackSpeed": {
+                "m_defined": false,
+                "m_value": 0.0
+              },
+              "baseAttackTime": {
+                "m_defined": false,
+                "m_value": 0.0
+              },
+              "respawnTime": {
+                "m_defined": false,
+                "m_value": 0
+              },
+              "hpRecoveryPerSec": {
+                "m_defined": false,
+                "m_value": 0.0
+              },
+              "spRecoveryPerSec": {
+                "m_defined": false,
+                "m_value": 0.0
+              },
+              "maxDeployCount": {
+                "m_defined": false,
+                "m_value": 0
+              },
+              "massLevel": {
+                "m_defined": false,
+                "m_value": 0
+              },
+              "baseForceLevel": {
+                "m_defined": false,
+                "m_value": 0
+              },
+              "tauntLevel": {
+                "m_defined": false,
+                "m_value": 0
+              },
+              "stunImmune": {
+                "m_defined": false,
+                "m_value": false
+              },
+              "silenceImmune": {
+                "m_defined": false,
+                "m_value": false
+              },
+              "sleepImmune": {
+                "m_defined": false,
+                "m_value": false
+              },
+              "frozenImmune": {
+                "m_defined": false,
+                "m_value": false
+              },
+              "levitateImmune": {
+                "m_defined": false,
+                "m_value": false
+              }
+            },
+            "lifePointReduce": {
+              "m_defined": false,
+              "m_value": 0
+            },
+            "levelType": {
+              "m_defined": false,
+              "m_value": 0
+            },
+            "rangeRadius": {
+              "m_defined": false,
+              "m_value": 0.0
+            },
+            "numOfExtraDrops": {
+              "m_defined": false,
+              "m_value": 0
+            },
+            "viewRadius": {
+              "m_defined": false,
+              "m_value": 0.0
+            },
+            "talentBlackboard": null,
+            "skills": null,
+            "spData": null
+          }
+        }
+      ]
+    },
+    {
+      "Key": "enemy_5023_smbtwo",
+      "Value": [
+        {
+          "level": 0,
+          "enemyData": {
+            "name": {
+              "m_defined": true,
+              "m_value": "精英不法分子(愚人节)"
+            },
+            "description": {
+              "m_defined": false,
+              "m_value": null
+            },
+            "prefabKey": {
+              "m_defined": true,
+              "m_value": "enemy_5023_smbtwo"
+            },
+            "attributes": {
+              "maxHp": {
+                "m_defined": true,
+                "m_value": 10000
+              },
+              "atk": {
+                "m_defined": false,
+                "m_value": 0
+              },
+              "def": {
+                "m_defined": false,
+                "m_value": 0
+              },
+              "magicResistance": {
+                "m_defined": false,
+                "m_value": 0.0
+              },
+              "cost": {
+                "m_defined": false,
+                "m_value": 0
+              },
+              "blockCnt": {
+                "m_defined": false,
+                "m_value": 0
+              },
+              "moveSpeed": {
+                "m_defined": true,
+                "m_value": 0.8
+              },
+              "attackSpeed": {
+                "m_defined": false,
+                "m_value": 0.0
+              },
+              "baseAttackTime": {
+                "m_defined": false,
+                "m_value": 0.0
+              },
+              "respawnTime": {
+                "m_defined": false,
+                "m_value": 0
+              },
+              "hpRecoveryPerSec": {
+                "m_defined": false,
+                "m_value": 0.0
+              },
+              "spRecoveryPerSec": {
+                "m_defined": false,
+                "m_value": 0.0
+              },
+              "maxDeployCount": {
+                "m_defined": false,
+                "m_value": 0
+              },
+              "massLevel": {
+                "m_defined": false,
+                "m_value": 0
+              },
+              "baseForceLevel": {
+                "m_defined": false,
+                "m_value": 0
+              },
+              "tauntLevel": {
+                "m_defined": false,
+                "m_value": 0
+              },
+              "stunImmune": {
+                "m_defined": false,
+                "m_value": false
+              },
+              "silenceImmune": {
+                "m_defined": false,
+                "m_value": false
+              },
+              "sleepImmune": {
+                "m_defined": false,
+                "m_value": false
+              },
+              "frozenImmune": {
+                "m_defined": false,
+                "m_value": false
+              },
+              "levitateImmune": {
+                "m_defined": false,
+                "m_value": false
+              }
+            },
+            "lifePointReduce": {
+              "m_defined": false,
+              "m_value": 0
+            },
+            "levelType": {
+              "m_defined": false,
+              "m_value": 0
+            },
+            "rangeRadius": {
+              "m_defined": false,
+              "m_value": 0.0
+            },
+            "numOfExtraDrops": {
+              "m_defined": false,
+              "m_value": 0
+            },
+            "viewRadius": {
+              "m_defined": false,
+              "m_value": 0.0
+            },
+            "talentBlackboard": null,
+            "skills": null,
+            "spData": null
+          }
+        }
+      ]
+    },
+    {
+      "Key": "enemy_5024_divmfd",
+      "Value": [
+        {
+          "level": 0,
+          "enemyData": {
+            "name": {
+              "m_defined": true,
+              "m_value": "潜水员(愚人节)"
+            },
+            "description": {
+              "m_defined": false,
+              "m_value": null
+            },
+            "prefabKey": {
+              "m_defined": true,
+              "m_value": "enemy_5024_divmfd"
+            },
+            "attributes": {
+              "maxHp": {
+                "m_defined": true,
+                "m_value": 10000
+              },
+              "atk": {
+                "m_defined": false,
+                "m_value": 0
+              },
+              "def": {
+                "m_defined": false,
+                "m_value": 0
+              },
+              "magicResistance": {
+                "m_defined": false,
+                "m_value": 0.0
+              },
+              "cost": {
+                "m_defined": false,
+                "m_value": 0
+              },
+              "blockCnt": {
+                "m_defined": false,
+                "m_value": 0
+              },
+              "moveSpeed": {
+                "m_defined": true,
+                "m_value": 0.7
+              },
+              "attackSpeed": {
+                "m_defined": false,
+                "m_value": 0.0
+              },
+              "baseAttackTime": {
+                "m_defined": false,
+                "m_value": 0.0
+              },
+              "respawnTime": {
+                "m_defined": false,
+                "m_value": 0
+              },
+              "hpRecoveryPerSec": {
+                "m_defined": false,
+                "m_value": 0.0
+              },
+              "spRecoveryPerSec": {
+                "m_defined": false,
+                "m_value": 0.0
+              },
+              "maxDeployCount": {
+                "m_defined": false,
+                "m_value": 0
+              },
+              "massLevel": {
+                "m_defined": false,
+                "m_value": 0
+              },
+              "baseForceLevel": {
+                "m_defined": false,
+                "m_value": 0
+              },
+              "tauntLevel": {
+                "m_defined": false,
+                "m_value": 0
+              },
+              "stunImmune": {
+                "m_defined": false,
+                "m_value": false
+              },
+              "silenceImmune": {
+                "m_defined": false,
+                "m_value": false
+              },
+              "sleepImmune": {
+                "m_defined": false,
+                "m_value": false
+              },
+              "frozenImmune": {
+                "m_defined": false,
+                "m_value": false
+              },
+              "levitateImmune": {
+                "m_defined": false,
+                "m_value": false
+              }
+            },
+            "lifePointReduce": {
+              "m_defined": false,
+              "m_value": 0
+            },
+            "levelType": {
+              "m_defined": false,
+              "m_value": 0
+            },
+            "rangeRadius": {
+              "m_defined": false,
+              "m_value": 0.0
+            },
+            "numOfExtraDrops": {
+              "m_defined": false,
+              "m_value": 0
+            },
+            "viewRadius": {
+              "m_defined": false,
+              "m_value": 0.0
+            },
+            "talentBlackboard": null,
+            "skills": null,
+            "spData": null
+          }
+        }
+      ]
+    },
+    {
+      "Key": "enemy_5025_bmbdfd",
+      "Value": [
+        {
+          "level": 0,
+          "enemyData": {
+            "name": {
+              "m_defined": true,
+              "m_value": "暴鸰（愚人节）"
+            },
+            "description": {
+              "m_defined": false,
+              "m_value": null
+            },
+            "prefabKey": {
+              "m_defined": true,
+              "m_value": "enemy_5025_bmbdfd"
+            },
+            "attributes": {
+              "maxHp": {
+                "m_defined": true,
+                "m_value": 1000
+              },
+              "atk": {
+                "m_defined": true,
+                "m_value": 0
+              },
+              "def": {
+                "m_defined": false,
+                "m_value": 0
+              },
+              "magicResistance": {
+                "m_defined": false,
+                "m_value": 0.0
+              },
+              "cost": {
+                "m_defined": false,
+                "m_value": 0
+              },
+              "blockCnt": {
+                "m_defined": false,
+                "m_value": 0
+              },
+              "moveSpeed": {
+                "m_defined": true,
+                "m_value": 1.0
+              },
+              "attackSpeed": {
+                "m_defined": false,
+                "m_value": 0.0
+              },
+              "baseAttackTime": {
+                "m_defined": false,
+                "m_value": 0.0
+              },
+              "respawnTime": {
+                "m_defined": false,
+                "m_value": 0
+              },
+              "hpRecoveryPerSec": {
+                "m_defined": false,
+                "m_value": 0.0
+              },
+              "spRecoveryPerSec": {
+                "m_defined": true,
+                "m_value": 0.0
+              },
+              "maxDeployCount": {
+                "m_defined": false,
+                "m_value": 0
+              },
+              "massLevel": {
+                "m_defined": false,
+                "m_value": 0
+              },
+              "baseForceLevel": {
+                "m_defined": false,
+                "m_value": 0
+              },
+              "tauntLevel": {
+                "m_defined": false,
+                "m_value": 0
+              },
+              "stunImmune": {
+                "m_defined": false,
+                "m_value": false
+              },
+              "silenceImmune": {
+                "m_defined": false,
+                "m_value": false
+              },
+              "sleepImmune": {
+                "m_defined": false,
+                "m_value": false
+              },
+              "frozenImmune": {
+                "m_defined": false,
+                "m_value": false
+              },
+              "levitateImmune": {
+                "m_defined": false,
+                "m_value": false
+              }
+            },
+            "lifePointReduce": {
+              "m_defined": false,
+              "m_value": 0
+            },
+            "levelType": {
+              "m_defined": false,
+              "m_value": 0
+            },
+            "rangeRadius": {
+              "m_defined": false,
+              "m_value": 0.0
+            },
+            "numOfExtraDrops": {
+              "m_defined": false,
+              "m_value": 0
+            },
+            "viewRadius": {
+              "m_defined": false,
+              "m_value": 0.0
+            },
+            "talentBlackboard": null,
+            "skills": null,
+            "spData": null
+          }
+        }
+      ]
+    },
+    {
+      "Key": "enemy_5026_icedfd",
+      "Value": [
+        {
+          "level": 0,
+          "enemyData": {
+            "name": {
+              "m_defined": true,
+              "m_value": "虚幻（愚人节）"
+            },
+            "description": {
+              "m_defined": false,
+              "m_value": null
+            },
+            "prefabKey": {
+              "m_defined": true,
+              "m_value": "enemy_5026_icedfd"
+            },
+            "attributes": {
+              "maxHp": {
+                "m_defined": true,
+                "m_value": 1000
+              },
+              "atk": {
+                "m_defined": true,
+                "m_value": 0
+              },
+              "def": {
+                "m_defined": false,
+                "m_value": 0
+              },
+              "magicResistance": {
+                "m_defined": false,
+                "m_value": 0.0
+              },
+              "cost": {
+                "m_defined": false,
+                "m_value": 0
+              },
+              "blockCnt": {
+                "m_defined": false,
+                "m_value": 0
+              },
+              "moveSpeed": {
+                "m_defined": true,
+                "m_value": 1.0
+              },
+              "attackSpeed": {
+                "m_defined": false,
+                "m_value": 0.0
+              },
+              "baseAttackTime": {
+                "m_defined": false,
+                "m_value": 0.0
+              },
+              "respawnTime": {
+                "m_defined": false,
+                "m_value": 0
+              },
+              "hpRecoveryPerSec": {
+                "m_defined": false,
+                "m_value": 0.0
+              },
+              "spRecoveryPerSec": {
+                "m_defined": true,
+                "m_value": 0.0
+              },
+              "maxDeployCount": {
+                "m_defined": false,
+                "m_value": 0
+              },
+              "massLevel": {
+                "m_defined": false,
+                "m_value": 0
+              },
+              "baseForceLevel": {
+                "m_defined": false,
+                "m_value": 0
+              },
+              "tauntLevel": {
+                "m_defined": false,
+                "m_value": 0
+              },
+              "stunImmune": {
+                "m_defined": false,
+                "m_value": false
+              },
+              "silenceImmune": {
+                "m_defined": false,
+                "m_value": false
+              },
+              "sleepImmune": {
+                "m_defined": false,
+                "m_value": false
+              },
+              "frozenImmune": {
+                "m_defined": false,
+                "m_value": false
+              },
+              "levitateImmune": {
+                "m_defined": false,
+                "m_value": false
+              }
+            },
+            "lifePointReduce": {
+              "m_defined": false,
+              "m_value": 0
+            },
+            "levelType": {
+              "m_defined": false,
+              "m_value": 0
+            },
+            "rangeRadius": {
+              "m_defined": false,
+              "m_value": 0.0
+            },
+            "numOfExtraDrops": {
+              "m_defined": false,
+              "m_value": 0
+            },
+            "viewRadius": {
+              "m_defined": false,
+              "m_value": 0.0
+            },
+            "talentBlackboard": null,
+            "skills": null,
+            "spData": null
+          }
+        }
+      ]
+    },
+    {
+      "Key": "enemy_5027_amotfd",
+      "Value": [
+        {
+          "level": 0,
+          "enemyData": {
+            "name": {
+              "m_defined": true,
+              "m_value": "大奖赛运输艇(愚人节)"
+            },
+            "description": {
+              "m_defined": false,
+              "m_value": null
+            },
+            "prefabKey": {
+              "m_defined": true,
+              "m_value": "enemy_5027_amotfd"
+            },
+            "attributes": {
+              "maxHp": {
+                "m_defined": true,
+                "m_value": 100
+              },
+              "atk": {
+                "m_defined": false,
+                "m_value": 0
+              },
+              "def": {
+                "m_defined": false,
+                "m_value": 0
+              },
+              "magicResistance": {
+                "m_defined": false,
+                "m_value": 0.0
+              },
+              "cost": {
+                "m_defined": false,
+                "m_value": 0
+              },
+              "blockCnt": {
+                "m_defined": false,
+                "m_value": 0
+              },
+              "moveSpeed": {
+                "m_defined": true,
+                "m_value": 0.0
+              },
+              "attackSpeed": {
+                "m_defined": false,
+                "m_value": 0.0
+              },
+              "baseAttackTime": {
+                "m_defined": false,
+                "m_value": 0.0
+              },
+              "respawnTime": {
+                "m_defined": false,
+                "m_value": 0
+              },
+              "hpRecoveryPerSec": {
+                "m_defined": false,
+                "m_value": 0.0
+              },
+              "spRecoveryPerSec": {
+                "m_defined": false,
+                "m_value": 0.0
+              },
+              "maxDeployCount": {
+                "m_defined": false,
+                "m_value": 0
+              },
+              "massLevel": {
+                "m_defined": false,
+                "m_value": 0
+              },
+              "baseForceLevel": {
+                "m_defined": false,
+                "m_value": 0
+              },
+              "tauntLevel": {
+                "m_defined": false,
+                "m_value": 0
+              },
+              "stunImmune": {
+                "m_defined": false,
+                "m_value": false
+              },
+              "silenceImmune": {
+                "m_defined": false,
+                "m_value": false
+              },
+              "sleepImmune": {
+                "m_defined": false,
+                "m_value": false
+              },
+              "frozenImmune": {
+                "m_defined": false,
+                "m_value": false
+              },
+              "levitateImmune": {
+                "m_defined": false,
+                "m_value": false
+              }
+            },
+            "lifePointReduce": {
+              "m_defined": false,
+              "m_value": 0
+            },
+            "levelType": {
+              "m_defined": false,
+              "m_value": 0
+            },
+            "rangeRadius": {
+              "m_defined": false,
+              "m_value": 0.0
+            },
+            "numOfExtraDrops": {
+              "m_defined": false,
+              "m_value": 0
+            },
+            "viewRadius": {
+              "m_defined": false,
+              "m_value": 0.0
+            },
+            "talentBlackboard": null,
+            "skills": null,
+            "spData": null
+          }
+        }
+      ]
+    },
+    {
       "Key": "enemy_1313_wdfmr",
       "Value": [
         {
@@ -126716,11 +129029,11 @@
           "enemyData": {
             "name": {
               "m_defined": true,
-              "m_value": "维多利亚工人"
+              "m_value": "诺伯特平民"
             },
             "description": {
               "m_defined": true,
-              "m_value": "<@eb.key>友好单位</>，处于鉴定完成状态时撤回保护目标回复5点费用上限"
+              "m_value": "<@eb.key>友好单位</>，确认身份后，撤回保护目标会为我方回复费用上限"
             },
             "prefabKey": {
               "m_defined": true,
@@ -126846,6 +129159,143 @@
       ]
     },
     {
+      "Key": "enemy_1313_wdfmr_2",
+      "Value": [
+        {
+          "level": 0,
+          "enemyData": {
+            "name": {
+              "m_defined": true,
+              "m_value": "诺伯特暗探"
+            },
+            "description": {
+              "m_defined": true,
+              "m_value": "<@eb.key>友好单位</>，确认身份后，撤回保护目标会为我方回复费用上限"
+            },
+            "prefabKey": {
+              "m_defined": true,
+              "m_value": "enemy_1313_wdfmr_2"
+            },
+            "attributes": {
+              "maxHp": {
+                "m_defined": true,
+                "m_value": 5000
+              },
+              "atk": {
+                "m_defined": true,
+                "m_value": 250
+              },
+              "def": {
+                "m_defined": true,
+                "m_value": 50
+              },
+              "magicResistance": {
+                "m_defined": true,
+                "m_value": 0.0
+              },
+              "cost": {
+                "m_defined": false,
+                "m_value": 0
+              },
+              "blockCnt": {
+                "m_defined": false,
+                "m_value": 0
+              },
+              "moveSpeed": {
+                "m_defined": true,
+                "m_value": 0.65
+              },
+              "attackSpeed": {
+                "m_defined": true,
+                "m_value": 100.0
+              },
+              "baseAttackTime": {
+                "m_defined": true,
+                "m_value": 2.5
+              },
+              "respawnTime": {
+                "m_defined": false,
+                "m_value": 0
+              },
+              "hpRecoveryPerSec": {
+                "m_defined": false,
+                "m_value": 0.0
+              },
+              "spRecoveryPerSec": {
+                "m_defined": false,
+                "m_value": 0.0
+              },
+              "maxDeployCount": {
+                "m_defined": false,
+                "m_value": 0
+              },
+              "massLevel": {
+                "m_defined": true,
+                "m_value": 1
+              },
+              "baseForceLevel": {
+                "m_defined": false,
+                "m_value": 0
+              },
+              "tauntLevel": {
+                "m_defined": false,
+                "m_value": 0
+              },
+              "stunImmune": {
+                "m_defined": false,
+                "m_value": false
+              },
+              "silenceImmune": {
+                "m_defined": true,
+                "m_value": true
+              },
+              "sleepImmune": {
+                "m_defined": false,
+                "m_value": false
+              },
+              "frozenImmune": {
+                "m_defined": false,
+                "m_value": false
+              },
+              "levitateImmune": {
+                "m_defined": false,
+                "m_value": false
+              }
+            },
+            "lifePointReduce": {
+              "m_defined": true,
+              "m_value": 0
+            },
+            "levelType": {
+              "m_defined": false,
+              "m_value": 0
+            },
+            "rangeRadius": {
+              "m_defined": true,
+              "m_value": -1.0
+            },
+            "numOfExtraDrops": {
+              "m_defined": false,
+              "m_value": 0
+            },
+            "viewRadius": {
+              "m_defined": false,
+              "m_value": 0.0
+            },
+            "talentBlackboard": [
+              {
+                "key": "civilianTalent.max_cost",
+                "value": 5.0,
+                "valueStr": null
+              }
+            ],
+            "skills": null,
+            "spData": null
+          }
+        }
+      ]
+    },
+    {
       "Key": "enemy_1314_wdnjd",
       "Value": [
         {
@@ -126853,11 +129303,11 @@
           "enemyData": {
             "name": {
               "m_defined": true,
-              "m_value": "普通的间谍"
+              "m_value": "寻路密探"
             },
             "description": {
               "m_defined": true,
-              "m_value": "伪装者，失去伪装后，下一次攻击的攻击力提升至200%\r\n"
+              "m_value": "密探，显露真身后，下一次攻击的攻击力大幅提升\r\n"
             },
             "prefabKey": {
               "m_defined": true,
@@ -126878,7 +129328,7 @@
               },
               "magicResistance": {
                 "m_defined": true,
-                "m_value": 30.0
+                "m_value": 20.0
               },
               "cost": {
                 "m_defined": false,
@@ -126995,11 +129445,11 @@
           "enemyData": {
             "name": {
               "m_defined": true,
-              "m_value": "普通的间谍精英"
+              "m_value": "寻路密探长"
             },
             "description": {
               "m_defined": true,
-              "m_value": "伪装者，失去伪装后，下一次攻击的攻击力提升至200%\r\n"
+              "m_value": "密探，显露真身后，下一次攻击的攻击力大幅提升\r\n"
             },
             "prefabKey": {
               "m_defined": true,
@@ -127020,7 +129470,7 @@
               },
               "magicResistance": {
                 "m_defined": true,
-                "m_value": 30.0
+                "m_value": 20.0
               },
               "cost": {
                 "m_defined": false,
@@ -127137,11 +129587,11 @@
           "enemyData": {
             "name": {
               "m_defined": true,
-              "m_value": "小心的间谍"
+              "m_value": "岗哨密探"
             },
             "description": {
               "m_defined": true,
-              "m_value": "伪装者，失去伪装后，获得隐匿\r\n"
+              "m_value": "密探，显露真身后，获得<@eb.key>隐匿</>"
             },
             "prefabKey": {
               "m_defined": true,
@@ -127162,7 +129612,7 @@
               },
               "magicResistance": {
                 "m_defined": true,
-                "m_value": 50.0
+                "m_value": 35.0
               },
               "cost": {
                 "m_defined": false,
@@ -127274,11 +129724,11 @@
           "enemyData": {
             "name": {
               "m_defined": true,
-              "m_value": "小心的间谍精英"
+              "m_value": "岗哨密探长"
             },
             "description": {
               "m_defined": true,
-              "m_value": "伪装者，失去伪装后，获得隐匿\r\n"
+              "m_value": "密探，显露真身后，获得<@eb.key>隐匿</>\r\n"
             },
             "prefabKey": {
               "m_defined": true,
@@ -127299,7 +129749,7 @@
               },
               "magicResistance": {
                 "m_defined": true,
-                "m_value": 50.0
+                "m_value": 35.0
               },
               "cost": {
                 "m_defined": false,
@@ -127411,11 +129861,11 @@
           "enemyData": {
             "name": {
               "m_defined": true,
-              "m_value": "笨拙的间谍"
+              "m_value": "武装密探"
             },
             "description": {
               "m_defined": true,
-              "m_value": "伪装者，处于伪装状态时，移动速度较慢"
+              "m_value": "受雇于神秘雇主的密探，负责混迹在普通民众之中阻碍对手的行动"
             },
             "prefabKey": {
               "m_defined": true,
@@ -127436,7 +129886,7 @@
               },
               "magicResistance": {
                 "m_defined": true,
-                "m_value": 10.0
+                "m_value": 0.0
               },
               "cost": {
                 "m_defined": false,
@@ -127548,11 +129998,11 @@
           "enemyData": {
             "name": {
               "m_defined": true,
-              "m_value": "笨拙的间谍精英"
+              "m_value": "武装密探长"
             },
             "description": {
               "m_defined": true,
-              "m_value": "伪装者，处于伪装状态时，移动速度较慢\r\n"
+              "m_value": "受雇于神秘雇主的密探，负责混迹在普通民众之中阻碍对手的行动\r\n"
             },
             "prefabKey": {
               "m_defined": true,
@@ -127573,7 +130023,7 @@
               },
               "magicResistance": {
                 "m_defined": true,
-                "m_value": 10.0
+                "m_value": 0.0
               },
               "cost": {
                 "m_defined": false,
@@ -127685,11 +130135,11 @@
           "enemyData": {
             "name": {
               "m_defined": true,
-              "m_value": "萨卡兹情报官"
+              "m_value": "萨卡兹悖谬谍报官"
             },
             "description": {
               "m_defined": true,
-              "m_value": "弹药敌人（3枚弹药）\r\n拥有弹药时，远程攻击，每次攻击扣除2点费用"
+              "m_value": "携带弹药时攻击会扣除一定费用，弹药上限：<@eb.key>3</>"
             },
             "prefabKey": {
               "m_defined": true,
@@ -127832,11 +130282,11 @@
           "enemyData": {
             "name": {
               "m_defined": true,
-              "m_value": "萨卡兹情报官精英"
+              "m_value": "萨卡兹悖谬谍报长"
             },
             "description": {
               "m_defined": true,
-              "m_value": "弹药敌人（3枚弹药）\r\n拥有弹药时，远程攻击，每次攻击扣除3点费用"
+              "m_value": "携带弹药时攻击会扣除一定费用，弹药上限：<@eb.key>3</>"
             },
             "prefabKey": {
               "m_defined": true,
@@ -127979,11 +130429,11 @@
           "enemyData": {
             "name": {
               "m_defined": true,
-              "m_value": "萨卡兹分身法师"
+              "m_value": "萨卡兹悖谬裂变学徒"
             },
             "description": {
               "m_defined": true,
-              "m_value": "生命值首次低于50%时，在自己所在的格子召唤一个自身分身"
+              "m_value": "生命值低于一半时，在自身位置产生<@eb.key>虚像</>"
             },
             "prefabKey": {
               "m_defined": true,
@@ -128116,11 +130566,11 @@
           "enemyData": {
             "name": {
               "m_defined": true,
-              "m_value": "萨卡兹分身法师精英"
+              "m_value": "萨卡兹悖谬裂变术师"
             },
             "description": {
               "m_defined": true,
-              "m_value": "生命值首次低于50%时，在自己所在的格子召唤一个自身分身"
+              "m_value": "生命值低于一半时，在自身位置产生<@eb.key>虚像</>"
             },
             "prefabKey": {
               "m_defined": true,
@@ -128253,7 +130703,7 @@
           "enemyData": {
             "name": {
               "m_defined": true,
-              "m_value": "维多利亚怂恿者"
+              "m_value": "叛乱煽动者"
             },
             "description": {
               "m_defined": true,
@@ -128384,7 +130834,7 @@
           "enemyData": {
             "name": {
               "m_defined": true,
-              "m_value": "维多利亚怂恿者精英"
+              "m_value": "叛乱鼓动者"
             },
             "description": {
               "m_defined": true,
@@ -128515,11 +130965,11 @@
           "enemyData": {
             "name": {
               "m_defined": true,
-              "m_value": "萨卡兹碾压者"
+              "m_value": "萨卡兹悖谬暴虐兵"
             },
             "description": {
               "m_defined": true,
-              "m_value": "阻挡其需要消耗3个阻挡数，首次攻击时攻击力增加至150%，并溅射一定范围"
+              "m_value": "只能被阻挡数大于等于3的单位阻挡，首次攻击时造成溅射伤害"
             },
             "prefabKey": {
               "m_defined": true,
@@ -128672,11 +131122,11 @@
           "enemyData": {
             "name": {
               "m_defined": true,
-              "m_value": "萨卡兹碾压者精英"
+              "m_value": "萨卡兹悖谬暴虐兵长"
             },
             "description": {
               "m_defined": true,
-              "m_value": "阻挡其需要消耗3个阻挡数，首次攻击时攻击力增加至150%，并溅射一定范围"
+              "m_value": "只能被阻挡数大于等于3的单位阻挡，首次攻击时造成溅射伤害"
             },
             "prefabKey": {
               "m_defined": true,
@@ -128829,11 +131279,11 @@
           "enemyData": {
             "name": {
               "m_defined": true,
-              "m_value": "自爆飞机航母"
+              "m_value": "枯朽萃聚使徒"
             },
             "description": {
               "m_defined": true,
-              "m_value": "不攻击，每隔一段时间，召唤3个食腐蚊"
+              "m_value": "不攻击，每隔一段时间，召唤数个枯朽之种"
             },
             "prefabKey": {
               "m_defined": true,
@@ -128969,11 +131419,11 @@
           "enemyData": {
             "name": {
               "m_defined": true,
-              "m_value": "自爆飞机航母精英"
+              "m_value": "腐败萃聚使徒"
             },
             "description": {
               "m_defined": true,
-              "m_value": "不攻击，每隔一段时间，召唤3个食腐蚊精英"
+              "m_value": "不攻击，每隔一段时间，召唤数个腐败之种"
             },
             "prefabKey": {
               "m_defined": true,
@@ -129109,11 +131559,11 @@
           "enemyData": {
             "name": {
               "m_defined": true,
-              "m_value": "灰礼帽"
+              "m_value": "“灰礼帽”"
             },
             "description": {
               "m_defined": true,
-              "m_value": "下次攻击时，向下个检查点移动一段距离，并对沿途目标造成攻击力100%的物理伤害;"
+              "m_value": "数次攻击后，下次攻击会向下个检查点移动一段距离"
             },
             "prefabKey": {
               "m_defined": true,
@@ -129265,11 +131715,11 @@
           "enemyData": {
             "name": {
               "m_defined": true,
-              "m_value": "灰礼帽手下"
+              "m_value": "“见习灰礼帽”"
             },
             "description": {
               "m_defined": true,
-              "m_value": "下次攻击时，向下个检查点移动一段距离，并对沿途目标造成攻击力100%的物理伤害;"
+              "m_value": "数次攻击后，下次攻击会向下个检查点移动一段距离"
             },
             "prefabKey": {
               "m_defined": true,
@@ -129421,11 +131871,11 @@
           "enemyData": {
             "name": {
               "m_defined": true,
-              "m_value": "机械手臂"
+              "m_value": "解构畸变体"
             },
             "description": {
               "m_defined": true,
-              "m_value": "每秒流失一定生命值"
+              "m_value": "每次攻击造成一定<@eb.key>侵蚀损伤</>，每秒流失一定生命值"
             },
             "prefabKey": {
               "m_defined": true,
@@ -129434,7 +131884,7 @@
             "attributes": {
               "maxHp": {
                 "m_defined": true,
-                "m_value": 5000
+                "m_value": 3500
               },
               "atk": {
                 "m_defined": true,
@@ -129519,7 +131969,7 @@
             },
             "lifePointReduce": {
               "m_defined": true,
-              "m_value": 1
+              "m_value": 0
             },
             "levelType": {
               "m_defined": false,
@@ -129566,7 +132016,7 @@
             "attributes": {
               "maxHp": {
                 "m_defined": true,
-                "m_value": 7500
+                "m_value": 5000
               },
               "atk": {
                 "m_defined": true,
@@ -129690,7 +132140,7 @@
           "enemyData": {
             "name": {
               "m_defined": true,
-              "m_value": "萨卡兹分身"
+              "m_value": "萨卡兹悖谬裂变学徒"
             },
             "description": {
               "m_defined": true,
@@ -129821,7 +132271,7 @@
           "enemyData": {
             "name": {
               "m_defined": true,
-              "m_value": "萨卡兹分身精英"
+              "m_value": "萨卡兹悖谬裂变术师"
             },
             "description": {
               "m_defined": true,
@@ -129952,11 +132402,11 @@
           "enemyData": {
             "name": {
               "m_defined": true,
-              "m_value": "变形者"
+              "m_value": "“变形者集群”"
             },
             "description": {
               "m_defined": true,
-              "m_value": "会分身的boss"
+              "m_value": "游离于萨卡兹王庭之外的长生者。见证了种族的兴衰，体验了生命的迭代，但“变形者集群”依然没有找到“何为生存”的答案"
             },
             "prefabKey": {
               "m_defined": true,
@@ -129969,11 +132419,11 @@
               },
               "atk": {
                 "m_defined": true,
-                "m_value": 750
+                "m_value": 550
               },
               "def": {
                 "m_defined": true,
-                "m_value": 800
+                "m_value": 750
               },
               "magicResistance": {
                 "m_defined": true,
@@ -129997,7 +132447,7 @@
               },
               "baseAttackTime": {
                 "m_defined": true,
-                "m_value": 3.5
+                "m_value": 2.5
               },
               "respawnTime": {
                 "m_defined": false,
@@ -130145,7 +132595,7 @@
                 "blackboard": [
                   {
                     "key": "atk_scale",
-                    "value": 1.25,
+                    "value": 1.0,
                     "valueStr": null
                   }
                 ]
@@ -130159,7 +132609,7 @@
                 "blackboard": [
                   {
                     "key": "atk_scale",
-                    "value": 1.25,
+                    "value": 1.0,
                     "valueStr": null
                   }
                 ]
@@ -130173,7 +132623,7 @@
                 "blackboard": [
                   {
                     "key": "fixedValueDamage",
-                    "value": 500.0,
+                    "value": 375.0,
                     "valueStr": null
                   }
                 ]
@@ -130233,11 +132683,11 @@
               },
               "atk": {
                 "m_defined": true,
-                "m_value": 1000
+                "m_value": 750
               },
               "def": {
                 "m_defined": true,
-                "m_value": 1000
+                "m_value": 900
               },
               "magicResistance": {
                 "m_defined": false,
@@ -130349,7 +132799,7 @@
                 "blackboard": [
                   {
                     "key": "fixedValueDamage",
-                    "value": 500.0,
+                    "value": 375.0,
                     "valueStr": null
                   }
                 ]
@@ -130368,11 +132818,11 @@
           "enemyData": {
             "name": {
               "m_defined": true,
-              "m_value": "1阶段分身"
+              "m_value": "同构碎片"
             },
             "description": {
               "m_defined": true,
-              "m_value": "会分身的boss"
+              "m_value": "在漫长岁月之前，变形者突然醒来。那一天变形者开始思考为何自己并未如同族一般被这片大地改造。于是变形者自分成万千碎片，体验过诸般人生，个体的意义从此消弭。王庭内从未存在过一位变形者，唯有“集群”。"
             },
             "prefabKey": {
               "m_defined": true,
@@ -130385,11 +132835,11 @@
               },
               "atk": {
                 "m_defined": true,
-                "m_value": 750
+                "m_value": 550
               },
               "def": {
                 "m_defined": true,
-                "m_value": 800
+                "m_value": 750
               },
               "magicResistance": {
                 "m_defined": true,
@@ -130413,7 +132863,7 @@
               },
               "baseAttackTime": {
                 "m_defined": true,
-                "m_value": 3.5
+                "m_value": 2.5
               },
               "respawnTime": {
                 "m_defined": false,
@@ -130526,7 +132976,7 @@
                 "blackboard": [
                   {
                     "key": "atk_scale",
-                    "value": 1.25,
+                    "value": 1.0,
                     "valueStr": null
                   }
                 ]
@@ -130540,7 +132990,7 @@
                 "blackboard": [
                   {
                     "key": "atk_scale",
-                    "value": 1.25,
+                    "value": 1.0,
                     "valueStr": null
                   }
                 ]
@@ -130584,11 +133034,11 @@
               },
               "atk": {
                 "m_defined": true,
-                "m_value": 1000
+                "m_value": 750
               },
               "def": {
                 "m_defined": true,
-                "m_value": 1000
+                "m_value": 900
               },
               "magicResistance": {
                 "m_defined": false,
@@ -130704,11 +133154,11 @@
           "enemyData": {
             "name": {
               "m_defined": true,
-              "m_value": "2阶段分身"
+              "m_value": "同构碎片"
             },
             "description": {
               "m_defined": true,
-              "m_value": "会分身的boss"
+              "m_value": "在漫长岁月之前，变形者突然醒来。那一天变形者开始思考为何自己并未如同族一般被这片大地改造。于是变形者自分成万千碎片，体验过诸般人生，个体的意义从此消弭。王庭内从未存在过一位变形者，唯有“集群”。"
             },
             "prefabKey": {
               "m_defined": true,
@@ -130721,11 +133171,11 @@
               },
               "atk": {
                 "m_defined": true,
-                "m_value": 750
+                "m_value": 550
               },
               "def": {
                 "m_defined": true,
-                "m_value": 800
+                "m_value": 750
               },
               "magicResistance": {
                 "m_defined": true,
@@ -130749,7 +133199,7 @@
               },
               "baseAttackTime": {
                 "m_defined": true,
-                "m_value": 3.5
+                "m_value": 2.5
               },
               "respawnTime": {
                 "m_defined": false,
@@ -130837,7 +133287,7 @@
                 "blackboard": [
                   {
                     "key": "atk_scale",
-                    "value": 1.25,
+                    "value": 1.0,
                     "valueStr": null
                   }
                 ]
@@ -130851,7 +133301,7 @@
                 "blackboard": [
                   {
                     "key": "atk_scale",
-                    "value": 1.25,
+                    "value": 1.0,
                     "valueStr": null
                   }
                 ]
@@ -130895,11 +133345,11 @@
               },
               "atk": {
                 "m_defined": true,
-                "m_value": 1000
+                "m_value": 750
               },
               "def": {
                 "m_defined": true,
-                "m_value": 1000
+                "m_value": 900
               },
               "magicResistance": {
                 "m_defined": false,
@@ -131009,11 +133459,11 @@
           "enemyData": {
             "name": {
               "m_defined": true,
-              "m_value": "演出分身"
+              "m_value": "同构碎片"
             },
             "description": {
               "m_defined": true,
-              "m_value": "会分身的boss"
+              "m_value": "在漫长岁月之前，变形者突然醒来。那一天变形者开始思考为何自己并未如同族一般被这片大地改造。于是变形者自分成万千碎片，体验过诸般人生，个体的意义从此消弭。王庭内从未存在过一位变形者，唯有“集群”。"
             },
             "prefabKey": {
               "m_defined": true,
@@ -131026,11 +133476,11 @@
               },
               "atk": {
                 "m_defined": true,
-                "m_value": 750
+                "m_value": 550
               },
               "def": {
                 "m_defined": true,
-                "m_value": 800
+                "m_value": 750
               },
               "magicResistance": {
                 "m_defined": true,
@@ -131054,7 +133504,7 @@
               },
               "baseAttackTime": {
                 "m_defined": true,
-                "m_value": 3.5
+                "m_value": 2.5
               },
               "respawnTime": {
                 "m_defined": false,
@@ -131168,11 +133618,11 @@
               },
               "atk": {
                 "m_defined": true,
-                "m_value": 1000
+                "m_value": 750
               },
               "def": {
                 "m_defined": true,
-                "m_value": 1000
+                "m_value": 900
               },
               "magicResistance": {
                 "m_defined": false,
@@ -131282,11 +133732,11 @@
           "enemyData": {
             "name": {
               "m_defined": true,
-              "m_value": "死芒"
+              "m_value": "爱布拉娜"
             },
             "description": {
               "m_defined": true,
-              "m_value": "死芒演出"
+              "m_value": "深池的领袖，焚尽伪装的德拉克"
             },
             "prefabKey": {
               "m_defined": true,
@@ -131327,7 +133777,7 @@
               },
               "baseAttackTime": {
                 "m_defined": true,
-                "m_value": 3.0
+                "m_value": 2.5
               },
               "respawnTime": {
                 "m_defined": false,
@@ -131399,7 +133849,16 @@
               "m_value": 0.0
             },
             "talentBlackboard": null,
-            "skills": null,
+            "skills": [
+              {
+                "prefabKey": "detectAll",
+                "priority": 0,
+                "cooldown": 999.0,
+                "initCooldown": 92.0,
+                "spCost": 0,
+                "blackboard": null
+              }
+            ],
             "spData": null
           }
         }
@@ -131413,11 +133872,11 @@
           "enemyData": {
             "name": {
               "m_defined": true,
-              "m_value": "变形者"
+              "m_value": "“变形者集群”"
             },
             "description": {
               "m_defined": true,
-              "m_value": "变形者演出"
+              "m_value": "游离于萨卡兹王庭之外的长生者，直面火焰之途"
             },
             "prefabKey": {
               "m_defined": true,
@@ -131531,328 +133990,6 @@
             },
             "talentBlackboard": null,
             "skills": null,
-            "spData": null
-          }
-        }
-      ]
-    },
-    {
-      "Key": "enemy_6013_smith",
-      "Value": [
-        {
-          "level": 0,
-          "enemyData": {
-            "name": {
-              "m_defined": true,
-              "m_value": "老妈的“逆女”"
-            },
-            "description": {
-              "m_defined": true,
-              "m_value": "前约翰老妈员工。虽然不知道这几年她经历了什么，但能看出她对老妈大家庭没什么好感"
-            },
-            "prefabKey": {
-              "m_defined": true,
-              "m_value": "enemy_6013_smith"
-            },
-            "attributes": {
-              "maxHp": {
-                "m_defined": true,
-                "m_value": 48000
-              },
-              "atk": {
-                "m_defined": true,
-                "m_value": 1000
-              },
-              "def": {
-                "m_defined": true,
-                "m_value": 1000
-              },
-              "magicResistance": {
-                "m_defined": true,
-                "m_value": 30.0
-              },
-              "cost": {
-                "m_defined": false,
-                "m_value": 0
-              },
-              "blockCnt": {
-                "m_defined": false,
-                "m_value": 0
-              },
-              "moveSpeed": {
-                "m_defined": true,
-                "m_value": 0.5
-              },
-              "attackSpeed": {
-                "m_defined": true,
-                "m_value": 100.0
-              },
-              "baseAttackTime": {
-                "m_defined": true,
-                "m_value": 4.5
-              },
-              "respawnTime": {
-                "m_defined": false,
-                "m_value": 0
-              },
-              "hpRecoveryPerSec": {
-                "m_defined": false,
-                "m_value": 0.0
-              },
-              "spRecoveryPerSec": {
-                "m_defined": false,
-                "m_value": 0.0
-              },
-              "maxDeployCount": {
-                "m_defined": false,
-                "m_value": 0
-              },
-              "massLevel": {
-                "m_defined": true,
-                "m_value": 4
-              },
-              "baseForceLevel": {
-                "m_defined": false,
-                "m_value": 0
-              },
-              "tauntLevel": {
-                "m_defined": false,
-                "m_value": 0
-              },
-              "stunImmune": {
-                "m_defined": true,
-                "m_value": false
-              },
-              "silenceImmune": {
-                "m_defined": true,
-                "m_value": false
-              },
-              "sleepImmune": {
-                "m_defined": true,
-                "m_value": false
-              },
-              "frozenImmune": {
-                "m_defined": true,
-                "m_value": false
-              },
-              "levitateImmune": {
-                "m_defined": true,
-                "m_value": false
-              }
-            },
-            "lifePointReduce": {
-              "m_defined": true,
-              "m_value": 2
-            },
-            "levelType": {
-              "m_defined": true,
-              "m_value": 2
-            },
-            "rangeRadius": {
-              "m_defined": true,
-              "m_value": -1.0
-            },
-            "numOfExtraDrops": {
-              "m_defined": false,
-              "m_value": 0
-            },
-            "viewRadius": {
-              "m_defined": false,
-              "m_value": 0.0
-            },
-            "talentBlackboard": [
-              {
-                "key": "Passive.inv_duration",
-                "value": 200.0,
-                "valueStr": null
-              }
-            ],
-            "skills": [
-              {
-                "prefabKey": "SummonCrsbow",
-                "priority": 10,
-                "cooldown": 2.0,
-                "initCooldown": 0.0,
-                "spCost": 0,
-                "blackboard": [
-                  {
-                    "key": "branch_id",
-                    "value": 0.0,
-                    "valueStr": "branch_crsbow"
-                  }
-                ]
-              },
-              {
-                "prefabKey": "SummonSnflwr",
-                "priority": 0,
-                "cooldown": 20.0,
-                "initCooldown": 20.0,
-                "spCost": 0,
-                "blackboard": [
-                  {
-                    "key": "branch_id",
-                    "value": 0.0,
-                    "valueStr": "branch_snflwr"
-                  }
-                ]
-              }
-            ],
-            "spData": null
-          }
-        }
-      ]
-    },
-    {
-      "Key": "enemy_6014_gas",
-      "Value": [
-        {
-          "level": 0,
-          "enemyData": {
-            "name": {
-              "m_defined": true,
-              "m_value": "“毒瘤”"
-            },
-            "description": {
-              "m_defined": true,
-              "m_value": "无论从何种角度来说都是名副其实的荒野暴徒"
-            },
-            "prefabKey": {
-              "m_defined": true,
-              "m_value": "enemy_6014_gas"
-            },
-            "attributes": {
-              "maxHp": {
-                "m_defined": true,
-                "m_value": 50000
-              },
-              "atk": {
-                "m_defined": true,
-                "m_value": 0
-              },
-              "def": {
-                "m_defined": true,
-                "m_value": 600
-              },
-              "magicResistance": {
-                "m_defined": true,
-                "m_value": 30.0
-              },
-              "cost": {
-                "m_defined": false,
-                "m_value": 0
-              },
-              "blockCnt": {
-                "m_defined": false,
-                "m_value": 0
-              },
-              "moveSpeed": {
-                "m_defined": true,
-                "m_value": 0.3
-              },
-              "attackSpeed": {
-                "m_defined": true,
-                "m_value": 100.0
-              },
-              "baseAttackTime": {
-                "m_defined": true,
-                "m_value": 1.0
-              },
-              "respawnTime": {
-                "m_defined": false,
-                "m_value": 0
-              },
-              "hpRecoveryPerSec": {
-                "m_defined": false,
-                "m_value": 0.0
-              },
-              "spRecoveryPerSec": {
-                "m_defined": false,
-                "m_value": 0.0
-              },
-              "maxDeployCount": {
-                "m_defined": false,
-                "m_value": 0
-              },
-              "massLevel": {
-                "m_defined": true,
-                "m_value": 2
-              },
-              "baseForceLevel": {
-                "m_defined": false,
-                "m_value": 0
-              },
-              "tauntLevel": {
-                "m_defined": false,
-                "m_value": 0
-              },
-              "stunImmune": {
-                "m_defined": true,
-                "m_value": false
-              },
-              "silenceImmune": {
-                "m_defined": true,
-                "m_value": false
-              },
-              "sleepImmune": {
-                "m_defined": true,
-                "m_value": false
-              },
-              "frozenImmune": {
-                "m_defined": true,
-                "m_value": false
-              },
-              "levitateImmune": {
-                "m_defined": true,
-                "m_value": true
-              }
-            },
-            "lifePointReduce": {
-              "m_defined": true,
-              "m_value": 2
-            },
-            "levelType": {
-              "m_defined": true,
-              "m_value": 2
-            },
-            "rangeRadius": {
-              "m_defined": true,
-              "m_value": -1.0
-            },
-            "numOfExtraDrops": {
-              "m_defined": false,
-              "m_value": 0
-            },
-            "viewRadius": {
-              "m_defined": false,
-              "m_value": 0.0
-            },
-            "talentBlackboard": [
-              {
-                "key": "Passive.hp_ratio",
-                "value": 0.2,
-                "valueStr": null
-              },
-              {
-                "key": "Passive.inv_duration",
-                "value": 2.0,
-                "valueStr": null
-              },
-              {
-                "key": "Passive.boss_add",
-                "value": 1.0,
-                "valueStr": null
-              }
-            ],
-            "skills": [
-              {
-                "prefabKey": "SmokeBombs",
-                "priority": 0,
-                "cooldown": 30.0,
-                "initCooldown": 10.0,
-                "spCost": 0,
-                "blackboard": null
-              }
-            ],
             "spData": null
           }
         }

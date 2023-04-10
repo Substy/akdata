@@ -2409,6 +2409,28 @@
       "OnStart": 4
     }
   },
+  "char_154_morgan": {
+    "version": "3.8.99",
+    "Attack": {
+      "duration": 40,
+      "OnAttack": 13
+    },
+    "Default": 0,
+    "Idle": 80,
+    "Skill_1": {
+      "duration": 40,
+      "OnAttack": 13
+    },
+    "Skill_2": {
+      "duration": 40,
+      "OnAttack": 17
+    },
+    "Start": {
+      "duration": 30,
+      "OnStart": 3
+    },
+    "Die": 30
+  },
   "char_155_tiger": {
     "version": "3.8.99",
     "Attack": {
@@ -5538,6 +5560,20 @@
       "OnStart": 18
     }
   },
+  "char_274_astesi_epoque#23": {
+    "version": "3.8.99",
+    "Attack": {
+      "duration": 36,
+      "OnAttack": 16
+    },
+    "Default": 0,
+    "Idle": 60,
+    "Start": {
+      "duration": 30,
+      "OnStart": 18
+    },
+    "Die": 30
+  },
   "char_274_astesi_epoque#5": {
     "version": "3.8.99",
     "Attack": {
@@ -6235,6 +6271,31 @@
       "duration": 30,
       "OnStart": 10
     }
+  },
+  "char_297_hamoni_epoque#24": {
+    "version": "3.8.99",
+    "Attack": {
+      "duration": 50,
+      "OnAttack": 20
+    },
+    "Attack_Charge": {
+      "duration": 50,
+      "OnAttack": 18
+    },
+    "Default": 0,
+    "Idle": 120,
+    "Skill_1_Begin": 5,
+    "Skill_1_End": 5,
+    "Skill_1_Loop": 30,
+    "Skill_2": {
+      "duration": 50,
+      "OnAttack": 20
+    },
+    "Start": {
+      "duration": 30,
+      "OnStart": 10
+    },
+    "Die": 30
   },
   "char_298_susuro": {
     "version": "3.8.99",
@@ -8744,6 +8805,69 @@
       "OnAttack": 10
     }
   },
+  "char_4039_horn_epoque#24": {
+    "version": "3.8.99",
+    "Attack_A": {
+      "duration": 32,
+      "OnAttack": 9
+    },
+    "Attack_B": {
+      "duration": 32,
+      "OnAttack": 9
+    },
+    "Default": 0,
+    "Die": 30,
+    "Idle": 60,
+    "Skill_1_A": {
+      "duration": 36,
+      "OnAttack": 11
+    },
+    "Skill_1_B": {
+      "duration": 36,
+      "OnAttack": 11
+    },
+    "Skill_2_A_Loop": {
+      "duration": 32,
+      "OnAttack": 10
+    },
+    "Skill_2_B_Loop": {
+      "duration": 32,
+      "OnAttack": 10
+    },
+    "Skill_2_Begin": 5,
+    "Skill_2_End": 5,
+    "Skill_2_Idle": 30,
+    "Skill_3_A_Loop": {
+      "duration": 32,
+      "OnAttack": 10
+    },
+    "Skill_3_B_Loop": {
+      "duration": 32,
+      "OnAttack": 10
+    },
+    "Skill_3_Begin": 6,
+    "Skill_3_End": 6,
+    "Skill_3_Idle": 60,
+    "Skill_Down_1": {
+      "duration": 36,
+      "OnAttack": 11
+    },
+    "Skill_Down_2_B_Loop": {
+      "duration": 32,
+      "OnAttack": 10
+    },
+    "Skill_Down_3_Begin": 6,
+    "Skill_Down_3_End": 6,
+    "Skill_Down_3_Idle": 30,
+    "Skill_Down_3_Loop": {
+      "duration": 32,
+      "OnAttack": 10
+    },
+    "Start": {
+      "duration": 30,
+      "OnStart": 6
+    }
+  },
   "char_4040_rockr": {
     "version": "3.8.99",
     "Attack": {
@@ -8907,6 +9031,36 @@
     "Skill_1_Loop": 180,
     "Skill_2_Begin": 38,
     "Skill_2_End": 50,
+    "Skill_2_Loop": 100,
+    "Start": {
+      "duration": 30,
+      "OnStart": 5
+    }
+  },
+  "char_4045_heidi_epoque#24": {
+    "version": "3.8.99",
+    "Default": 0,
+    "Die": 30,
+    "Idle": 420,
+    "Skill_1_Begin": {
+      "duration": 25,
+      "OnDeactivateEffect": 0,
+      "OnActivateEffect": 14
+    },
+    "Skill_1_End": {
+      "duration": 25,
+      "OnDeactivateEffect": 9
+    },
+    "Skill_1_Loop": 180,
+    "Skill_2_Begin": {
+      "duration": 38,
+      "OnDeactivateEffect": 0,
+      "OnActivateEffect": 12
+    },
+    "Skill_2_End": {
+      "duration": 50,
+      "OnDeactivateEffect": 24
+    },
     "Skill_2_Loop": 100,
     "Start": {
       "duration": 30,
@@ -9525,6 +9679,52 @@
       "OnAttack": 15
     },
     "Skill_Idle": 40,
+    "Start": 30
+  },
+  "char_4087_ines": {
+    "version": "3.8.99",
+    "Attack": {
+      "duration": 30,
+      "OnAttack": 14
+    },
+    "Combat": {
+      "duration": 30,
+      "OnAttack": 10
+    },
+    "Default": 0,
+    "Die": 30,
+    "Idle": 120,
+    "Skill_2_Attack": {
+      "duration": 30,
+      "OnAttack": 14
+    },
+    "Skill_2_Begin": 5,
+    "Skill_2_Combat": {
+      "duration": 30,
+      "OnAttack": 14
+    },
+    "Skill_2_End": 20,
+    "Skill_2_Idle": 120,
+    "Start": {
+      "duration": 30,
+      "OnAttack": 6,
+      "OnStart": 6
+    },
+    "Start_Skill": {
+      "duration": 30,
+      "OnAttack": 5,
+      "OnStart": 5
+    }
+  },
+  "char_4091_ulika": {
+    "version": "3.8.99",
+    "Default": 0,
+    "Die": 30,
+    "Idle": 368,
+    "Skill_Begin_1": 30,
+    "Skill_Begin_2": 21,
+    "Skill_End": 108,
+    "Skill_Loop": 40,
     "Start": 30
   },
   "char_411_tomimi": {
@@ -10773,6 +10973,28 @@
     },
     "Die": 27
   },
+  "char_464_cement": {
+    "version": "3.8.99",
+    "Attack": {
+      "duration": 50,
+      "OnAttack": 17
+    },
+    "Default": 0,
+    "Idle": 120,
+    "Skill_1": {
+      "duration": 45,
+      "OnAttack": 16
+    },
+    "Skill_2_Begin": 10,
+    "Skill_2_End": 10,
+    "Skill_2_Idle": 40,
+    "Skill_2_Loop": {
+      "duration": 50,
+      "OnAttack": 16
+    },
+    "Start": 30,
+    "Die": 30
+  },
   "char_466_qanik": {
     "version": "3.8.99",
     "Attack": {
@@ -11516,6 +11738,27 @@
     "Skill_Loop_Down": {
       "duration": 40,
       "OnAttack": 22
+    }
+  },
+  "char_491_humus": {
+    "version": "3.8.99",
+    "Attack": {
+      "duration": 39,
+      "OnAttack": 9
+    },
+    "Default": 0,
+    "Die": 30,
+    "Idle": 60,
+    "Skill_2_Begin": 10,
+    "Skill_2_End": 10,
+    "Skill_2_Idle": 60,
+    "Skill_2_Loop": {
+      "duration": 39,
+      "OnAttack": 11
+    },
+    "Start": {
+      "duration": 30,
+      "OnStart": 6
     }
   },
   "char_492_quercu": {

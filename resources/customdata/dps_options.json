@@ -123,7 +123,9 @@
         "char_4083_chimes": 1,
         "char_4082_qiubai": 1,
         "char_1030_noirc2": 2,
-        "char_1029_yato2":  { "text": "[s3]巨型敌人", "tooltip": "勾选表示3技能的最大命中次数" }
+        "char_1029_yato2":  { "text": "[s3]巨型敌人", "tooltip": "勾选表示3技能的最大命中次数" },
+        "char_491_humus_50": { "text": "[s2]HP>50%", "tooltip": "触发I级精力充沛（同种效果取最高）" },
+        "char_491_humus_80": { "text": "[s2]HP>80%", "tooltip": "触发II级精力充沛（同种效果取最高）" }
     },
     "char" : {
         "char_103_angel": [ "equip", "archet", "chen" ],
@@ -272,7 +274,7 @@
         "char_4046_ebnhlz": [ "equip", "cond_elite" ],
         "char_128_plosis":  [ "equip" ],
         "char_135_halo":    [ "stack" ],
-        "char_4048_doroth": [ "stack" ],
+        "char_4048_doroth": [ "stack", "crit" ],
         "char_190_clour":   [ "equip" ],
         "char_235_jesica":  [ "equip" ],
         "char_4054_malist": [ "crit" ],
@@ -281,7 +283,7 @@
         "char_497_ctable":  [ "noblock" ],
         "char_4032_provs":  [ "equip" ],
         "char_4064_mlynar": [ "cond", "stack" ],
-        "char_2014_nian":   [ "block" ],
+        "char_2014_nian":   [ "block", "equip" ],
         "char_136_hsguma":  [ "equip" ],
         "char_325_bison":   [ "block" ],
         "char_381_bubble":  [ "block" ],
@@ -315,6 +317,11 @@
         "char_1030_noirc2": [ "cond", "stack", "od_trigger" ],
         "char_1029_yato2":  [ "cond", "equip"],
         "char_134_ifrit":   [ "equip" ],
-        "char_489_serum":   [ "equip" ]
+        "char_489_serum":   [ "equip" ],
+        "char_491_humus":   [ "cond_50", "cond_80" ],
+        "char_464_cement":  [ "block" ],
+        "char_154_morgan":  [ "equip" ],
+        "char_451_robin":   [ "crit" ],
+        "char_458_rfrost":  [ "crit" ]
     }
 }
