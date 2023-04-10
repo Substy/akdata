@@ -214,7 +214,7 @@ function calculateDps(char, enemy, raidBuff) {
   if (char.options.token && (checkSpecs(charId, "token") || checkSpecs(char.skillId, "token")))  {
     log.write("\n");
     log.writeNote("**召唤物dps**");
-    var tokenId = checkSpecs(charId, "token") || checkSpecs(char.skillId, "token");      
+    var tokenId = checkSpecs(charId, "token") || checkSpecs(char.skillId, "token");
     getTokenAtkHp(attr, tokenId, log);
   }
 
@@ -1080,7 +1080,6 @@ function applyBuff(charAttr, buffFrm, tag, blackbd, isSkill, isCrit, log, enemy)
       case "skchr_panda_2":
       case "skchr_red_2":
       case "skchr_phatom_3":
-      case "skchr_weedy_3":
       case "skchr_asbest_2":
       case "skchr_folnic_2":
       case "skchr_chiave_2":
@@ -2049,7 +2048,8 @@ function applyBuff(charAttr, buffFrm, tag, blackbd, isSkill, isCrit, log, enemy)
         buffFrame.maxTarget = 999;
         break;
       case "tachr_400_weedy_2":
-        if (!(options.token && options.cannon))
+        // options.cannon 为True，且为本体或者3技能水炮时计算模组加攻
+        if (!options.cannon || (options.token && skillId != "skchr_weedy_3"))
           done = true;
         break;
       case "skchr_humus_2":
@@ -2104,6 +2104,11 @@ function applyBuff(charAttr, buffFrm, tag, blackbd, isSkill, isCrit, log, enemy)
         break;
       case "tachr_344_beewax_1":
         if (isSkill) delete blackboard.max_hp;
+        break;
+      case "skchr_weedy_3":
+        buffFrame.maxTarget = 999;
+        if (options.token && isSkill) // 重新计算本体属性
+          done = true;
         break;
     }
   }
@@ -3978,13 +3983,17 @@ function calculateAttack(charAttr, enemy, raidBlackboard, isSkill, charData, lev
         break;
       case "skchr_weedy_3":
         if (options.token) {
+          damagePool[0] = 0;
+          log.writeNote("直接伤害请参照本体计算");
           move = bb.force*bb.force/3 + bb.duration / 5;
-          log.writeNote("召唤物伤害计算无效");
-          log.writeNote("应为本体技能伤害");
-        } else
+          damage = bb.value * move * ecount * buffFrame.damage_scale;
+        } else {
           move = bb.force*bb.force/4 + bb.duration / 5;
+          damage = bb.value * move * buffFrame.damage_scale;
+          pool[3] += damage * ecount;
+        }
         log.writeNote(`以位移${move.toFixed(1)}格计算`);
-        pool[3] += bb.value * move * ecount * buffFrame.damage_scale;
+        log.writeNote(`位移真伤 ${damage.toFixed(1)}`);
         break;
       case "skchr_huang_3":
         let finishAtk = finalFrame.atk * bb.damage_by_atk_scale;
@@ -4081,6 +4090,8 @@ function calculateAttack(charAttr, enemy, raidBlackboard, isSkill, charData, lev
             let scale = buffList[talent_key].atk_scale || 1;
             if (isSkill && blackboard.id == "skchr_ebnhlz_3")
               scale *= buffList.skill.talent_scale_multiplier;
+            else if (charId == "char_297_hamoni")
+              scale = 1;  // 第一天赋不是蓄力. 坑
             // 个数
             let nBalls = bb.times;
             if (talent_key == "tachr_4046_ebnhlz_1" && options.cond_elite)

@@ -3,7 +3,7 @@ const variableRegex = /{(\-)*(.+?)(?:\:(.+?))?}/g;
 
 let CacheList = null;
 let _use_local = true;
-let _use_todo_list = true;
+let _use_todo_list = false;
 
 const useCache = true;
 const cacheBeginTime = new Date(2019, 12, 10).getTime();
