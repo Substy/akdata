@@ -3,7 +3,7 @@ const variableRegex = /{(\-)*(.+?)(?:\:(.+?))?}/g;
 
 let CacheList = null;
 let _use_local = true;
-let _use_todo_list = false;
+let _use_todo_list = true;
 
 const useCache = true;
 const cacheBeginTime = new Date(2019, 12, 10).getTime();
@@ -14,7 +14,7 @@ window.AKDATA = {
   Data: {},
 
   new_op: ["char_4087_ines", "char_464_cement", "char_154_morgan", "char_491_humus"],
-  todo_list: ["char_400_weedy", "char_4072_ironmn"],
+  todo_list: [],
 
   professionNames: {
     "PIONEER": "先锋",

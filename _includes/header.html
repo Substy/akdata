@@ -12,9 +12,9 @@
 <header class="l-layout__header l-header">
   <div class="l-header__body">
     <div class="l-header__logo">
-      <a href="{{ gameHome | default: "/" | relative_url }}">
-          <div style="float:left"><img src="/akdata/penguin.gif" alt="{{ site.logo }}"></div>
-          <div style="float:left;"><img src="/akdata/logo.jpg" style="max-height: 55px; "></div>
+      <a class="d-flex" href="{{ gameHome | default: "/" | relative_url }}">
+          <img src="/akdata/penguin.gif" alt="{{ site.logo }}">
+          <img src="/akdata/logo.jpg">
         </a>
     </div>
     <div class="l-header__left">

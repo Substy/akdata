@@ -696,6 +696,10 @@ function chooseEquip() {
 
 const DamageColors = ['black','blue','limegreen','gold','aqua'];
 
+function _fmt(x) {
+  return isFinite(x) ? Math.round(x) : "-";
+}
+
 function calculate(index) {
   let char = Characters[index];
   let enemy = {
@@ -784,22 +788,22 @@ function calculate(index) {
   // skill dps
   var color = (s.dps == 0) ? DamageColors[2] : DamageColors[s.damageType];  
   if (s.hps == 0 || s.dps == 0) {                       
-    getElement('s_dps', index).html(Math.round(s.dps || s.hps)).css("color", color);
+    getElement('s_dps', index).html(Math.round(s.dps || s.hps || "-")).css("color", color);
   } else {
-    getElement('s_dps', index).html(`DPS: ${Math.round(s.dps)}, HPS: ${Math.round(s.hps)}`).css("color", color);
+    getElement('s_dps', index).html(`DPS: ${_fmt(s.dps)}, HPS: ${_fmt(s.hps)}`).css("color", color);
   }
   // attack dps
   if (s.attackTime > 0) {
-    getElement('a_dps', index).html(Math.round(s.hitDamage / s.attackTime)).css("color", color);
+    getElement('a_dps', index).html(_fmt(s.hitDamage / s.attackTime)).css("color", color);
   } else {
     getElement('a_dps', index).text("瞬发");
   }
   // normal dps
   if (dps.normal.hps == 0 || dps.normal.dps == 0) {
     color = (dps.normal.dps == 0) ? DamageColors[2] : DamageColors[dps.normal.damageType];
-    getElement('n_dps', index).html(Math.round(dps.normal.dps || dps.normal.hps)).css("color", color);
+    getElement('n_dps', index).html(_fmt(dps.normal.dps || dps.normal.hps)).css("color", color);
   } else {
-    getElement('n_dps', index).html(`DPS: ${Math.round(dps.normal.dps)}, HPS: ${Math.round(dps.normal.hps)}`).css("color", color);
+    getElement('n_dps', index).html(`DPS: ${_fmt(dps.normal.dps)}, HPS: ${_fmt(dps.normal.hps)}`).css("color", color);
   }
   // period
   if (dps.normal.dur.stunDuration > 0)

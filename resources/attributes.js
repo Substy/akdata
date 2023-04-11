@@ -798,8 +798,13 @@ function applyBuff(charAttr, buffFrm, tag, blackbd, isSkill, isCrit, log, enemy)
           if ("atk" in blackboard) blackboard.atk *= 2;
           break;
         case "tachr_4064_mlynar_1":
-          blackboard.atk_scale = blackboard.atk_scale_up;
-          log.writeNote("周围有3个敌人");
+          if (enemy.count >= 3) {
+            blackboard.atk_scale = blackboard.atk_scale_up;
+            log.writeNote("第一天赋强化");
+          } else {
+            blackboard.atk_scale = blackboard.atk_scale_base;
+            log.writeNote("第一天赋未强化");
+          }
           break;
         case "tachr_363_toddi_1":
           if (charAttr.buffList["uniequip_002_toddi"] && charAttr.char.equipLevel >= 2) {
@@ -1952,9 +1957,6 @@ function applyBuff(charAttr, buffFrm, tag, blackbd, isSkill, isCrit, log, enemy)
           writeBuff(`最大目标数 = ${buffFrame.maxTarget}`);
         }
         break;
-      case "skchr_ironmn_3":
-        if (options.token) done = true;
-        break;
       case "sktok_ironmn_pile3":
         delete blackboard.hp_ratio;
         break;
@@ -2110,6 +2112,10 @@ function applyBuff(charAttr, buffFrm, tag, blackbd, isSkill, isCrit, log, enemy)
         if (options.token && isSkill) // 重新计算本体属性
           done = true;
         break;
+      case "skchr_ironmn_3":
+        if (options.token)
+          delete blackboard.attack_speed;
+        break;
     }
   }
   // --- applyBuff switch ends here ---
@@ -2121,8 +2127,10 @@ function applyBuff(charAttr, buffFrm, tag, blackbd, isSkill, isCrit, log, enemy)
     blackboard.attack_speed = 0;
   }
   // 决战者阻回
-  if (subProf == "duelist" && !options.block && buffFrame.spRecoverRatio == 0) {
+  if (subProf == "duelist" && !options.block && !options.equip) {
     buffFrame.spRecoverRatio = -1;
+    log.writeNote("未阻挡无法恢复SP");
+    log.writeNote("仅显示这时的普攻和技能DPS");
   }
     // 模组判定
     // options.equip 指满足模组额外效果的条件
@@ -2861,6 +2869,8 @@ function calcDurations(isSkill, attackTime, attackSpeed, levelData, buffList, bu
       } else if (skillId == "skchr_blkngt_2" && options.token) {
         duration = blackboard["blkngt_s_2.duration"];
         attackCount = Math.ceil(duration / attackTime);
+      } else if (skillId.includes("charge_cost")) {
+        duration = attackCount = 0;
       } else { // 普通瞬发
         attackCount = 1;
         // 不占用普攻的瞬发技能，持续时间等于动画时间。否则持续时间为一次普攻间隔
@@ -2949,9 +2959,10 @@ function calcDurations(isSkill, attackTime, attackSpeed, levelData, buffList, bu
         log.writeNote("[打字机]按持续25秒计算");
       }
     } else if (skillId == "skchr_ironmn_3" && options.token) {
-      attackCount = (isSkill ? 10 : 0);
-      duration = 15;
-      log.writeNote("以攻击10次计算");
+      attackCount = 1;
+      duration = 3 * 100 / attackSpeed;
+      log.writeNote("以攻击1次计算");
+      log.writeNote("可使用攻速Buff设置攻击间隔");
     } else if (skillId == "skchr_chimes_2") {
       attackCount = 1;  // 只有一刀
       if (options.od_trigger) duration = 0; // 选择立即结束，时间为0
@@ -3346,8 +3357,10 @@ function calcDurations(isSkill, attackTime, attackSpeed, levelData, buffList, bu
         } else if (skillId == "skchr_blkngt_2" && options.token) {
           duration = attackDuration - blackboard["blkngt_s_2.duration"];
           attackCount = Math.ceil(duration / attackTime);
+        } else if (skillId == "skchr_ironmn_3" && options.token) {
+          attackCount = 1;
+          duration = 3 * 100 / attackSpeed;
         }
-        break;
         // todo: cast time
     } // switch
 
@@ -3872,7 +3885,6 @@ function calculateAttack(charAttr, enemy, raidBlackboard, isSkill, charData, lev
           break;
         case "skchr_ironmn_1":
         case "skchr_ironmn_2":
-        case "skchr_ironmn_3":
           if (options.token) {
             damagePool[0] = 0;
             log.write("不普攻");
@@ -4019,6 +4031,9 @@ function calculateAttack(charAttr, enemy, raidBlackboard, isSkill, charData, lev
         log.write(`[特殊] ${displayNames[buffName]}: 法术伤害 = ${damage.toFixed(1)}, 命中 ${enemy.count * dur.hitCount}`);
         log.writeNote("假设断崖的当前攻击目标也被阻挡");
         break;
+      case "skcom_charge_cost[1]":
+      case "skcom_charge_cost[2]":
+      case "skcom_charge_cost[3]":
       case "skcom_assist_cost[2]":
       case "skcom_assist_cost[3]":
       case "skchr_myrtle_2":
@@ -4730,23 +4745,18 @@ function calculateAttack(charAttr, enemy, raidBlackboard, isSkill, charData, lev
           log.writeNote(`常态恢复SP: ${ironmn_s2_normal_sp} / ${ironmn_s2_normal_time}s`);
         } else {
           damagePool[0] = 0;
-          log.writeNote("召唤物结果无效");
-        }
-        break;
-      case "skchr_ironmn_3":
-        if (!isSkill && options.token) {
-          damagePool[0] = 0;
-          log.write("不普攻");
         }
         break;
       case "sktok_ironmn_pile3":
+        let pile3_atk = finalFrame.atk / 2;
+        if (enemy.count > 1) {
+          damage = Math.max(pile3_atk - edef, pile3_atk * 0.05)* buffFrame.damage_scale;
+          log.write(`范围伤害 ${damage.toFixed(1)}, 命中 ${(enemy.count-1) * dur.hitCount}`);
+          pool[0] += damage * (enemy.count-1) * dur.hitCount;
+        }
         if (isSkill) {
-          let pile3_atk = finalFrame.atk / 2;
-          if (enemy.count > 1) {
-            damage = Math.max(pile3_atk - edef, pile3_atk * 0.05)* buffFrame.damage_scale;
-            log.write(`范围伤害 ${damage.toFixed(1)}, 命中 ${(enemy.count-1) * dur.hitCount}`);
-            pool[0] += damage * (enemy.count-1) * dur.hitCount;
-          }
+          log.writeNote("技能/普攻伤害分别为");
+          log.writeNote("白铁开/关技能时的召唤物伤害");
         }
         break;
       case "skchr_reed2_2":
@@ -4925,13 +4935,22 @@ function calculateAttack(charAttr, enemy, raidBlackboard, isSkill, charData, lev
         break;
       case "skchr_ines_3":
         let ines_3_count = Math.min(enemy.count, bb.max_target);
-        let ines_3_steal_table = [...Array(ines_3_count).keys()].map(x => x*buffList["tachr_4087_ines_1"]["ines_t_1[self].atk"]);
+        // 前面已经算过一层偷攻击这里减去
+        let ines_3_steal_table = [...Array(ines_3_count).keys()].map(x => (x-1)*buffList["tachr_4087_ines_1"]["ines_t_1[self].atk"]);
         let pivot = ines_3_steal_table[ines_3_steal_table.length-1];
         let ines_3_atk_table = ines_3_steal_table.map(x => (finalFrame.atk - pivot + x) * bb.atk_scale);
         let ines_3_dmg_table = ines_3_atk_table.map(x => Math.max(x - edef, x * 0.05) * buffFrame.damage_scale);
         log.write(`影哨伤害 ${ines_3_dmg_table.map(x => x.toFixed(1))}`);
         pool[0] += ines_3_dmg_table.reduce((x, y)=>x+y);
         break;
+      case "tachr_4072_ironmn_1":
+        if (options.token && blackboard.id == "skchr_ironmn_2") {
+          let ironmn_2_ratio = (isSkill ? 0.008 : 0.004);
+          damage = ironmn_2_ratio * dur.duration * finalFrame.maxHp;
+          pool[2] -= damage;
+        }
+        break;
+
     }; // extraDamage switch ends here
 
     // 百分比/固定回血
@@ -5014,7 +5033,7 @@ function calculateAttack(charAttr, enemy, raidBlackboard, isSkill, charData, lev
           }
           break;
         case "sktok_ironmn_pile3":
-          if (options.token && isSkill) {
+          if (options.token && blackboard.id == "skchr_ironmn_3") {
             damage = bb.hp_ratio * finalFrame.maxHp;
             log.write(`每次攻击HP-${damage.toFixed(1)}`);
             pool[2] -= damage * dur.hitCount;
