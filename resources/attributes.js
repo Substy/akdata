@@ -169,15 +169,20 @@ function calculateDps(char, enemy, raidBuff) {
     magicResistance: 0,
     count: 1,
   };
+  if (!enemy.def) enemy.def = 0;
+  if (!enemy.magicResistance) enemy.magicResistance = 0;
+  if (!enemy.count || enemy.count<1) enemy.count = 1;
+  enemy.count = Math.round(enemy.count);
+
   raidBuff = raidBuff || { atk: 0, atkpct: 0, ats: 0, cdr: 0, base_atk: 0, damage_scale: 0 };
   // 把raidBuff处理成blackboard的格式
   let raidBlackboard = {
-    atk: raidBuff.atkpct / 100,
-    atk_override: raidBuff.atk,
-    attack_speed: raidBuff.ats,
-    sp_recovery_per_sec: raidBuff.cdr / 100,
-    base_atk: raidBuff.base_atk / 100,
-    damage_scale: 1 + raidBuff.damage_scale / 100
+    atk: raidBuff.atkpct / 100 || 0,
+    atk_override: raidBuff.atk || 0,
+    attack_speed: raidBuff.ats || 0,
+    sp_recovery_per_sec: raidBuff.cdr / 100 || 0,
+    base_atk: raidBuff.base_atk / 100 || 0,
+    damage_scale: 1 + raidBuff.damage_scale / 100 || 1
   };
   displayNames["raidBuff"] = "团辅";
 

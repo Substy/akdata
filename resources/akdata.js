@@ -2,7 +2,7 @@ const stringRegex = /<[@\$](.+?)>(.+?)<\/>/g;
 const variableRegex = /{(\-)*(.+?)(?:\:(.+?))?}/g;
 
 let CacheList = null;
-let _use_local = true;
+let _use_local = false;
 let _use_todo_list = true;
 
 const useCache = true;
@@ -114,7 +114,7 @@ window.AKDATA = {
         if (_use_local || isCustomData)
           urlList = [local];
         else if (isGamedata)
-          urlList = [aliyun, github, local];
+          urlList = [aliyun, github];
         else
           urlList = [aliyun, github, local];
 

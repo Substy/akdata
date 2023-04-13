@@ -6,7 +6,7 @@ category: 帮助与支持
 icon: cloud-upload
 layout: text-page
 ---
-## 23.04.10-11
+## 23.04.10-13
 - [update] 伊内丝, 阵法术师/陷阱师/年/刻俄柏/洋灰/摩根模组
 - [dps] 暂且优化了NaN的显示……
 - [dps] 调整了Logo位置
@@ -26,7 +26,8 @@ layout: text-page
 - [fix] 修复温蒂模组应该给本体而非召唤物加攻的问题. 鹰语越来越难懂了...
 - [fix] 修复芳汀普攻没有计算距离惩罚的问题
 - [fix] 修复和弦蓄力攻击错误地乘上了倍率的问题（蓄力应该不加攻）
-- 计划修复更多问题
+- [fix] 团辅和敌人数量为空时出错的问题 Issue #5
+- [fix][test] Site not correct loading? Issue #10. Still nees testing
 
 ## 23.03.20
 - [update] 麒麟X夜刀，火龙S黑角，轰击术师/推击手模组，推王、闪灵新模组 <br>
