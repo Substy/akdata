@@ -6,6 +6,9 @@ category: 帮助与支持
 icon: cloud-upload
 layout: text-page
 ---
+## 23.04.19
+- [fix] #12 - 星熊二模自身加防没有计算
+
 ## 23.04.10-13
 - [update] 伊内丝, 阵法术师/陷阱师/年/刻俄柏/洋灰/摩根模组
 - [dps] 暂且优化了NaN的显示……

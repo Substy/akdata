@@ -114,7 +114,7 @@ window.AKDATA = {
         if (_use_local || isCustomData)
           urlList = [local];
         else if (isGamedata)
-          urlList = [aliyun, github];
+          urlList = [aliyun, github, local];
         else
           urlList = [aliyun, github, local];
 

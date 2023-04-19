@@ -1859,6 +1859,13 @@ function applyBuff(charAttr, buffFrm, tag, blackbd, isSkill, isCrit, log, enemy)
           }
         }
         break;
+      case "tachr_136_hsguma_2": 
+        if (charAttr.buffList["uniequip_003_hsguma"] && charAttr.char.equipLevel >= 2) {
+          let def = charAttr.char.equipLevel * 0.02;
+          log.write(`自身防御额外增加 ${def}`);
+          blackboard.def += def;
+        }
+        break;
       case "tachr_325_bison_1":
         charAttr.basic.def += blackboard.def;
         writeBuff(`防御力直接加算: +${blackboard.def}`);
