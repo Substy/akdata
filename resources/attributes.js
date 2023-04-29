@@ -3908,7 +3908,7 @@ function calculateAttack(charAttr, enemy, raidBlackboard, isSkill, charData, lev
     //console.log(buffName);
     switch (buffName) {
       case "tachr_129_bluep_1":
-        damage = Math.max(bb.poison_damage * (1-emrpct), bb.poison_damage * 0.05);
+        damage = Math.max(bb.poison_damage * (1-emrpct), bb.poison_damage * 0.05) * buffFrame.damage_scale;
         let total_damage = damage * dur.duration * ecount;
         if (isSkill && blackboard.id == "skchr_bluep_1" && ecount>1) {
           let damage2 = damage * blackboard.atk_scale;
@@ -3920,7 +3920,7 @@ function calculateAttack(charAttr, enemy, raidBlackboard, isSkill, charData, lev
         break;
       case "tachr_293_thorns_1":
         var poison = options.thorns_ranged ? bb["damage[ranged]"] : bb["damage[normal]"];
-        damage = Math.max(poison * (1-emrpct), poison * 0.05) * dur.duration * ecount;
+        damage = Math.max(poison * (1-emrpct), poison * 0.05) * dur.duration * ecount * buffFrame.damage_scale;
         pool[1] = damage;
         if (isSkill) log.writeNote("毒伤按循环时间计算");
         break;
@@ -3928,7 +3928,7 @@ function calculateAttack(charAttr, enemy, raidBlackboard, isSkill, charData, lev
         var poison = finalFrame.atk / buffFrame.atk_scale * bb.atk_scale;
         if (blackboard.id == "skchr_aosta_2") poison *= blackboard.talent_scale;
         log.write(`流血伤害/秒: ${poison.toFixed(1)}`);
-        damage = Math.max(poison * (1-emrpct), poison * 0.05) * dur.duration * ecount;
+        damage = Math.max(poison * (1-emrpct), poison * 0.05) * dur.duration * ecount * buffFrame.damage_scale;
         pool[1] = damage;
         if (isSkill) log.writeNote("毒伤按循环时间计算");
         break;
@@ -3981,7 +3981,7 @@ function calculateAttack(charAttr, enemy, raidBlackboard, isSkill, charData, lev
         var ntimes = 1;
         if (isSkill && blackboard.id == "skchr_rosmon_2") ntimes = 3;
         var quake_atk = finalFrame.atk / buffFrame.atk_scale * bb["attack@append_atk_scale"];
-        var quake_damage = Math.max(quake_atk - edef, quake_atk * 0.05);
+        var quake_damage = Math.max(quake_atk - edef, quake_atk * 0.05) * buffFrame.damage_scale;
         
         damage = quake_damage * dur.hitCount * ntimes;
         log.write(`${displayNames[buffName]}: 余震攻击力 ${quake_atk.toFixed(1)}, 单次伤害 ${quake_damage.toFixed(1)}, 次数 ${ntimes}`);
@@ -4085,7 +4085,7 @@ function calculateAttack(charAttr, enemy, raidBlackboard, isSkill, charData, lev
         break;
       case "skchr_tomimi_2":
         if (isSkill && options.crit) {
-          damage = Math.max(finalFrame.atk - enemy.def, finalFrame.atk * 0.05);
+          damage = Math.max(finalFrame.atk - enemy.def, finalFrame.atk * 0.05) * buffFrame.damage_scale;
           log.write(`[特殊] ${displayNames[buffName]}: 范围伤害 ${damage.toFixed(1)}, 命中 ${dur.critHitCount * (enemy.count-1)}`);
           log.write(`[特殊] ${displayNames[buffName]}: 总共眩晕 ${(dur.critHitCount * bb["attack@tomimi_s_2.stun"]).toFixed(1)} 秒`)
           pool[0] += damage * dur.critHitCount * (enemy.count-1);
@@ -4322,7 +4322,7 @@ function calculateAttack(charAttr, enemy, raidBlackboard, isSkill, charData, lev
         break;
       case "skchr_blemsh_3":
         damage = finalFrame.atk * bb["attack@blemsh_s_3_extra_dmg[magic].atk_scale"];
-        damage = Math.max(damage * (1-emrpct), damage * 0.05);
+        damage = Math.max(damage * (1-emrpct), damage * 0.05) * buffFrame.damage_scale;
         heal = finalFrame.atk / buffFrame.atk_scale * bb.heal_scale;
         log.write(`每次攻击额外法伤：${damage.toFixed(1)} （计算天赋加成），额外治疗: ${heal.toFixed(1)}`);
         pool[1] += damage * dur.attackCount;
@@ -4330,13 +4330,13 @@ function calculateAttack(charAttr, enemy, raidBlackboard, isSkill, charData, lev
         break;
       case "skchr_rosmon_1":
         damage = finalFrame.atk * bb.extra_atk_scale;
-        damage = Math.max(damage * (1-emrpct), damage * 0.05) * dur.hitCount;
+        damage = Math.max(damage * (1-emrpct), damage * 0.05) * dur.hitCount * buffFrame.damage_scale;
         pool[1] += damage;
         log.write(`${displayNames[buffName]}: 法术伤害 ${damage.toFixed(1)}`);
         break;
       case "skchr_kirara_1":
         damage = finalFrame.atk * bb["kirara_s_1.atk_scale"];
-        damage = Math.max(damage * (1-emrpct), damage * 0.05) * dur.hitCount;
+        damage = Math.max(damage * (1-emrpct), damage * 0.05) * dur.hitCount * buffFrame.damage_scale;
         pool[1] += damage;
         log.write(`${displayNames[buffName]}: 法术伤害 ${damage.toFixed(1)}`);
         break;
@@ -4350,11 +4350,11 @@ function calculateAttack(charAttr, enemy, raidBlackboard, isSkill, charData, lev
         break;
       case "skchr_kafka_1":
         log.write(`[特殊] ${displayNames[buffName]}: 直接伤害为0 （以上计算无效）, 效果持续${bb.duration}秒`);
-        damage = finalFrame.atk * (1-emrpct) * enemy.count;
+        damage = finalFrame.atk * (1-emrpct) * enemy.count * buffFrame.damage_scale;
         pool[1] = damage; damagePool[1] = 0;
         break;
       case "skchr_kafka_2":
-        damage = finalFrame.atk * bb.atk_scale * (1-emrpct) * enemy.count;
+        damage = finalFrame.atk * bb.atk_scale * (1-emrpct) * enemy.count * buffFrame.damage_scale;
         pool[1] = damage;
         break;
       case "skchr_tuye_2":
@@ -4366,7 +4366,7 @@ function calculateAttack(charAttr, enemy, raidBlackboard, isSkill, charData, lev
       case "skchr_nothin_1":
       case "skchr_nothin_2":
         let a = finalFrame.atk * buffList["tachr_455_nothin_1"].atk_scale;
-        damage = Math.max(a - edef, a * 0.05);
+        damage = Math.max(a - edef, a * 0.05) * buffFrame.damage_scale;
         log.writeNote(`首次攻击伤害 ${damage.toFixed(1)}`);
         break;
       case "skchr_heidi_1":
@@ -4960,6 +4960,17 @@ function calculateAttack(charAttr, enemy, raidBlackboard, isSkill, charData, lev
           let ironmn_2_ratio = (isSkill ? 0.008 : 0.004);
           damage = ironmn_2_ratio * dur.duration * finalFrame.maxHp;
           pool[2] -= damage;
+        }
+        break;
+      case "skchr_kalts_3":
+        if (options.token) {
+          // 判断value。具体值存在召唤物的talent里，本体判断只能写死
+          let kalts_t2_value = 1200;
+          if (charAttr.char.potentialRank >= 4)
+            kalts_t2_value += 200;
+          if (charAttr.char.equipId == "uniequip_002_kalts" && charAttr.char.equipLevel == 3)
+            kalts_t2_value += 300;
+          log.writeNote(`自爆真伤 ${kalts_t2_value}`);
         }
         break;
 

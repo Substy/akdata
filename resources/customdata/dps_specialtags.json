@@ -1,5 +1,5 @@
 {
-    "char_003_kalts":   { "token": "token_10002_kalts_mon3tr", "token_damage_type": "0", "note": "不计算m3自爆和熔毁伤害", "frame_corr": 1 },
+    "char_003_kalts":   { "token": "token_10002_kalts_mon3tr", "token_damage_type": "0", "frame_corr": 1 },
     "char_010_chen":    { "times": 2},
     "char_109_fmout":   { "frame_corr": 1 },
     "char_108_silent":   { "token": "token_10000_silent_healrb", "token_damage_type": 2 },
@@ -244,7 +244,7 @@
     "skchr_kafka_2":    { "reset_attack": true },
     "skchr_kalts_1":    { "token_damage_type": "0" },
     "skchr_kalts_2":    { "token_damage_type": "0", "use_token_for_mastery": true, "reset_attack": true, "attack_begin": 14 },
-    "skchr_kalts_3":    { "damage_type": 2, "token_damage_type": 3, "grad": true, "use_token_for_mastery": true, "reset_attack": true, "attack_begin": 18 },
+    "skchr_kalts_3":    { "damage_type": 2, "token_damage_type": 3, "grad": true, "use_token_for_mastery": true, "reset_attack": true, "attack_begin": 21 },
     "skchr_kirara_1":   { "damage_type": "0", "cast_time": 30, "sim": true },
     "skchr_kirara_2":   { "sec": true },
     "skchr_kjera_2":    { "reset_attack": true, "frame_corr": 0, "attack_begin": 20, "funnel": 2 },
@@ -657,5 +657,6 @@
     "uniequip_002_lin":     { "override_trait": true, "override_talent": 2 },
     "uniequip_002_billro":  { "override_trait": true, "override_talent": 1 },
     "uniequip_003_nian":    { "override_talent": 1 },
-    "uniequip_003_cerber":   { "override_talent": 2 }
+    "uniequip_003_cerber":   { "override_talent": 2 },
+    "uniequip_003_dusk":    { "note": "暂未计算技力回复效果" }
 }
