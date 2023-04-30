@@ -270,10 +270,15 @@ function load() {
   
 }
 
+window.hashChangedBySelect = false; // 防止重入
+
 window.onhashchange = function () {
-  var charId_hash = window.location.hash.replace(/\#/g, "");
-  //console.log(charId_hash);
-  if (charId_hash.length > 0) selectChar(charId_hash, 0);  
+    var charId_hash = window.location.hash.replace(/\#/g, "");
+    //console.log("hash: ", charId_hash);
+    if (charId_hash.length > 0 && !window.hashChangedBySelect) {
+      selectChar(charId_hash, 0);
+    }
+    setTimeout(() => { window.hashChangedBySelect = false;}, 500);
 }
 
 function selectChar(charId, i) {
@@ -282,6 +287,10 @@ function selectChar(charId, i) {
     var name = AKDATA.Data.character_table[charId].name;
     $(`.txt_char:eq(${i})`).text(name);
     $(`.img_char:eq(${i})`).attr("src", `https://akdata-site.oss-cn-guangzhou.aliyuncs.com/assets/images/char/${charId}.png`);
+    
+    window.hashChangedBySelect = true;
+    setTimeout((x) => { console.log(x); location.hash = "#" + x; }, 500, charId);
+
     updateChar(charId, i);
   }
 }

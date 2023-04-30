@@ -2426,13 +2426,13 @@ function applyBuff(charAttr, buffFrm, tag, blackbd, isSkill, isCrit, log, enemy)
       break;
     case "uniequip_002_doroth":
     case "uniequip_002_robin":
-      buffFrame.prob = blackboard.trait.prob;
+      if (isSkill) buffFrame.prob = blackboard.trait.prob;
       if (isCrit) {
         blackboard.atk_scale = blackboard.trait.atk_scale;
       }
       break;
     case "uniequip_002_rfrost":
-      buffFrame.prob = blackboard.trait.prob;
+      if (isSkill) buffFrame.prob = blackboard.trait.prob;
       blackboard.edef_pene = blackboard.talent.def_penetrate_fixed || 0;
       if (isCrit) {
         blackboard.atk_scale = blackboard.trait.atk_scale;
@@ -2791,16 +2791,15 @@ function calcDurations(isSkill, attackTime, attackSpeed, levelData, buffList, bu
       }
       duration = levelData.duration - prepDuration;
       // 抬手时间
-      var frameBegin = Math.round((checkSpecs(skillId, "attack_begin") || 12));
-      if (skillId == "skchr_glaze_2" && options.far) {
-        log.writeNote("技能前摇增加至27帧");
-        frameBegin = 27;
-      }
+      var frameBegin = calcAttackBegin(skillId, attackSpeed, options, log);
+     // var frameBegin = Math.round((checkSpecs(skillId, "attack_begin") || 12));
+     // if (skillId == "skchr_glaze_2" && options.far) {
+     //   log.writeNote("技能前摇增加至27帧");
+     //   frameBegin = 27;
+     // }
       var t = frameBegin / 30;
       attackCount = Math.ceil((duration - t) / attackTime);
       log.write(`技能前摇: ${t.toFixed(3)}s, ${frameBegin} 帧`);
-      if (!checkSpecs(skillId, "attack_begin")) log.write("（计算器默认值；请参考动画时间）");
-      else log.writeNote(`技能前摇: ${frameBegin} 帧`);
 
     }
     // 技能类型
@@ -3164,11 +3163,10 @@ function calcDurations(isSkill, attackTime, attackSpeed, levelData, buffList, bu
         log.write(`[重置普攻] 截断最后一个攻击间隔`);
       duration = dd;
       // 抬手时间
-      var frameBegin = Math.round((checkSpecs(skillId, "attack_begin") || 12));
+      var frameBegin = calcAttackBegin(skillId, attackSpeed, options, log);
       var t = frameBegin / 30;
       attackCount = Math.ceil((duration - t) / attackTime);
       log.write(`技能前摇: ${t.toFixed(3)}s, ${frameBegin} 帧`);
-      if (!checkSpecs(skillId, "attack_begin")) log.write("（计算器默认值；请参考动画时间）");
     }
     
     // June 20: 额外sp计算mixin
@@ -3428,11 +3426,39 @@ function calcDurations(isSkill, attackTime, attackSpeed, levelData, buffList, bu
   };
 }
 
+function calcAttackBegin(tag, attackSpeed, options, log) {
+  let attackBegin = checkSpecs(tag, "attack_begin");
+  if (options.token) {
+    attackBegin = checkSpecs(tag, "token_attack_begin");
+    if (tag == "skchr_ling_3" && options.ling_fusion) {
+      attackBegin = 15;
+      log.writeNote("大龙前摇增加");
+    }
+  } else if (tag == "skchr_glaze_2" && options.far) {
+    attackBegin = 27;
+    log.writeNote("原本范围外前摇延长");
+  }
+
+  if (!attackBegin) {
+    log.writeNote("暂无抬手数据，以12帧计算");
+    attackBegin = 12;
+  }
+  if (!options.fixed_atb) {
+    // fixed_atb==True表示抬手不随攻速变化, 默认为False
+    attackBegin = Math.ceil( (attackBegin - 1) * 100 / attackSpeed + 1);
+  }
+  log.write(`[抬手时间] ${attackBegin} 帧`);
+  log.writeNote(`抬手 ${attackBegin} 帧`);
+  return attackBegin;
+}
+
 // 计算边缘情况
-function calcEdges(blackboard, frame, dur, log) {
+function calcEdges(blackboard, frame, dur, options, log) {
   let skillId = blackboard.id;
-  let attackBegin = checkSpecs(skillId, "attack_begin") || 12;  // specialtags记载的抬手时间，=前摇时间+1
-  attackBegin = Math.ceil((attackBegin-1) * 100 / dur.attackSpeed + 1);  // 前摇部分受攻速影响
+  //let attackBegin = checkSpecs(skillId, "attack_begin") || 12;  // specialtags记载的抬手时间，=前摇时间+1
+  //attackBegin = Math.ceil((attackBegin-1) * 100 / dur.attackSpeed + 1);  // 前摇部分受攻速影响
+  let attackBegin = calcAttackBegin(skillId, dur.attackSpeed, options, new NoLog());
+
   let durationF = Math.round(30 * dur.duration);
   let remainF = attackBegin + frame * dur.attackCount - durationF;
   let passF = frame - remainF;
@@ -3666,7 +3692,7 @@ function calculateAttack(charAttr, enemy, raidBlackboard, isSkill, charData, lev
   // 计算边缘情况
   let rst = checkResetAttack(blackboard.id, blackboard, options);
   if (rst && rst != "ogcd" && isSkill && !checkSpecs(blackboard.id, "skip_edges")) {
-    calcEdges(blackboard, frame, dur, log);
+    calcEdges(blackboard, frame, dur, options, log);
   }
   // 暴击次数
   if (options.crit && critBuffFrame["prob"]) {
@@ -5243,7 +5269,7 @@ function calculateGradDamage(_) { // _ -> args
     let n = Math.floor(_.dur.duration);
     let atk_by_sec = [...Array(n+1).keys()].map(x => _.finalFrame.atk - range * x / n);
     // 抬手时间
-    let atk_begin = Math.round((checkSpecs(_.skillId, "attack_begin") || 12)) / 30;
+    let atk_begin = calcAttackBegin(_.skillId, _.dur.attackSpeed, _.options, new NoLog()) / 30;
     let atk_timing = _seq.map(i => atk_begin + _.attackTime * i);
 
     dmg_table = atk_timing.map(x => atk_by_sec[Math.floor(x)] * _.buffFrame.damage_scale);
@@ -5260,7 +5286,8 @@ function calculateGradDamage(_) { // _ -> args
     // rate = (x-1)/(n-1), thus t=0, x=n, rate=1; t=(n-1), x=1, rate=0
     let atk_by_sec = [...Array(n+1).keys()].reverse().map(x => _.finalFrame.atk - range * (x-1) / (n-1));
     // 抬手时间
-    let atk_begin = Math.round((checkSpecs(_.skillId, "attack_begin") || 12)) / 30;
+    let atk_begin = calcAttackBegin(_.skillId, _.dur.attackSpeed, _.options, new NoLog()) / 30;
+    //let atk_begin = Math.round((checkSpecs(_.skillId, "attack_begin") || 12)) / 30;
     let atk_timing = _seq.map(i => atk_begin + _.attackTime * i);
     // damage_scale
     let sc = [1.2, 1.4, 1.6, 1.8, 2];
