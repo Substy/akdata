@@ -302,6 +302,22 @@ function showSelectChar() {
   AKDATA.showSelectCharDialog(excludeChars, Characters[0] ? Characters[0].charId : null);
 }
 
+function showOptionDialog() {
+  let __this=$(this);
+  let index = ~~__this.data("index");
+  let tag = __this.data("tag");
+  switch (tag) {
+    case "char_dialog":
+      AKDATA.selectCharCallback = function (id) { 
+        Characters[index].options[tag] = id;
+        calculateColumn();
+      }
+      AKDATA.showSelectCharDialog(excludeChars, null);
+      break;
+  }
+
+}
+
 function goto() {
   let $this = $(this);
   let index = ~~$this.data('index');
@@ -487,14 +503,6 @@ ${table}
 function setSelectValue(name, index, value) {
   let $e = getElement(name, index);
   $e.val(value);
-  //if ( $e.val() === null ) {
-  //  let last = $e.find('option:last-child').val();
-  //  $e.val( last );
-  //}
-  //if (index > 0) {
-  //  let $prev = getElement(name, index - 1);
-  //  value = Math.min( $e[0].length, $prev.val() );
-  //}
 }
 
 function updateChar(charId, index) {
@@ -528,7 +536,6 @@ function updateChar(charId, index) {
   $skillLevel.html(skillLevelHtml);
   setSelectValue('skilllevel', index, skillLevel);
 
-  updateOptions(charId, index);
   $(`.dps__row-prts td:nth-child(${index+2})`).html(`<a href="http://prts.wiki/w/${charData.name}#.E6.8A.80.E8.83.BD" target="_blank">点击打开</a>`);
 
   // equip
@@ -559,14 +566,17 @@ function updateChar(charId, index) {
     skillId,
     skillLevel,
     equipId,
-    equipLevel
+    equipLevel,
+    options: {}
   };
+  updateOptions(charId, index);
   $phase.change();
 }
 
 function updateOptions(charId, index) {
   let opts = AKDATA.Data.dps_options;
   let charData = AKDATA.Data.character_table[charId];
+  let scroll_evts = [];
   let html = `    
   <div class="form-check">
     <label class="form-check-label" data-toggle="tooltip" data-placement="right" title="${opts.tags['buff'].explain}">
@@ -575,7 +585,10 @@ function updateOptions(charId, index) {
     </label> </div>`;   // 默认计算团辅
     
   if (opts.char[charId]) {
+    let optIndex = 0; // 选项顺序号，用于对象ID
     for (var t of opts.char[charId]) {
+      ++optIndex;
+
       let u = (t.startsWith("cond") ? "cond" : t);  // wildcard cond
       let checked = opts.tags[u].off ? "" : "checked";
       let disabled = (u == "crit" ? "disabled" : "");
@@ -610,20 +623,70 @@ function updateOptions(charId, index) {
           }
         } else tooltip = `触发条件${suffix}`;
       } // if
-      let html_bool = `
-      <div class="form-check">
-        <label class="form-check-label" data-toggle="tooltip" data-placement="right" title="${tooltip}">
-          <input class="form-check-input dps__${t}" type="checkbox" value="" data-index="${index}" ${checked} ${disabled}>
-            ${text}
-        </label> </div>`;
-      html += html_bool;
+
+      switch (opts.tags[u].type) {
+        case "bool":
+          let html_bool = `
+          <div class="form-check">
+            <label class="form-check-label" data-toggle="tooltip" data-placement="right" title="${tooltip}">
+              <input class="form-check-input dps__${t}" type="checkbox" value="" data-index="${index}" ${checked} ${disabled}>
+                ${text}
+            </label> </div>`;
+          html += html_bool;
+          break;
+        case "scroll":
+          let optId = `scr_${index}_${optIndex}`;
+          scroll_evts.push({
+            optId,  // 滚动条ID
+            index,  // 第几排
+            tag: t  // 选项名称
+          }); // 对应 Characters[index].options[tag] = parseInt($(optId).val())
+          let html_scr = pmBase.component.create({
+            type: 'scroll',
+            id: optId,
+            attr: `data-index="${index}" data-tag="${t}"`,
+            label: opts.tags[u].displaytext || "",
+            min: opts.tags[u].min || 0,
+            max: opts.tags[u].max || 3,
+            value: opts.tags[u].value || opts.tags[u].max,
+            step: opts.tags[u].step || 1,
+            style: "width: 40%"
+          });
+          html += html_scr;
+          Characters[index].options[t] = opts.tags[u].value || opts.tags[u].max;
+          break;
+        case "dialog":
+          // 将index和tag保存在data字段，从而在公共的点击事件中定位到具体的Characters[index].options[tag]
+          let html_link = `<a href="#" class="opt_dialog" data-index="${index}" data-tag="${t}">
+                            ${opts.tags[u].displaytext}
+                           </a>`;
+          html += html_link;
+          // 设置选项的默认值
+          Characters[index].options[t] = opts.tags[u].default;
+          break;
+      }
     } // for
   } // if
   $(`.dps__row-option td:nth-child(${index+2})`).html(html);
+  // 绑定scroll事件
+  scroll_evts.forEach(x => {
+    pmBase.component.create({
+      type: 'scroll-event',
+      id: x.optId,
+      callback: function (value) {
+        Characters[index].options[x.tag] = parseInt(value);
+        calculateColumn();
+      }
+    });
+  });
+  // 绑定dialog事件
+  $(".opt_dialog").click(showOptionDialog);
+
   getElement("buff", index).change(calculateColumn);
   if (opts.char[charId])
     for (var t of opts.char[charId]) {
-      getElement(t, index).change(calculateColumn);
+      if (opts.tags[t].type == "bool")
+        getElement(t, index).change(calculateColumn);
     }
   $('[data-toggle="tooltip"]').tooltip(); 
 }
@@ -730,15 +793,20 @@ function calculate(index) {
 
   // get option info
   let opts = AKDATA.Data.dps_options;
-  char.options = {};
+
   if (opts.char[char.charId]) {
     for (var t of opts.char[char.charId]) {
-      char.options[t] = getElement(t, index).is(':checked');
+      let u = (t.startsWith("cond") ? "cond" : t);  // wildcard cond
+      switch (opts.tags[u].type) {
+        case "bool":
+          char.options[t] = getElement(t, index).is(':checked');
+          break;
+      }
     }
   }
   // 团辅
   char.options["buff"] = getElement("buff", index).is(':checked');
-  //console.log(char.options);
+  console.log(char.options);
 
   // calc dps
   let dps = AKDATA.attributes.calculateDps(char, enemy, raidBuff);

@@ -843,15 +843,6 @@ function applyBuff(charAttr, buffFrm, tag, blackbd, isSkill, isCrit, log, enemy)
         case "tachr_2015_dusk_1":
         case "tachr_2023_ling_2":
           if (options.token) done = true; break;
-        case "tachr_188_helage_1":
-        case "tachr_337_utage_1":
-        case "tachr_475_akafyu_1":
-          blackboard.attack_speed = blackboard.min_attack_speed;
-          break;
-        case "tachr_1030_noirc2_1":
-          blackboard.attack_speed = blackboard.min_attack_speed;
-          blackboard.def = blackboard.min_def;
-          break;
       }
       if (!done && blackboard.max_stack_cnt) {
         ["atk", "def", "attack_speed", "max_hp"].forEach(key => {
@@ -2127,6 +2118,31 @@ function applyBuff(charAttr, buffFrm, tag, blackbd, isSkill, isCrit, log, enemy)
       case "skchr_ironmn_3":
         if (options.token)
           delete blackboard.attack_speed;
+        break;
+      case "tachr_188_helage_1":
+      case "tachr_337_utage_1":
+      case "tachr_475_akafyu_1":
+        //blackboard.attack_speed = blackboard.min_attack_speed;
+        if (options.musha_hp) {
+          log.writeNote(`剩余HP: ${options.musha_hp}%`);
+          let buff_rate = (1 - options.musha_hp/100) / (1 - blackboard.min_hp_ratio);
+          buff_rate = Math.min(1, buff_rate);
+          blackboard.attack_speed = blackboard.min_attack_speed * buff_rate;
+          log.writeNote(`攻速 +${Math.round(blackboard.attack_speed)} (强度${Math.round(buff_rate*100)}%)`);
+        }
+        break;
+      case "tachr_1030_noirc2_1":
+        if (options.musha_hp) {
+          log.writeNote(`剩余HP: ${options.musha_hp}%`);
+          let buff_rate = (1 - options.musha_hp/100) / (1 - blackboard.min_hp_ratio);
+          buff_rate = Math.min(1, buff_rate);
+          blackboard.attack_speed = blackboard.min_attack_speed * buff_rate;
+          blackboard.def = blackboard.min_def * buff_rate;
+          log.writeNote(`攻速/防御 +${Math.round(blackboard.attack_speed)} (强度${Math.round(buff_rate*100)}%)`);
+        }
+        break;
+      case "tachr_4048_doroth_1":
+        log.writeNote(`当前选择的干员ID: ${options.char_dialog}`);
         break;
     }
   }

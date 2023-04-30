@@ -3,7 +3,7 @@ let ua = navigator.userAgent;
 document.getElementById("user_agent").innerText = ua;
 
 $("#jquery").text($.fn.jquery);
-$("#vue").html("Vue: {{ error }} <br> <div v-html='content' class='row'></div> <br> {{ char }}");
+$("#vue").html("Vue: {{ error }} <br> <div v-html='content' class='row'></div> <br> {{ char }} <div id='scroll-test'></div>");
 
 let vue_app = new Vue({
   el: "#vue",
@@ -29,9 +29,26 @@ function init() {
 function load() {
   AKDATA.patchAllChars();
   //test_dps_all();
+  
   //find_skills(x => x.indexOf("instant") >= 0);
-  AKDATA.showSelectCharDialog();
-  AKDATA.selectCharCallback = function (id) { vue_app.char = id; };
+  
+  //AKDATA.showSelectCharDialog();
+  //AKDATA.selectCharCallback = function (id) { vue_app.char = id; };
+
+  let html = pmBase.component.create({
+    type: 'scroll',
+    id: "scr_test",
+    max: 3,
+    label: "test",
+    style: "width: 30%"
+  });
+  $("#scroll-test").html(html);
+  // add event binding
+  pmBase.component.create({
+    type: 'scroll-event',
+    id: 'scr_test',
+    callback: function (val) { alert(val); }
+  });
 }
 
 pmBase.hook.on('init', init);

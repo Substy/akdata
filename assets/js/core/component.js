@@ -291,6 +291,39 @@ let createFunctions = {
     if (config.show) $e.modal();
   },
 
+  'scroll': function (config) {
+    // id, min, max, value, step, label, style, attr
+    config.min = config.min || 0;
+    config.value = config.value || config.min;
+    config.step = config.step || 1;
+    config.style = config.style || "";
+
+    let labelId = `l_${config.id}`;
+    let html = `
+      <div class="form-group d-flex">
+        <span style="margin: 0.6rem 0.5rem 0 0.8rem">${config.label}</span>
+        <input type="range" class="form-control-range" id="${config.id}" style="${config.style}"
+               min="${config.min}" max="${config.max}" value="${config.value}" step="${config.step}"
+               ${config.attr}
+        >
+        <label for="${config.id}" id="${labelId}" class="pl-2" style="margin: 0.6rem 0 0 0.5rem">${config.value}</label>
+      </div>
+    `;
+    return html;
+  },
+
+  'scroll-event': function (config) {
+    let scrollId = `#${config.id}`;
+    let labelId = `#l_${config.id}`;
+    let handler = function () {
+      $(labelId).text($(scrollId).val());
+      if (config.callback)
+        config.callback($(scrollId).val());
+    }
+    $(scrollId).on("input", handler);
+    $(scrollId).change(handler);
+  }
+
 }
 
 export default {
