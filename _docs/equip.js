@@ -150,6 +150,7 @@ function descHtml(info) {
   if (info.length == 1)
     return "-";
   else {
+    console.log(info);
     let columns = ['等级', '', {header: '描述（满潜）', width: "70%"}];
     let table = [];
     for (var lv=0; lv<info.length; ++lv) {
@@ -189,19 +190,25 @@ function buildEquipList() {
     let info = getEquipInfo(key);
     if (info.length == 0) info = BasicEquipInfo;
     let missions = "<ul>" + item.missionList.map(x => `<li> ${edb["missionList"][x].desc} </li>`).join() + "</ul>";
-    let charName = `
-    <figure class="figure">
-      <a href='/akdata/character/#!/${item.charId}' name='${key}' target='_blank'>
-        <img class="figure-img" loading="lazy" style="max-width: 60px; height: auto;" src="https://akdata-site.oss-cn-guangzhou.aliyuncs.com/assets/images/char/${item.charId}.png"></img>
-        <figcaption>${chardb[item.charId].name}</figcaption>
-      </a>
-    </figure>`;
-    let subName = `
-    <figure class="figure">
-        <img class="figure-img" style="max-width: 36px; height: auto; filter: invert(100%);" 
-             src="/akdata/assets/images/subclass/sub_${chardb[item.charId].subProfessionId}_icon.png"></img>
-        <figcaption>${edb["subProfDict"][chardb[item.charId].subProfessionId].subProfessionName}</figcaption>
-    </figure>`;
+    let subName = "";
+    let charName = "";
+    try {
+      charName = `
+      <figure class="figure">
+        <a href='/akdata/character/#!/${item.charId}' name='${key}' target='_blank'>
+          <img class="figure-img" loading="lazy" style="max-width: 60px; height: auto;" src="https://akdata-site.oss-cn-guangzhou.aliyuncs.com/assets/images/char/${item.charId}.png"></img>
+          <figcaption>${chardb[item.charId].name}</figcaption>
+        </a>
+      </figure>`;
+      subName = `
+      <figure class="figure">
+          <img class="figure-img" style="max-width: 36px; height: auto; filter: invert(100%);" 
+              src="/akdata/assets/images/subclass/sub_${chardb[item.charId].subProfessionId}_icon.png"></img>
+          <figcaption>${edb["subProfDict"][chardb[item.charId].subProfessionId].subProfessionName}</figcaption>
+      </figure>`;
+    } catch (e) {
+      console.log("Error: ", key);
+    }
 
     return [
       subName,

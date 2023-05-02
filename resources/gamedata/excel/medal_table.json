@@ -1648,6 +1648,25 @@
       "medalRewardGroup": []
     },
     {
+      "medalId": "medal_camp_rotate_16",
+      "medalName": "休止符街道行动奖章",
+      "medalType": "campMedal",
+      "slotId": 20,
+      "preMedalIdList": [],
+      "rarity": 2,
+      "template": "CampaignsComplete",
+      "unlockParam": [
+        "camp_r_16"
+      ],
+      "getMethod": "完全通关剿灭作战休止符街道，并领取全部奖励",
+      "description": "代表您完成莱塔尼亚休止符街道剿灭委托或模拟战的蚀刻章。\n停顿之后，乐声流淌。",
+      "advancedMedal": null,
+      "originMedal": null,
+      "displayTime": 1682884800,
+      "expireTimes": [],
+      "medalRewardGroup": []
+    },
+    {
       "medalId": "medal_tower_complete_01",
       "medalName": "钢铁萝卜安全认证章",
       "medalType": "towerMedal",
@@ -1812,6 +1831,90 @@
       "advancedMedal": null,
       "originMedal": null,
       "displayTime": 1671076800,
+      "expireTimes": [],
+      "medalRewardGroup": []
+    },
+    {
+      "medalId": "medal_tower_complete_07",
+      "medalName": "约翰老妈安全认证章",
+      "medalType": "towerMedal",
+      "slotId": 9,
+      "preMedalIdList": [],
+      "rarity": 2,
+      "template": "PassTower",
+      "unlockParam": [
+        "tower_n_07",
+        "0",
+        "0"
+      ],
+      "getMethod": "完成【约翰老妈新建地块】",
+      "description": "约翰老妈新建地块保全任务圆满结束后由委托方颁发的奖章。\n在罗德岛的努力下，该地块已完成相关威胁人员清理。",
+      "advancedMedal": null,
+      "originMedal": null,
+      "displayTime": 1681588800,
+      "expireTimes": [],
+      "medalRewardGroup": []
+    },
+    {
+      "medalId": "medal_hardtower_complete_07",
+      "medalName": "约翰老妈应急认证章",
+      "medalType": "towerMedal",
+      "slotId": 10,
+      "preMedalIdList": [],
+      "rarity": 2,
+      "template": "PassTower",
+      "unlockParam": [
+        "tower_n_07",
+        "0",
+        "1"
+      ],
+      "getMethod": "完成【约翰老妈新建地块】应急补给模式",
+      "description": "在应急补给条件下完成约翰老妈新建地块保全任务后，由委托方颁发的特别奖章。\n在您的精妙指挥下，该地块以最小代价完成相关威胁人员清理。",
+      "advancedMedal": null,
+      "originMedal": null,
+      "displayTime": 1681588800,
+      "expireTimes": [],
+      "medalRewardGroup": []
+    },
+    {
+      "medalId": "medal_tower_complete_08",
+      "medalName": "雷神工业安全认证章",
+      "medalType": "towerMedal",
+      "slotId": 11,
+      "preMedalIdList": [],
+      "rarity": 2,
+      "template": "PassTower",
+      "unlockParam": [
+        "tower_n_08",
+        "0",
+        "0"
+      ],
+      "getMethod": "完成【雷神工业测试平台】",
+      "description": "雷神工业测试平台保全任务圆满结束后由委托方颁发的奖章。\n在罗德岛的努力下，该平台已被成功夺回。",
+      "advancedMedal": null,
+      "originMedal": null,
+      "displayTime": 1681588800,
+      "expireTimes": [],
+      "medalRewardGroup": []
+    },
+    {
+      "medalId": "medal_hardtower_complete_08",
+      "medalName": "雷神工业应急认证章",
+      "medalType": "towerMedal",
+      "slotId": 12,
+      "preMedalIdList": [],
+      "rarity": 2,
+      "template": "PassTower",
+      "unlockParam": [
+        "tower_n_08",
+        "0",
+        "1"
+      ],
+      "getMethod": "完成【雷神工业测试平台】应急补给模式",
+      "description": "在应急补给条件下完成雷神工业测试平台保全任务后，由委托方颁发的特别奖章。\n在您的精妙指挥下，该平台以最小代价被成功夺回。",
+      "advancedMedal": null,
+      "originMedal": null,
+      "displayTime": 1681588800,
       "expireTimes": [],
       "medalRewardGroup": []
     },
@@ -6645,6 +6748,86 @@
       "medalRewardGroup": []
     },
     {
+      "medalId": "medal_story_lumen_1",
+      "medalName": "“直到灯火明亮”",
+      "medalType": "storyMedal",
+      "slotId": 188,
+      "preMedalIdList": [],
+      "rarity": 0,
+      "template": "CharStoryUnlock",
+      "unlockParam": [
+        "char_4042_lumen",
+        "story_lumen_set_1"
+      ],
+      "getMethod": "解锁干员流明的干员密录《直到灯火明亮》",
+      "description": "如果要出发，他的航程应该在无人知晓的海上。但灯火还没有照亮他的故乡。",
+      "advancedMedal": null,
+      "originMedal": null,
+      "displayTime": 1681977600,
+      "expireTimes": [],
+      "medalRewardGroup": []
+    },
+    {
+      "medalId": "medal_story_ayer_1",
+      "medalName": "“黄沙觅迹”",
+      "medalType": "storyMedal",
+      "slotId": 189,
+      "preMedalIdList": [],
+      "rarity": 0,
+      "template": "CharStoryUnlock",
+      "unlockParam": [
+        "char_294_ayer",
+        "story_ayer_set_1"
+      ],
+      "getMethod": "解锁干员断崖的干员密录《黄沙觅迹》",
+      "description": "纵然一切都被黄沙掩埋，双手也鲜血淋漓，他仍会刨开那层沙子。在见到那张脸之前，他不肯罢休。",
+      "advancedMedal": null,
+      "originMedal": null,
+      "displayTime": 1681977600,
+      "expireTimes": [],
+      "medalRewardGroup": []
+    },
+    {
+      "medalId": "medal_story_lionhd_1",
+      "medalName": "“暗境求生”",
+      "medalType": "storyMedal",
+      "slotId": 190,
+      "preMedalIdList": [],
+      "rarity": 0,
+      "template": "CharStoryUnlock",
+      "unlockParam": [
+        "char_373_lionhd",
+        "story_lionhd_set_1"
+      ],
+      "getMethod": "解锁干员莱恩哈特的干员密录《暗境求生》",
+      "description": "即使自身已深陷险境，他也绝不会忘却职责与诺言。他成为照亮洞窟的光，只为与重要的人团圆。",
+      "advancedMedal": null,
+      "originMedal": null,
+      "displayTime": 1681977600,
+      "expireTimes": [],
+      "medalRewardGroup": []
+    },
+    {
+      "medalId": "medal_story_quartz_1",
+      "medalName": "“无需遗憾”",
+      "medalType": "storyMedal",
+      "slotId": 191,
+      "preMedalIdList": [],
+      "rarity": 0,
+      "template": "CharStoryUnlock",
+      "unlockParam": [
+        "char_4063_quartz",
+        "story_quartz_set_1"
+      ],
+      "getMethod": "解锁干员石英的干员密录《无需遗憾》",
+      "description": "不再为未曾获得的而遗憾，不再为已然失去的而惋惜。 因为一无所有，才能走得轻松。",
+      "advancedMedal": null,
+      "originMedal": null,
+      "displayTime": 1681977600,
+      "expireTimes": [],
+      "medalRewardGroup": []
+    },
+    {
       "medalId": "medal_rogue_2_01",
       "medalName": "“沧海之蓝”",
       "medalType": "rogueMedal",
@@ -10371,7 +10554,7 @@
       "template": "GotCharsBeforeTime",
       "unlockParam": [
         "char_4042_lumen",
-        "1653768000"
+        "1683143999"
       ],
       "getMethod": "《愚人号》活动期间，获得活动干员流明",
       "description": "许多年前蒂亚戈颁发给乔迪的奖章。\n当他因为将教堂清扫得一尘不染受到表彰时，没有想到自己有一天会照亮伊比利亚的海面。",
@@ -10401,11 +10584,11 @@
       "rarity": 0,
       "template": "ActivityCoinCost",
       "unlockParam": [
-        "act17side",
-        "act17side_token_compass",
-        "4000"
+        "act17sre",
+        "act17side_token_compass_rep_1",
+        "2400"
       ],
-      "getMethod": "《愚人号》活动期间，在[苦鳞酒馆]中消耗4000锈蚀的罗盘",
+      "getMethod": "《愚人号》活动期间，在[苦鳞酒馆]中消耗2400锈蚀的罗盘",
       "description": "您的消费能力令这里的镇民印象深刻。\n伊比利亚的旅游纪念品对外国游客来说很便宜，这在“大静谧”之前或许是一件无法想象的事。",
       "advancedMedal": null,
       "originMedal": null,
@@ -10433,7 +10616,7 @@
       "rarity": 2,
       "template": "ActivityTreasureGain",
       "unlockParam": [
-        "treasure1_1;treasure1_2;treasure1_3;treasure1_4;treasure1_s_1;treasure1_5;treasure2_1;treasure2_s_1;treasure2_2;treasure2_3;treasure3_1;treasure3_2;treasure4_1;treasure4_2;treasure4_3;treasure4_4;treasure4_5;treasure4_6;treasure4_7;treasure4_8;treasure4_s_2;treasure4_s_3;treasure4_s_4;treasure4_s_5;treasure4_s_6;treasure4_s_7;treasure4_s_8;treasure5_1_a;treasure5_1_b;treasure5_2_a;treasure5_2_b;treasure5_3_a;treasure5_3_b;treasure5_4_a;treasure5_4_b;treasure5_5",
+        "treasure1_1_rep;treasure1_2_rep;treasure1_3_rep;treasure1_4_rep;treasure1_s_1_rep;treasure1_5_rep;treasure2_1_rep;treasure2_s_1_rep;treasure2_2_rep;treasure2_3_rep;treasure3_1_rep;treasure3_2_rep;treasure4_1_rep;treasure4_2_rep;treasure4_3_rep;treasure4_4_rep;treasure4_5_rep;treasure4_6_rep;treasure4_7_rep;treasure4_8_rep;treasure4_s_2_rep;treasure4_s_3_rep;treasure4_s_4_rep;treasure4_s_5_rep;treasure4_s_6_rep;treasure4_s_7_rep;treasure4_s_8_rep;treasure5_1_a_rep;treasure5_1_b_rep;treasure5_2_a_rep;treasure5_2_b_rep;treasure5_3_a_rep;treasure5_3_b_rep;treasure5_4_a_rep;treasure5_4_b_rep;treasure5_5_rep",
         "36"
       ],
       "getMethod": "领取地图中全部宝箱奖励",
@@ -17782,6 +17965,62 @@
         {
           "start": -1,
           "end": 1671076800,
+          "type": "INIT"
+        }
+      ],
+      "medalRewardGroup": [],
+      "isHidden": true
+    },
+    {
+      "medalId": "medal_hidden_tower_07",
+      "medalName": "“约翰老妈厚切汉堡”",
+      "medalType": "hiddenMedal",
+      "slotId": 10,
+      "preMedalIdList": [],
+      "rarity": 2,
+      "template": "PassTower",
+      "unlockParam": [
+        "tower_n_07",
+        "1",
+        "0"
+      ],
+      "getMethod": "委托方许诺，如果约翰老妈新建地块保全工作没有出现失误，将会为罗德岛准备特别的答谢晚宴。",
+      "description": "以约翰老妈委托方在答谢宴上准备的菜点为灵感制成的奖章。\n即使是用来答谢的加料加厚汉堡，吃完后留在脑海中的也只有半片生菜和薄薄的肉排，让人“意犹未尽”。",
+      "advancedMedal": null,
+      "originMedal": null,
+      "displayTime": 1681588800,
+      "expireTimes": [
+        {
+          "start": -1,
+          "end": 1681588800,
+          "type": "INIT"
+        }
+      ],
+      "medalRewardGroup": [],
+      "isHidden": true
+    },
+    {
+      "medalId": "medal_hidden_tower_08",
+      "medalName": "“雷神工业火炙巨羽兽”",
+      "medalType": "hiddenMedal",
+      "slotId": 11,
+      "preMedalIdList": [],
+      "rarity": 2,
+      "template": "PassTower",
+      "unlockParam": [
+        "tower_n_08",
+        "1",
+        "0"
+      ],
+      "getMethod": "委托方许诺，如果雷神工业测试平台保全工作没有出现失误，将会为罗德岛准备特别的答谢晚宴。",
+      "description": "以雷神工业委托方在答谢宴上准备的菜点为灵感制成的奖章。\n用火微微一烤就可以端上来享用，焦脆的皮和多汁的肉，香肥量大，几口就能吃饱，员工喜欢它的味道，主管也很满意它的效率。",
+      "advancedMedal": null,
+      "originMedal": null,
+      "displayTime": 1681588800,
+      "expireTimes": [
+        {
+          "start": -1,
+          "end": 1681588800,
           "type": "INIT"
         }
       ],

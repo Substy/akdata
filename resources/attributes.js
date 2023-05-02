@@ -2144,6 +2144,9 @@ function applyBuff(charAttr, buffFrm, tag, blackbd, isSkill, isCrit, log, enemy)
       case "tachr_4048_doroth_1":
         log.writeNote(`当前选择的干员ID: ${options.char_dialog}`);
         break;
+      case "tachr_391_rosmon_trait":
+      case "tachr_1027_greyy2_trait":
+        done = true; break;
     }
   }
   // --- applyBuff switch ends here ---
@@ -2216,6 +2219,11 @@ function applyBuff(charAttr, buffFrm, tag, blackbd, isSkill, isCrit, log, enemy)
     case "uniequip_002_bdhkgt":
       blackboard = blackboard.trait;
       blackboard.edef_pene = blackboard.def_penetrate_fixed;
+      break;
+    case "uniequip_003_cqbw":
+      blackboard.edef_pene = blackboard.trait.def_penetrate_fixed;
+      if (options.equip && blackboard.talent && blackboard.talent.atk)
+        blackboard.atk = blackboard.talent.atk * blackboard.talent.max_stack_cnt;
       break;
     case "uniequip_002_yuki":
       let bb_yuki = {...blackboard.trait};
@@ -2378,6 +2386,17 @@ function applyBuff(charAttr, buffFrm, tag, blackbd, isSkill, isCrit, log, enemy)
         log.writeNote("治疗地面目标");
       }
       break;
+    case "uniequip_003_kalts":
+      if (options.equip) {
+        if (!options.token) {
+          blackboard = blackboard.trait;
+          log.writeNote("治疗地面目标");
+        } else {
+          blackboard = blackboard.talent;
+          log.writeNote("M3在凯尔希范围内");
+        }
+      }
+      break;
     case "uniequip_002_silent":
       if (options.equip && !options.token) {
         blackboard = blackboard.trait;
@@ -2459,6 +2478,10 @@ function applyBuff(charAttr, buffFrm, tag, blackbd, isSkill, isCrit, log, enemy)
         blackboard.max_hp = blackboard.trait["billro_e_002[max_hp_buff].max_hp"];
         if (options.charge) blackboard.max_hp *= 2;
       }
+      break;
+    case "uniequip_002_greyy2":
+      if (options.equip && blackboard.talent && blackboard.talent.damage_scale)
+        blackboard.damage_scale = blackboard.talent.damage_scale;
       break;
   }
   // -- uniequip switch ends here --
@@ -4021,7 +4044,9 @@ function calculateAttack(charAttr, enemy, raidBlackboard, isSkill, charData, lev
       case "tachr_391_rosmon_trait":
       case "tachr_1027_greyy2_trait":
         var ntimes = 1;
-        if (isSkill && blackboard.id == "skchr_rosmon_2") ntimes = 3;
+        if (bb["attack@times"]) ntimes = bb["attack@times"] - 1;  // 迷迭香模组
+        if (bb["attack@enable_third_attack"]) ++ntimes; // 格蕾伊模组
+        if (isSkill && blackboard.id == "skchr_rosmon_2") ntimes += 2;
         var quake_atk = finalFrame.atk / buffFrame.atk_scale * bb["attack@append_atk_scale"];
         var quake_damage = Math.max(quake_atk - edef, quake_atk * 0.05) * buffFrame.damage_scale;
         

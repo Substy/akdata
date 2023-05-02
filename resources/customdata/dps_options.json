@@ -276,7 +276,7 @@
         "char_4046_ebnhlz": [ "equip", "cond_elite" ],
         "char_128_plosis":  [ "equip" ],
         "char_135_halo":    [ "stack" ],
-        "char_4048_doroth": [ "stack", "crit", "char_dialog" ],
+        "char_4048_doroth": [ "stack", "crit" ],
         "char_190_clour":   [ "equip" ],
         "char_235_jesica":  [ "equip" ],
         "char_4054_malist": [ "crit" ],

@@ -291,6 +291,17 @@ function selectChar(charId, i) {
     window.hashChangedBySelect = true;
     setTimeout((x) => { console.log(x); location.hash = "#" + x; }, 500, charId);
 
+    // 弹框提示消息设置
+    if (AKDATA.Data.dps_specialtags[charId] && AKDATA.Data.dps_specialtags[charId].alert) {
+      pmBase.component.create({
+        type: 'modal',
+        id: charId,
+        content: markdown.makeHtml(AKDATA.Data.dps_specialtags[charId].alert),
+        width: 750,
+        title: "计算器提示",
+        show: true
+      });
+    }
     updateChar(charId, i);
   }
 }
@@ -685,7 +696,8 @@ function updateOptions(charId, index) {
   getElement("buff", index).change(calculateColumn);
   if (opts.char[charId])
     for (var t of opts.char[charId]) {
-      if (opts.tags[t].type == "bool")
+      let u = (t.startsWith("cond") ? "cond" : t);  // wildcard cond
+      if (opts.tags[u].type == "bool")
         getElement(t, index).change(calculateColumn);
     }
   $('[data-toggle="tooltip"]').tooltip(); 

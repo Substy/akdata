@@ -24,7 +24,7 @@
     "char_218_cuttle":  { "frame_corr": 1 },
     "char_219_meteo":   { "frame_corr": 1 },
     "char_230_savage":  { "note": "潜能4-6暂未实装" }, 
-    "char_248_mgllan":  { "attack_begin": 19 },
+    "char_248_mgllan":  { "attack_begin": 19, "alert": "缪尔赛斯：勾选“计算召唤物数据”时，第一列的干员固定为复制目标，<br>在第2-4列计算缪尔赛斯召唤物的输出<br>详细说明请参考更新日志" },
     "char_252_bibeak":  { "times": 2, "frame_corr": 1 },
     "char_253_greyy":   { "frame_corr": 1 },
     "char_258_podego":  { "frame_corr": 1 },
@@ -655,5 +655,8 @@
     "uniequip_002_billro":  { "override_trait": true, "override_talent": 1 },
     "uniequip_003_nian":    { "override_talent": 1 },
     "uniequip_003_cerber":   { "override_talent": 2 },
-    "uniequip_003_dusk":    { "note": "暂未计算技力回复效果" }
+    "uniequip_003_dusk":    { "note": "暂未计算技力回复效果" },
+    "uniequip_002_rosmon":  { "override_trait": true, "override_talent": 1 },
+    "uniequip_002_greyy2":  { "override_trait": true },
+    "uniequip_002_gnosis":  { "override_talent": 1 }
 }

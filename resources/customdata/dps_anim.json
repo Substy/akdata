@@ -129,6 +129,20 @@
       "OnStart": 5
     }
   },
+  "char_003_kalts_boc#6": {
+    "version": "3.8.99",
+    "Attack": {
+      "duration": 30,
+      "OnAttack": 13
+    },
+    "Default": 0,
+    "Idle": 80,
+    "Start": {
+      "duration": 30,
+      "OnStart": 5
+    },
+    "Die": 30
+  },
   "char_009_12fce": {
     "version": "3.8.99",
     "Attack": {
@@ -480,6 +494,60 @@
       "OnStart": 5
     }
   },
+  "char_1013_chen2_boc#6": {
+    "version": "3.8.99",
+    "Attack": {
+      "duration": 69,
+      "OnAttack": 15
+    },
+    "Attack_Down": {
+      "duration": 69,
+      "OnAttack": 15
+    },
+    "Default": 0,
+    "Die": 30,
+    "Idle": 90,
+    "Skill_1_Begin": 3,
+    "Skill_1_Daze": 15,
+    "Skill_1_End": 3,
+    "Skill_1_Idle": 30,
+    "Skill_1_Loop": {
+      "duration": 69,
+      "OnAttack": 15
+    },
+    "Skill_1_Loop_Down": {
+      "duration": 69,
+      "OnAttack": 15
+    },
+    "Skill_2_Begin": 3,
+    "Skill_2_Daze": 15,
+    "Skill_2_End": 3,
+    "Skill_2_Idle": 30,
+    "Skill_2_Loop": {
+      "duration": 69,
+      "OnAttack": 15
+    },
+    "Skill_2_Loop_Down": {
+      "duration": 69,
+      "OnAttack": 15
+    },
+    "Skill_Begin": 3,
+    "Skill_Daze": 15,
+    "Skill_End": 3,
+    "Skill_Idle": 30,
+    "Skill_Loop": {
+      "duration": 69,
+      "OnAttack": 15
+    },
+    "Skill_Loop_Down": {
+      "duration": 69,
+      "OnAttack": 15
+    },
+    "Start": {
+      "duration": 30,
+      "OnStart": 5
+    }
+  },
   "char_1014_nearl2": {
     "version": "3.8.99",
     "Attack_Begin": 3,
@@ -682,6 +750,44 @@
     "Skill_3_Begin": 10,
     "Skill_3_End": 10,
     "Skill_3_Idle": 55,
+    "Start": {
+      "duration": 30,
+      "OnStart": 3
+    },
+    "Start_2": 30,
+    "Attack_Down": {
+      "duration": 36,
+      "OnAttack": 12
+    },
+    "Die": 30,
+    "Die_B": 30,
+    "Die_B_2": 30,
+    "Skill_3_Attack_Down": {
+      "duration": 66,
+      "OnAttack": 22
+    },
+    "Start_B": {
+      "duration": 30,
+      "OnStart": 19
+    }
+  },
+  "char_1023_ghost2_boc#6": {
+    "version": "3.8.99",
+    "Attack": {
+      "duration": 36,
+      "OnAttack": 12
+    },
+    "Default": 0,
+    "Idle": 50,
+    "Idle_B": 300,
+    "Skill_1": 30,
+    "Skill_3_Attack": {
+      "duration": 66,
+      "OnAttack": 25
+    },
+    "Skill_3_Begin": 10,
+    "Skill_3_End": 10,
+    "Skill_3_Idle": 50,
     "Start": {
       "duration": 30,
       "OnStart": 3
@@ -976,6 +1082,31 @@
     "Start": {
       "duration": 30,
       "OnStart": 8
+    },
+    "Die": 30
+  },
+  "char_1031_slent2": {
+    "version": "3.8.99",
+    "Attack": {
+      "duration": 48,
+      "OnAttack": 20
+    },
+    "Default": 0,
+    "Idle": 120,
+    "Skill": {
+      "duration": 48,
+      "OnAttack": 19
+    },
+    "Skill_2_Begin": 5,
+    "Skill_2_End": 5,
+    "Skill_2_Idle": 60,
+    "Skill_2_Loop": {
+      "duration": 48,
+      "OnAttack": 19
+    },
+    "Start": {
+      "duration": 30,
+      "OnStart": 15
     },
     "Die": 30
   },
@@ -4951,6 +5082,38 @@
       "OnStart": 5
     }
   },
+  "char_249_mlyss": {
+    "version": "3.8.99",
+    "Attack": {
+      "duration": 30,
+      "OnAttack": 12
+    },
+    "Default": 0,
+    "Die": 30,
+    "Idle": 90,
+    "Skill_1": {
+      "duration": 30,
+      "OnAttack": 12
+    },
+    "Skill_2_Begin": 5,
+    "Skill_2_End": 5,
+    "Skill_2_Idle": 30,
+    "Skill_2_Loop": {
+      "duration": 30,
+      "OnAttack": 11
+    },
+    "Skill_3_Begin": 5,
+    "Skill_3_End": 5,
+    "Skill_3_Idle": 30,
+    "Skill_3_loop": {
+      "duration": 30,
+      "OnAttack": 12
+    },
+    "Start": {
+      "duration": 30,
+      "OnStart": 7
+    }
+  },
   "char_250_phatom": {
     "version": "3.8.99",
     "Attack": {
@@ -5229,6 +5392,22 @@
     "Die": 30
   },
   "char_263_skadi": {
+    "version": "3.8.99",
+    "Attack": {
+      "duration": 45,
+      "OnAttack": 26
+    },
+    "Attack_Begin": 5,
+    "Attack_End": 5,
+    "Default": 0,
+    "Die": 30,
+    "Idle": 60,
+    "Start": {
+      "duration": 30,
+      "OnStart": 4
+    }
+  },
+  "char_263_skadi_marthe#5": {
     "version": "3.8.99",
     "Attack": {
       "duration": 45,
@@ -5681,6 +5860,20 @@
     },
     "Default": 0,
     "Idle": 60,
+    "Start": {
+      "duration": 30,
+      "OnStart": 5
+    },
+    "Die": 30
+  },
+  "char_278_orchid_boc#6": {
+    "version": "3.8.99",
+    "Attack": {
+      "duration": 30,
+      "OnAttack": 17
+    },
+    "Default": 0,
+    "Idle": 80,
     "Start": {
       "duration": 30,
       "OnStart": 5
@@ -8186,6 +8379,35 @@
     },
     "Die": 30
   },
+  "char_4006_melnte": {
+    "version": "3.8.99",
+    "Attack": {
+      "duration": 48,
+      "OnAttack": 13
+    },
+    "Default": 0,
+    "Die": 30,
+    "Idle": 40,
+    "Skill_1_Begin": 10,
+    "Skill_1_End": 10,
+    "Skill_1_Idle": 40,
+    "Skill_1_Loop": {
+      "duration": 48,
+      "OnAttack": 14
+    },
+    "Skill_2": {
+      "duration": 51,
+      "OnAttack": 16
+    },
+    "Skill_Down_2": {
+      "duration": 51,
+      "OnAttack": 16
+    },
+    "Start": {
+      "duration": 30,
+      "OnStart": 8
+    }
+  },
   "char_4009_irene": {
     "version": "3.8.99",
     "Attack": {
@@ -8194,6 +8416,34 @@
     },
     "Default": 0,
     "Idle": 180,
+    "Skill_1": {
+      "duration": 39,
+      "OnAttack": 20
+    },
+    "Skill_2": {
+      "duration": 30,
+      "OnAttack": 8
+    },
+    "Skill_3_Attack": {
+      "duration": 115,
+      "OnAttack": 90,
+      "OnPlayAudio": 108
+    },
+    "Skill_3_Start": {
+      "duration": 8,
+      "OnAttack": 4
+    },
+    "Start": 30,
+    "Die": 30
+  },
+  "char_4009_irene_ambienceSynesthesia#3": {
+    "version": "3.8.99",
+    "Attack": {
+      "duration": 39,
+      "OnAttack": 17
+    },
+    "Default": 0,
+    "Idle": 380,
     "Skill_1": {
       "duration": 39,
       "OnAttack": 20
@@ -8552,6 +8802,34 @@
       "OnStart": 5
     },
     "Die": 30
+  },
+  "char_4027_heyak": {
+    "version": "3.8.99",
+    "Attack": {
+      "duration": 48,
+      "OnAttack": 12
+    },
+    "Default": 0,
+    "Die": 25,
+    "Idle": 100,
+    "Skill_1": {
+      "duration": 48,
+      "OnAttack": 12
+    },
+    "Skill_2_Begin": 6,
+    "Skill_2_End": 6,
+    "Skill_2_Loop": 140,
+    "Skill_3_Begin": 8,
+    "Skill_3_End": 8,
+    "Skill_3_Idle": 100,
+    "Skill_3_Loop": {
+      "duration": 96,
+      "OnAttack": 26
+    },
+    "Start": {
+      "duration": 30,
+      "OnStart": 10
+    }
   },
   "char_402_tuye": {
     "version": "3.8.99",
@@ -8977,6 +9255,35 @@
       "OnStart": 7
     }
   },
+  "char_4042_lumen_ambienceSynesthesia#3": {
+    "version": "3.8.99",
+    "Attack": {
+      "duration": 40,
+      "OnAttack": 12
+    },
+    "Default": 240,
+    "Idle": 240,
+    "Skill_1": {
+      "duration": 40,
+      "OnAttack": 14
+    },
+    "Skill_2": {
+      "duration": 40,
+      "OnAttack": 24
+    },
+    "Skill_3_Begin": 10,
+    "Skill_3_End": 8,
+    "Skill_3_Idle": 135,
+    "Skill_3_Loop": {
+      "duration": 40,
+      "OnAttack": 11
+    },
+    "Start": {
+      "duration": 30,
+      "OnStart": 7
+    },
+    "Die": 32
+  },
   "char_4043_erato": {
     "version": "3.8.84",
     "Attack": {
@@ -9115,6 +9422,55 @@
       "duration": 30,
       "OnStart": 5
     }
+  },
+  "char_4046_ebnhlz_boc#6": {
+    "version": "3.8.99",
+    "Attack": {
+      "duration": 90,
+      "OnAttack": 12
+    },
+    "Attack_Charge": {
+      "duration": 90,
+      "OnAttack": 20
+    },
+    "Default": 0,
+    "Idle": 120,
+    "Skill_1_Begin": 6,
+    "Skill_1_Charge": {
+      "duration": 18,
+      "OnAttack": 4
+    },
+    "Skill_1_End": 5,
+    "Skill_1_Idle": 40,
+    "Skill_1_Loop": {
+      "duration": 18,
+      "OnAttack": 3
+    },
+    "Skill_2": {
+      "duration": 30,
+      "OnAttack": 11
+    },
+    "Skill_3_A": {
+      "duration": 50,
+      "OnAttack": 10
+    },
+    "Skill_3_B": {
+      "duration": 50,
+      "OnAttack": 10
+    },
+    "Skill_3_C": {
+      "duration": 50,
+      "OnAttack": 10
+    },
+    "Skill_3_Charge": {
+      "duration": 50,
+      "OnAttack": 17
+    },
+    "Start": {
+      "duration": 30,
+      "OnStart": 5
+    },
+    "Die": 30
   },
   "char_4047_pianst": {
     "version": "3.8.99",
@@ -11516,6 +11872,24 @@
       "OnStart": 6
     }
   },
+  "char_484_robrta_ambienceSynesthesia#3": {
+    "version": "3.8.99",
+    "Attack": {
+      "duration": 46,
+      "OnAttack": 15
+    },
+    "Default": 0,
+    "Die": 30,
+    "Idle": 160,
+    "Skill2_Begin": 5,
+    "Skill2_Die": 30,
+    "Skill2_End": 20,
+    "Skill2_Loop": 180,
+    "Start": {
+      "duration": 30,
+      "OnStart": 6
+    }
+  },
   "char_484_robrta_summer#10": {
     "version": "3.8.99",
     "Attack": {
@@ -12248,6 +12622,28 @@
       "OnAttack": 14
     }
   },
+  "token_10002_kalts_mon3tr_boc#6": {
+    "version": "3.8.99",
+    "Attack": {
+      "duration": 28,
+      "OnAttack": 7
+    },
+    "Default": 0,
+    "Die": 30,
+    "Idle": 40,
+    "Skill": {
+      "duration": 30,
+      "OnAttack": 11
+    },
+    "Skill_2": {
+      "duration": 38,
+      "OnAttack": 20
+    },
+    "Start": {
+      "duration": 50,
+      "OnStart": 15
+    }
+  },
   "token_10003_cgbird_bird_witch#1": {
     "version": "3.8.99",
     "Default": 0,
@@ -12488,6 +12884,16 @@
       "OnStart": 15
     }
   },
+  "token_10018_robrta_mach_ambienceSynesthesia#3": {
+    "version": "3.8.99",
+    "Default": 0,
+    "End": 20,
+    "Idle": {
+      "duration": 8,
+      "OnAttack": 0
+    },
+    "Start": 10
+  },
   "token_10018_robrta_mach_summer#10": {
     "version": "3.8.99",
     "Default": {
@@ -12635,6 +13041,20 @@
     "Start": {
       "duration": 30,
       "OnAttack": 8
+    }
+  },
+  "token_10024_ebnhlz_rcube_boc#6": {
+    "version": "3.8.99",
+    "Attack": {
+      "duration": 28,
+      "OnAttack": 13
+    },
+    "Default": 0,
+    "Die": 5,
+    "Idle": 30,
+    "Start": {
+      "duration": 30,
+      "OnStart": 6
     }
   },
   "token_10026_bgsnow_subbow_wild#7": {
