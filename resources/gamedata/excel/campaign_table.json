@@ -175,78 +175,78 @@
       ],
       "isCustomized": false,
       "dropGains": {
-        "PERMANENT": {
+        "1": {
           "dropLadders": [
             {
               "killCnt": 0,
               "dropInfo": {
-                "firstPassRewards": null,
-                "passRewards": null,
-                "displayDetailRewards": null
+                "firstPassRewards": [],
+                "passRewards": [],
+                "displayDetailRewards": []
               }
             },
             {
               "killCnt": 100,
               "dropInfo": {
-                "firstPassRewards": null,
-                "passRewards": null,
-                "displayDetailRewards": null
+                "firstPassRewards": [],
+                "passRewards": [],
+                "displayDetailRewards": []
               }
             },
             {
               "killCnt": 200,
               "dropInfo": {
-                "firstPassRewards": null,
-                "passRewards": null,
-                "displayDetailRewards": null
+                "firstPassRewards": [],
+                "passRewards": [],
+                "displayDetailRewards": []
               }
             },
             {
               "killCnt": 250,
               "dropInfo": {
-                "firstPassRewards": null,
-                "passRewards": null,
-                "displayDetailRewards": null
+                "firstPassRewards": [],
+                "passRewards": [],
+                "displayDetailRewards": []
               }
             },
             {
               "killCnt": 300,
               "dropInfo": {
-                "firstPassRewards": null,
-                "passRewards": null,
-                "displayDetailRewards": null
+                "firstPassRewards": [],
+                "passRewards": [],
+                "displayDetailRewards": []
               }
             },
             {
               "killCnt": 325,
               "dropInfo": {
-                "firstPassRewards": null,
-                "passRewards": null,
-                "displayDetailRewards": null
+                "firstPassRewards": [],
+                "passRewards": [],
+                "displayDetailRewards": []
               }
             },
             {
               "killCnt": 350,
               "dropInfo": {
-                "firstPassRewards": null,
-                "passRewards": null,
-                "displayDetailRewards": null
+                "firstPassRewards": [],
+                "passRewards": [],
+                "displayDetailRewards": []
               }
             },
             {
               "killCnt": 375,
               "dropInfo": {
-                "firstPassRewards": null,
-                "passRewards": null,
-                "displayDetailRewards": null
+                "firstPassRewards": [],
+                "passRewards": [],
+                "displayDetailRewards": []
               }
             },
             {
               "killCnt": 400,
               "dropInfo": {
-                "firstPassRewards": null,
-                "passRewards": null,
-                "displayDetailRewards": null
+                "firstPassRewards": [],
+                "passRewards": [],
+                "displayDetailRewards": []
               }
             }
           ],
@@ -339,26 +339,30 @@
           "displayDetailRewards": [
             {
               "occPercent": 0,
-              "type": "DIAMOND_SHD",
-              "id": "4003",
-              "dropType": 6
+              "GetPercent": 0.0,
+              "CannotGetPercent": 0.0,
+              "type": "TKT_TRY",
+              "id": null,
+              "dropType": 0
             },
             {
               "occPercent": 0,
+              "GetPercent": 0.0,
+              "CannotGetPercent": 0.0,
               "type": "CARD_EXP",
-              "id": "2001",
-              "dropType": 2
+              "id": null,
+              "dropType": 0
             }
           ]
         },
-        "ROTATE": {
+        "2": {
           "dropLadders": [
             {
               "killCnt": 0,
               "dropInfo": {
-                "firstPassRewards": null,
-                "passRewards": null,
-                "displayDetailRewards": null
+                "firstPassRewards": [],
+                "passRewards": [],
+                "displayDetailRewards": []
               }
             }
           ],
@@ -366,14 +370,14 @@
           "displayRewards": [],
           "displayDetailRewards": []
         },
-        "TRAINING": {
+        "3": {
           "dropLadders": [
             {
               "killCnt": 0,
               "dropInfo": {
-                "firstPassRewards": null,
-                "passRewards": null,
-                "displayDetailRewards": null
+                "firstPassRewards": [],
+                "passRewards": [],
+                "displayDetailRewards": []
               }
             }
           ],
@@ -558,78 +562,78 @@
       ],
       "isCustomized": false,
       "dropGains": {
-        "PERMANENT": {
+        "1": {
           "dropLadders": [
             {
               "killCnt": 0,
               "dropInfo": {
-                "firstPassRewards": null,
-                "passRewards": null,
-                "displayDetailRewards": null
+                "firstPassRewards": [],
+                "passRewards": [],
+                "displayDetailRewards": []
               }
             },
             {
               "killCnt": 100,
               "dropInfo": {
-                "firstPassRewards": null,
-                "passRewards": null,
-                "displayDetailRewards": null
+                "firstPassRewards": [],
+                "passRewards": [],
+                "displayDetailRewards": []
               }
             },
             {
               "killCnt": 200,
               "dropInfo": {
-                "firstPassRewards": null,
-                "passRewards": null,
-                "displayDetailRewards": null
+                "firstPassRewards": [],
+                "passRewards": [],
+                "displayDetailRewards": []
               }
             },
             {
               "killCnt": 250,
               "dropInfo": {
-                "firstPassRewards": null,
-                "passRewards": null,
-                "displayDetailRewards": null
+                "firstPassRewards": [],
+                "passRewards": [],
+                "displayDetailRewards": []
               }
             },
             {
               "killCnt": 300,
               "dropInfo": {
-                "firstPassRewards": null,
-                "passRewards": null,
-                "displayDetailRewards": null
+                "firstPassRewards": [],
+                "passRewards": [],
+                "displayDetailRewards": []
               }
             },
             {
               "killCnt": 325,
               "dropInfo": {
-                "firstPassRewards": null,
-                "passRewards": null,
-                "displayDetailRewards": null
+                "firstPassRewards": [],
+                "passRewards": [],
+                "displayDetailRewards": []
               }
             },
             {
               "killCnt": 350,
               "dropInfo": {
-                "firstPassRewards": null,
-                "passRewards": null,
-                "displayDetailRewards": null
+                "firstPassRewards": [],
+                "passRewards": [],
+                "displayDetailRewards": []
               }
             },
             {
               "killCnt": 375,
               "dropInfo": {
-                "firstPassRewards": null,
-                "passRewards": null,
-                "displayDetailRewards": null
+                "firstPassRewards": [],
+                "passRewards": [],
+                "displayDetailRewards": []
               }
             },
             {
               "killCnt": 400,
               "dropInfo": {
-                "firstPassRewards": null,
-                "passRewards": null,
-                "displayDetailRewards": null
+                "firstPassRewards": [],
+                "passRewards": [],
+                "displayDetailRewards": []
               }
             }
           ],
@@ -722,26 +726,30 @@
           "displayDetailRewards": [
             {
               "occPercent": 0,
-              "type": "DIAMOND_SHD",
-              "id": "4003",
-              "dropType": 6
+              "GetPercent": 0.0,
+              "CannotGetPercent": 0.0,
+              "type": "TKT_TRY",
+              "id": null,
+              "dropType": 0
             },
             {
               "occPercent": 0,
+              "GetPercent": 0.0,
+              "CannotGetPercent": 0.0,
               "type": "CARD_EXP",
-              "id": "2002",
-              "dropType": 2
+              "id": null,
+              "dropType": 0
             }
           ]
         },
-        "ROTATE": {
+        "2": {
           "dropLadders": [
             {
               "killCnt": 0,
               "dropInfo": {
-                "firstPassRewards": null,
-                "passRewards": null,
-                "displayDetailRewards": null
+                "firstPassRewards": [],
+                "passRewards": [],
+                "displayDetailRewards": []
               }
             }
           ],
@@ -749,14 +757,14 @@
           "displayRewards": [],
           "displayDetailRewards": []
         },
-        "TRAINING": {
+        "3": {
           "dropLadders": [
             {
               "killCnt": 0,
               "dropInfo": {
-                "firstPassRewards": null,
-                "passRewards": null,
-                "displayDetailRewards": null
+                "firstPassRewards": [],
+                "passRewards": [],
+                "displayDetailRewards": []
               }
             }
           ],
@@ -941,78 +949,78 @@
       ],
       "isCustomized": false,
       "dropGains": {
-        "PERMANENT": {
+        "1": {
           "dropLadders": [
             {
               "killCnt": 0,
               "dropInfo": {
-                "firstPassRewards": null,
-                "passRewards": null,
-                "displayDetailRewards": null
+                "firstPassRewards": [],
+                "passRewards": [],
+                "displayDetailRewards": []
               }
             },
             {
               "killCnt": 100,
               "dropInfo": {
-                "firstPassRewards": null,
-                "passRewards": null,
-                "displayDetailRewards": null
+                "firstPassRewards": [],
+                "passRewards": [],
+                "displayDetailRewards": []
               }
             },
             {
               "killCnt": 200,
               "dropInfo": {
-                "firstPassRewards": null,
-                "passRewards": null,
-                "displayDetailRewards": null
+                "firstPassRewards": [],
+                "passRewards": [],
+                "displayDetailRewards": []
               }
             },
             {
               "killCnt": 250,
               "dropInfo": {
-                "firstPassRewards": null,
-                "passRewards": null,
-                "displayDetailRewards": null
+                "firstPassRewards": [],
+                "passRewards": [],
+                "displayDetailRewards": []
               }
             },
             {
               "killCnt": 300,
               "dropInfo": {
-                "firstPassRewards": null,
-                "passRewards": null,
-                "displayDetailRewards": null
+                "firstPassRewards": [],
+                "passRewards": [],
+                "displayDetailRewards": []
               }
             },
             {
               "killCnt": 325,
               "dropInfo": {
-                "firstPassRewards": null,
-                "passRewards": null,
-                "displayDetailRewards": null
+                "firstPassRewards": [],
+                "passRewards": [],
+                "displayDetailRewards": []
               }
             },
             {
               "killCnt": 350,
               "dropInfo": {
-                "firstPassRewards": null,
-                "passRewards": null,
-                "displayDetailRewards": null
+                "firstPassRewards": [],
+                "passRewards": [],
+                "displayDetailRewards": []
               }
             },
             {
               "killCnt": 375,
               "dropInfo": {
-                "firstPassRewards": null,
-                "passRewards": null,
-                "displayDetailRewards": null
+                "firstPassRewards": [],
+                "passRewards": [],
+                "displayDetailRewards": []
               }
             },
             {
               "killCnt": 400,
               "dropInfo": {
-                "firstPassRewards": null,
-                "passRewards": null,
-                "displayDetailRewards": null
+                "firstPassRewards": [],
+                "passRewards": [],
+                "displayDetailRewards": []
               }
             }
           ],
@@ -1105,26 +1113,30 @@
           "displayDetailRewards": [
             {
               "occPercent": 0,
-              "type": "DIAMOND_SHD",
-              "id": "4003",
-              "dropType": 6
+              "GetPercent": 0.0,
+              "CannotGetPercent": 0.0,
+              "type": "TKT_TRY",
+              "id": null,
+              "dropType": 0
             },
             {
               "occPercent": 0,
+              "GetPercent": 0.0,
+              "CannotGetPercent": 0.0,
               "type": "CARD_EXP",
-              "id": "2002",
-              "dropType": 2
+              "id": null,
+              "dropType": 0
             }
           ]
         },
-        "ROTATE": {
+        "2": {
           "dropLadders": [
             {
               "killCnt": 0,
               "dropInfo": {
-                "firstPassRewards": null,
-                "passRewards": null,
-                "displayDetailRewards": null
+                "firstPassRewards": [],
+                "passRewards": [],
+                "displayDetailRewards": []
               }
             }
           ],
@@ -1132,14 +1144,14 @@
           "displayRewards": [],
           "displayDetailRewards": []
         },
-        "TRAINING": {
+        "3": {
           "dropLadders": [
             {
               "killCnt": 0,
               "dropInfo": {
-                "firstPassRewards": null,
-                "passRewards": null,
-                "displayDetailRewards": null
+                "firstPassRewards": [],
+                "passRewards": [],
+                "displayDetailRewards": []
               }
             }
           ],
@@ -1309,14 +1321,14 @@
       ],
       "isCustomized": false,
       "dropGains": {
-        "PERMANENT": {
+        "1": {
           "dropLadders": [
             {
               "killCnt": 0,
               "dropInfo": {
-                "firstPassRewards": null,
-                "passRewards": null,
-                "displayDetailRewards": null
+                "firstPassRewards": [],
+                "passRewards": [],
+                "displayDetailRewards": []
               }
             }
           ],
@@ -1324,78 +1336,78 @@
           "displayRewards": [],
           "displayDetailRewards": []
         },
-        "ROTATE": {
+        "2": {
           "dropLadders": [
             {
               "killCnt": 0,
               "dropInfo": {
-                "firstPassRewards": null,
-                "passRewards": null,
-                "displayDetailRewards": null
+                "firstPassRewards": [],
+                "passRewards": [],
+                "displayDetailRewards": []
               }
             },
             {
               "killCnt": 100,
               "dropInfo": {
-                "firstPassRewards": null,
-                "passRewards": null,
-                "displayDetailRewards": null
+                "firstPassRewards": [],
+                "passRewards": [],
+                "displayDetailRewards": []
               }
             },
             {
               "killCnt": 200,
               "dropInfo": {
-                "firstPassRewards": null,
-                "passRewards": null,
-                "displayDetailRewards": null
+                "firstPassRewards": [],
+                "passRewards": [],
+                "displayDetailRewards": []
               }
             },
             {
               "killCnt": 250,
               "dropInfo": {
-                "firstPassRewards": null,
-                "passRewards": null,
-                "displayDetailRewards": null
+                "firstPassRewards": [],
+                "passRewards": [],
+                "displayDetailRewards": []
               }
             },
             {
               "killCnt": 300,
               "dropInfo": {
-                "firstPassRewards": null,
-                "passRewards": null,
-                "displayDetailRewards": null
+                "firstPassRewards": [],
+                "passRewards": [],
+                "displayDetailRewards": []
               }
             },
             {
               "killCnt": 325,
               "dropInfo": {
-                "firstPassRewards": null,
-                "passRewards": null,
-                "displayDetailRewards": null
+                "firstPassRewards": [],
+                "passRewards": [],
+                "displayDetailRewards": []
               }
             },
             {
               "killCnt": 350,
               "dropInfo": {
-                "firstPassRewards": null,
-                "passRewards": null,
-                "displayDetailRewards": null
+                "firstPassRewards": [],
+                "passRewards": [],
+                "displayDetailRewards": []
               }
             },
             {
               "killCnt": 375,
               "dropInfo": {
-                "firstPassRewards": null,
-                "passRewards": null,
-                "displayDetailRewards": null
+                "firstPassRewards": [],
+                "passRewards": [],
+                "displayDetailRewards": []
               }
             },
             {
               "killCnt": 400,
               "dropInfo": {
-                "firstPassRewards": null,
-                "passRewards": null,
-                "displayDetailRewards": null
+                "firstPassRewards": [],
+                "passRewards": [],
+                "displayDetailRewards": []
               }
             }
           ],
@@ -1488,26 +1500,30 @@
           "displayDetailRewards": [
             {
               "occPercent": 0,
-              "type": "DIAMOND_SHD",
-              "id": "4003",
-              "dropType": 6
+              "GetPercent": 0.0,
+              "CannotGetPercent": 0.0,
+              "type": "TKT_TRY",
+              "id": null,
+              "dropType": 0
             },
             {
               "occPercent": 0,
+              "GetPercent": 0.0,
+              "CannotGetPercent": 0.0,
               "type": "CARD_EXP",
-              "id": "2002",
-              "dropType": 2
+              "id": null,
+              "dropType": 0
             }
           ]
         },
-        "TRAINING": {
+        "3": {
           "dropLadders": [
             {
               "killCnt": 0,
               "dropInfo": {
-                "firstPassRewards": null,
-                "passRewards": null,
-                "displayDetailRewards": null
+                "firstPassRewards": [],
+                "passRewards": [],
+                "displayDetailRewards": []
               }
             }
           ],
@@ -1750,14 +1766,14 @@
       ],
       "isCustomized": true,
       "dropGains": {
-        "PERMANENT": {
+        "1": {
           "dropLadders": [
             {
               "killCnt": 0,
               "dropInfo": {
-                "firstPassRewards": null,
-                "passRewards": null,
-                "displayDetailRewards": null
+                "firstPassRewards": [],
+                "passRewards": [],
+                "displayDetailRewards": []
               }
             }
           ],
@@ -1765,78 +1781,78 @@
           "displayRewards": [],
           "displayDetailRewards": []
         },
-        "ROTATE": {
+        "2": {
           "dropLadders": [
             {
               "killCnt": 0,
               "dropInfo": {
-                "firstPassRewards": null,
-                "passRewards": null,
-                "displayDetailRewards": null
+                "firstPassRewards": [],
+                "passRewards": [],
+                "displayDetailRewards": []
               }
             },
             {
               "killCnt": 100,
               "dropInfo": {
-                "firstPassRewards": null,
-                "passRewards": null,
-                "displayDetailRewards": null
+                "firstPassRewards": [],
+                "passRewards": [],
+                "displayDetailRewards": []
               }
             },
             {
               "killCnt": 200,
               "dropInfo": {
-                "firstPassRewards": null,
-                "passRewards": null,
-                "displayDetailRewards": null
+                "firstPassRewards": [],
+                "passRewards": [],
+                "displayDetailRewards": []
               }
             },
             {
               "killCnt": 250,
               "dropInfo": {
-                "firstPassRewards": null,
-                "passRewards": null,
-                "displayDetailRewards": null
+                "firstPassRewards": [],
+                "passRewards": [],
+                "displayDetailRewards": []
               }
             },
             {
               "killCnt": 300,
               "dropInfo": {
-                "firstPassRewards": null,
-                "passRewards": null,
-                "displayDetailRewards": null
+                "firstPassRewards": [],
+                "passRewards": [],
+                "displayDetailRewards": []
               }
             },
             {
               "killCnt": 325,
               "dropInfo": {
-                "firstPassRewards": null,
-                "passRewards": null,
-                "displayDetailRewards": null
+                "firstPassRewards": [],
+                "passRewards": [],
+                "displayDetailRewards": []
               }
             },
             {
               "killCnt": 350,
               "dropInfo": {
-                "firstPassRewards": null,
-                "passRewards": null,
-                "displayDetailRewards": null
+                "firstPassRewards": [],
+                "passRewards": [],
+                "displayDetailRewards": []
               }
             },
             {
               "killCnt": 375,
               "dropInfo": {
-                "firstPassRewards": null,
-                "passRewards": null,
-                "displayDetailRewards": null
+                "firstPassRewards": [],
+                "passRewards": [],
+                "displayDetailRewards": []
               }
             },
             {
               "killCnt": 400,
               "dropInfo": {
-                "firstPassRewards": null,
-                "passRewards": null,
-                "displayDetailRewards": null
+                "firstPassRewards": [],
+                "passRewards": [],
+                "displayDetailRewards": []
               }
             }
           ],
@@ -1929,26 +1945,30 @@
           "displayDetailRewards": [
             {
               "occPercent": 0,
-              "type": "DIAMOND_SHD",
-              "id": "4003",
-              "dropType": 6
+              "GetPercent": 0.0,
+              "CannotGetPercent": 0.0,
+              "type": "TKT_TRY",
+              "id": null,
+              "dropType": 0
             },
             {
               "occPercent": 0,
+              "GetPercent": 0.0,
+              "CannotGetPercent": 0.0,
               "type": "CARD_EXP",
-              "id": "2002",
-              "dropType": 2
+              "id": null,
+              "dropType": 0
             }
           ]
         },
-        "TRAINING": {
+        "3": {
           "dropLadders": [
             {
               "killCnt": 0,
               "dropInfo": {
-                "firstPassRewards": null,
-                "passRewards": null,
-                "displayDetailRewards": null
+                "firstPassRewards": [],
+                "passRewards": [],
+                "displayDetailRewards": []
               }
             }
           ],
@@ -2191,14 +2211,14 @@
       ],
       "isCustomized": false,
       "dropGains": {
-        "PERMANENT": {
+        "1": {
           "dropLadders": [
             {
               "killCnt": 0,
               "dropInfo": {
-                "firstPassRewards": null,
-                "passRewards": null,
-                "displayDetailRewards": null
+                "firstPassRewards": [],
+                "passRewards": [],
+                "displayDetailRewards": []
               }
             }
           ],
@@ -2206,78 +2226,78 @@
           "displayRewards": [],
           "displayDetailRewards": []
         },
-        "ROTATE": {
+        "2": {
           "dropLadders": [
             {
               "killCnt": 0,
               "dropInfo": {
-                "firstPassRewards": null,
-                "passRewards": null,
-                "displayDetailRewards": null
+                "firstPassRewards": [],
+                "passRewards": [],
+                "displayDetailRewards": []
               }
             },
             {
               "killCnt": 100,
               "dropInfo": {
-                "firstPassRewards": null,
-                "passRewards": null,
-                "displayDetailRewards": null
+                "firstPassRewards": [],
+                "passRewards": [],
+                "displayDetailRewards": []
               }
             },
             {
               "killCnt": 200,
               "dropInfo": {
-                "firstPassRewards": null,
-                "passRewards": null,
-                "displayDetailRewards": null
+                "firstPassRewards": [],
+                "passRewards": [],
+                "displayDetailRewards": []
               }
             },
             {
               "killCnt": 250,
               "dropInfo": {
-                "firstPassRewards": null,
-                "passRewards": null,
-                "displayDetailRewards": null
+                "firstPassRewards": [],
+                "passRewards": [],
+                "displayDetailRewards": []
               }
             },
             {
               "killCnt": 300,
               "dropInfo": {
-                "firstPassRewards": null,
-                "passRewards": null,
-                "displayDetailRewards": null
+                "firstPassRewards": [],
+                "passRewards": [],
+                "displayDetailRewards": []
               }
             },
             {
               "killCnt": 325,
               "dropInfo": {
-                "firstPassRewards": null,
-                "passRewards": null,
-                "displayDetailRewards": null
+                "firstPassRewards": [],
+                "passRewards": [],
+                "displayDetailRewards": []
               }
             },
             {
               "killCnt": 350,
               "dropInfo": {
-                "firstPassRewards": null,
-                "passRewards": null,
-                "displayDetailRewards": null
+                "firstPassRewards": [],
+                "passRewards": [],
+                "displayDetailRewards": []
               }
             },
             {
               "killCnt": 375,
               "dropInfo": {
-                "firstPassRewards": null,
-                "passRewards": null,
-                "displayDetailRewards": null
+                "firstPassRewards": [],
+                "passRewards": [],
+                "displayDetailRewards": []
               }
             },
             {
               "killCnt": 400,
               "dropInfo": {
-                "firstPassRewards": null,
-                "passRewards": null,
-                "displayDetailRewards": null
+                "firstPassRewards": [],
+                "passRewards": [],
+                "displayDetailRewards": []
               }
             }
           ],
@@ -2370,26 +2390,30 @@
           "displayDetailRewards": [
             {
               "occPercent": 0,
-              "type": "DIAMOND_SHD",
-              "id": "4003",
-              "dropType": 6
+              "GetPercent": 0.0,
+              "CannotGetPercent": 0.0,
+              "type": "TKT_TRY",
+              "id": null,
+              "dropType": 0
             },
             {
               "occPercent": 0,
+              "GetPercent": 0.0,
+              "CannotGetPercent": 0.0,
               "type": "CARD_EXP",
-              "id": "2002",
-              "dropType": 2
+              "id": null,
+              "dropType": 0
             }
           ]
         },
-        "TRAINING": {
+        "3": {
           "dropLadders": [
             {
               "killCnt": 0,
               "dropInfo": {
-                "firstPassRewards": null,
-                "passRewards": null,
-                "displayDetailRewards": null
+                "firstPassRewards": [],
+                "passRewards": [],
+                "displayDetailRewards": []
               }
             }
           ],
@@ -2632,14 +2656,14 @@
       ],
       "isCustomized": false,
       "dropGains": {
-        "PERMANENT": {
+        "1": {
           "dropLadders": [
             {
               "killCnt": 0,
               "dropInfo": {
-                "firstPassRewards": null,
-                "passRewards": null,
-                "displayDetailRewards": null
+                "firstPassRewards": [],
+                "passRewards": [],
+                "displayDetailRewards": []
               }
             }
           ],
@@ -2647,78 +2671,78 @@
           "displayRewards": [],
           "displayDetailRewards": []
         },
-        "ROTATE": {
+        "2": {
           "dropLadders": [
             {
               "killCnt": 0,
               "dropInfo": {
-                "firstPassRewards": null,
-                "passRewards": null,
-                "displayDetailRewards": null
+                "firstPassRewards": [],
+                "passRewards": [],
+                "displayDetailRewards": []
               }
             },
             {
               "killCnt": 100,
               "dropInfo": {
-                "firstPassRewards": null,
-                "passRewards": null,
-                "displayDetailRewards": null
+                "firstPassRewards": [],
+                "passRewards": [],
+                "displayDetailRewards": []
               }
             },
             {
               "killCnt": 200,
               "dropInfo": {
-                "firstPassRewards": null,
-                "passRewards": null,
-                "displayDetailRewards": null
+                "firstPassRewards": [],
+                "passRewards": [],
+                "displayDetailRewards": []
               }
             },
             {
               "killCnt": 250,
               "dropInfo": {
-                "firstPassRewards": null,
-                "passRewards": null,
-                "displayDetailRewards": null
+                "firstPassRewards": [],
+                "passRewards": [],
+                "displayDetailRewards": []
               }
             },
             {
               "killCnt": 300,
               "dropInfo": {
-                "firstPassRewards": null,
-                "passRewards": null,
-                "displayDetailRewards": null
+                "firstPassRewards": [],
+                "passRewards": [],
+                "displayDetailRewards": []
               }
             },
             {
               "killCnt": 325,
               "dropInfo": {
-                "firstPassRewards": null,
-                "passRewards": null,
-                "displayDetailRewards": null
+                "firstPassRewards": [],
+                "passRewards": [],
+                "displayDetailRewards": []
               }
             },
             {
               "killCnt": 350,
               "dropInfo": {
-                "firstPassRewards": null,
-                "passRewards": null,
-                "displayDetailRewards": null
+                "firstPassRewards": [],
+                "passRewards": [],
+                "displayDetailRewards": []
               }
             },
             {
               "killCnt": 375,
               "dropInfo": {
-                "firstPassRewards": null,
-                "passRewards": null,
-                "displayDetailRewards": null
+                "firstPassRewards": [],
+                "passRewards": [],
+                "displayDetailRewards": []
               }
             },
             {
               "killCnt": 400,
               "dropInfo": {
-                "firstPassRewards": null,
-                "passRewards": null,
-                "displayDetailRewards": null
+                "firstPassRewards": [],
+                "passRewards": [],
+                "displayDetailRewards": []
               }
             }
           ],
@@ -2811,26 +2835,30 @@
           "displayDetailRewards": [
             {
               "occPercent": 0,
-              "type": "DIAMOND_SHD",
-              "id": "4003",
-              "dropType": 6
+              "GetPercent": 0.0,
+              "CannotGetPercent": 0.0,
+              "type": "TKT_TRY",
+              "id": null,
+              "dropType": 0
             },
             {
               "occPercent": 0,
+              "GetPercent": 0.0,
+              "CannotGetPercent": 0.0,
               "type": "CARD_EXP",
-              "id": "2002",
-              "dropType": 2
+              "id": null,
+              "dropType": 0
             }
           ]
         },
-        "TRAINING": {
+        "3": {
           "dropLadders": [
             {
               "killCnt": 0,
               "dropInfo": {
-                "firstPassRewards": null,
-                "passRewards": null,
-                "displayDetailRewards": null
+                "firstPassRewards": [],
+                "passRewards": [],
+                "displayDetailRewards": []
               }
             }
           ],
@@ -3073,14 +3101,14 @@
       ],
       "isCustomized": false,
       "dropGains": {
-        "PERMANENT": {
+        "1": {
           "dropLadders": [
             {
               "killCnt": 0,
               "dropInfo": {
-                "firstPassRewards": null,
-                "passRewards": null,
-                "displayDetailRewards": null
+                "firstPassRewards": [],
+                "passRewards": [],
+                "displayDetailRewards": []
               }
             }
           ],
@@ -3088,78 +3116,78 @@
           "displayRewards": [],
           "displayDetailRewards": []
         },
-        "ROTATE": {
+        "2": {
           "dropLadders": [
             {
               "killCnt": 0,
               "dropInfo": {
-                "firstPassRewards": null,
-                "passRewards": null,
-                "displayDetailRewards": null
+                "firstPassRewards": [],
+                "passRewards": [],
+                "displayDetailRewards": []
               }
             },
             {
               "killCnt": 100,
               "dropInfo": {
-                "firstPassRewards": null,
-                "passRewards": null,
-                "displayDetailRewards": null
+                "firstPassRewards": [],
+                "passRewards": [],
+                "displayDetailRewards": []
               }
             },
             {
               "killCnt": 200,
               "dropInfo": {
-                "firstPassRewards": null,
-                "passRewards": null,
-                "displayDetailRewards": null
+                "firstPassRewards": [],
+                "passRewards": [],
+                "displayDetailRewards": []
               }
             },
             {
               "killCnt": 250,
               "dropInfo": {
-                "firstPassRewards": null,
-                "passRewards": null,
-                "displayDetailRewards": null
+                "firstPassRewards": [],
+                "passRewards": [],
+                "displayDetailRewards": []
               }
             },
             {
               "killCnt": 300,
               "dropInfo": {
-                "firstPassRewards": null,
-                "passRewards": null,
-                "displayDetailRewards": null
+                "firstPassRewards": [],
+                "passRewards": [],
+                "displayDetailRewards": []
               }
             },
             {
               "killCnt": 325,
               "dropInfo": {
-                "firstPassRewards": null,
-                "passRewards": null,
-                "displayDetailRewards": null
+                "firstPassRewards": [],
+                "passRewards": [],
+                "displayDetailRewards": []
               }
             },
             {
               "killCnt": 350,
               "dropInfo": {
-                "firstPassRewards": null,
-                "passRewards": null,
-                "displayDetailRewards": null
+                "firstPassRewards": [],
+                "passRewards": [],
+                "displayDetailRewards": []
               }
             },
             {
               "killCnt": 375,
               "dropInfo": {
-                "firstPassRewards": null,
-                "passRewards": null,
-                "displayDetailRewards": null
+                "firstPassRewards": [],
+                "passRewards": [],
+                "displayDetailRewards": []
               }
             },
             {
               "killCnt": 400,
               "dropInfo": {
-                "firstPassRewards": null,
-                "passRewards": null,
-                "displayDetailRewards": null
+                "firstPassRewards": [],
+                "passRewards": [],
+                "displayDetailRewards": []
               }
             }
           ],
@@ -3252,26 +3280,30 @@
           "displayDetailRewards": [
             {
               "occPercent": 0,
-              "type": "DIAMOND_SHD",
-              "id": "4003",
-              "dropType": 6
+              "GetPercent": 0.0,
+              "CannotGetPercent": 0.0,
+              "type": "TKT_TRY",
+              "id": null,
+              "dropType": 0
             },
             {
               "occPercent": 0,
+              "GetPercent": 0.0,
+              "CannotGetPercent": 0.0,
               "type": "CARD_EXP",
-              "id": "2002",
-              "dropType": 2
+              "id": null,
+              "dropType": 0
             }
           ]
         },
-        "TRAINING": {
+        "3": {
           "dropLadders": [
             {
               "killCnt": 0,
               "dropInfo": {
-                "firstPassRewards": null,
-                "passRewards": null,
-                "displayDetailRewards": null
+                "firstPassRewards": [],
+                "passRewards": [],
+                "displayDetailRewards": []
               }
             }
           ],
@@ -3514,14 +3546,14 @@
       ],
       "isCustomized": false,
       "dropGains": {
-        "PERMANENT": {
+        "1": {
           "dropLadders": [
             {
               "killCnt": 0,
               "dropInfo": {
-                "firstPassRewards": null,
-                "passRewards": null,
-                "displayDetailRewards": null
+                "firstPassRewards": [],
+                "passRewards": [],
+                "displayDetailRewards": []
               }
             }
           ],
@@ -3529,78 +3561,78 @@
           "displayRewards": [],
           "displayDetailRewards": []
         },
-        "ROTATE": {
+        "2": {
           "dropLadders": [
             {
               "killCnt": 0,
               "dropInfo": {
-                "firstPassRewards": null,
-                "passRewards": null,
-                "displayDetailRewards": null
+                "firstPassRewards": [],
+                "passRewards": [],
+                "displayDetailRewards": []
               }
             },
             {
               "killCnt": 100,
               "dropInfo": {
-                "firstPassRewards": null,
-                "passRewards": null,
-                "displayDetailRewards": null
+                "firstPassRewards": [],
+                "passRewards": [],
+                "displayDetailRewards": []
               }
             },
             {
               "killCnt": 200,
               "dropInfo": {
-                "firstPassRewards": null,
-                "passRewards": null,
-                "displayDetailRewards": null
+                "firstPassRewards": [],
+                "passRewards": [],
+                "displayDetailRewards": []
               }
             },
             {
               "killCnt": 250,
               "dropInfo": {
-                "firstPassRewards": null,
-                "passRewards": null,
-                "displayDetailRewards": null
+                "firstPassRewards": [],
+                "passRewards": [],
+                "displayDetailRewards": []
               }
             },
             {
               "killCnt": 300,
               "dropInfo": {
-                "firstPassRewards": null,
-                "passRewards": null,
-                "displayDetailRewards": null
+                "firstPassRewards": [],
+                "passRewards": [],
+                "displayDetailRewards": []
               }
             },
             {
               "killCnt": 325,
               "dropInfo": {
-                "firstPassRewards": null,
-                "passRewards": null,
-                "displayDetailRewards": null
+                "firstPassRewards": [],
+                "passRewards": [],
+                "displayDetailRewards": []
               }
             },
             {
               "killCnt": 350,
               "dropInfo": {
-                "firstPassRewards": null,
-                "passRewards": null,
-                "displayDetailRewards": null
+                "firstPassRewards": [],
+                "passRewards": [],
+                "displayDetailRewards": []
               }
             },
             {
               "killCnt": 375,
               "dropInfo": {
-                "firstPassRewards": null,
-                "passRewards": null,
-                "displayDetailRewards": null
+                "firstPassRewards": [],
+                "passRewards": [],
+                "displayDetailRewards": []
               }
             },
             {
               "killCnt": 400,
               "dropInfo": {
-                "firstPassRewards": null,
-                "passRewards": null,
-                "displayDetailRewards": null
+                "firstPassRewards": [],
+                "passRewards": [],
+                "displayDetailRewards": []
               }
             }
           ],
@@ -3693,26 +3725,30 @@
           "displayDetailRewards": [
             {
               "occPercent": 0,
-              "type": "DIAMOND_SHD",
-              "id": "4003",
-              "dropType": 6
+              "GetPercent": 0.0,
+              "CannotGetPercent": 0.0,
+              "type": "TKT_TRY",
+              "id": null,
+              "dropType": 0
             },
             {
               "occPercent": 0,
+              "GetPercent": 0.0,
+              "CannotGetPercent": 0.0,
               "type": "CARD_EXP",
-              "id": "2002",
-              "dropType": 2
+              "id": null,
+              "dropType": 0
             }
           ]
         },
-        "TRAINING": {
+        "3": {
           "dropLadders": [
             {
               "killCnt": 0,
               "dropInfo": {
-                "firstPassRewards": null,
-                "passRewards": null,
-                "displayDetailRewards": null
+                "firstPassRewards": [],
+                "passRewards": [],
+                "displayDetailRewards": []
               }
             }
           ],
@@ -3955,14 +3991,14 @@
       ],
       "isCustomized": false,
       "dropGains": {
-        "PERMANENT": {
+        "1": {
           "dropLadders": [
             {
               "killCnt": 0,
               "dropInfo": {
-                "firstPassRewards": null,
-                "passRewards": null,
-                "displayDetailRewards": null
+                "firstPassRewards": [],
+                "passRewards": [],
+                "displayDetailRewards": []
               }
             }
           ],
@@ -3970,78 +4006,78 @@
           "displayRewards": [],
           "displayDetailRewards": []
         },
-        "ROTATE": {
+        "2": {
           "dropLadders": [
             {
               "killCnt": 0,
               "dropInfo": {
-                "firstPassRewards": null,
-                "passRewards": null,
-                "displayDetailRewards": null
+                "firstPassRewards": [],
+                "passRewards": [],
+                "displayDetailRewards": []
               }
             },
             {
               "killCnt": 100,
               "dropInfo": {
-                "firstPassRewards": null,
-                "passRewards": null,
-                "displayDetailRewards": null
+                "firstPassRewards": [],
+                "passRewards": [],
+                "displayDetailRewards": []
               }
             },
             {
               "killCnt": 200,
               "dropInfo": {
-                "firstPassRewards": null,
-                "passRewards": null,
-                "displayDetailRewards": null
+                "firstPassRewards": [],
+                "passRewards": [],
+                "displayDetailRewards": []
               }
             },
             {
               "killCnt": 250,
               "dropInfo": {
-                "firstPassRewards": null,
-                "passRewards": null,
-                "displayDetailRewards": null
+                "firstPassRewards": [],
+                "passRewards": [],
+                "displayDetailRewards": []
               }
             },
             {
               "killCnt": 300,
               "dropInfo": {
-                "firstPassRewards": null,
-                "passRewards": null,
-                "displayDetailRewards": null
+                "firstPassRewards": [],
+                "passRewards": [],
+                "displayDetailRewards": []
               }
             },
             {
               "killCnt": 325,
               "dropInfo": {
-                "firstPassRewards": null,
-                "passRewards": null,
-                "displayDetailRewards": null
+                "firstPassRewards": [],
+                "passRewards": [],
+                "displayDetailRewards": []
               }
             },
             {
               "killCnt": 350,
               "dropInfo": {
-                "firstPassRewards": null,
-                "passRewards": null,
-                "displayDetailRewards": null
+                "firstPassRewards": [],
+                "passRewards": [],
+                "displayDetailRewards": []
               }
             },
             {
               "killCnt": 375,
               "dropInfo": {
-                "firstPassRewards": null,
-                "passRewards": null,
-                "displayDetailRewards": null
+                "firstPassRewards": [],
+                "passRewards": [],
+                "displayDetailRewards": []
               }
             },
             {
               "killCnt": 400,
               "dropInfo": {
-                "firstPassRewards": null,
-                "passRewards": null,
-                "displayDetailRewards": null
+                "firstPassRewards": [],
+                "passRewards": [],
+                "displayDetailRewards": []
               }
             }
           ],
@@ -4134,26 +4170,30 @@
           "displayDetailRewards": [
             {
               "occPercent": 0,
-              "type": "DIAMOND_SHD",
-              "id": "4003",
-              "dropType": 6
+              "GetPercent": 0.0,
+              "CannotGetPercent": 0.0,
+              "type": "TKT_TRY",
+              "id": null,
+              "dropType": 0
             },
             {
               "occPercent": 0,
+              "GetPercent": 0.0,
+              "CannotGetPercent": 0.0,
               "type": "CARD_EXP",
-              "id": "2002",
-              "dropType": 2
+              "id": null,
+              "dropType": 0
             }
           ]
         },
-        "TRAINING": {
+        "3": {
           "dropLadders": [
             {
               "killCnt": 0,
               "dropInfo": {
-                "firstPassRewards": null,
-                "passRewards": null,
-                "displayDetailRewards": null
+                "firstPassRewards": [],
+                "passRewards": [],
+                "displayDetailRewards": []
               }
             }
           ],
@@ -4396,14 +4436,14 @@
       ],
       "isCustomized": false,
       "dropGains": {
-        "PERMANENT": {
+        "1": {
           "dropLadders": [
             {
               "killCnt": 0,
               "dropInfo": {
-                "firstPassRewards": null,
-                "passRewards": null,
-                "displayDetailRewards": null
+                "firstPassRewards": [],
+                "passRewards": [],
+                "displayDetailRewards": []
               }
             }
           ],
@@ -4411,78 +4451,78 @@
           "displayRewards": [],
           "displayDetailRewards": []
         },
-        "ROTATE": {
+        "2": {
           "dropLadders": [
             {
               "killCnt": 0,
               "dropInfo": {
-                "firstPassRewards": null,
-                "passRewards": null,
-                "displayDetailRewards": null
+                "firstPassRewards": [],
+                "passRewards": [],
+                "displayDetailRewards": []
               }
             },
             {
               "killCnt": 100,
               "dropInfo": {
-                "firstPassRewards": null,
-                "passRewards": null,
-                "displayDetailRewards": null
+                "firstPassRewards": [],
+                "passRewards": [],
+                "displayDetailRewards": []
               }
             },
             {
               "killCnt": 200,
               "dropInfo": {
-                "firstPassRewards": null,
-                "passRewards": null,
-                "displayDetailRewards": null
+                "firstPassRewards": [],
+                "passRewards": [],
+                "displayDetailRewards": []
               }
             },
             {
               "killCnt": 250,
               "dropInfo": {
-                "firstPassRewards": null,
-                "passRewards": null,
-                "displayDetailRewards": null
+                "firstPassRewards": [],
+                "passRewards": [],
+                "displayDetailRewards": []
               }
             },
             {
               "killCnt": 300,
               "dropInfo": {
-                "firstPassRewards": null,
-                "passRewards": null,
-                "displayDetailRewards": null
+                "firstPassRewards": [],
+                "passRewards": [],
+                "displayDetailRewards": []
               }
             },
             {
               "killCnt": 325,
               "dropInfo": {
-                "firstPassRewards": null,
-                "passRewards": null,
-                "displayDetailRewards": null
+                "firstPassRewards": [],
+                "passRewards": [],
+                "displayDetailRewards": []
               }
             },
             {
               "killCnt": 350,
               "dropInfo": {
-                "firstPassRewards": null,
-                "passRewards": null,
-                "displayDetailRewards": null
+                "firstPassRewards": [],
+                "passRewards": [],
+                "displayDetailRewards": []
               }
             },
             {
               "killCnt": 375,
               "dropInfo": {
-                "firstPassRewards": null,
-                "passRewards": null,
-                "displayDetailRewards": null
+                "firstPassRewards": [],
+                "passRewards": [],
+                "displayDetailRewards": []
               }
             },
             {
               "killCnt": 400,
               "dropInfo": {
-                "firstPassRewards": null,
-                "passRewards": null,
-                "displayDetailRewards": null
+                "firstPassRewards": [],
+                "passRewards": [],
+                "displayDetailRewards": []
               }
             }
           ],
@@ -4575,26 +4615,30 @@
           "displayDetailRewards": [
             {
               "occPercent": 0,
-              "type": "DIAMOND_SHD",
-              "id": "4003",
-              "dropType": 6
+              "GetPercent": 0.0,
+              "CannotGetPercent": 0.0,
+              "type": "TKT_TRY",
+              "id": null,
+              "dropType": 0
             },
             {
               "occPercent": 0,
+              "GetPercent": 0.0,
+              "CannotGetPercent": 0.0,
               "type": "CARD_EXP",
-              "id": "2002",
-              "dropType": 2
+              "id": null,
+              "dropType": 0
             }
           ]
         },
-        "TRAINING": {
+        "3": {
           "dropLadders": [
             {
               "killCnt": 0,
               "dropInfo": {
-                "firstPassRewards": null,
-                "passRewards": null,
-                "displayDetailRewards": null
+                "firstPassRewards": [],
+                "passRewards": [],
+                "displayDetailRewards": []
               }
             }
           ],
@@ -4837,14 +4881,14 @@
       ],
       "isCustomized": false,
       "dropGains": {
-        "PERMANENT": {
+        "1": {
           "dropLadders": [
             {
               "killCnt": 0,
               "dropInfo": {
-                "firstPassRewards": null,
-                "passRewards": null,
-                "displayDetailRewards": null
+                "firstPassRewards": [],
+                "passRewards": [],
+                "displayDetailRewards": []
               }
             }
           ],
@@ -4852,78 +4896,78 @@
           "displayRewards": [],
           "displayDetailRewards": []
         },
-        "ROTATE": {
+        "2": {
           "dropLadders": [
             {
               "killCnt": 0,
               "dropInfo": {
-                "firstPassRewards": null,
-                "passRewards": null,
-                "displayDetailRewards": null
+                "firstPassRewards": [],
+                "passRewards": [],
+                "displayDetailRewards": []
               }
             },
             {
               "killCnt": 100,
               "dropInfo": {
-                "firstPassRewards": null,
-                "passRewards": null,
-                "displayDetailRewards": null
+                "firstPassRewards": [],
+                "passRewards": [],
+                "displayDetailRewards": []
               }
             },
             {
               "killCnt": 200,
               "dropInfo": {
-                "firstPassRewards": null,
-                "passRewards": null,
-                "displayDetailRewards": null
+                "firstPassRewards": [],
+                "passRewards": [],
+                "displayDetailRewards": []
               }
             },
             {
               "killCnt": 250,
               "dropInfo": {
-                "firstPassRewards": null,
-                "passRewards": null,
-                "displayDetailRewards": null
+                "firstPassRewards": [],
+                "passRewards": [],
+                "displayDetailRewards": []
               }
             },
             {
               "killCnt": 300,
               "dropInfo": {
-                "firstPassRewards": null,
-                "passRewards": null,
-                "displayDetailRewards": null
+                "firstPassRewards": [],
+                "passRewards": [],
+                "displayDetailRewards": []
               }
             },
             {
               "killCnt": 325,
               "dropInfo": {
-                "firstPassRewards": null,
-                "passRewards": null,
-                "displayDetailRewards": null
+                "firstPassRewards": [],
+                "passRewards": [],
+                "displayDetailRewards": []
               }
             },
             {
               "killCnt": 350,
               "dropInfo": {
-                "firstPassRewards": null,
-                "passRewards": null,
-                "displayDetailRewards": null
+                "firstPassRewards": [],
+                "passRewards": [],
+                "displayDetailRewards": []
               }
             },
             {
               "killCnt": 375,
               "dropInfo": {
-                "firstPassRewards": null,
-                "passRewards": null,
-                "displayDetailRewards": null
+                "firstPassRewards": [],
+                "passRewards": [],
+                "displayDetailRewards": []
               }
             },
             {
               "killCnt": 400,
               "dropInfo": {
-                "firstPassRewards": null,
-                "passRewards": null,
-                "displayDetailRewards": null
+                "firstPassRewards": [],
+                "passRewards": [],
+                "displayDetailRewards": []
               }
             }
           ],
@@ -5016,26 +5060,30 @@
           "displayDetailRewards": [
             {
               "occPercent": 0,
-              "type": "DIAMOND_SHD",
-              "id": "4003",
-              "dropType": 6
+              "GetPercent": 0.0,
+              "CannotGetPercent": 0.0,
+              "type": "TKT_TRY",
+              "id": null,
+              "dropType": 0
             },
             {
               "occPercent": 0,
+              "GetPercent": 0.0,
+              "CannotGetPercent": 0.0,
               "type": "CARD_EXP",
-              "id": "2002",
-              "dropType": 2
+              "id": null,
+              "dropType": 0
             }
           ]
         },
-        "TRAINING": {
+        "3": {
           "dropLadders": [
             {
               "killCnt": 0,
               "dropInfo": {
-                "firstPassRewards": null,
-                "passRewards": null,
-                "displayDetailRewards": null
+                "firstPassRewards": [],
+                "passRewards": [],
+                "displayDetailRewards": []
               }
             }
           ],
@@ -5278,14 +5326,14 @@
       ],
       "isCustomized": false,
       "dropGains": {
-        "PERMANENT": {
+        "1": {
           "dropLadders": [
             {
               "killCnt": 0,
               "dropInfo": {
-                "firstPassRewards": null,
-                "passRewards": null,
-                "displayDetailRewards": null
+                "firstPassRewards": [],
+                "passRewards": [],
+                "displayDetailRewards": []
               }
             }
           ],
@@ -5293,78 +5341,78 @@
           "displayRewards": [],
           "displayDetailRewards": []
         },
-        "ROTATE": {
+        "2": {
           "dropLadders": [
             {
               "killCnt": 0,
               "dropInfo": {
-                "firstPassRewards": null,
-                "passRewards": null,
-                "displayDetailRewards": null
+                "firstPassRewards": [],
+                "passRewards": [],
+                "displayDetailRewards": []
               }
             },
             {
               "killCnt": 100,
               "dropInfo": {
-                "firstPassRewards": null,
-                "passRewards": null,
-                "displayDetailRewards": null
+                "firstPassRewards": [],
+                "passRewards": [],
+                "displayDetailRewards": []
               }
             },
             {
               "killCnt": 200,
               "dropInfo": {
-                "firstPassRewards": null,
-                "passRewards": null,
-                "displayDetailRewards": null
+                "firstPassRewards": [],
+                "passRewards": [],
+                "displayDetailRewards": []
               }
             },
             {
               "killCnt": 250,
               "dropInfo": {
-                "firstPassRewards": null,
-                "passRewards": null,
-                "displayDetailRewards": null
+                "firstPassRewards": [],
+                "passRewards": [],
+                "displayDetailRewards": []
               }
             },
             {
               "killCnt": 300,
               "dropInfo": {
-                "firstPassRewards": null,
-                "passRewards": null,
-                "displayDetailRewards": null
+                "firstPassRewards": [],
+                "passRewards": [],
+                "displayDetailRewards": []
               }
             },
             {
               "killCnt": 325,
               "dropInfo": {
-                "firstPassRewards": null,
-                "passRewards": null,
-                "displayDetailRewards": null
+                "firstPassRewards": [],
+                "passRewards": [],
+                "displayDetailRewards": []
               }
             },
             {
               "killCnt": 350,
               "dropInfo": {
-                "firstPassRewards": null,
-                "passRewards": null,
-                "displayDetailRewards": null
+                "firstPassRewards": [],
+                "passRewards": [],
+                "displayDetailRewards": []
               }
             },
             {
               "killCnt": 375,
               "dropInfo": {
-                "firstPassRewards": null,
-                "passRewards": null,
-                "displayDetailRewards": null
+                "firstPassRewards": [],
+                "passRewards": [],
+                "displayDetailRewards": []
               }
             },
             {
               "killCnt": 400,
               "dropInfo": {
-                "firstPassRewards": null,
-                "passRewards": null,
-                "displayDetailRewards": null
+                "firstPassRewards": [],
+                "passRewards": [],
+                "displayDetailRewards": []
               }
             }
           ],
@@ -5457,26 +5505,30 @@
           "displayDetailRewards": [
             {
               "occPercent": 0,
-              "type": "DIAMOND_SHD",
-              "id": "4003",
-              "dropType": 6
+              "GetPercent": 0.0,
+              "CannotGetPercent": 0.0,
+              "type": "TKT_TRY",
+              "id": null,
+              "dropType": 0
             },
             {
               "occPercent": 0,
+              "GetPercent": 0.0,
+              "CannotGetPercent": 0.0,
               "type": "CARD_EXP",
-              "id": "2002",
-              "dropType": 2
+              "id": null,
+              "dropType": 0
             }
           ]
         },
-        "TRAINING": {
+        "3": {
           "dropLadders": [
             {
               "killCnt": 0,
               "dropInfo": {
-                "firstPassRewards": null,
-                "passRewards": null,
-                "displayDetailRewards": null
+                "firstPassRewards": [],
+                "passRewards": [],
+                "displayDetailRewards": []
               }
             }
           ],
@@ -5719,14 +5771,14 @@
       ],
       "isCustomized": false,
       "dropGains": {
-        "PERMANENT": {
+        "1": {
           "dropLadders": [
             {
               "killCnt": 0,
               "dropInfo": {
-                "firstPassRewards": null,
-                "passRewards": null,
-                "displayDetailRewards": null
+                "firstPassRewards": [],
+                "passRewards": [],
+                "displayDetailRewards": []
               }
             }
           ],
@@ -5734,78 +5786,78 @@
           "displayRewards": [],
           "displayDetailRewards": []
         },
-        "ROTATE": {
+        "2": {
           "dropLadders": [
             {
               "killCnt": 0,
               "dropInfo": {
-                "firstPassRewards": null,
-                "passRewards": null,
-                "displayDetailRewards": null
+                "firstPassRewards": [],
+                "passRewards": [],
+                "displayDetailRewards": []
               }
             },
             {
               "killCnt": 100,
               "dropInfo": {
-                "firstPassRewards": null,
-                "passRewards": null,
-                "displayDetailRewards": null
+                "firstPassRewards": [],
+                "passRewards": [],
+                "displayDetailRewards": []
               }
             },
             {
               "killCnt": 200,
               "dropInfo": {
-                "firstPassRewards": null,
-                "passRewards": null,
-                "displayDetailRewards": null
+                "firstPassRewards": [],
+                "passRewards": [],
+                "displayDetailRewards": []
               }
             },
             {
               "killCnt": 250,
               "dropInfo": {
-                "firstPassRewards": null,
-                "passRewards": null,
-                "displayDetailRewards": null
+                "firstPassRewards": [],
+                "passRewards": [],
+                "displayDetailRewards": []
               }
             },
             {
               "killCnt": 300,
               "dropInfo": {
-                "firstPassRewards": null,
-                "passRewards": null,
-                "displayDetailRewards": null
+                "firstPassRewards": [],
+                "passRewards": [],
+                "displayDetailRewards": []
               }
             },
             {
               "killCnt": 325,
               "dropInfo": {
-                "firstPassRewards": null,
-                "passRewards": null,
-                "displayDetailRewards": null
+                "firstPassRewards": [],
+                "passRewards": [],
+                "displayDetailRewards": []
               }
             },
             {
               "killCnt": 350,
               "dropInfo": {
-                "firstPassRewards": null,
-                "passRewards": null,
-                "displayDetailRewards": null
+                "firstPassRewards": [],
+                "passRewards": [],
+                "displayDetailRewards": []
               }
             },
             {
               "killCnt": 375,
               "dropInfo": {
-                "firstPassRewards": null,
-                "passRewards": null,
-                "displayDetailRewards": null
+                "firstPassRewards": [],
+                "passRewards": [],
+                "displayDetailRewards": []
               }
             },
             {
               "killCnt": 400,
               "dropInfo": {
-                "firstPassRewards": null,
-                "passRewards": null,
-                "displayDetailRewards": null
+                "firstPassRewards": [],
+                "passRewards": [],
+                "displayDetailRewards": []
               }
             }
           ],
@@ -5898,26 +5950,30 @@
           "displayDetailRewards": [
             {
               "occPercent": 0,
-              "type": "DIAMOND_SHD",
-              "id": "4003",
-              "dropType": 6
+              "GetPercent": 0.0,
+              "CannotGetPercent": 0.0,
+              "type": "TKT_TRY",
+              "id": null,
+              "dropType": 0
             },
             {
               "occPercent": 0,
+              "GetPercent": 0.0,
+              "CannotGetPercent": 0.0,
               "type": "CARD_EXP",
-              "id": "2002",
-              "dropType": 2
+              "id": null,
+              "dropType": 0
             }
           ]
         },
-        "TRAINING": {
+        "3": {
           "dropLadders": [
             {
               "killCnt": 0,
               "dropInfo": {
-                "firstPassRewards": null,
-                "passRewards": null,
-                "displayDetailRewards": null
+                "firstPassRewards": [],
+                "passRewards": [],
+                "displayDetailRewards": []
               }
             }
           ],
@@ -6160,14 +6216,14 @@
       ],
       "isCustomized": false,
       "dropGains": {
-        "PERMANENT": {
+        "1": {
           "dropLadders": [
             {
               "killCnt": 0,
               "dropInfo": {
-                "firstPassRewards": null,
-                "passRewards": null,
-                "displayDetailRewards": null
+                "firstPassRewards": [],
+                "passRewards": [],
+                "displayDetailRewards": []
               }
             }
           ],
@@ -6175,78 +6231,78 @@
           "displayRewards": [],
           "displayDetailRewards": []
         },
-        "ROTATE": {
+        "2": {
           "dropLadders": [
             {
               "killCnt": 0,
               "dropInfo": {
-                "firstPassRewards": null,
-                "passRewards": null,
-                "displayDetailRewards": null
+                "firstPassRewards": [],
+                "passRewards": [],
+                "displayDetailRewards": []
               }
             },
             {
               "killCnt": 100,
               "dropInfo": {
-                "firstPassRewards": null,
-                "passRewards": null,
-                "displayDetailRewards": null
+                "firstPassRewards": [],
+                "passRewards": [],
+                "displayDetailRewards": []
               }
             },
             {
               "killCnt": 200,
               "dropInfo": {
-                "firstPassRewards": null,
-                "passRewards": null,
-                "displayDetailRewards": null
+                "firstPassRewards": [],
+                "passRewards": [],
+                "displayDetailRewards": []
               }
             },
             {
               "killCnt": 250,
               "dropInfo": {
-                "firstPassRewards": null,
-                "passRewards": null,
-                "displayDetailRewards": null
+                "firstPassRewards": [],
+                "passRewards": [],
+                "displayDetailRewards": []
               }
             },
             {
               "killCnt": 300,
               "dropInfo": {
-                "firstPassRewards": null,
-                "passRewards": null,
-                "displayDetailRewards": null
+                "firstPassRewards": [],
+                "passRewards": [],
+                "displayDetailRewards": []
               }
             },
             {
               "killCnt": 325,
               "dropInfo": {
-                "firstPassRewards": null,
-                "passRewards": null,
-                "displayDetailRewards": null
+                "firstPassRewards": [],
+                "passRewards": [],
+                "displayDetailRewards": []
               }
             },
             {
               "killCnt": 350,
               "dropInfo": {
-                "firstPassRewards": null,
-                "passRewards": null,
-                "displayDetailRewards": null
+                "firstPassRewards": [],
+                "passRewards": [],
+                "displayDetailRewards": []
               }
             },
             {
               "killCnt": 375,
               "dropInfo": {
-                "firstPassRewards": null,
-                "passRewards": null,
-                "displayDetailRewards": null
+                "firstPassRewards": [],
+                "passRewards": [],
+                "displayDetailRewards": []
               }
             },
             {
               "killCnt": 400,
               "dropInfo": {
-                "firstPassRewards": null,
-                "passRewards": null,
-                "displayDetailRewards": null
+                "firstPassRewards": [],
+                "passRewards": [],
+                "displayDetailRewards": []
               }
             }
           ],
@@ -6339,26 +6395,30 @@
           "displayDetailRewards": [
             {
               "occPercent": 0,
-              "type": "DIAMOND_SHD",
-              "id": "4003",
-              "dropType": 6
+              "GetPercent": 0.0,
+              "CannotGetPercent": 0.0,
+              "type": "TKT_TRY",
+              "id": null,
+              "dropType": 0
             },
             {
               "occPercent": 0,
+              "GetPercent": 0.0,
+              "CannotGetPercent": 0.0,
               "type": "CARD_EXP",
-              "id": "2002",
-              "dropType": 2
+              "id": null,
+              "dropType": 0
             }
           ]
         },
-        "TRAINING": {
+        "3": {
           "dropLadders": [
             {
               "killCnt": 0,
               "dropInfo": {
-                "firstPassRewards": null,
-                "passRewards": null,
-                "displayDetailRewards": null
+                "firstPassRewards": [],
+                "passRewards": [],
+                "displayDetailRewards": []
               }
             }
           ],
@@ -6601,14 +6661,14 @@
       ],
       "isCustomized": false,
       "dropGains": {
-        "PERMANENT": {
+        "1": {
           "dropLadders": [
             {
               "killCnt": 0,
               "dropInfo": {
-                "firstPassRewards": null,
-                "passRewards": null,
-                "displayDetailRewards": null
+                "firstPassRewards": [],
+                "passRewards": [],
+                "displayDetailRewards": []
               }
             }
           ],
@@ -6616,78 +6676,78 @@
           "displayRewards": [],
           "displayDetailRewards": []
         },
-        "ROTATE": {
+        "2": {
           "dropLadders": [
             {
               "killCnt": 0,
               "dropInfo": {
-                "firstPassRewards": null,
-                "passRewards": null,
-                "displayDetailRewards": null
+                "firstPassRewards": [],
+                "passRewards": [],
+                "displayDetailRewards": []
               }
             },
             {
               "killCnt": 100,
               "dropInfo": {
-                "firstPassRewards": null,
-                "passRewards": null,
-                "displayDetailRewards": null
+                "firstPassRewards": [],
+                "passRewards": [],
+                "displayDetailRewards": []
               }
             },
             {
               "killCnt": 200,
               "dropInfo": {
-                "firstPassRewards": null,
-                "passRewards": null,
-                "displayDetailRewards": null
+                "firstPassRewards": [],
+                "passRewards": [],
+                "displayDetailRewards": []
               }
             },
             {
               "killCnt": 250,
               "dropInfo": {
-                "firstPassRewards": null,
-                "passRewards": null,
-                "displayDetailRewards": null
+                "firstPassRewards": [],
+                "passRewards": [],
+                "displayDetailRewards": []
               }
             },
             {
               "killCnt": 300,
               "dropInfo": {
-                "firstPassRewards": null,
-                "passRewards": null,
-                "displayDetailRewards": null
+                "firstPassRewards": [],
+                "passRewards": [],
+                "displayDetailRewards": []
               }
             },
             {
               "killCnt": 325,
               "dropInfo": {
-                "firstPassRewards": null,
-                "passRewards": null,
-                "displayDetailRewards": null
+                "firstPassRewards": [],
+                "passRewards": [],
+                "displayDetailRewards": []
               }
             },
             {
               "killCnt": 350,
               "dropInfo": {
-                "firstPassRewards": null,
-                "passRewards": null,
-                "displayDetailRewards": null
+                "firstPassRewards": [],
+                "passRewards": [],
+                "displayDetailRewards": []
               }
             },
             {
               "killCnt": 375,
               "dropInfo": {
-                "firstPassRewards": null,
-                "passRewards": null,
-                "displayDetailRewards": null
+                "firstPassRewards": [],
+                "passRewards": [],
+                "displayDetailRewards": []
               }
             },
             {
               "killCnt": 400,
               "dropInfo": {
-                "firstPassRewards": null,
-                "passRewards": null,
-                "displayDetailRewards": null
+                "firstPassRewards": [],
+                "passRewards": [],
+                "displayDetailRewards": []
               }
             }
           ],
@@ -6780,26 +6840,30 @@
           "displayDetailRewards": [
             {
               "occPercent": 0,
-              "type": "DIAMOND_SHD",
-              "id": "4003",
-              "dropType": 6
+              "GetPercent": 0.0,
+              "CannotGetPercent": 0.0,
+              "type": "TKT_TRY",
+              "id": null,
+              "dropType": 0
             },
             {
               "occPercent": 0,
+              "GetPercent": 0.0,
+              "CannotGetPercent": 0.0,
               "type": "CARD_EXP",
-              "id": "2002",
-              "dropType": 2
+              "id": null,
+              "dropType": 0
             }
           ]
         },
-        "TRAINING": {
+        "3": {
           "dropLadders": [
             {
               "killCnt": 0,
               "dropInfo": {
-                "firstPassRewards": null,
-                "passRewards": null,
-                "displayDetailRewards": null
+                "firstPassRewards": [],
+                "passRewards": [],
+                "displayDetailRewards": []
               }
             }
           ],
@@ -7042,14 +7106,14 @@
       ],
       "isCustomized": false,
       "dropGains": {
-        "PERMANENT": {
+        "1": {
           "dropLadders": [
             {
               "killCnt": 0,
               "dropInfo": {
-                "firstPassRewards": null,
-                "passRewards": null,
-                "displayDetailRewards": null
+                "firstPassRewards": [],
+                "passRewards": [],
+                "displayDetailRewards": []
               }
             }
           ],
@@ -7057,78 +7121,78 @@
           "displayRewards": [],
           "displayDetailRewards": []
         },
-        "ROTATE": {
+        "2": {
           "dropLadders": [
             {
               "killCnt": 0,
               "dropInfo": {
-                "firstPassRewards": null,
-                "passRewards": null,
-                "displayDetailRewards": null
+                "firstPassRewards": [],
+                "passRewards": [],
+                "displayDetailRewards": []
               }
             },
             {
               "killCnt": 100,
               "dropInfo": {
-                "firstPassRewards": null,
-                "passRewards": null,
-                "displayDetailRewards": null
+                "firstPassRewards": [],
+                "passRewards": [],
+                "displayDetailRewards": []
               }
             },
             {
               "killCnt": 200,
               "dropInfo": {
-                "firstPassRewards": null,
-                "passRewards": null,
-                "displayDetailRewards": null
+                "firstPassRewards": [],
+                "passRewards": [],
+                "displayDetailRewards": []
               }
             },
             {
               "killCnt": 250,
               "dropInfo": {
-                "firstPassRewards": null,
-                "passRewards": null,
-                "displayDetailRewards": null
+                "firstPassRewards": [],
+                "passRewards": [],
+                "displayDetailRewards": []
               }
             },
             {
               "killCnt": 300,
               "dropInfo": {
-                "firstPassRewards": null,
-                "passRewards": null,
-                "displayDetailRewards": null
+                "firstPassRewards": [],
+                "passRewards": [],
+                "displayDetailRewards": []
               }
             },
             {
               "killCnt": 325,
               "dropInfo": {
-                "firstPassRewards": null,
-                "passRewards": null,
-                "displayDetailRewards": null
+                "firstPassRewards": [],
+                "passRewards": [],
+                "displayDetailRewards": []
               }
             },
             {
               "killCnt": 350,
               "dropInfo": {
-                "firstPassRewards": null,
-                "passRewards": null,
-                "displayDetailRewards": null
+                "firstPassRewards": [],
+                "passRewards": [],
+                "displayDetailRewards": []
               }
             },
             {
               "killCnt": 375,
               "dropInfo": {
-                "firstPassRewards": null,
-                "passRewards": null,
-                "displayDetailRewards": null
+                "firstPassRewards": [],
+                "passRewards": [],
+                "displayDetailRewards": []
               }
             },
             {
               "killCnt": 400,
               "dropInfo": {
-                "firstPassRewards": null,
-                "passRewards": null,
-                "displayDetailRewards": null
+                "firstPassRewards": [],
+                "passRewards": [],
+                "displayDetailRewards": []
               }
             }
           ],
@@ -7221,26 +7285,30 @@
           "displayDetailRewards": [
             {
               "occPercent": 0,
-              "type": "DIAMOND_SHD",
-              "id": "4003",
-              "dropType": 6
+              "GetPercent": 0.0,
+              "CannotGetPercent": 0.0,
+              "type": "TKT_TRY",
+              "id": null,
+              "dropType": 0
             },
             {
               "occPercent": 0,
+              "GetPercent": 0.0,
+              "CannotGetPercent": 0.0,
               "type": "CARD_EXP",
-              "id": "2002",
-              "dropType": 2
+              "id": null,
+              "dropType": 0
             }
           ]
         },
-        "TRAINING": {
+        "3": {
           "dropLadders": [
             {
               "killCnt": 0,
               "dropInfo": {
-                "firstPassRewards": null,
-                "passRewards": null,
-                "displayDetailRewards": null
+                "firstPassRewards": [],
+                "passRewards": [],
+                "displayDetailRewards": []
               }
             }
           ],
@@ -7483,14 +7551,14 @@
       ],
       "isCustomized": false,
       "dropGains": {
-        "PERMANENT": {
+        "1": {
           "dropLadders": [
             {
               "killCnt": 0,
               "dropInfo": {
-                "firstPassRewards": null,
-                "passRewards": null,
-                "displayDetailRewards": null
+                "firstPassRewards": [],
+                "passRewards": [],
+                "displayDetailRewards": []
               }
             }
           ],
@@ -7498,78 +7566,78 @@
           "displayRewards": [],
           "displayDetailRewards": []
         },
-        "ROTATE": {
+        "2": {
           "dropLadders": [
             {
               "killCnt": 0,
               "dropInfo": {
-                "firstPassRewards": null,
-                "passRewards": null,
-                "displayDetailRewards": null
+                "firstPassRewards": [],
+                "passRewards": [],
+                "displayDetailRewards": []
               }
             },
             {
               "killCnt": 100,
               "dropInfo": {
-                "firstPassRewards": null,
-                "passRewards": null,
-                "displayDetailRewards": null
+                "firstPassRewards": [],
+                "passRewards": [],
+                "displayDetailRewards": []
               }
             },
             {
               "killCnt": 200,
               "dropInfo": {
-                "firstPassRewards": null,
-                "passRewards": null,
-                "displayDetailRewards": null
+                "firstPassRewards": [],
+                "passRewards": [],
+                "displayDetailRewards": []
               }
             },
             {
               "killCnt": 250,
               "dropInfo": {
-                "firstPassRewards": null,
-                "passRewards": null,
-                "displayDetailRewards": null
+                "firstPassRewards": [],
+                "passRewards": [],
+                "displayDetailRewards": []
               }
             },
             {
               "killCnt": 300,
               "dropInfo": {
-                "firstPassRewards": null,
-                "passRewards": null,
-                "displayDetailRewards": null
+                "firstPassRewards": [],
+                "passRewards": [],
+                "displayDetailRewards": []
               }
             },
             {
               "killCnt": 325,
               "dropInfo": {
-                "firstPassRewards": null,
-                "passRewards": null,
-                "displayDetailRewards": null
+                "firstPassRewards": [],
+                "passRewards": [],
+                "displayDetailRewards": []
               }
             },
             {
               "killCnt": 350,
               "dropInfo": {
-                "firstPassRewards": null,
-                "passRewards": null,
-                "displayDetailRewards": null
+                "firstPassRewards": [],
+                "passRewards": [],
+                "displayDetailRewards": []
               }
             },
             {
               "killCnt": 375,
               "dropInfo": {
-                "firstPassRewards": null,
-                "passRewards": null,
-                "displayDetailRewards": null
+                "firstPassRewards": [],
+                "passRewards": [],
+                "displayDetailRewards": []
               }
             },
             {
               "killCnt": 400,
               "dropInfo": {
-                "firstPassRewards": null,
-                "passRewards": null,
-                "displayDetailRewards": null
+                "firstPassRewards": [],
+                "passRewards": [],
+                "displayDetailRewards": []
               }
             }
           ],
@@ -7662,26 +7730,30 @@
           "displayDetailRewards": [
             {
               "occPercent": 0,
-              "type": "DIAMOND_SHD",
-              "id": "4003",
-              "dropType": 6
+              "GetPercent": 0.0,
+              "CannotGetPercent": 0.0,
+              "type": "TKT_TRY",
+              "id": null,
+              "dropType": 0
             },
             {
               "occPercent": 0,
+              "GetPercent": 0.0,
+              "CannotGetPercent": 0.0,
               "type": "CARD_EXP",
-              "id": "2002",
-              "dropType": 2
+              "id": null,
+              "dropType": 0
             }
           ]
         },
-        "TRAINING": {
+        "3": {
           "dropLadders": [
             {
               "killCnt": 0,
               "dropInfo": {
-                "firstPassRewards": null,
-                "passRewards": null,
-                "displayDetailRewards": null
+                "firstPassRewards": [],
+                "passRewards": [],
+                "displayDetailRewards": []
               }
             }
           ],
@@ -7924,14 +7996,14 @@
       ],
       "isCustomized": false,
       "dropGains": {
-        "PERMANENT": {
+        "1": {
           "dropLadders": [
             {
               "killCnt": 0,
               "dropInfo": {
-                "firstPassRewards": null,
-                "passRewards": null,
-                "displayDetailRewards": null
+                "firstPassRewards": [],
+                "passRewards": [],
+                "displayDetailRewards": []
               }
             }
           ],
@@ -7939,78 +8011,78 @@
           "displayRewards": [],
           "displayDetailRewards": []
         },
-        "ROTATE": {
+        "2": {
           "dropLadders": [
             {
               "killCnt": 0,
               "dropInfo": {
-                "firstPassRewards": null,
-                "passRewards": null,
-                "displayDetailRewards": null
+                "firstPassRewards": [],
+                "passRewards": [],
+                "displayDetailRewards": []
               }
             },
             {
               "killCnt": 100,
               "dropInfo": {
-                "firstPassRewards": null,
-                "passRewards": null,
-                "displayDetailRewards": null
+                "firstPassRewards": [],
+                "passRewards": [],
+                "displayDetailRewards": []
               }
             },
             {
               "killCnt": 200,
               "dropInfo": {
-                "firstPassRewards": null,
-                "passRewards": null,
-                "displayDetailRewards": null
+                "firstPassRewards": [],
+                "passRewards": [],
+                "displayDetailRewards": []
               }
             },
             {
               "killCnt": 250,
               "dropInfo": {
-                "firstPassRewards": null,
-                "passRewards": null,
-                "displayDetailRewards": null
+                "firstPassRewards": [],
+                "passRewards": [],
+                "displayDetailRewards": []
               }
             },
             {
               "killCnt": 300,
               "dropInfo": {
-                "firstPassRewards": null,
-                "passRewards": null,
-                "displayDetailRewards": null
+                "firstPassRewards": [],
+                "passRewards": [],
+                "displayDetailRewards": []
               }
             },
             {
               "killCnt": 325,
               "dropInfo": {
-                "firstPassRewards": null,
-                "passRewards": null,
-                "displayDetailRewards": null
+                "firstPassRewards": [],
+                "passRewards": [],
+                "displayDetailRewards": []
               }
             },
             {
               "killCnt": 350,
               "dropInfo": {
-                "firstPassRewards": null,
-                "passRewards": null,
-                "displayDetailRewards": null
+                "firstPassRewards": [],
+                "passRewards": [],
+                "displayDetailRewards": []
               }
             },
             {
               "killCnt": 375,
               "dropInfo": {
-                "firstPassRewards": null,
-                "passRewards": null,
-                "displayDetailRewards": null
+                "firstPassRewards": [],
+                "passRewards": [],
+                "displayDetailRewards": []
               }
             },
             {
               "killCnt": 400,
               "dropInfo": {
-                "firstPassRewards": null,
-                "passRewards": null,
-                "displayDetailRewards": null
+                "firstPassRewards": [],
+                "passRewards": [],
+                "displayDetailRewards": []
               }
             }
           ],
@@ -8103,26 +8175,30 @@
           "displayDetailRewards": [
             {
               "occPercent": 0,
-              "type": "DIAMOND_SHD",
-              "id": "4003",
-              "dropType": 6
+              "GetPercent": 0.0,
+              "CannotGetPercent": 0.0,
+              "type": "TKT_TRY",
+              "id": null,
+              "dropType": 0
             },
             {
               "occPercent": 0,
+              "GetPercent": 0.0,
+              "CannotGetPercent": 0.0,
               "type": "CARD_EXP",
-              "id": "2002",
-              "dropType": 2
+              "id": null,
+              "dropType": 0
             }
           ]
         },
-        "TRAINING": {
+        "3": {
           "dropLadders": [
             {
               "killCnt": 0,
               "dropInfo": {
-                "firstPassRewards": null,
-                "passRewards": null,
-                "displayDetailRewards": null
+                "firstPassRewards": [],
+                "passRewards": [],
+                "displayDetailRewards": []
               }
             }
           ],

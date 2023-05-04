@@ -1,0 +1,45 @@
+{
+  "professionNames": {
+    "PIONEER": "先锋",
+    "WARRIOR": "近卫",
+    "SNIPER": "狙击",
+    "TANK": "重装",
+    "MEDIC": "医疗",
+    "SUPPORT": "辅助",
+    "CASTER": "术师",
+    "SPECIAL": "特种"
+  },
+  "rarity": {
+    "TIER_1": 0,
+    "TIER_2": 1,
+    "TIER_3": 2,
+    "TIER_4": 3,
+    "TIER_5": 4,
+    "TIER_6": 5
+  },
+  "phase": {
+    "PHASE_0": 0,
+    "PHASE_1": 1,
+    "PHASE_2": 2
+  },
+  "durationType": {
+    "PASSIVE": 0,
+    "INSTANT": 1,
+    "LIMITED": 2
+  },
+  "spType": {
+    "INCREASE_WITH_TIME": 1,
+    "INCREASE_WHEN_ATTACK": 2,
+    "INCREASE_WHEN_TAKEN_DAMAGE": 4,
+    "8": 8
+  },
+  "potential": {
+    "MAX_HP": 0,
+    "ATK": 1,
+    "DEF": 2,
+    "MAGIC_RESISTANCE": 3,
+    "COST": 4,
+    "ATTACK_SPEED": 7,
+    "RESPAWN_TIME": 21
+  }
+}

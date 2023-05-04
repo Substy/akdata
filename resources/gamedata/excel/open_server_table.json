@@ -16,8 +16,8 @@
         "title": null,
         "type": "OPENSERVER",
         "preMissionGroup": null,
-        "period": null,
-        "rewards": null,
+        "period": [],
+        "rewards": [],
         "missionIds": [
           "openserver_1",
           "openserver_2",
@@ -34,7 +34,7 @@
           "description": "通关主线0-1",
           "type": "OPENSERVER",
           "itemBgType": "COMMON",
-          "preMissionIds": null,
+          "preMissionIds": [],
           "template": "CompleteMainStage",
           "templateType": "1",
           "param": [
@@ -42,7 +42,7 @@
             "main_00-01"
           ],
           "unlockCondition": null,
-          "unlockParam": null,
+          "unlockParam": [],
           "missionGroup": "openseverTaskGroup1",
           "toPage": null,
           "periodicalPoint": 0,
@@ -63,7 +63,7 @@
           "description": "拥有至少1间Lv.2的控制中枢",
           "type": "OPENSERVER",
           "itemBgType": "COMMON",
-          "preMissionIds": null,
+          "preMissionIds": [],
           "template": "HasRoom",
           "templateType": "0",
           "param": [
@@ -73,7 +73,7 @@
             "CONTROL"
           ],
           "unlockCondition": null,
-          "unlockParam": null,
+          "unlockParam": [],
           "missionGroup": "openseverTaskGroup1",
           "toPage": null,
           "periodicalPoint": 0,
@@ -94,7 +94,7 @@
           "description": "通关主线1-12",
           "type": "OPENSERVER",
           "itemBgType": "COMMON",
-          "preMissionIds": null,
+          "preMissionIds": [],
           "template": "CompleteMainStage",
           "templateType": "1",
           "param": [
@@ -102,7 +102,7 @@
             "main_01-12"
           ],
           "unlockCondition": null,
-          "unlockParam": null,
+          "unlockParam": [],
           "missionGroup": "openseverTaskGroup1",
           "toPage": null,
           "periodicalPoint": 0,
@@ -123,7 +123,7 @@
           "description": "玩家等级达到8级",
           "type": "OPENSERVER",
           "itemBgType": "COMMON",
-          "preMissionIds": null,
+          "preMissionIds": [],
           "template": "UpgradePlayer",
           "templateType": "0",
           "param": [
@@ -131,7 +131,7 @@
             "8"
           ],
           "unlockCondition": null,
-          "unlockParam": null,
+          "unlockParam": [],
           "missionGroup": "openseverTaskGroup1",
           "toPage": null,
           "periodicalPoint": 0,

@@ -132,9 +132,9 @@
     "char_363_toddi":  { "mod_update_time": "2022/12/18" },
     "char_4043_erato":  { "mod_update_time": "2022/12/18" },
     "char_4062_totter":  { "mod_update_time": "2022/12/18" },
-    "char_188_helage":  { "mod_update_time": "2022/12/18" },
-    "char_475_akafyu":  { "mod_update_time": "2022/12/18" },
-    "char_337_utage":  { "mod_update_time": "2022/12/18" },
+    "char_188_helage":  { "mod_update_time": "2022/12/18", "options": { "musha_hp": 30 }, "note": "最大攻速" },
+    "char_475_akafyu":  { "mod_update_time": "2022/12/18", "options": { "musha_hp": 30 }, "note": "最大攻速" },
+    "char_337_utage":  { "mod_update_time": "2022/12/18", "options": { "musha_hp": 30 }, "note": "最大攻速" },
     "char_180_amgoat":  { "mod_update_time": "2023/1/19", "emr": 10 },
     "char_2013_cerber":  { "mod_update_time": "2023/4/10", "emr": 10, "edef": 500 },
     "char_002_amiya":  { "mod_update_time": "2023/1/19", "emr": 10 },
@@ -146,7 +146,7 @@
     "char_4078_bdhkgt": { "mod_update_time": "2023/1/19", "edef": 100 },
     "char_2024_chyue":  { "ecount": 2 },
     "char_4082_qiubai": { "ecount": 2 },
-    "char_1030_noirc2": { "mod_update_time": "2023/3/14", "options": { "od_trigger": true }, "note": "1技能立即拔刀" },
+    "char_1030_noirc2": { "mod_update_time": "2023/3/14", "options": { "od_trigger": true, "musha_hp": 30 }, "note": "1技能立即拔刀/最大攻速" },
     "char_1029_yato2":  { "mod_update_time": "2023/3/19", "options": { "cond": false }, "ecount": 2 },
     "char_400_weedy":   { "mod_update_time": "2023/3/20" },
     "char_4036_forcer": { "mod_update_time": "2023/3/20", "edef": 100 },
@@ -169,5 +169,7 @@
     "char_1027_greyy2": { "mod_update_time": "2023/5/2" },
     "char_206_gnosis":  { "mod_update_time": "2023/5/2" },
     "char_174_slbell":  { "mod_update_time": "2023/5/2" },
-    "char_254_vodfox":  { "mod_update_time": "2023/5/2" }
+    "char_254_vodfox":  { "mod_update_time": "2023/5/2" },
+    "char_4027_heyak":  { "mod_update_time": "2023/5/4", "options": { "range4": 4 }, "emr": 10 },
+    "char_4006_melnte": { "mod_update_time": "2023/5/4", "options": { "range4": 0 } }
 }

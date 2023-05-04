@@ -6,6 +6,11 @@ category: 帮助与支持
 icon: cloud-upload
 layout: text-page
 ---
+## 23.05.04
+- [update] 霍尔海雅，赫默，玫拉; 缪尔赛思暂不更新
+- [mastery] 订正了一部分专精收益参数混乱的问题
+- [note] 稍微兼容了最近较为混乱的数据格式；今后预计会使用OpenArknightsFBS的数据源
+
 ## 23.05.01-02
 - [update] 投掷手、削弱者、W、凯尔希模组
 - [note] 新干员数据不全，还在调整中

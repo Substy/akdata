@@ -9,6 +9,7 @@ function init() {
     'excel/battle_equip_table.json',
     '../version.json',
     '../customdata/dps_specialtags.json',
+    '../customdata/enums.json',
     '../customdata/dps_options.json',
     '../customdata/dps_anim.json',
     '../customdata/mastery.json',
@@ -77,7 +78,7 @@ function load() {
     if (charData.skills.length == 0) excludeChars.push(charId);
   }
 
-
+  window.hashChangedBySelect = false; // 防止重入
   let html = `
 <div class="card mb-2">
   <div class="card-header">
@@ -266,15 +267,14 @@ function load() {
   $('.dps__copy').click(copyChar);
   $('.img_char').click(showSelectChar);
   
-  if (charId_hash.length > 0) selectChar(charId_hash, 0);
+  if (charId_hash.length > 0)
+    onhashchange();
   
 }
 
-window.hashChangedBySelect = false; // 防止重入
-
 window.onhashchange = function () {
     var charId_hash = window.location.hash.replace(/\#/g, "");
-    //console.log("hash: ", charId_hash);
+    console.log("hash: ", charId_hash);
     if (charId_hash.length > 0 && !window.hashChangedBySelect) {
       selectChar(charId_hash, 0);
     }
@@ -289,14 +289,14 @@ function selectChar(charId, i) {
     $(`.img_char:eq(${i})`).attr("src", `https://akdata-site.oss-cn-guangzhou.aliyuncs.com/assets/images/char/${charId}.png`);
     
     window.hashChangedBySelect = true;
-    setTimeout((x) => { console.log(x); location.hash = "#" + x; }, 500, charId);
+    setTimeout((x) => { location.hash = "#" + x; }, 500, charId);
 
     // 弹框提示消息设置
-    if (AKDATA.Data.dps_specialtags[charId] && AKDATA.Data.dps_specialtags[charId].alert) {
+    if (AKDATA.attributes.checkSpecs(charId, "alert")) {
       pmBase.component.create({
         type: 'modal',
         id: charId,
-        content: markdown.makeHtml(AKDATA.Data.dps_specialtags[charId].alert),
+        content: markdown.makeHtml(AKDATA.attributes.checkSpecs(charId, "alert")),
         width: 750,
         title: "计算器提示",
         show: true
@@ -529,8 +529,9 @@ function updateChar(charId, index) {
   let skillHtml = '',
     skillLevelHtml = '',
     skillId, skillData;
+  console.log(charData);
   charData.skills.forEach((skill, skillIndex) => {
-    if (phaseCount - 1 >= skill.unlockCond.phase) {
+    if (phaseCount - 1 >= AKDATA.checkEnum("phase", skill.unlockCond.phase)) {
       skillId = skill.skillId;
       skillData = AKDATA.Data.skill_table[skill.skillId];
       skillHtml += `<option value="${skill.skillId}">${skillData.levels[0].name}</option>`;
@@ -685,7 +686,7 @@ function updateOptions(charId, index) {
       type: 'scroll-event',
       id: x.optId,
       callback: function (value) {
-        Characters[index].options[x.tag] = parseInt(value);
+        Characters[index].options[x.tag] = parseFloat(value);
         calculateColumn();
       }
     });

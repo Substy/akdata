@@ -9,12 +9,12 @@ const useCache = true;
 const cacheBeginTime = new Date(2019, 12, 10).getTime();
 
 window.AKDATA = {
-  akdata: "230502", // jsdelivr tag version
+  akdata: "230504", // jsdelivr tag version
 
   Data: {},
 
-  new_op: ["char_4087_ines", "char_464_cement", "char_154_morgan", "char_491_humus"],
-  todo_list: [],
+  new_op: ["char_249_mlyss", "char_4027_heyak", "char_1031_slent2", "char_4006_melnte"],
+  todo_list: ["char_249_mlyss"],
 
   professionNames: {
     "PIONEER": "先锋",
@@ -34,6 +34,10 @@ window.AKDATA = {
       var result = ["akdata", "gamedata", "customdata"].reduce((x, y) => x && (v[y] == window.AKDATA.Data.version[y]), true);
       callback(result, v);
     });    
+  },
+
+  checkEnum: function (classname, key) {
+    return (isNaN(key)) ? AKDATA.Data.enums[classname][key] : key;
   },
 
   showReport: function () {
@@ -216,10 +220,11 @@ window.AKDATA = {
   selChar: "",
 
   showSelectCharDialog: function(excludeChars=[], selectedChar=null) {
+    let checkRarity = function (key) { return AKDATA.checkEnum('rarity', key); }
     let charPools = {"新干员": [], "同分支干员": []};
     AKDATA.new_op.forEach(x => {
       let d = AKDATA.Data.character_table[x];
-      charPools["新干员"].push({"name": d.name, "id": x, "rarity": d.rarity});
+      charPools["新干员"].push({"name": d.name, "id": x, "rarity": AKDATA.checkEnum("rarity", d.rarity)});
     });
 
     Object.entries(AKDATA.Data.character_table).forEach( ([charId, charData]) => {
@@ -229,12 +234,12 @@ window.AKDATA = {
           if (!charPools[profKey]) charPools[profKey] = [];
           var displayName = charData.name;
           if (!charData.displayNumber) displayName = "[集成战略]" + displayName;
-          charPools[profKey].push({"name": displayName, "id": charId, "rarity": charData.rarity});
+          charPools[profKey].push({"name": displayName, "id": charId, "rarity": checkRarity(charData.rarity)});
         }
         if (AKDATA.Data.character_table[selectedChar]) {
           let subProfId = AKDATA.Data.character_table[selectedChar].subProfessionId;
           if (charData.subProfessionId == subProfId && !charId.startsWith("token"))
-            charPools["同分支干员"].push({"name": displayName, "id": charId, "rarity": charData.rarity});
+            charPools["同分支干员"].push({"name": displayName, "id": charId, "rarity": checkRarity(charData.rarity)});
         }
       } 
     });

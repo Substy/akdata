@@ -17,6 +17,7 @@ function init() {
     'excel/range_table.json',
     'excel/gamedata_const.json',
     'excel/item_table.json',
+    '../customdata/enums.json'
   ], load);
 }
 /*0.78 非常快
@@ -39,7 +40,7 @@ function load() {
       charData.displayNumber,
       `<a href="#!/${char}">${displayName}</a>`,
       ProfessionNames[charData.profession],
-      charData.rarity + 1,
+      AKDATA.checkEnum("rarity", charData.rarity) + 1,
       AKDATA.formatString(charData.itemUsage, true) + AKDATA.formatString(charData.itemDesc, true),
       AKDATA.formatString(charData.description, true),
     ]);
@@ -128,7 +129,7 @@ function show(hash) {
     ['特性', AKDATA.formatString(charData.description)],
     ['编号', charData.displayNumber],
     ['位置', charData.position],
-    ['星级', '<i class="fas fa-star"></i>'.repeat(charData.rarity+1)],
+    ['星级', '<i class="fas fa-star"></i>'.repeat(AKDATA.checkEnum("rarity", charData.rarity)+1)],
     ['职业', ProfessionNames[charData.profession]],
     ['标签', charData.tagList],
   ];

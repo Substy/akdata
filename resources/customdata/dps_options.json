@@ -18,7 +18,7 @@
         "pallas": { "type": "bool", "displaytext": "加成自身", "explain": "自身增益技能加成自己的情况", "off": true },
         "water": { "type": "bool", "displaytext": "水地形", "explain": "假日威龙陈-水地形", "off": true },
         "equip": { "type": "bool", "displaytext": "触发模组加成", "explain": "触发模组效果，如果可叠层则以叠满计算" },
-        "far": { "type": "bool", "displaytext": "原本范围以外", "explain": "远牙/安比尔-攻击原本范围以外的敌人" },
+        "far": { "type": "bool", "displaytext": "最大距离", "explain": "远牙/安比尔-攻击原本范围以外的敌人" },
         "block": { "type" : "bool", "displaytext": "阻挡", "explain": "满足阻挡条件" },
         "freeze": { "type" : "bool", "displaytext": "保持冻结", "explain": "勾选时假设敌人全程被冻结（包括普攻/技能）", "off": true },
         "ling_fusion": { "type" : "bool", "displaytext": "融合大龙", "explain": "计算融合高级召唤物的输出", "off": true },
@@ -27,7 +27,8 @@
         "short_mode":   { "type" : "bool", "displaytext": "永续按180s计算", "explain": "勾选时永续技能按180s计算，否则为1800s", "off": true },
         "reed2_fast":   { "type" : "bool", "displaytext": "火球立即触发", "explain": "火球刷新立即引爆（理想情况下，不考虑旋转时间）", "off": true },
         "musha_hp": { "type": "scroll", "displaytext": "剩余HP%", "min": 1, "max": 100 },
-        "char_dialog": { "type": "dialog", "displaytext": "选择干员复制（测试）", "default": "char_4048_doroth" }
+        "char_dialog": { "type": "dialog", "displaytext": "选择干员复制（测试）", "default": "char_4048_doroth" },
+        "range4": { "type": "scroll", "displaytext": "攻击距离", "min": 0, "max": 4, "step": 0.1 }
     },
     "cond_info": {
         "char_126_shotst": 1,
@@ -127,7 +128,10 @@
         "char_1030_noirc2": 2,
         "char_1029_yato2":  { "text": "[s3]巨型敌人", "tooltip": "勾选表示3技能的最大命中次数" },
         "char_491_humus_50": { "text": "[s2]HP>50%", "tooltip": "触发I级精力充沛（同种效果取最高）" },
-        "char_491_humus_80": { "text": "[s2]HP>80%", "tooltip": "触发II级精力充沛（同种效果取最高）" }
+        "char_491_humus_80": { "text": "[s2]HP>80%", "tooltip": "触发II级精力充沛（同种效果取最高）" },
+        "char_4006_melnte_front": { "text": "正前方", "tooltip": "敌人在正前方" },
+        "char_1031_slent2": 2,
+        "char_4027_heyak": 1
     },
     "char" : {
         "char_103_angel": [ "equip", "archet", "chen" ],
@@ -324,6 +328,9 @@
         "char_464_cement":  [ "block" ],
         "char_154_morgan":  [ "equip" ],
         "char_451_robin":   [ "crit" ],
-        "char_458_rfrost":  [ "crit" ]
+        "char_458_rfrost":  [ "crit" ],
+        "char_4006_melnte": [ "warmup", "cond_front", "range4" ],
+        "char_1031_slent2": [ "cond", "musha_hp" ],
+        "char_4027_heyak":  [ "cond", "range4" ]
     }
 }

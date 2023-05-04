@@ -6,6 +6,10 @@ function checkSpecs(tag, spec) {
   else return false;
 }
 
+function checkEnum(classname, key) {
+    return isNaN(key) ? AKDATA.Data.enums[classname][key] : key;
+}
+
 function getCharAttributes(char) {
   checkChar(char);
   let {
@@ -683,6 +687,12 @@ function applyBuff(charAttr, buffFrm, tag, blackbd, isSkill, isCrit, log, enemy)
           blackboard.atk_scale = blackboard.atk_scale_base;
           applyBuffDefault();
           break;
+        case "tachr_4027_heyak_1":
+          if (isSkill && skillId == "skchr_heyak_1" && enemy.count == 1) {
+            log.writeNote("对单按浮空计算");
+            applyBuffDefault();
+          }
+          break;
       };
       done = true;
     } else {
@@ -1190,6 +1200,7 @@ function applyBuff(charAttr, buffFrm, tag, blackbd, isSkill, isCrit, log, enemy)
       case "skchr_mantic_2":
       case "skchr_glaze_2":
       case "skchr_zumama_2":
+      case "skchr_melnte_1":
       case "skchr_shwaz_3": // 攻击间隔延长，但是是加算
       case "fusion_buff":
       case "skchr_windft_2":
@@ -2125,20 +2136,28 @@ function applyBuff(charAttr, buffFrm, tag, blackbd, isSkill, isCrit, log, enemy)
         //blackboard.attack_speed = blackboard.min_attack_speed;
         if (options.musha_hp) {
           log.writeNote(`剩余HP: ${options.musha_hp}%`);
-          let buff_rate = (1 - options.musha_hp/100) / (1 - blackboard.min_hp_ratio);
-          buff_rate = Math.min(1, buff_rate);
-          blackboard.attack_speed = blackboard.min_attack_speed * buff_rate;
-          log.writeNote(`攻速 +${Math.round(blackboard.attack_speed)} (强度${Math.round(buff_rate*100)}%)`);
+          let frac = calcFractile(
+            1 - options.musha_hp/100,   // 损失的血量
+            [0, 1 - blackboard.min_hp_ratio],   // 损血范围
+            [0, blackboard.min_attack_speed]   // 攻速范围
+          );
+          blackboard.attack_speed = frac.value;
+          log.writeNote(`攻速 +${Math.round(frac.value)} (强度${Math.round(frac.rate*100)}%)`);
         }
         break;
       case "tachr_1030_noirc2_1":
         if (options.musha_hp) {
           log.writeNote(`剩余HP: ${options.musha_hp}%`);
+          let frac = calcFractile(
+            1 - options.musha_hp/100,   // 损失的血量
+            [0, 1 - blackboard.min_hp_ratio],   // 损血范围
+            [0, blackboard.min_attack_speed]   // 攻速范围
+          );
           let buff_rate = (1 - options.musha_hp/100) / (1 - blackboard.min_hp_ratio);
           buff_rate = Math.min(1, buff_rate);
-          blackboard.attack_speed = blackboard.min_attack_speed * buff_rate;
-          blackboard.def = blackboard.min_def * buff_rate;
-          log.writeNote(`攻速/防御 +${Math.round(blackboard.attack_speed)} (强度${Math.round(buff_rate*100)}%)`);
+          blackboard.attack_speed = frac.value;
+          blackboard.def = frac.value;
+          log.writeNote(`攻速/防御 +${Math.round(blackboard.attack_speed)} (强度${Math.round(frac.rate*100)}%)`);
         }
         break;
       case "tachr_4048_doroth_1":
@@ -2147,6 +2166,50 @@ function applyBuff(charAttr, buffFrm, tag, blackbd, isSkill, isCrit, log, enemy)
       case "tachr_391_rosmon_trait":
       case "tachr_1027_greyy2_trait":
         done = true; break;
+      case "skchr_melnte_2":
+        log.writeNote(`目标距离: ${options.range4.toFixed(1)}`);
+        let melnte_frac = calcFractile(
+          options.range4,   // 当前距离
+          [0, 4],   // 距离范围
+          [blackboard.atk_scale, blackboard.scale]   // 倍率范围(负的)
+        );
+        log.writeNote(`系数: ${melnte_frac.value.toFixed(2)} (-${Math.round(melnte_frac.rate * 100)}%)`);
+        blackboard.atk_scale = melnte_frac.value;
+        break;
+      case "tachr_4006_melnte_1":
+        if (!options.warmup)
+          done = true; break;
+      case "tachr_1031_slent2_1":
+        log.writeNote(`目标HP: ${options.musha_hp}%`);
+        let buff_rate = (1 - options.musha_hp/100) / (1 - blackboard.min_hp_ratio);
+        buff_rate = Math.min(1, buff_rate);
+        // 损失70%HP时效果为 base+scale*7，算法和武者不同
+        let res_scale = blackboard.damage_resistance_base + blackboard.resistance_scale * 7 * buff_rate;
+        if (skillId == "skchr_slent2_3")
+          res_scale *= charAttr.buffList.skill.talent_scale;
+        log.writeNote(`庇护减伤 ${Math.round(res_scale*100)}% (强度${Math.round(buff_rate*100)}%)`);
+        buffFrame.res_scale = res_scale;
+        break;
+      case "skchr_slent2_2":
+        log.writeNote(`无人机庇护减伤 ${Math.round(buffFrame.res_scale * 100 * blackboard.damage_resistance_scale)}%`);
+        break;
+      case "skchr_heyak_1":
+        buffFrame.maxTarget = 2;
+        break;
+      case "skchr_heyak_3":
+        buffFrame.maxTarget = 3;
+        buffFrame.baseAttackTime += blackboard.base_attack_time;
+        writeBuff(`base_attack_time + ${blackboard.base_attack_time}s`);
+        blackboard.base_attack_time = 0;
+        log.writeNote(`目标距离: ${options.range4.toFixed(1)}`);
+        let heyak_frac = calcFractile(
+          options.range4,   // 当前距离
+          [0, 3],   // 距离范围
+          [blackboard["attack@min_atk_scale"], blackboard["attack@max_atk_scale"]]   // 攻速范围
+        );
+        log.writeNote(`系数: ${heyak_frac.value.toFixed(2)} (${Math.round(heyak_frac.rate * 100)}%)`);
+        blackboard.atk_scale = heyak_frac.value;
+        break;
     }
   }
   // --- applyBuff switch ends here ---
@@ -2340,6 +2403,7 @@ function applyBuff(charAttr, buffFrm, tag, blackbd, isSkill, isCrit, log, enemy)
         blackboard.atk_scale = blackboard.trait.atk_scale;
       break;
     case "uniequip_002_bgsnow":
+    case "uniequip_002_melnte":
       if (options.cond_front && !options.token) {
         // 模组效果对token不生效
         blackboard.atk_scale = blackboard.trait.atk_scale;
@@ -2451,7 +2515,8 @@ function applyBuff(charAttr, buffFrm, tag, blackbd, isSkill, isCrit, log, enemy)
     case "uniequip_002_amgoat":
     case "uniequip_002_cerber":
     case "uniequip_002_absin":
-    case "uniequip_002_nights":  
+    case "uniequip_002_nights": 
+    case "uniequip_002_heyak": 
       blackboard.emr_pene = blackboard.trait.magic_resist_penetrate_fixed;
       break;
     case "uniequip_002_forcer":
@@ -2547,6 +2612,7 @@ function calcDurations(isSkill, attackTime, attackSpeed, levelData, buffList, bu
   let blackboard = buffList.skill;
   let skillId = blackboard.id;
   let spData = levelData.spData;
+  let spType = checkEnum("spType", spData.spType);
   let duration = 0;
   let attackCount = 0;
   let stunDuration = 0;
@@ -2558,13 +2624,15 @@ function calcDurations(isSkill, attackTime, attackSpeed, levelData, buffList, bu
 
   log.write("\n**【循环计算】**");
 
-  const spTypeTags = {
+  // 技能类型标记，和官方的不同
+  // 官方的在customdata/enums.json里
+  const spTypeCustomTags = {
     1: "time",
     2: "attack",
     4: "hit",
     8: "special"
   };
-  let tags = [spTypeTags[spData.spType]];  // 技能类型标记
+  let tags = [spTypeCustomTags[spType]];  
 
   // 需要模拟的技能（自动回复+自动释放+有充能）
   if (checkSpecs(skillId, "sim")) {
@@ -2653,7 +2721,7 @@ function calcDurations(isSkill, attackTime, attackSpeed, levelData, buffList, bu
       log.write(`[模拟] 攻击动画 = ${attackAnim} 帧`);
     }
 
-    if (spData.spType == 1) {
+    if (spType == 1) {
       sp = Math.min(sp + fps, max_sp);  // 落地时恢复1sp
       log.write("[模拟] +1落地sp");
     }
@@ -2663,7 +2731,7 @@ function calcDurations(isSkill, attackTime, attackSpeed, levelData, buffList, bu
           time_since("attack") >= attackTime * fps &&
           time_since("skill")  >= skill_time) {
         action("attack");
-        if (spData.spType == 2) sp += fps;
+        if (spType == 2) sp += fps;
       }
       // 技能已经cd好
       if (sp >= cast_sp * fps &&
@@ -2689,7 +2757,7 @@ function calcDurations(isSkill, attackTime, attackSpeed, levelData, buffList, bu
       if (time_since("skill") == 0)
         sp -= cast_sp * fps;
       if (time_since("skill") >= cast_time && sp < max_sp) {
-        if (spData.spType == 1) sp += (1 + buffFrame.spRecoveryPerSec);
+        if (spType == 1) sp += (1 + buffFrame.spRecoveryPerSec);
       }
       // 乱火
       if (buffList["tachr_134_ifrit_2"] && time_since("ifrit") >= buffList["tachr_134_ifrit_2"].interval * fps) {
@@ -2864,7 +2932,7 @@ function calcDurations(isSkill, attackTime, attackSpeed, levelData, buffList, bu
           log.writeNote(`永续技能 (以${d}s计算)`); tags.push("infinity");
         }
       }
-    } else if (spData.spType == 8) {
+    } else if (spType == 8) {
       if (levelData.duration <= 0 && blackboard.duration > 0) {
         // 砾的技能也是落地点火，但是持续时间在blackboard里
         levelData.duration = blackboard.duration;
@@ -2935,7 +3003,7 @@ function calcDurations(isSkill, attackTime, attackSpeed, levelData, buffList, bu
 
           log.write(`技能动画：${animKey}, 释放时间 ${ct} 帧`);
           log.writeNote(`技能动画: ${ct} 帧`);
-          if ((duration < ct/30 && spData.spType == 1) || rst == "ogcd")
+          if ((duration < ct/30 && spType == 1) || rst == "ogcd")
             duration = ct/30;
         }
         // 施法时间
@@ -2944,7 +3012,7 @@ function calcDurations(isSkill, attackTime, attackSpeed, levelData, buffList, bu
           if (duration < ct/30 || rst == "ogcd") {
             log.write(`技能动画: ${ct} 帧(基于动画数据)`);
             log.writeNote(`技能动画: ${ct} 帧`);
-            if (spData.spType == 1 || spData.spType == 2 || rst == "ogcd")
+            if (spType == 1 || spType == 2 || rst == "ogcd")
               duration = ct / 30;
           }
         }
@@ -3196,7 +3264,7 @@ function calcDurations(isSkill, attackTime, attackSpeed, levelData, buffList, bu
     attackCount = Math.ceil(attackDuration / attackTime);
     duration = attackCount * attackTime;
     // 重置普攻（瞬发/ogcd除外）
-    if (rst && rst != "ogcd" && spData.spType != 8 && spRatio != 0) {
+    if (rst && rst != "ogcd" && spType != 8 && spRatio != 0) {
       var dd = spData.spCost / ((1 + buffFrame.spRecoveryPerSec) * spRatio) - stunDuration;
       if (duration > dd)
         log.write(`[重置普攻] 截断最后一个攻击间隔`);
@@ -3224,7 +3292,7 @@ function calcDurations(isSkill, attackTime, attackSpeed, levelData, buffList, bu
     };
 
     // 技能类型
-    switch (spData.spType) {
+    switch (spType) {
       case 8: // 被动或落地点火
         if (levelData.duration <= 0 && blackboard.duration > 0) {
           console.log("Duration? l/b", skillId, levelData.duration, blackboard.duration);
@@ -3461,7 +3529,8 @@ function calcDurations(isSkill, attackTime, attackSpeed, levelData, buffList, bu
     prepDuration,
     dpsDuration,
     tags,
-    startSp
+    startSp,
+    spType
   };
 }
 
@@ -4373,7 +4442,6 @@ function calculateAttack(charAttr, enemy, raidBlackboard, isSkill, charData, lev
         heal = finalFrame.atk * bb["attack@atk_to_hp_recovery_ratio"] * enemy.count * (dur.duration-1);
         log.write(`[特殊] ${displayNames[buffName]}: HoT ${heal.toFixed(1)}，可以治疗召唤物`);
         log.writeNote("可以治疗召唤物");
-        log.writeNote("第一秒无治疗效果（待确认）");
         pool[2] += heal;
         damagePool[2] = 0; log.write("[特殊] 直接治疗为0");
         break;
@@ -5147,10 +5215,12 @@ function calculateAttack(charAttr, enemy, raidBlackboard, isSkill, charData, lev
         case "tachr_4039_horn_1":
         case "tachr_4042_lumen_1":
         case "tachr_1026_gvial2_2":
+        case "tachr_4027_heyak_2":
         case "tachr_003_kalts_2":
         case "tachr_1028_texas2_1":
         case "tachr_4017_puzzle_1":
         case "tachr_1030_noirc2_2":
+        case "tachr_1031_slent2_1":
           break;
         case "skchr_gravel_2":
           pool[4] += bb.hp_ratio * finalFrame.maxHp * 0.9;
@@ -5210,6 +5280,17 @@ function calculateAttack(charAttr, enemy, raidBlackboard, isSkill, charData, lev
           heal = bb.hp_ratio * finalFrame.maxHp;
           log.writeNote(`屏障最大值 ${heal.toFixed(1)}`);
           break;
+        case "tachr_1031_slent2_2":
+          if (options.musha_hp < bb.hp_ratio * 100) {
+            heal = finalFrame.atk * bb.atk_to_hp_recovery_ratio;
+            if (options.cond) {
+              heal *= 2;
+              log.writeNote("莱茵");
+            }
+            log.writeNote(`2天赋HPS: ${heal.toFixed(1)}`); 
+            pool[2] += heal * dur.duration * ecount;
+          }
+          break;
         default:
           pool[2] += bb.hp_ratio * finalFrame.maxHp * dur.attackCount;
       };
@@ -5264,7 +5345,7 @@ function calculateAttack(charAttr, enemy, raidBlackboard, isSkill, charData, lev
     attackTime,
     frame,
     attackCount: dur.attackCount, 
-    spType: levelData.spData.spType,
+    spType: dur.spType
   };
 }
 
@@ -5518,7 +5599,7 @@ function getAttributes(char, log) { //charId, phase = -1, level = -1
         for (let i = talentData.candidates.length - 1; i >= 0; i--) {
           let cd = talentData.candidates[i];
           //console.log(cd);
-          if (char.phase >= cd.unlockCondition.phase && char.level >= cd.unlockCondition.level && 
+          if (char.phase >= checkEnum("phase", cd.unlockCondition.phase) && char.level >= cd.unlockCondition.level && 
               char.potentialRank >= cd.requiredPotentialRank) {
             // 找到了当前生效的天赋
             let blackboard = getBlackboard(cd.blackboard);
@@ -5614,7 +5695,7 @@ let PotentialAttributeTypeList = {
   5: "blockCnt",
   6: "moveSpeed",
   7: "attackSpeed",
-  21: "respawnTime",
+  21: "respawnTime"
 };
 
 function applyPotential(charId, charData, rank, basic, log) {
@@ -5623,7 +5704,7 @@ function applyPotential(charId, charData, rank, basic, log) {
     let potentialData = charData.potentialRanks[i];
     if (!potentialData.buff) continue;
     let y = potentialData.buff.attributes.attributeModifiers[0];
-    let key = PotentialAttributeTypeList[y.attributeType];
+    let key = PotentialAttributeTypeList[checkEnum("potential", y.attributeType)];
     let value = y.value;
 
     basic[key] += value;
@@ -5864,9 +5945,17 @@ function simNormalDuration(args) {
   }
 }
 
+function calcFractile(key, keyRange, valueRange, rateRange=[0, 1]) {
+  let rate = key / (keyRange[1] - keyRange[0]);
+  rate = Math.max(rateRange[0], Math.min(rateRange[1], rate));   // clamp
+  let value = valueRange[0] + rate * (valueRange[1] - valueRange[0]);
+  return {value, rate};
+}
+
 AKDATA.attributes = {
   getCharAttributes,
   calculateDps,
   calculateDpsSeries,
-  checkChar
+  checkChar,
+  checkSpecs
 };
