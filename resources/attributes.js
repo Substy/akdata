@@ -3598,7 +3598,30 @@ function calcDurations(isSkill, attackTime, attackSpeed, levelData, buffList, bu
       if (extra_atk_count > 0) {
         hitCount += extra_atk_count * 2;
         log.writeNote(`4连击次数: ${extra_atk_count}`);
+      } 
+    } else if (skillId == "skchr_mlyss_3" && options.token && options.mlyssPosition == "RANGED") {
+      // 分身登场耗费1s, 需要减去攻击次数
+      let frameBegin = calcAttackBegin(skillId, attackSpeed, options, new NoLog());
+      let newTokenDuration = levelData.duration - 1.2 - frameBegin / 30;
+      let newTokenAttackCount = Math.ceil(newTokenDuration / attackTime);
+      let newTokenCount = 5 - options.mlyss_count;
+      let delta = (attackCount - newTokenAttackCount) * newTokenCount
+      hitCount -= delta;
+      log.write(`技能生成${newTokenCount}个新分身，新分身部署-损失攻击次数 ${delta}, 实际攻击次数 ${hitCount}`);
+      // 计算新旧分身抬手余量
+      let frameOld = attackTime * 30 * (attackCount-1) + frameBegin;
+      log.write(`[边缘检测] 原分身最后一次攻击判定 ${frameOld} / ${levelData.duration*30}`);
+      if (frameOld > levelData.duration * 30) {
+        log.write("实际为普攻，技能攻击次数-1");
+        --hitCount;
       }
+      log.write("[边缘检测] 新分身抬手计算");
+      calcEdges({id: skillId}, Math.round(attackTime * 30),
+                { duration: newTokenDuration,
+                  attackCount: newTokenAttackCount,
+                  tags, attackSpeed },
+                options, log);
+      
     }
   }
   // 重岳3
@@ -3608,7 +3631,7 @@ function calcDurations(isSkill, attackTime, attackSpeed, levelData, buffList, bu
   }
 
   log.write(`持续: ${duration.toFixed(3)} s`);
-  log.write(`攻击次数: ${attackCount*buffFrame.times} (${buffFrame.times} 连击 x ${attackCount})`);
+  log.write(`攻击次数: ${hitCount} (${buffFrame.times} 连击 x ${attackCount})`);
 
   return {
     attackCount,

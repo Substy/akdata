@@ -172,9 +172,9 @@ function load() {
   for (let i = 0; i < charColumnCount; i++) {
     $dps.find('.dps__row-select').append(`<td>
       <div class="input-group dps_menu_item">
-        <div class="dps_menu_item_50">
+        <div class="dps_menu_item_50 pr-1">
           <figure class="figure">
-            <img class="img_char figure-img" style="max-width: 75%; height: auto" data-index="${i}" src="/akdata/assets/images/char/char_504_rguard.png"></img>
+            <img class="img_char figure-img" style="max-width: 100%; height: auto" data-index="${i}" src="/akdata/assets/images/char/char_504_rguard.png"></img>
             <figcaption class="figure-caption txt_char" style="font-weight:600; font-size: 1vw; color: #000; text-align: center;" data-index="${i}">-</figcaption>
           </figure>
         </div>
