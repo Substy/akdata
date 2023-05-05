@@ -60,6 +60,7 @@ function init() {
     'excel/uniequip_table.json',
     'excel/battle_equip_table.json',
     '../version.json',
+    '../customdata/enums.json',
     '../customdata/dps_specialtags.json',
     '../customdata/dps_options.json',
     '../customdata/leveling_cost.json',
@@ -707,8 +708,7 @@ function calculate(charId) {
   // 绿票算法
   let greenTable = {};
   AKDATA.Data.itemValue.forEach(item => {
-    if (item.expCoefficient == 0.625)
-      greenTable[item.itemName] = item.itemValueGreen;
+      greenTable[item.itemName] = item.itemValue;
   });
   //console.log(greenTable);
   const calculateGreen = (matObj) => 
@@ -1011,7 +1011,7 @@ function plot2(chartView) {
       return {
         type: 'text',
         x: point[0],
-        y: point[1] - 10,
+        y: point[1] + 40,
         style: { text: value, font: '14px sans-serif' }
       }
     },

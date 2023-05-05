@@ -93,7 +93,15 @@ function load() {
     <tr class="dps__row-equip"> <th>模组 (精二生效)</th> </tr>
     <tr class="dps__row-skill"> <th>技能</th> </tr>
     <tr class="dps__row-option"> <th>选项</th> </tr>
-    <tr class="dps__row-prts"> <th>PRTS干员页面</th> </tr>
+  </tbody>
+  <tbody>
+    <tr class="dps__row-s_dps"> <th><font color="blue"><span>技能DPS</span></font><i class="fas fa-info-circle pull-right" data-toggle="tooltip" data-placement="right" title="技能总伤害 / 持续时间（包括罚站时间）"></i></th></tr>
+    <tr class="dps__row-n_dps"> <th>普攻</th> </tr>
+    <tr class="dps__row-g_dps"> <th>平均</th> </tr>
+    <tr class="dps__row-s_damage"> <th>技能总伤害 <i class="fas fa-info-circle pull-right" data-toggle="tooltip" data-placement="right" title="单次伤害 x 命中数"></i></th> </tr>
+    <tr class="dps__row-s_atk"> <th>技能攻击力 <i class="fas fa-info-circle pull-right" data-toggle="tooltip" data-placement="right" title="角色攻击力（计算技能倍数）"></i></th> </tr>
+    <tr class="dps__row-results"> <th><font color="blue">计算过程（用于验算）</font></th> </tr>
+    <tr class="dps__row-note"> <th>注记</th> </tr>
   </tbody>
   <tbody>
     <tr class="dps__row-period"> 
@@ -101,11 +109,6 @@ function load() {
         <i class="fas fa-info-circle pull-right" data-toggle="tooltip" data-html="true" data-placement="right"
            title="普攻时间 + 技能持续时间 [ + 眩晕时间 ]"></i>
       </th></tr>
-    <tr class="dps__row-s_atk"> <th>技能攻击力 <i class="fas fa-info-circle pull-right" data-toggle="tooltip" data-placement="right" title="角色攻击力（计算技能倍数）"></i></th> </tr>
-    <tr class="dps__row-s_damage"> <th>技能总伤害 <i class="fas fa-info-circle pull-right" data-toggle="tooltip" data-placement="right" title="单次伤害 x 命中数"></i></th> </tr>
-    <tr class="dps__row-s_dps"> <th><font color="blue"><span>技能DPS</span></font><i class="fas fa-info-circle pull-right" data-toggle="tooltip" data-placement="right" title="技能总伤害 / 持续时间（包括罚站时间）"></i></th></tr>
-    <tr class="dps__row-n_dps"> <th>普攻</th> </tr>
-    <tr class="dps__row-g_dps"> <th>平均</th> </tr>
     <tr class="dps__row-s_att"> <th>技能攻击间隔</th> </tr>
     <tr class="dps__row-n_att"> <th>普攻攻击间隔</th> </tr>
     <tr class="dps__row-s_diff"> <th>技能总伤害 提升% <i class="fas fa-info-circle pull-right" data-toggle="tooltip" data-placement="right" title="对比首列 +/-%"></i></th> </tr>
@@ -114,9 +117,8 @@ function load() {
   <tbody class="">
     <tr class="dps__row-damagepool"> <th>伤害表<i class="fas fa-info-circle pull-right" data-toggle="tooltip" title="详细的伤害表格"></i></th></tr>
     <tr class="dps__row-anim"> <th>动画帧数</th></tr>
-    <tr class="dps__row-note"> <th>注记</th> </tr>
-    <tr class="dps__row-results"> <th>计算过程（用于验算）</th> </tr>
-    <tr class="dps__row-explain"> <th>算法解释（筹备中）</th></tr>
+    <tr class="dps__row-prts"> <th><font color="blue">PRTS干员页面</font></th> </tr>
+  <!--  <tr class="dps__row-explain"> <th>算法解释（筹备中）</th></tr> -->
   </tbody>
   </table>
 </div>
@@ -173,7 +175,7 @@ function load() {
         <div class="dps_menu_item_50">
           <figure class="figure">
             <img class="img_char figure-img" style="max-width: 75%; height: auto" data-index="${i}" src="/akdata/assets/images/char/char_504_rguard.png"></img>
-            <figcaption class="figure-caption txt_char" style="max-width: 75%; font-weight:600; font-size: 1vw; color: #000; text-align: center;" data-index="${i}">-</figcaption>
+            <figcaption class="figure-caption txt_char" style="font-weight:600; font-size: 1vw; color: #000; text-align: center;" data-index="${i}">-</figcaption>
           </figure>
         </div>
         <div class="d-flex flex-column justify-content-start">
@@ -548,7 +550,10 @@ function updateChar(charId, index) {
   $skillLevel.html(skillLevelHtml);
   setSelectValue('skilllevel', index, skillLevel);
 
-  $(`.dps__row-prts td:nth-child(${index+2})`).html(`<a href="http://prts.wiki/w/${charData.name}#.E6.8A.80.E8.83.BD" target="_blank">点击打开</a>`);
+  $(`.dps__row-prts td:nth-child(${index+2})`).html(`
+    <a href="http://prts.wiki/w/${charData.name}#.E6.8A.80.E8.83.BD" target="_blank">
+    [点击打开]
+    </a>`);
 
   // equip
   let edb = AKDATA.Data.uniequip_table;
@@ -819,8 +824,11 @@ function calculate(index) {
   }
   // 团辅
   char.options["buff"] = getElement("buff", index).is(':checked');
-  console.log(char.options);
-
+  // 缪缪: 把第一列的数据传进去
+  if (char.charId == "char_249_mlyss" && char.options.token) {
+    char.options.tokenChar = Characters[0];
+  }
+  //console.log(char);
   // calc dps
   let dps = AKDATA.attributes.calculateDps(char, enemy, raidBuff);
   let s = dps.skill;

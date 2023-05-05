@@ -24,6 +24,11 @@ function getCharAttributes(char) {
 var displayNames = {};
 
 function getTokenAtkHp(charAttr, tokenId, log) {
+  console.log(charAttr.char.options, tokenId);
+
+  if (charAttr.char.options.tokenChar)
+    return getMlyssToken(charAttr, log);  // 缪缪特判
+
   var id = charAttr.char.charId;
   let oldChar = {...charAttr.basic};
   let tokenName = AKDATA.Data.character_table[tokenId].name;
@@ -107,6 +112,79 @@ function getTokenAtkHp(charAttr, tokenId, log) {
     log.write(`[模组] ${tokenName} maxHp + ${Math.round(buffHp)}, atk + ${buffAtk}, attack_speed + ${buffAts}, def + ${buffDef}`);
   }
   log.write(`[召唤物] ${tokenName} maxHp = ${charAttr.basic.maxHp}, atk = ${charAttr.basic.atk}, baseAttackTime = ${charAttr.basic.baseAttackTime}`);
+}
+
+function getMlyssToken(charAttr, log) {
+  let tokChar = charAttr.char.options.tokenChar;
+  let tokId = tokChar.charId;
+  let tokName = AKDATA.Data.character_table[tokId].name;
+  let rate = 0.5 + 0.2 * charAttr.char.phase;
+
+  // 1. calculate basic attribute package
+  log.writeNote(`复制角色: ${tokName}`);
+  let attr = getAttributes(tokChar, log);
+  // 读取技能和模组信息，用于判断
+  let charData = AKDATA.Data.character_table[tokId];
+  let skillData = AKDATA.Data.skill_table[tokChar.skillId];
+  if (tokChar.skillLevel == -1) tokChar.skillLevel = skillData.levels.length - 1;
+  let levelData = skillData.levels[tokChar.skillLevel];
+  let blackboard = getBlackboard(levelData.blackboard) || {};
+  blackboard.id = skillData.skillId;
+  attr.buffList["skill"] = blackboard;
+  attr.skillId = blackboard.id;
+  /*let equipData = {};
+  if (tokChar.equipId && tokChar.equipId.length > 0) {
+    equipData = AKDATA.Data.uniequip_table["equipDict"][tokChar.equipId];
+    displayNames[tokChar.equipId] = equipData.uniEquipName;
+  }
+*/
+  // 表里的攻击类型非1即为法伤
+  // yj定义从1开始，计算器从0开始（物伤分别以1和0表示）
+  let damageType = (checkEnum("subProfessionDamageTypePairs", charData.subProfessionId) == 1) ? 0 : 1;
+  charAttr.char.options.mlyssDamageType = damageType;
+  charAttr.char.options.mlyssPosition = charData.position;  // 近战/远程位
+  log.write(`复制系数: ${rate.toFixed(1)}x, 攻击类型 / ${charData.subProfessionId}: ${['物理','法术'][damageType]}, 位置: ${charData.position}`);  
+  // 2. copy attributes
+  let copyRate = {
+    "maxHp": rate,
+    "atk": rate,
+    "def": rate,
+    "magicResistance": rate,
+    "cost": 1,
+    "blockCnt": 1,
+  //  "attackSpeed": 1, // 不复制攻速
+    "baseAttackTime": 1
+  };
+  let copyValue = {};
+
+  Object.keys(copyRate).forEach(key => {
+    copyValue[key] = charAttr.basic[key] = attr.basic[key] * copyRate[key];
+  });
+  log.write(`复制后的属性: ${JSON.stringify(copyValue)}`);
+
+  // 3. special team buffs
+  Object.keys(attr.buffList).forEach(key => {
+    let tag = (key == "skill" ? blackboard.id : key);
+    let enabled = true;
+    if (checkSpecs(tag, "cloneable")) {
+      // 进一步判断不生效的情况
+      if (tag == "tachr_180_amgoat_1") {
+        if (!(tokChar.equipId == "uniequip_002_amgoat" && tokChar.equipLevel >= 2))
+          enabled = false;
+      } else if (tag == "tachr_340_shwaz_2") {
+        if (!(tokChar.equipId == "uniequip_002_shwaz" && tokChar.equipLevel >= 2))
+          enabled = false;
+      }
+      // 生效时复制Buff
+      if (enabled) {
+        let newTag = tag + "_clone"; // buffKey和原buff区分开，避免进入原buff的特判case
+        charAttr.buffList[newTag] = attr.buffList[key];
+        displayNames[newTag] = "复制 - " + (displayNames[tag] || "被动");
+      }
+    }
+  });
+  //console.log(charAttr.buffList);
+  return attr;
 }
 
 function checkChar(char) {
@@ -258,7 +336,6 @@ function calculateDps(char, enemy, raidBuff) {
   //  enemy = _backup.enemy;
   //  charData = _backup.chr;
   //  levelData = _backup.level;
-
     log.write(`【普攻】`);
     log.write("----------"); 
     normalAttack = calculateAttack(attr, enemy, raidBlackboard, false, charData, levelData, log);
@@ -597,7 +674,7 @@ function applyBuff(charAttr, buffFrm, tag, blackbd, isSkill, isCrit, log, enemy)
           buffFrame.atk += blackboard[key];
           prefix = blackboard[key] > 0 ? "+" : "";
           if (blackboard[key] != 0)
-            writeBuff(`atk(+): ${prefix}${(blackboard[key]*100).toFixed(1)}`);
+            writeBuff(`atk(+): ${prefix}${(blackboard[key]).toFixed(1)}`);
           break;
         case "sp_interval": // June 20: {sp, interval, ...} -> 每interval秒/攻击x次回复sp点技力，可叠加
           // interval == "hit" 为每次攻击恢复
@@ -741,6 +818,7 @@ function applyBuff(charAttr, buffFrm, tag, blackbd, isSkill, isCrit, log, enemy)
           break;
         case "tachr_452_bstalk_trait":
         case "tachr_476_blkngt_trait":
+        case "tachr_249_mlyss_trait":
           if (options.token) {
             done = true;
             log.writeNote("特性对召唤物无效");
@@ -2167,10 +2245,11 @@ function applyBuff(charAttr, buffFrm, tag, blackbd, isSkill, isCrit, log, enemy)
       case "tachr_1027_greyy2_trait":
         done = true; break;
       case "skchr_melnte_2":
+        buffFrame.maxTarget = 999;
         log.writeNote(`目标距离: ${options.range4.toFixed(1)}`);
         let melnte_frac = calcFractile(
           options.range4,   // 当前距离
-          [0, 4],   // 距离范围
+          [1, 4],   // 距离范围
           [blackboard.atk_scale, blackboard.scale]   // 倍率范围(负的)
         );
         log.writeNote(`系数: ${melnte_frac.value.toFixed(2)} (-${Math.round(melnte_frac.rate * 100)}%)`);
@@ -2219,6 +2298,14 @@ function applyBuff(charAttr, buffFrm, tag, blackbd, isSkill, isCrit, log, enemy)
     blackboard.base_attack_time = blackboard.cooldown - (basic.baseAttackTime + buffFrame.baseAttackTime);
     buffFrame.attackSpeed = 0;
     blackboard.attack_speed = 0;
+  } else if (options.token && options.mlyssPosition == "RANGED") {
+    let cnt = options.mlyss_count;
+    // 3技能默认5个，2技能二连击
+    if (isSkill && skillId == "skchr_mlyss_3") cnt = 5;
+    log.writeNote(`流形数量: ${cnt}`);
+    if (isSkill && skillId == "skchr_mlyss_2") cnt *= 2;
+
+    buffFrame.times = cnt;
   }
   // 决战者阻回
   if (subProf == "duelist" && !options.block && !options.equip) {
@@ -2594,6 +2681,10 @@ function extractDamageType(charData, chr, isSkill, skillDesc, skillBlackboard, o
     else if (skillId == "skchr_ling_2" ||
              (skillId == "skchr_ling_3" && chr.options.ling_fusion))
       ret = 1;
+  }
+  // mlyss
+  if (options.token && ("mlyssDamageType" in options)) {
+    ret = options.mlyssDamageType;
   }
   return ~~ret;
 }
@@ -5142,6 +5233,9 @@ function calculateAttack(charAttr, enemy, raidBlackboard, isSkill, charData, lev
           var blkngt_hps = hpratiosec * finalFrame.maxHp;
           log.writeNote(`HPS: ${blkngt_hps.toFixed(1)}`);
         } // else {}
+      } else if (buffName == "skchr_mlyss_2") {
+        if (options.token && options.mlyssPosition == "MELEE")
+          pool[2] += hpratiosec * finalFrame.maxHp * dur.duration;
       } else {
         pool[2] += hpratiosec * finalFrame.maxHp * (dur.duration + dur.stunDuration);
       }
@@ -5946,7 +6040,7 @@ function simNormalDuration(args) {
 }
 
 function calcFractile(key, keyRange, valueRange, rateRange=[0, 1]) {
-  let rate = key / (keyRange[1] - keyRange[0]);
+  let rate = (key - keyRange[0]) / (keyRange[1] - keyRange[0]);
   rate = Math.max(rateRange[0], Math.min(rateRange[1], rate));   // clamp
   let value = valueRange[0] + rate * (valueRange[1] - valueRange[0]);
   return {value, rate};

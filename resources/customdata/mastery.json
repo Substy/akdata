@@ -171,5 +171,6 @@
     "char_174_slbell":  { "mod_update_time": "2023/5/2" },
     "char_254_vodfox":  { "mod_update_time": "2023/5/2" },
     "char_4027_heyak":  { "mod_update_time": "2023/5/4", "options": { "range4": 4 }, "emr": 10 },
-    "char_4006_melnte": { "mod_update_time": "2023/5/4", "options": { "range4": 0 } }
+    "char_4006_melnte": { "mod_update_time": "2023/5/4", "options": { "range4": 0 } },
+    "char_1031_slent2": { "options": { "musha_hp": 20 } }
 }
