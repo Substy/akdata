@@ -111,8 +111,8 @@ function load() {
       </th></tr>
     <tr class="dps__row-s_att"> <th>技能攻击间隔</th> </tr>
     <tr class="dps__row-n_att"> <th>普攻攻击间隔</th> </tr>
-    <tr class="dps__row-s_diff"> <th>技能总伤害 提升% <i class="fas fa-info-circle pull-right" data-toggle="tooltip" data-placement="right" title="对比首列 +/-%"></i></th> </tr>
-    <tr class="dps__row-g_diff"> <th>平均DPS 提升% <i class="fas fa-info-circle pull-right" data-toggle="tooltip" data-placement="right" title="对比首列 +/-%"></i></th> </tr>
+    <tr class="dps__row-s_diff"> <th>技能总伤害 提升% <i class="fas fa-info-circle pull-right" data-toggle="tooltip" data-placement="right" title="和【第一列】结果相比的提升比例 +/-%"></i></th> </tr>
+    <tr class="dps__row-g_diff"> <th>平均DPS 提升% <i class="fas fa-info-circle pull-right" data-toggle="tooltip" data-placement="right" title="和【第一列】结果相比的提升比例 +/-%"></i></th> </tr>
   </tbody>
   <tbody class="">
     <tr class="dps__row-damagepool"> <th>伤害表<i class="fas fa-info-circle pull-right" data-toggle="tooltip" title="详细的伤害表格"></i></th></tr>
@@ -170,32 +170,34 @@ function load() {
   let $dps = $(html);
 
   for (let i = 0; i < charColumnCount; i++) {
-    $dps.find('.dps__row-select').append(`<td>
-      <div class="input-group dps_menu_item">
-        <div class="dps_menu_item_50 pr-1">
-          <figure class="figure">
-            <img class="img_char figure-img" style="max-width: 100%; height: auto" data-index="${i}" src="/akdata/assets/images/char/char_504_rguard.png"></img>
-            <figcaption class="figure-caption txt_char" style="font-weight:600; font-size: 1vw; color: #000; text-align: center;" data-index="${i}">-</figcaption>
-          </figure>
-        </div>
-        <div class="d-flex flex-column justify-content-start">
-          <div class="p-0">
-            <button class="btn btn-outline-secondary dps__goto p-2 visible-desktop" data-index="${i}" type="button">
-              详细属性<i class="fa fa-info-circle"></i>
-            </button>
-          </div>
-          <div class="p-0">
-            <button class="btn btn-outline-secondary dps__mastery p-2 visible-desktop" data-index="${i}" type="button">
-              专精收益<i class="fa fa-cubes"></i>
-            </button>
-          </div>
-          <div class="p-0">
-            <button class="dps__copy btn btn-outline-info p-2 visible-desktop" data-index="${i}">复制到右侧</button>
-          </div>
-        </div>
+    let copy_html = `<div class="p-0">
+                      <button class="dps__copy btn btn-outline-info p-2 visible-desktop" data-index="${i}">复制到右侧</button>
+                     </div>`;
+    let _html = `<td>
+    <div class="input-group dps_menu_item">
+      <div class="dps_menu_item_50 pr-1">
+        <figure class="figure">
+          <img class="img_char figure-img" style="max-width: 100%; height: auto" data-index="${i}" src="/akdata/assets/images/char/char_504_rguard.png"></img>
+          <figcaption class="figure-caption txt_char" style="font-weight:600; font-size: 1vw; color: #000; text-align: center;" data-index="${i}">-</figcaption>
+        </figure>
       </div>
-    </td>`);
-
+      <div class="d-flex flex-column justify-content-start">
+        <div class="p-0">
+          <button class="btn btn-outline-secondary dps__goto p-2 visible-desktop" data-index="${i}" type="button">
+            详细属性<i class="fa fa-info-circle"></i>
+          </button>
+        </div>
+        <div class="p-0">
+          <button class="btn btn-outline-secondary dps__mastery p-2 visible-desktop" data-index="${i}" type="button">
+            专精收益<i class="fa fa-cubes"></i>
+          </button>
+        </div>
+        ${i < charColumnCount-1 ? copy_html : ""}
+      </div>
+    </div>
+  </td>`;
+    
+    $dps.find('.dps__row-select').append(_html);
     $dps.find('.dps__row-level').append(`
     <td>
       <div class="form-group dps_menu_item">
@@ -835,7 +837,13 @@ function calculate(index) {
   char.dps = dps;
   let sdiff = 0;
   let gdiff = 0;
-  let dps0 = Characters[0].dps;
+  let defaultDps0 = {
+    skill: {
+      totalDamage : 0,
+      totalHeal: 0
+    }
+  };
+  let dps0 = Characters[0] ? Characters[0].dps : defaultDps0;
 
   getElement('s_atk', index).html(`<b>${Math.round(s.atk)}</b>`).css("color", DamageColors[s.damageType]);
   

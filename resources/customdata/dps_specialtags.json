@@ -142,6 +142,7 @@
     "skchr_cerber_2":   { "frame_corr": 0, "attack_begin": 7 },
     "skchr_cerber_3":   { "damage_type": "0", "reset_attack": true, "frame_corr": 0},
     "skchr_ceylon_1":   { "cast_time": 43, "ranged_penalty": false }, 
+    "skchr_cgbird_2":   { "damage_type": 2 },
     "skchr_chen_2":     { "cast_time": 40, "attack_begin": 11, "damage_type": "0", "reset_attack": "ogcd" },
     "skchr_chen_3":     { "cast_time": 102, "attack_begin": 19, "reset_attack": "ogcd" },
     "skchr_chen2_1":    { "reset_attack": true, "magazine": 4 },

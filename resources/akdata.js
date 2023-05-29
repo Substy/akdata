@@ -277,6 +277,12 @@ window.AKDATA = {
       html += entry;
     });
 
+    // name hack
+    if (AKDATA.Data.character_table[selectedChar]) {
+      let selectedName = AKDATA.Data.character_table[selectedChar].name;
+      html = html.replace("同分支干员", `${selectedName}-相同分支的干员`);
+    }
+
     pmBase.component.create({
       type: 'modal',
       id: "select_char_dialog",

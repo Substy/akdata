@@ -2180,7 +2180,7 @@ function applyBuff(charAttr, buffFrm, tag, blackbd, isSkill, isCrit, log, enemy)
         break;
       case "tachr_4087_ines_1":
         let ines_steal_count = (skillId == "skchr_ines_3" ? Math.min(enemy.count, charAttr.buffList["skill"].max_target) : 1);
-        let ines_steal_atk = blackboard["ines_t_1[self].atk"] * ines_steal_count;
+        let ines_steal_atk = blackboard.steal_atk * ines_steal_count;
         log.write(`偷取目标数 ${ines_steal_count}, 偷取攻击力 ${ines_steal_atk} (最终加算)`);
         log.writeNote(`偷取攻击力 ${ines_steal_atk}`);
         buffFrame.atk += ines_steal_atk;
@@ -2190,7 +2190,7 @@ function applyBuff(charAttr, buffFrm, tag, blackbd, isSkill, isCrit, log, enemy)
         buffFrame.dpsDuration = blackboard.bleed_duration;
         break;
       case "skchr_ines_2":
-        blackboard.attack_speed *= (-1 * blackboard.max_stack_cnt);
+        blackboard.attack_speed = blackboard["attack@steal_atk_speed_max"];
         break;
       case "skchr_ines_3":
         delete blackboard.atk_scale;
@@ -2371,10 +2371,14 @@ function applyBuff(charAttr, buffFrm, tag, blackbd, isSkill, isCrit, log, enemy)
       blackboard.edef_pene = blackboard.def_penetrate_fixed;
       break;
     case "uniequip_003_cqbw":
-      blackboard.edef_pene = blackboard.trait.def_penetrate_fixed;
-      if (options.equip && blackboard.talent && blackboard.talent.atk)
-        blackboard.atk = blackboard.talent.atk * blackboard.talent.max_stack_cnt;
-      break;
+      if (isSkill && (skillId == "skchr_cqbw_2" || skillId == "skchr_cqbw_3")) {
+        log.writeNote("地雷不享受模组效果");
+      } else {
+        blackboard.edef_pene = blackboard.trait.def_penetrate_fixed;
+        if (options.equip && blackboard.talent && blackboard.talent.atk)
+          blackboard.atk = blackboard.talent.atk * blackboard.talent.max_stack_cnt;
+        break;
+      }
     case "uniequip_002_yuki":
       let bb_yuki = {...blackboard.trait};
       bb_yuki.edef_pene = bb_yuki.def_penetrate_fixed;
@@ -2385,13 +2389,19 @@ function applyBuff(charAttr, buffFrm, tag, blackbd, isSkill, isCrit, log, enemy)
     case "uniequip_002_nearl2":
     case "uniequip_002_franka":
     case "uniequip_002_peacok":
-    case "uniequip_002_cqbw":
     case "uniequip_002_sesa":
     case "uniequip_003_skadi":
     case "uniequip_002_morgan":
       if (options.equip || options.block)
         blackboard = blackboard.trait;
-      console.log(blackboard);
+      break;
+    case "uniequip_002_cqbw":
+      if (isSkill && (skillId == "skchr_cqbw_2" || skillId == "skchr_cqbw_3")) {
+        log.writeNote("地雷不享受模组效果");
+      } else {
+        if (options.equip || options.block)
+          blackboard = blackboard.trait;
+      }
       break;
     case "uniequip_002_skadi":
     case "uniequip_002_flameb":
@@ -3277,9 +3287,9 @@ function calcDurations(isSkill, attackTime, attackSpeed, levelData, buffList, bu
       let fps = 30;
       let base_attack_time = 30;  // 原本39帧
       let anim_time = 30; // 动画35帧，如果攻击间隔大于这个数字 则补帧
-      let normal_aspd = attackSpeed + blackboard.attack_speed * blackboard.max_stack_cnt;
+      let normal_aspd = attackSpeed - blackboard["attack@steal_atk_speed_max"];
 
-      let aspd_list = [...Array(blackboard.max_stack_cnt+1).keys()].map(x => normal_aspd - blackboard.attack_speed * x);
+      let aspd_list = [...Array(10+1).keys()].map(x => normal_aspd + blackboard["attack@steal_atk_speed"] * x);
       let frame_list = aspd_list.map(x => {
         let f = base_attack_time * 100 / x;
         if (f > anim_time + 0.5)  // -- 有ResetAttackStrategy时 根据动画时间加半帧判断是否补帧（存疑）
@@ -5197,7 +5207,7 @@ function calculateAttack(charAttr, enemy, raidBlackboard, isSkill, charData, lev
       case "skchr_ines_3":
         let ines_3_count = Math.min(enemy.count, bb.max_target);
         // 前面已经算过一层偷攻击这里减去
-        let ines_3_steal_table = [...Array(ines_3_count).keys()].map(x => (x-1)*buffList["tachr_4087_ines_1"]["ines_t_1[self].atk"]);
+        let ines_3_steal_table = [...Array(ines_3_count).keys()].map(x => (x-1)*buffList["tachr_4087_ines_1"]["steal_atk"]);
         let pivot = ines_3_steal_table[ines_3_steal_table.length-1];
         let ines_3_atk_table = ines_3_steal_table.map(x => (finalFrame.atk - pivot + x) * bb.atk_scale);
         let ines_3_dmg_table = ines_3_atk_table.map(x => Math.max(x - edef, x * 0.05) * buffFrame.damage_scale);
