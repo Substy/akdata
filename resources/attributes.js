@@ -2372,13 +2372,13 @@ function applyBuff(charAttr, buffFrm, tag, blackbd, isSkill, isCrit, log, enemy)
       break;
     case "uniequip_003_cqbw":
       if (isSkill && (skillId == "skchr_cqbw_2" || skillId == "skchr_cqbw_3")) {
-        log.writeNote("地雷不享受模组效果");
+        log.writeNote("地雷不享受穿防效果");
       } else {
         blackboard.edef_pene = blackboard.trait.def_penetrate_fixed;
-        if (options.equip && blackboard.talent && blackboard.talent.atk)
-          blackboard.atk = blackboard.talent.atk * blackboard.talent.max_stack_cnt;
-        break;
       }
+      if (options.equip && blackboard.talent && blackboard.talent.atk)
+        blackboard.atk = blackboard.talent.atk * blackboard.talent.max_stack_cnt;
+      break;
     case "uniequip_002_yuki":
       let bb_yuki = {...blackboard.trait};
       bb_yuki.edef_pene = bb_yuki.def_penetrate_fixed;
@@ -2396,12 +2396,8 @@ function applyBuff(charAttr, buffFrm, tag, blackbd, isSkill, isCrit, log, enemy)
         blackboard = blackboard.trait;
       break;
     case "uniequip_002_cqbw":
-      if (isSkill && (skillId == "skchr_cqbw_2" || skillId == "skchr_cqbw_3")) {
-        log.writeNote("地雷不享受模组效果");
-      } else {
-        if (options.equip || options.block)
-          blackboard = blackboard.trait;
-      }
+      if (options.equip || options.block)
+        blackboard = blackboard.trait;
       break;
     case "uniequip_002_skadi":
     case "uniequip_002_flameb":
