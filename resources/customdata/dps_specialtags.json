@@ -1,6 +1,6 @@
 {
     "char_003_kalts":   { "token": "token_10002_kalts_mon3tr", "token_damage_type": "0", "frame_corr": 1 },
-    "char_010_chen":    { "times": 2},
+    "char_010_chen":    { "times": 2, "attack_begin": 14 },
     "char_109_fmout":   { "frame_corr": 1 },
     "char_108_silent":   { "token": "token_10000_silent_healrb", "token_damage_type": 2 },
     "char_112_siege":   { "anim_max_scale": 1, "note": "不考虑第二天赋" },
@@ -144,7 +144,7 @@
     "skchr_ceylon_1":   { "cast_time": 43, "ranged_penalty": false }, 
     "skchr_cgbird_2":   { "damage_type": 2 },
     "skchr_chen_2":     { "cast_time": 40, "attack_begin": 11, "damage_type": "0", "reset_attack": "ogcd" },
-    "skchr_chen_3":     { "cast_time": 102, "attack_begin": 19, "reset_attack": "ogcd" },
+    "skchr_chen_3":     { "cast_time": 88, "attack_begin": 19, "reset_attack": "ogcd" },
     "skchr_chen2_1":    { "reset_attack": true, "magazine": 4 },
     "skchr_chen2_2":    { "reset_attack": true, "magazine": 8, "charge": true },
     "skchr_chen2_3":    { "reset_attack": true, "magazine": 16, "times": 2, "note": "减防为最终加算" },
