@@ -180,6 +180,10 @@ function getMlyssToken(charAttr, log) {
         let newTag = tag + "_clone"; // buffKey和原buff区分开，避免进入原buff的特判case
         charAttr.buffList[newTag] = attr.buffList[key];
         displayNames[newTag] = "复制 - " + (displayNames[tag] || "被动");
+        if (attr.buffList[key].attack_speed && attr.buffList[key].attack_speed != 0) {
+          log.write("(不复制天赋的攻速加成)");
+          delete charAttr.buffList[newTag].attack_speed;
+        }
       }
     }
   });
@@ -947,6 +951,7 @@ function applyBuff(charAttr, buffFrm, tag, blackbd, isSkill, isCrit, log, enemy)
         writeBuff(`攻击次数 x ${buffFrame.times}`);
         done = true; break;
       case "tachr_118_yuki_1":  // 白雪
+      case "tachr_118_yuki_1_clone":
         buffFrame.atk = basic.atk * blackboard.atk;
         buffFrame.baseAttackTime = blackboard.base_attack_time;
         writeBuff("攻击间隔+0.2s, atk+0.2x");
@@ -1275,6 +1280,7 @@ function applyBuff(charAttr, buffFrm, tag, blackbd, isSkill, isCrit, log, enemy)
       case "skchr_hmau_2":
       case "skchr_spot_1":
       case "tachr_193_frostl_1":
+      case "tachr_193_frostl_1_clone":
       case "skchr_mantic_2":
       case "skchr_glaze_2":
       case "skchr_zumama_2":
@@ -2288,6 +2294,9 @@ function applyBuff(charAttr, buffFrm, tag, blackbd, isSkill, isCrit, log, enemy)
         );
         log.writeNote(`系数: ${heyak_frac.value.toFixed(2)} (${Math.round(heyak_frac.rate * 100)}%)`);
         blackboard.atk_scale = heyak_frac.value;
+        break;
+      case "tachr_348_ceylon_1_clone":
+        blackboard.atk = blackboard['ceylon_t_1[common].atk']; //+ blackboard['celyon_t_1[map].atk']; // 无法判断是否水地形
         break;
     }
   }
@@ -4548,12 +4557,12 @@ function calculateAttack(charAttr, enemy, raidBlackboard, isSkill, charData, lev
         break;
       case "skchr_shining_2":
       case "skchr_tuye_1":
-        heal = finalFrame.atk * bb.atk_scale;
+        heal = finalFrame.atk * bb.atk_scale * dur.attackCount;
         log.write(`[特殊] ${displayNames[buffName]}: 护盾量 ${heal}`);
         pool[4] += heal;
         break;
       case "skchr_cgbird_2":
-        heal = finalFrame.atk * bb.atk_scale;
+        heal = finalFrame.atk * bb.atk_scale * dur.attackCount;
         log.write(`[特殊] ${displayNames[buffName]}: 护盾量 ${heal}, 命中 ${ecount}`);
         pool[4] += heal * ecount;
         break;

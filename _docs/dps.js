@@ -786,10 +786,23 @@ function chooseEquip() {
   else calculate(index);
 }
 
-const DamageColors = ['black','blue','limegreen','gold','aqua'];
+const DamageColors = ['black','blue','limegreen','gold','#43c6db','#f70d1a'];
 
 function _fmt(x) {
   return isFinite(x) ? Math.round(x) : "-";
+}
+
+function formatDps(dps, damageType, tag=null, precision=0, bold=true) {
+  let dpsText = isFinite(dps) ? dps.toFixed(precision) : "-";
+  let tagText = tag ? `${tag}: `: "";
+  let line = tagText+dpsText;
+  if (bold) line = `<b>${line}</b>`;
+  return `<span style="color: ${DamageColors[damageType]}">${line}</span>`;
+}
+
+function hpsColor(s) {
+  let h = (s.extraDamagePool[4] > 0 ? 4 : 2);
+  return s.hps < 0 ? 5 : h;
 }
 
 function calculate(index) {
@@ -845,7 +858,7 @@ function calculate(index) {
   };
   let dps0 = Characters[0] ? Characters[0].dps : defaultDps0;
 
-  getElement('s_atk', index).html(`<b>${Math.round(s.atk)}</b>`).css("color", DamageColors[s.damageType]);
+  getElement('s_atk', index).html(formatDps(s.atk, s.damageType));
   
   if (dps.normal.damageType != 2) {
     $(".dps__row-n_dps th").text("普攻DPS");
@@ -892,24 +905,27 @@ function calculate(index) {
   getElement('g_diff', index).text((gdiff*100).toFixed(1));
   
   // skill dps
-  var color = (s.dps == 0) ? DamageColors[2] : DamageColors[s.damageType];  
+  var colorType = (s.dps == 0) ? hpsColor(s) : s.damageType;  
   if (s.hps == 0 || s.dps == 0) {                       
-    getElement('s_dps', index).html(Math.round(s.dps || s.hps || "-")).css("color", color);
+    getElement('s_dps', index).html(formatDps((s.dps || s.hps || "-"), colorType));
   } else {
-    getElement('s_dps', index).html(`DPS: ${_fmt(s.dps)}, HPS: ${_fmt(s.hps)}`).css("color", color);
+    getElement('s_dps', index).html(formatDps(s.dps, s.damageType, "DPS") + ", " + formatDps(s.hps, hpsColor(s), "HPS"));
   }
   // attack dps
+  /*
   if (s.attackTime > 0) {
     getElement('a_dps', index).html(_fmt(s.hitDamage / s.attackTime)).css("color", color);
   } else {
     getElement('a_dps', index).text("瞬发");
   }
+  */
   // normal dps
   if (dps.normal.hps == 0 || dps.normal.dps == 0) {
-    color = (dps.normal.dps == 0) ? DamageColors[2] : DamageColors[dps.normal.damageType];
-    getElement('n_dps', index).html(_fmt(dps.normal.dps || dps.normal.hps)).css("color", color);
+    colorType = (dps.normal.dps == 0) ? hpsColor(dps.normal) : dps.normal.damageType;    
+    getElement('n_dps', index).html(formatDps((dps.normal.dps || dps.normal.hps || "-"), colorType, null, 0, false));
   } else {
-    getElement('n_dps', index).html(`DPS: ${_fmt(dps.normal.dps)}, HPS: ${_fmt(dps.normal.hps)}`).css("color", color);
+    getElement('n_dps', index).html(formatDps(dps.normal.dps, dps.normal.damageType, "DPS", 0, false) + ", " +
+                                    formatDps(dps.normal.hps, hpsColor(dps.normal), "HPS", null, 0, false));
   }
   // period
   if (dps.normal.dur.stunDuration > 0)
@@ -946,10 +962,11 @@ function calculate(index) {
 
     // globalDps
   if (dps.globalDps == 0 || dps.globalHps == 0)
-    getElement('g_dps', index).html(Math.round(dps.globalDps || dps.globalHps)).css("color", DamageColors[dps.normal.damageType]);  
+    getElement('g_dps', index).html(formatDps((dps.globalDps || dps.globalHps), dps.normal.damageType));
   else 
-    getElement('g_dps', index).html(`DPS: ${dps.globalDps.toFixed(1)}, HPS: ${dps.globalHps.toFixed(1)}`);
-//  getElement('e_time', index).html(dps.killTime ?  `${Math.ceil(dps.killTime)}秒` : '-');
+    getElement('g_dps', index).html(formatDps(dps.globalDps, dps.normal.damageType, "DPS", 1) + ", " + 
+                                    formatDps(dps.globalHps, hpsColor(dps.skill), "HPS", 1));
+
   let equip_prompt = "";
   if (!(char.charId in AKDATA.Data.mastery) && char.equipId.length > 0 && char.equipLevel > 1)
     equip_prompt = "暂未更新2-3级模组计算结果<br>(结果无效)";
