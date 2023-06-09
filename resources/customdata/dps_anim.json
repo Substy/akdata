@@ -1110,6 +1110,73 @@
     },
     "Die": 30
   },
+  "char_1032_excu2": {
+    "version": "3.8.99",
+    "Attack_A": {
+      "duration": 39,
+      "OnAttack": 9
+    },
+    "Attack_B": {
+      "duration": 39,
+      "OnAttack": 11
+    },
+    "Default": 0,
+    "Idle": 100,
+    "Skill_2_Attack_A": {
+      "duration": 39,
+      "OnAttack": 14
+    },
+    "Skill_2_Attack_B": {
+      "duration": 39,
+      "OnAttack": 16
+    },
+    "Skill_2_Begin": 10,
+    "Skill_2_End": 10,
+    "Skill_2_Idle": 100,
+    "Skill_3_Attack_A": {
+      "duration": 49,
+      "OnAttack": 8
+    },
+    "Skill_3_Attack_B": {
+      "duration": 49,
+      "OnAttack": 11
+    },
+    "Skill_3_Begin": 10,
+    "Skill_3_End": {
+      "duration": 30,
+      "OnAttack": 12
+    },
+    "Skill_3_Idle": 100,
+    "Start": {
+      "duration": 30,
+      "OnStart": 14
+    },
+    "Attack_Down_A": {
+      "duration": 39,
+      "OnAttack": 9
+    },
+    "Attack_Down_B": {
+      "duration": 39,
+      "OnAttack": 11
+    },
+    "Die": 30,
+    "Skill_Down_2_Attack_A": {
+      "duration": 39,
+      "OnAttack": 14
+    },
+    "Skill_Down_2_Attack_B": {
+      "duration": 39,
+      "OnAttack": 16
+    },
+    "Skill_Down_3_Attack_A": {
+      "duration": 49,
+      "OnAttack": 8
+    },
+    "Skill_Down_3_Attack_B": {
+      "duration": 49,
+      "OnAttack": 11
+    }
+  },
   "char_103_angel": {
     "version": "3.8.99",
     "Attack": {
@@ -8605,6 +8672,40 @@
       "OnStart": 13
     }
   },
+  "char_4015_spuria": {
+    "version": "3.8.99",
+    "Attack_Begin": 5,
+    "Attack_Down_Begin": 5,
+    "Attack_Down_End": 5,
+    "Attack_Down_Loop": {
+      "duration": 39,
+      "OnAttack": 1
+    },
+    "Attack_End": 5,
+    "Attack_Loop": {
+      "duration": 39,
+      "OnAttack": 1
+    },
+    "Default": 0,
+    "Die": 30,
+    "Idle": 180,
+    "Skill_Begin": 30,
+    "Skill_Down_Loop": {
+      "duration": 39,
+      "OnAttack": 1
+    },
+    "Skill_End": 10,
+    "Skill_Idle": 180,
+    "Skill_Loop": {
+      "duration": 39,
+      "OnAttack": 1
+    },
+    "Skill_Stun": 30,
+    "Start": {
+      "duration": 30,
+      "OnStart": 7
+    }
+  },
   "char_4016_kazema": {
     "version": "3.8.99",
     "Attack": {
@@ -8798,6 +8899,10 @@
       "OnAttack": 0
     },
     "Strat": {
+      "duration": 30,
+      "OnStart": 5
+    },
+    "Start": {
       "duration": 30,
       "OnStart": 5
     },
@@ -10082,6 +10187,20 @@
     "Skill_End": 108,
     "Skill_Loop": 40,
     "Start": 30
+  },
+  "char_4093_frston": {
+    "version": "3.8.99",
+    "Attack": {
+      "duration": 36,
+      "OnAttack": 13
+    },
+    "Default": 0,
+    "Die": 30,
+    "Idle": 16,
+    "Start": {
+      "duration": 30,
+      "OnStart": 5
+    }
   },
   "char_411_tomimi": {
     "version": "3.8.99",
@@ -12366,6 +12485,49 @@
     "Skill_2_Down": {
       "duration": 30,
       "OnAttack": 13
+    }
+  },
+  "char_498_inside": {
+    "version": "3.8.99",
+    "Attack_Begin": 5,
+    "Attack_End": 6,
+    "Attack_Idle": 40,
+    "Attack_Loop": {
+      "duration": 30,
+      "OnAttack": 0
+    },
+    "Default": 0,
+    "Idle": 120,
+    "Skill_1_Begin": 20,
+    "Skill_1_End": 7,
+    "Skill_1_Idle": 40,
+    "Skill_1_Loop": {
+      "duration": 30,
+      "OnAttack": 11
+    },
+    "Skill_2_Begin": 20,
+    "Skill_2_End": 17,
+    "Skill_2_Idle": 40,
+    "Skill_2_Loop": {
+      "duration": 30,
+      "OnAttack": 11
+    },
+    "Start": {
+      "duration": 30,
+      "OnStart": 15
+    },
+    "Attack_Down_Loop": {
+      "duration": 30,
+      "OnAttack": 0
+    },
+    "Die": 30,
+    "Skill_Down_1_Loop": {
+      "duration": 30,
+      "OnAttack": 11
+    },
+    "Skill_Down_2_Loop": {
+      "duration": 30,
+      "OnAttack": 11
     }
   },
   "char_500_noirc": {

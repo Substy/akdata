@@ -666,7 +666,7 @@ function calculate(charId) {
         level.forEach(x => {
 		  let _n = itemdb[x.id].name.replace(" ", "");
           i[_n] = x.count;
-          itemCache[_n] = {id: x.id, name: _n, rarity: itemdb[x.id].rarity};
+          itemCache[_n] = {id: x.id, name: _n, rarity: AKDATA.checkEnum('rarity', itemdb[x.id].rarity)};
         });
         resultView.mats[k].push(i);
       }
@@ -680,10 +680,10 @@ function calculate(charId) {
       let m = {};
       mats[elite].forEach(x => {
         let _nm = itemdb[x.id].name.replace(" ", "");
-        itemCache[_nm] = { id: x.id, name: _nm, rarity: itemdb[x.id].rarity };
+        itemCache[_nm] = { id: x.id, name: _nm, rarity: AKDATA.checkEnum('rarity', itemdb[x.id].rarity) };
         m[_nm] = x.count;
       });
-      m["龙门币"] = EliteLMB[db.rarity+1][elite-1];
+      m["龙门币"] = EliteLMB[AKDATA.checkEnum('rarity', db.rarity)+1][elite-1];
       resultView.mats_e.elite.push({...m});
     }
   }
@@ -696,7 +696,7 @@ function calculate(charId) {
         edb[eid]["itemCost"][lv].forEach(x => {
           if (!["mod_update_token_1", "mod_update_token_2"].includes(x.id)) {
             let _nm = itemdb[x.id].name.replace(" ", "");
-            itemCache[_nm] = { id: x.id, name: _nm, rarity: itemdb[x.id].rarity };
+            itemCache[_nm] = { id: x.id, name: _nm, rarity: AKDATA.checkEnum('rarity', itemdb[x.id].rarity) };
             m[_nm] = x.count;
           }
         });

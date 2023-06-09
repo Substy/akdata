@@ -2298,6 +2298,23 @@ function applyBuff(charAttr, buffFrm, tag, blackbd, isSkill, isCrit, log, enemy)
       case "tachr_348_ceylon_1_clone":
         blackboard.atk = blackboard['ceylon_t_1[common].atk']; //+ blackboard['celyon_t_1[map].atk']; // 无法判断是否水地形
         break;
+      case "skchr_excu2_1":
+        blackboard.edef_pene = blackboard.def_penetrate_fixed;
+        break;
+      case "skchr_excu2_3":
+        buffFrame.baseAttackTime += blackboard.base_attack_time;
+        writeBuff(`base_attack_time + ${blackboard.base_attack_time}s`);
+        blackboard.base_attack_time = 0;
+        buffFrame.atk_table = [...Array(blackboard["attack@max_stack_cnt"]+1).keys()].map(
+          x => blackboard["attack@atk"] * x
+        );
+        break;
+      case "tachr_1032_excu2_1":
+        if (!isSkill) {
+          buffFrame.times = 1 + blackboard.prob;
+          log.write("普攻：计算期望攻击次数（类似慕斯天赋算法）");  // 但是慕斯连击不加技力
+        }
+        break;
     }
   }
   // --- applyBuff switch ends here ---
@@ -3005,11 +3022,7 @@ function calcDurations(isSkill, attackTime, attackSpeed, levelData, buffList, bu
       duration = levelData.duration - prepDuration;
       // 抬手时间
       var frameBegin = calcAttackBegin(skillId, attackSpeed, options, log);
-     // var frameBegin = Math.round((checkSpecs(skillId, "attack_begin") || 12));
-     // if (skillId == "skchr_glaze_2" && options.far) {
-     //   log.writeNote("技能前摇增加至27帧");
-     //   frameBegin = 27;
-     // }
+
       var t = frameBegin / 30;
       attackCount = Math.ceil((duration - t) / attackTime);
       log.write(`技能前摇: ${t.toFixed(3)}s, ${frameBegin} 帧`);
@@ -3085,6 +3098,13 @@ function calcDurations(isSkill, attackTime, attackSpeed, levelData, buffList, bu
           var new_mag = Math.floor(mag / (1-prob));
           log.writeNote(`计入 ${new_mag - mag} 发额外弹药`);
           mag = new_mag;
+        }
+        if (charId == "char_1032_excu2") {
+          let extraMagazine = parseInt(options.extra_magazine) || 0;
+          if (extraMagazine > 0) {
+            log.writeNote(`计入 ${extraMagazine} 发额外弹药`);
+            mag += extraMagazine;
+          }
         }
         log.write(`弹药类技能: ${displayNames[skillId]}: 攻击 ${mag} 次`);
         attackCount = mag;
@@ -3315,6 +3335,20 @@ function calcDurations(isSkill, attackTime, attackSpeed, levelData, buffList, bu
       log.write(`攻速: ${aspd_list}...`);
       log.write(`叠层攻击帧数(考虑帧数对齐补正): ${frame_list}...`);
       log.write(`叠层时间 ${stack_frame} 帧(包括第${stack_attack_count}次攻击)`);
+    } else if (charId == "char_1032_excu2" && buffList["tachr_1032_excu2_1"]) {
+      let {prob, prob_add} = buffList["tachr_1032_excu2_1"];
+      let stackCount = Math.ceil((1-prob) / prob_add); // 叠层次数
+      let n = Math.min(attackCount, stackCount);
+      let stackProb = prob + prob_add * (n-1);  // 等差数列了
+      let expect = (prob + stackProb) * n / 2 + Math.max(attackCount-n, 0);
+      log.writeNote(`技能连击期望 ${expect.toFixed(2)}`);
+      tags["origAttackCount"] = attackCount;
+      tags["extraAttack"] = expect;
+      attackCount += expect;
+      if (skillId == "skchr_excu2_3") {
+        duration += 1;
+        log.writeNote("尾刀动画时间1s");
+      }
     }
     // -- calcDurations skill judge ends here
 
@@ -3345,6 +3379,10 @@ function calcDurations(isSkill, attackTime, attackSpeed, levelData, buffList, bu
       stunDuration = 20;
     }
     if (stunDuration > 0) log.write(`晕眩: ${stunDuration}s`);
+
+    // 圣葬: 开技能可以重置普攻，但结束时不行
+    // 因此设置reset_attack=False但在普攻这里改成True
+    if (charId == "char_1032_excu2") rst = true;
     
     // 快速估算
     let spRatio = 1;
@@ -3471,6 +3509,10 @@ function calcDurations(isSkill, attackTime, attackSpeed, levelData, buffList, bu
             let p = buffList["tachr_301_cutter_1"].prob;
             extra_sp += (skillId == "skchr_cutter_1" ? (attackCount*2+1)*p : attackCount*2*p); 
           }
+          if (buffList["tachr_1032_excu2_1"]) {
+            let p = buffList["tachr_1032_excu2_1"].prob;
+            extra_sp += attackCount*p;
+          }
           next = (attackCount + extra_sp >= realSp);
           if (next) attackCount -= 1;
         }
@@ -3484,7 +3526,12 @@ function calcDurations(isSkill, attackTime, attackSpeed, levelData, buffList, bu
         if (buffList["tachr_301_cutter_1"]) {
           let p = buffList["tachr_301_cutter_1"].prob;
           let _n = ( skillId == "skchr_cutter_1" ? (attackCount*2+1)*p : attackCount*2*p )
-          line.push(`光蚀刻痕触发 ${_n.toFixed(2)} 次`);
+          line.push(`光蚀刻痕期望 ${_n.toFixed(2)} 次`);
+        }
+        if (buffList["tachr_1032_excu2_1"]) {
+          let p = buffList["tachr_1032_excu2_1"].prob;
+          let _n = attackCount*p;
+          line.push(`连击期望 ${_n.toFixed(2)} 次`);
         }
         if (line.length > 0) log.write(`[特殊] ${line.join(", ")}`);
         if (rst) {
@@ -3757,7 +3804,7 @@ function calculateAttack(charAttr, enemy, raidBlackboard, isSkill, charData, lev
     log.write(`[特殊] ${displayNames["skchr_bubble_2"]}: 攻击力以防御计算(${basicFrame.def + buffFrame.def})`);
   }
   // 迷迭香
-  if (["char_391_rosmon", "char_1027_greyy2", "char_421_crow", "char_491_humus",
+  if (["char_391_rosmon", "char_1027_greyy2", "char_421_crow", "char_491_humus", "char_1032_excu2",
        "char_431_ashlok", "char_4066_highmo", "char_4039_horn"].includes(charId)) {
     if (charId == "char_4039_horn" && options.melee) {}
     else {
@@ -4224,6 +4271,12 @@ function calculateAttack(charAttr, enemy, raidBlackboard, isSkill, charData, lev
       case "tachr_4066_highmo_trait":
       case "tachr_491_humus_trait":
         pool[2] += bb.value * dur.attackCount * Math.min(ecount, 2);
+        break;
+      case "tachr_1032_excu2_trait":
+        let excu2_trait_ratio = (isSkill && blackboard.id == "skchr_excu2_3") ? blackboard.trait_ratio : 1;
+        let block = (isSkill && blackboard.id == "skchr_excu2_2") ? 3 : 2;
+        log.write(`特性倍率 ${excu2_trait_ratio}x`);
+        pool[2] += bb.value * dur.attackCount * Math.min(ecount, block) * excu2_trait_ratio;
         break;
       case "tachr_2013_cerber_1":
         let cerber_t1_scale = bb.atk_scale;
@@ -5237,7 +5290,12 @@ function calculateAttack(charAttr, enemy, raidBlackboard, isSkill, charData, lev
           log.writeNote(`自爆真伤 ${kalts_t2_value}`);
         }
         break;
-
+      case "skchr_excu2_3":
+        let excu2_s3_atk = dur.tags["finalFrame.atk"] * bb["attack@final_atk_scale"];
+        damage = Math.max(excu2_s3_atk - edef, excu2_s3_atk * 0.05) * buffFrame.damage_scale;
+        pool[0] += damage * ecount;
+        log.writeNote(`尾刀伤害 ${damage.toFixed(1)}`);
+        break;
     }; // extraDamage switch ends here
 
     // 百分比/固定回血
@@ -5355,9 +5413,9 @@ function calculateAttack(charAttr, enemy, raidBlackboard, isSkill, charData, lev
         case "tachr_1031_slent2_1":
           break;
         case "skchr_gravel_2":
-          pool[4] += bb.hp_ratio * finalFrame.maxHp * 0.9;
+          pool[4] += bb.hp_ratio * finalFrame.maxHp;
           log.write(`[特殊] ${displayNames[buffName]}: 护盾量 ${pool[4].toFixed(1)}`);
-          log.writeNote("护盾实际生效90%");
+          log.writeNote("护盾在9秒内衰减到0");
           break;
         case "skchr_phatom_1":
           pool[4] += bb.hp_ratio * finalFrame.maxHp;
@@ -5484,7 +5542,7 @@ function calculateAttack(charAttr, enemy, raidBlackboard, isSkill, charData, lev
 function calculateGradDamage(_) { // _ -> args
   var ret = 0;
   var dmg_table = [];
-  var _seq = [...Array(_.dur.attackCount).keys()];  // [0, 1, ..., attackCount-1]
+  var _seq = [...Array(Math.round(_.dur.attackCount)).keys()];  // [0, 1, ..., attackCount-1]
   var subProf = AKDATA.Data.character_table[_.charId].subProfessionId;
 
   if (subProf == "funnel") {
@@ -5556,6 +5614,45 @@ function calculateGradDamage(_) { // _ -> args
       kwargs.dmg_table = dmg_table;
     }
     _.log.write(explainGradAttackTiming(kwargs));
+  } else if (_.skillId == "skchr_excu2_3") {
+    // 异葬3: 计算每击的期望
+    // 第二段伤害是加攻以后的攻击力
+    let acount = _.dur.tags["origAttackCount"];
+    let tbl = _.buffFrame.atk_table;
+    let seq = [...Array(acount).keys()];
+    while (tbl.length < acount + 1)
+      tbl.push(tbl[tbl.length-1]);  // padding
+    let excu2_atk = tbl.slice(0, acount+1).map(
+      x => _.finalFrame.atk + _.basicFrame.atk * x // 每击攻击力，第n次攻击连击时按第n+1次的攻击力计算
+    );
+    let excu2_dmg = excu2_atk.map(
+      x => Math.max(x-_.edef, x*0.05) * _.buffFrame.damage_scale  // 伤害
+    );
+    let {prob, prob_add} = _.buffList["tachr_1032_excu2_1"];
+    let excu2_prob = seq.map(
+      x => Math.min(1, prob + prob_add * x) // 连击概率
+    );
+    let excu2_expect = seq.map(
+      x => excu2_dmg[x] + excu2_prob[x] * excu2_dmg[x+1]
+    );
+    ret = excu2_expect.reduce((x, y) => x + y);
+
+    
+    // explain with markdown
+    let lines = [
+      ["攻击次数", ...(seq.map(x=>x+1))],
+      [":--:", ...(seq.map(x => ":--:"))],
+      ["攻击力", ...(excu2_atk.map(x=>Math.round(x)))],
+      ["连击期望", ...(excu2_prob.map(x=>`${Math.round(x*100)}%`))],
+      ["伤害期望", ...(excu2_expect.map(x=>Math.round(x)))]
+    ];
+    let mdText = lines.map(x => `| ${x.join(" | ")} |`).join('\n');
+    _.log.write(mdText);
+    _.log.write("");
+
+    // 把最终攻击力暂存在dur.tags里面
+    _.dur.tags["finalFrame.atk"] = excu2_atk[excu2_atk.length-1];
+    _.log.write(`最终攻击力 ${_.dur.tags["finalFrame.atk"].toFixed(1)}`);
   } else {
     // 一般处理（煌，傀影）: 攻击加成系数在buffFrame.atk_table预先计算好,此时finalFrame.atk为最后一次攻击的攻击力
     // 由finalFrame.atk计算之前每次攻击的实际攻击力，同时不影响其他buff

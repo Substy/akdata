@@ -868,7 +868,7 @@ function calculate(index) {
     $(".dps__row-g_dps th").text("平均HPS");
   }
 
-  let line = `${s.hitDamage.toFixed(2)} * ${s.dur.hitCount}`;
+  let line = `${s.hitDamage.toFixed(2)} * ${Math.round(s.dur.hitCount*100)/100}`;
   if (s.damageType != 2) {
     $(".dps__row-s_damage th").text("技能总伤害");
     $("dps__row-s_dps span").text("技能DPS(均摊)");

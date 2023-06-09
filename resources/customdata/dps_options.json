@@ -29,7 +29,8 @@
         "musha_hp": { "type": "scroll", "displaytext": "剩余HP%", "min": 1, "max": 100 },
         "char_dialog": { "type": "dialog", "displaytext": "选择干员复制（测试）", "default": "char_4048_doroth" },
         "range4": { "type": "scroll", "displaytext": "攻击距离", "min": 0, "max": 4.5, "step": 0.1 },
-        "mlyss_count": { "type": "scroll", "displaytext": "流形数量", "min": 1, "max": 5, "value": 1 }
+        "mlyss_count": { "type": "scroll", "displaytext": "流形数量", "min": 1, "max": 5, "value": 1 },
+        "extra_magazine": { "type": "scroll", "displaytext": "额外弹药<br>(包括第二天赋)", "min": 0, "max": 15, "value": 1 }
     },
     "cond_info": {
         "char_126_shotst": 1,
@@ -334,6 +335,7 @@
         "char_4006_melnte": [ "warmup", "cond_front", "range4" ],
         "char_1031_slent2": [ "cond", "musha_hp" ],
         "char_4027_heyak":  [ "cond", "range4" ],
-        "char_249_mlyss":   [ "token", "cond", "mlyss_count" ]
+        "char_249_mlyss":   [ "token", "cond", "mlyss_count" ],
+        "char_1032_excu2":  [ "extra_magazine" ]
     }
 }
