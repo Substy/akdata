@@ -340,7 +340,7 @@
     "skchr_prove_1":	{ "passive": true },
     "skchr_provs_1":    { "cast_time": 38, "sim": true, "attack_begin": 13 },
     "skchr_provs_2":    { "attack_begin": 13, "frame_corr": "0" },
-    "skchr_puzzle_2":   { "reset_attack": true, "attack_begin": 10 },
+    "skchr_puzzle_2":   { "reset_attack": true, "attack_begin": 10, "damage_type": "0" },
     "skchr_qanik_2":    { "sec": true, "interval": 0.5, "attack_begin": "0" },
     "skchr_qiubai_1":   { "damage_type": "0" },
     "skchr_qiubai_2":   { "cast_time": 35, "attack_begin": 16, "reset_attack": true, "damage_type": "0", "note": "首刀动画35帧(不计算攻速变化)"},

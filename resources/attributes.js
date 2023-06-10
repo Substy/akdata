@@ -5352,7 +5352,7 @@ function calculateAttack(charAttr, enemy, raidBlackboard, isSkill, charData, lev
         let excu2_s3_atk = dur.tags["finalFrame.atk"] * bb["attack@final_atk_scale"];
         damage = Math.max(excu2_s3_atk - edef, excu2_s3_atk * 0.05) * buffFrame.damage_scale;
         pool[0] += damage * ecount;
-        log.writeNote(`尾刀伤害 ${damage.toFixed(1)}`);
+        log.writeNote(`尾刀伤害 ${damage.toFixed(1)}, 命中 ${ecount}`);
         break;
       case "tachr_4015_spuria_1":
         let spur_count = (dur.attackCount - dur.hitCount - dur.critCount) / 2;
@@ -5711,7 +5711,7 @@ function calculateGradDamage(_) { // _ -> args
     let excu2_expect = seq.map(
       x => excu2_dmg[x] + excu2_prob[x] * excu2_dmg[x+1]
     );
-    ret = excu2_expect.reduce((x, y) => x + y);   
+    ret = excu2_expect.reduce((x, y) => x + y) * _.ecount;   
     // explain with markdown
     let mdText = makeMarkdownTable(
       [ "攻击次数", "攻击力", { text: "连击期望" }, "伤害期望" ],
