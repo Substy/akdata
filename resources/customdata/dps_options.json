@@ -175,7 +175,7 @@
         "char_367_swllow" : [ "crit", "equip", "archet", "chen" ],
         "char_137_brownb" : [ "stack" ],
         "char_131_flameb" : [ "stack", "equip", "short_mode" ],
-        "char_225_haak" : [ "crit" ],
+        "char_225_haak" : [ "crit", "equip" ],
         "char_226_hmau" : [ "cond" ],
         "char_2013_cerber" : [ "cond" ],
         "char_306_leizi" : [ "cond" ],
@@ -209,7 +209,7 @@
         "char_511_asnipe":  [ "crit" ],
         "char_271_spikes":  [ "cond", "ranged_penalty"],
         "char_346_aosta":   [ "cond" ],
-        "char_423_blemsh":  [ "cond" ],
+        "char_423_blemsh":  [ "cond", "equip" ],
         "char_347_jaksel":  [ "cond" ],
         "char_436_whispr":  [ "ranged_penalty", "cond", "short_mode" ],
         "char_1001_amiya2": [ "stack" ],
@@ -248,7 +248,7 @@
         "char_430_fartth":  [ "cond", "equip", "far" ],
         "char_431_ashlok":  [ "cond" ],
         "char_1014_nearl2": [ "cond", "block", "short_mode" ],
-        "char_420_flamtl":  [ "crit" ],
+        "char_420_flamtl":  [ "crit", "equip" ],
         "char_144_red":     [ "equip" ],
         "char_214_kafka":   [ "cond", "equip" ],
         "char_206_gnosis":  [ "freeze", "charge" ],
@@ -314,7 +314,7 @@
         "char_4065_judge":  [ "charge" ],
         "char_1028_texas2": [ "cond", "equip" ],
         "char_427_vigil":   [ "token", "cond", "stack" ],
-        "char_4072_ironmn": [ "token" ],
+        "char_4072_ironmn": [ "token", "equip" ],
         "char_112_siege":   [ "equip" ],
         "char_1020_reed2":  [ "rosmon_double", "reed2_fast" ],
         "char_297_hamoni":  [ "cond" ],
@@ -336,6 +336,8 @@
         "char_1031_slent2": [ "cond", "musha_hp" ],
         "char_4027_heyak":  [ "cond", "range4" ],
         "char_249_mlyss":   [ "token", "cond", "mlyss_count" ],
-        "char_1032_excu2":  [ "extra_magazine" ]
+        "char_1032_excu2":  [ "extra_magazine" ],
+        "char_4015_spuria": [ "crit", "equip" ],
+        "char_498_inside":  [ "equip" ]
     }
 }

@@ -221,6 +221,7 @@ function init() {
     'excel/skill_table.json',
     'excel/uniequip_table.json',
     'excel/battle_equip_table.json',
+    '../customdata/enums.json',
     '../version.json',
     '../customdata/dps_specialtags.json',
     '../customdata/dps_options.json',
@@ -430,7 +431,7 @@ function load() {
       setSkill: function() {
         let skills=[], slv = 0;
         charDB[this.charId].skills.forEach((skill, sid) => {
-          if (this.details.phase >= skill.unlockCond.phase) {
+          if (this.details.phase >= AKDATA.checkEnum('phase', skill.unlockCond.phase)) {
             let name = skillDB[skill.skillId].levels[0].name;
             skills.push({id: skill.skillId, name: name});
             slv = skillDB[skill.skillId].levels.length;

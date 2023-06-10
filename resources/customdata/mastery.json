@@ -76,7 +76,7 @@
     "char_196_sunbr":   { "mod_update_time": "2022/6/18" },
     "char_226_hmau":    { "mod_update_time": "2022/6/18" },
     "char_148_nearl":   { "mod_update_time": "2022/6/18" },
-    "char_423_blemsh":  { "mod_update_time": "2022/6/18" },
+    "char_423_blemsh":  { "mod_update_time": "2023/6/10" },
     "char_135_halo":    { "mod_update_time": "2022/7/5" },
     "char_456_ash":     { "mod_update_time": "2022/7/5" },
     "char_332_archet":  { "mod_update_time": "2022/12/18" },
@@ -121,7 +121,7 @@
     "char_4014_lunacu":  { "mod_update_time": "2022/11/8" },
     "char_1028_texas2": { "mod_update_time": "2022/11/8" },
     "char_362_saga":    { "mod_update_time": "2022/11/9" },
-    "char_420_flamtl":  { "mod_update_time": "2022/11/9" },
+    "char_420_flamtl":  { "mod_update_time": "2023/6/10" },
     "char_102_texas":   { "mod_update_time": "2022/11/9" },
     "char_349_chiave":  { "mod_update_time": "2022/11/9" },
     "char_115_headbr":  { "mod_update_time": "2022/11/9" },
@@ -172,5 +172,11 @@
     "char_254_vodfox":  { "mod_update_time": "2023/5/2" },
     "char_4027_heyak":  { "mod_update_time": "2023/5/4", "options": { "range4": 4 }, "emr": 10 },
     "char_4006_melnte": { "mod_update_time": "2023/5/4", "options": { "range4": 0 } },
-    "char_1031_slent2": { "options": { "musha_hp": 20 } }
+    "char_1031_slent2": { "options": { "musha_hp": 20 } },
+    "char_498_inside":  { "mod_update_time": "2023/6/10" },
+    "char_225_haak":    { "mod_update_time": "2023/6/10" },
+    "char_4015_spuria": { "mod_update_time": "2023/6/10" },
+    "char_4072_ironmn": { "mod_update_time": "2023/6/10" },
+    "char_433_windft":  { "mod_update_time": "2023/6/10" },
+    "char_484_robrta":  { "mod_update_time": "2023/6/10" }
 }

@@ -27,6 +27,11 @@
     "INSTANT": 1,
     "LIMITED": 2
   },
+  "skillType": {
+    "PASSIVE": 0,
+    "MANUAL": 1,
+    "AUTO": 2
+  },
   "spType": {
     "INCREASE_WITH_TIME": 1,
     "INCREASE_WHEN_ATTACK": 2,

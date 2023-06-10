@@ -160,12 +160,12 @@ function show(hash) {
       '<span class="o-badge" style="font-size:xx-small;width:60px;color:white;background-color:#FFB400;">受击回复</span>',
       '', '', '',
       '<span class="o-badge" style="font-size:xx-small;width:60px;color:white;background-color:#6F6F6F;">被动</span>',
-    ][skillData.levels[0].spData.spType];
+    ][AKDATA.checkEnum('spType', skillData.levels[0].spData.spType)];
     let skillType = [
       '',
       '<span class="o-badge" style="font-size:xx-small;width:60px;color:white;background-color:#6F6F6F;">手动触发</span>',
       '<span class="o-badge" style="font-size:xx-small;width:60px;color:white;background-color:#6F6F6F;">自动触发</span>',
-    ][skillData.levels[0].skillType];
+    ][AKDATA.checkEnum('skillType', skillData.levels[0].skillType)];
     skillHtml += pmBase.component.create({
       type: 'list',
       card: true,
@@ -200,16 +200,7 @@ function show(hash) {
         let spData = levelData.spData;
         let blackboard = Object.fromEntries(levelData.blackboard.map(x => [x.key.toLowerCase(), x.value]));
         let desc = AKDATA.formatString(levelData.description, true, blackboard, true);
-        /*
-        desc = desc.replace(variableRegex, (match, minus, key, format) => {
-          key = key.toLowerCase();
-          let value = blackboard[key];
-          delete blackboard[key];
-          if (minus) value = value * -1;
-          if (format === '0%') value = Math.round(value * 100) + '%';
-          else if (format === '0.0%') value = Math.round(value * 1000) / 10 + '%';
-          return value;
-        });*/
+
         if ( levelData.rangeId && (l == 0 || levelData.rangeId != skillData.levels[l-1].rangeId ) ) desc += '<hr>' + createRangeTable(levelData.rangeId);
         let bbtext = `<ul class="small text-left mb-0 muted">${Object.entries(blackboard).map(k=>`<li>${k[0]}: ${k[1]}</li>`).join('')}</ul>`;
 
