@@ -3772,7 +3772,7 @@ function calcAttackBegin(tag, attackSpeed, options, log) {
     log.writeNote("原本范围外前摇延长");
   }
 
-  if (isNaN(attackBegin)) {
+  if (!attackBegin && attackBegin!=0) {
     log.writeNote("暂无抬手数据，以12帧计算");
     attackBegin = 12;
   }
@@ -4479,7 +4479,7 @@ function calculateAttack(charAttr, enemy, raidBlackboard, isSkill, charData, lev
         if (n>0) {
           let hit = (9-n)*n/2;
           log.write(`[特殊] ${displayNames[buffName]}: 弹射箭额外命中 ${hit} (${n} 额外目标)`);
-          pool[0] += hitDamage * hit;
+          pool[0] += hitDamage * hit * dur.attackCount;
         }
         break;
       case "tachr_338_iris_trait":
@@ -4693,7 +4693,7 @@ function calculateAttack(charAttr, enemy, raidBlackboard, isSkill, charData, lev
         heal = finalFrame.atk * bb["attack@atk_to_hp_recovery_ratio"] / buffFrame.atk_scale;
         log.write(`每秒单体治疗: ${heal.toFixed(1)}`);
         log.writeNote("可以治疗召唤物");
-        pool[2] += heal * dur.duration * enemy.count;
+        pool[2] += heal * (dur.duration + dur.prepDuration) * enemy.count;
         break;
       case "skchr_blemsh_3":
         damage = finalFrame.atk * bb["attack@blemsh_s_3_extra_dmg[magic].atk_scale"];
