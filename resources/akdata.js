@@ -9,11 +9,11 @@ const useCache = true;
 const cacheBeginTime = new Date(2019, 12, 10).getTime();
 
 window.AKDATA = {
-  akdata: "230610", // jsdelivr tag version
+  akdata: "230708", // jsdelivr tag version
 
   Data: {},
 
-  new_op: [ "char_1032_excu2", "char_498_inside", "char_4015_spuria"],
+  new_op: [ "char_2012_typhon", "char_341_sntlla" ],
   todo_list: [],
 
   professionNames: {
@@ -173,15 +173,15 @@ window.AKDATA = {
     if (type == "FURN") {
       let data = AKDATA.Data.building_data.customData.furnitures[id];
       text = data.name;
-      rarity = data.rarity;
+      rarity = AKDATA.checkEnum('rarity', data.rarity);
     } else if (type == "CHAR") {
       let data = AKDATA.Data.item_table.items['p_' + id];
       text = data.name.replace('的信物', '');
-      rarity = data.rarity;
+      rarity = AKDATA.checkEnum('rarity', data.rarity);
     } else {
       let data = AKDATA.Data.item_table.items[id];
       text = data.name;
-      rarity = data.rarity;
+      rarity = AKDATA.checkEnum('rarity', data.rarity);
       if (id == "30145" || id == "30155") rarity = "crystal";
     }
     let s = createBadge('item', text, rarity);
@@ -224,7 +224,7 @@ window.AKDATA = {
     let charPools = {"新干员": [], "同分支干员": []};
     AKDATA.new_op.forEach(x => {
       let d = AKDATA.Data.character_table[x];
-      charPools["新干员"].push({"name": d.name, "id": x, "rarity": AKDATA.checkEnum("rarity", d.rarity)});
+      charPools["新干员"].push({"name": d.name, "id": x, "rarity": checkRarity(d.rarity)});
     });
 
     Object.entries(AKDATA.Data.character_table).forEach( ([charId, charData]) => {

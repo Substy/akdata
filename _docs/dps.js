@@ -91,32 +91,34 @@ function load() {
     <tr class="dps__row-potentialrank"> <th>潜能</th> </tr>
     <tr class="dps__row-favor"> <th>信赖</th> </tr>
     <tr class="dps__row-equip"> <th>模组 (精二生效)</th> </tr>
-    <tr class="dps__row-skill"> <th>技能</th> </tr>
     <tr class="dps__row-option"> <th>选项</th> </tr>
   </tbody>
   <tbody>
-    <tr class="dps__row-s_dps"> <th><font color="blue"><span>技能DPS</span></font><i class="fas fa-info-circle pull-right" data-toggle="tooltip" data-placement="right" title="技能总伤害 / 持续时间（包括罚站时间）"></i></th></tr>
-    <tr class="dps__row-n_dps"> <th>普攻</th> </tr>
-    <tr class="dps__row-g_dps"> <th>平均</th> </tr>
-    <tr class="dps__row-s_damage"> <th>技能总伤害 <i class="fas fa-info-circle pull-right" data-toggle="tooltip" data-placement="right" title="单次伤害 x 命中数"></i></th> </tr>
+    <tr class="dps__row-skill"> <th><font color="blue">技能</font></th> </tr>
     <tr class="dps__row-s_atk"> <th>技能攻击力 <i class="fas fa-info-circle pull-right" data-toggle="tooltip" data-placement="right" title="角色攻击力（计算技能倍数）"></i></th> </tr>
-    <tr class="dps__row-results"> <th><font color="blue">计算过程（用于验算）</font></th> </tr>
-    <tr class="dps__row-note"> <th>注记</th> </tr>
-  </tbody>
-  <tbody>
     <tr class="dps__row-period"> 
       <th>技能周期
         <i class="fas fa-info-circle pull-right" data-toggle="tooltip" data-html="true" data-placement="right"
-           title="普攻时间 + 技能持续时间 [ + 眩晕时间 ]"></i>
-      </th></tr>
+          title="普攻时间 + 技能持续时间 [ + 眩晕时间 ]"></i>
+      </th>
+    </tr>
+    <tr class="dps__row-s_damage"> <th>技能总伤害 <i class="fas fa-info-circle pull-right" data-toggle="tooltip" data-placement="right" title="单次伤害 x 命中数"></i></th> </tr>
+
+    <tr class="dps__row-s_dps"> <th><font color="blue"><span>技能DPS</span></font><i class="fas fa-info-circle pull-right" data-toggle="tooltip" data-placement="right" title="技能总伤害 / 持续时间（包括罚站时间）"></i></th></tr>
+    <tr class="dps__row-n_dps"> <th>普攻</th> </tr>
+    <tr class="dps__row-g_dps"> <th>平均</th> </tr>
     <tr class="dps__row-s_att"> <th>技能攻击间隔</th> </tr>
     <tr class="dps__row-n_att"> <th>普攻攻击间隔</th> </tr>
+    <tr class="dps__row-note"> <th>注记</th> </tr>  
+  </tbody>
+  <tbody>
     <tr class="dps__row-s_diff"> <th>技能总伤害 提升% <i class="fas fa-info-circle pull-right" data-toggle="tooltip" data-placement="right" title="和【第一列】结果相比的提升比例 +/-%"></i></th> </tr>
     <tr class="dps__row-g_diff"> <th>平均DPS 提升% <i class="fas fa-info-circle pull-right" data-toggle="tooltip" data-placement="right" title="和【第一列】结果相比的提升比例 +/-%"></i></th> </tr>
   </tbody>
   <tbody class="">
     <tr class="dps__row-damagepool"> <th>伤害表<i class="fas fa-info-circle pull-right" data-toggle="tooltip" title="详细的伤害表格"></i></th></tr>
     <tr class="dps__row-anim"> <th>动画帧数</th></tr>
+    <tr class="dps__row-results"> <th><font color="blue">计算过程（用于验算）</font></th> </tr>
     <tr class="dps__row-prts"> <th><font color="blue">PRTS干员页面</font></th> </tr>
   <!--  <tr class="dps__row-explain"> <th>算法解释（筹备中）</th></tr> -->
   </tbody>

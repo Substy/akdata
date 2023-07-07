@@ -103,6 +103,15 @@ function getTokenAtkHp(charAttr, tokenId, log) {
         buffDef = blackboard.def;
         updated = true;
       }
+      break;
+    case "uniequip_003_phatom":
+      if (charAttr.char.equipLevel == 3) {
+        blackboard = charAttr.buffList["uniequip_003_phatom"].token[tokenId];
+        buffAtk = blackboard.atk;
+        buffHp = blackboard.max_hp;
+        buffDef = blackboard.def;
+        updated = true;
+      }
   }
   if (updated) {
     charAttr.basic.maxHp += buffHp;
@@ -132,12 +141,7 @@ function getMlyssToken(charAttr, log) {
   blackboard.id = skillData.skillId;
   attr.buffList["skill"] = blackboard;
   attr.skillId = blackboard.id;
-  /*let equipData = {};
-  if (tokChar.equipId && tokChar.equipId.length > 0) {
-    equipData = AKDATA.Data.uniequip_table["equipDict"][tokChar.equipId];
-    displayNames[tokChar.equipId] = equipData.uniEquipName;
-  }
-*/
+
   // 表里的攻击类型非1即为法伤
   // yj定义从1开始，计算器从0开始（物伤分别以1和0表示）
   let damageType = (checkEnum("subProfessionDamageTypePairs", charData.subProfessionId) == 1) ? 0 : 1;
@@ -248,6 +252,7 @@ class NoLog {
 }
 
 function calculateDps(char, enemy, raidBuff) {
+ // console.log(char, enemy, raidBuff);
   let log = new Log();
   checkChar(char);
   enemy = enemy || {
@@ -2334,6 +2339,36 @@ function applyBuff(charAttr, buffFrm, tag, blackbd, isSkill, isCrit, log, enemy)
       case "skchr_spuria_2":
         delete blackboard.prob;
         break;
+      case "skchr_typhon_3":
+        buffFrame.baseAttackTime += blackboard.base_attack_time;
+        writeBuff(`base_attack_time + ${blackboard.base_attack_time}s`);
+        blackboard.base_attack_time = 0;
+        buffFrame.times = blackboard["attack@s3_max_hit_num"];
+        blackboard.atk_scale = blackboard["attack@s3_atk_scale"];
+        break;
+      case "tachr_2012_typhon_1":
+        if (!options.equip && blackboard.atk_scale)
+          delete blackboard.atk_scale;
+        // options.typhon_fix == True时，考虑叠层过程，否则以叠满计算
+        // 在extraDamage里调整穿防比例  
+        blackboard.edef_pene_scale = blackboard.def_penetrate * blackboard.max_stack_cnt;
+        if (options.typhon_fix) {
+          if (isCrit) {
+            blackboard.edef_pene_scale = blackboard.def_penetrate;
+            log.writeNote("考虑叠层过程");
+          }
+        } else
+          log.writeNote("第一天赋以叠满计算");
+        break;
+      case "tachr_2012_typhon_2":
+        blackboard.prob_override = 0; // 标记字段,无实际效果
+        break;
+      case "skchr_sntlla_2":
+        if (options.freeze) {
+          blackboard.magic_resistance = -15;
+          log.writeNote("维持冻结: -15法抗");
+        }
+        break;
     }
   }
   // --- applyBuff switch ends here ---
@@ -2498,6 +2533,12 @@ function applyBuff(charAttr, buffFrm, tag, blackbd, isSkill, isCrit, log, enemy)
     case "uniequip_002_kafka":
     case "uniequip_002_texas2":
       if (options.equip) {
+        blackboard = blackboard.trait;
+        log.writeNote("周围4格没有队友");
+      }
+      break;
+    case "uniequip_003_phatom":
+      if (options.equip && !options.token) {
         blackboard = blackboard.trait;
         log.writeNote("周围4格没有队友");
       }
@@ -2769,6 +2810,7 @@ function calcDurations(isSkill, attackTime, attackSpeed, levelData, buffList, bu
   let spType = checkEnum("spType", spData.spType);
   let duration = 0;
   let attackCount = 0;
+  let frameBegin = 12;
   let stunDuration = 0;
   let prepDuration = 0;
   let dpsDuration = -1;
@@ -3023,6 +3065,10 @@ function calcDurations(isSkill, attackTime, attackSpeed, levelData, buffList, bu
       case "skchr_noirc2_1":
         prepDuration = blackboard.nadaodonghua_duration;  // yj的工地拼音
         break;
+      case "skchr_typhon_3":
+        prepDuration = 1.667;
+        log.writeNote("启动30帧，结束20帧");
+        break;
     }
 
     // 快速估算
@@ -3052,7 +3098,14 @@ function calcDurations(isSkill, attackTime, attackSpeed, levelData, buffList, bu
       }
       duration = levelData.duration - prepDuration;
       // 抬手时间
-      var frameBegin = calcAttackBegin(skillId, attackSpeed, options, log);
+      // 技能没有抬手数据的尝试使用普攻抬手
+      frameBegin = 12;
+      if (!checkSpecs(skillId, "attack_begin") && checkSpecs(charId, "attack_begin")) {
+        frameBegin = calcAttackBegin(charId, attackSpeed, options, log);
+        log.write("(参照普攻抬手时间)");
+      } else {
+        frameBegin = calcAttackBegin(skillId, attackSpeed, options, log);
+      }
 
       var t = frameBegin / 30;
       attackCount = Math.ceil((duration - t) / attackTime);
@@ -3072,6 +3125,9 @@ function calcDurations(isSkill, attackTime, attackSpeed, levelData, buffList, bu
         attackCount = Math.ceil(duration / attackTime);
         log.write(`损失100%血量耗时: ${Math.sqrt(600).toFixed(1)}s，锁血时间: ${lock_time}s`);
         log.writeNote(`不治疗最大维持 ${duration.toFixed(1)}s`);
+      } else if (skillId == "skchr_typhon_2" && !options.warmup) {
+        duration = blackboard.first_duration;
+        attackCount = Math.ceil(duration / attackTime);
       } else {
         var d = (options.short_mode ? 180 : 1000);
         attackCount = Math.ceil(d / attackTime);
@@ -3124,6 +3180,9 @@ function calcDurations(isSkill, attackTime, attackSpeed, levelData, buffList, bu
           mag = 20;        
         else if (skillId == "skchr_ctable_2")
           mag = blackboard["attack@trigger_time"];
+        else if (skillId == "skchr_typhon_3")
+          mag = blackboard["attack@s3_trigger_time"];
+
         if (buffList["tachr_1013_chen2_1"]) {
           var prob = buffList["tachr_1013_chen2_1"]["spareshot_chen.prob"];
           var new_mag = Math.floor(mag / (1-prob));
@@ -3461,7 +3520,7 @@ function calcDurations(isSkill, attackTime, attackSpeed, levelData, buffList, bu
         log.write(`[重置普攻] 截断最后一个攻击间隔`);
       duration = dd;
       // 抬手时间
-      var frameBegin = calcAttackBegin(charId, attackSpeed, options, log);
+      frameBegin = calcAttackBegin(charId, attackSpeed, options, log);
       var t = frameBegin / 30;
       attackCount = Math.ceil((duration - t) / attackTime);
       log.write(`普攻前摇: ${t.toFixed(3)}s, ${frameBegin} 帧`);
@@ -3710,7 +3769,7 @@ function calcDurations(isSkill, attackTime, attackSpeed, levelData, buffList, bu
       } 
     } else if (skillId == "skchr_mlyss_3" && options.token && options.mlyssPosition == "RANGED") {
       // 分身登场耗费1s, 需要减去攻击次数
-      let frameBegin = calcAttackBegin(skillId, attackSpeed, options, new NoLog());
+      frameBegin = calcAttackBegin(skillId, attackSpeed, options, new NoLog());
       let newTokenDuration = levelData.duration - 1.2 - frameBegin / 30;
       let newTokenAttackCount = Math.ceil(newTokenDuration / attackTime);
       let newTokenCount = 5 - options.mlyss_count;
@@ -3728,7 +3787,8 @@ function calcDurations(isSkill, attackTime, attackSpeed, levelData, buffList, bu
       calcEdges({id: skillId}, Math.round(attackTime * 30),
                 { duration: newTokenDuration,
                   attackCount: newTokenAttackCount,
-                  tags, attackSpeed },
+                  tags, attackSpeed,
+                  attackBegin: frameBegin },
                 options, log);
       
     }
@@ -3753,13 +3813,16 @@ function calcDurations(isSkill, attackTime, attackSpeed, levelData, buffList, bu
     dpsDuration,
     tags,
     startSp,
-    spType
+    spType,
+    attackBegin: frameBegin,
+    resetAttack: rst
   };
 }
 
 function calcAttackBegin(tag, attackSpeed, options, log) {
+  let print = true;
   let attackBegin = checkSpecs(tag, "attack_begin");
-  if (attackBegin == "0") attackBegin = 0;
+  if (attackBegin === "0") attackBegin = 0; // 多一个等号
 
   if (options.token) {
     attackBegin = checkSpecs(tag, "token_attack_begin");
@@ -3771,40 +3834,58 @@ function calcAttackBegin(tag, attackSpeed, options, log) {
     attackBegin = 27;
     log.writeNote("原本范围外前摇延长");
   }
-
-  if (!attackBegin && attackBegin!=0) {
+ 
+  if (!attackBegin && attackBegin !== 0) {
     log.writeNote("暂无抬手数据，以12帧计算");
     attackBegin = 12;
+    print = false;
   }
   if (!options.fixed_atb) {
     // fixed_atb==True表示抬手不随攻速变化, 默认为False
     attackBegin = Math.ceil( (attackBegin - 1) * 100 / attackSpeed + 1);
   }
-  log.write(`[抬手时间] ${attackBegin} 帧`);
-  log.writeNote(`抬手 ${attackBegin} 帧`);
+  if (print) {
+    log.write(`[抬手时间] ${attackBegin} 帧`);
+    log.writeNote(`抬手 ${attackBegin} 帧`);
+  }
   return attackBegin;
 }
 
 // 计算边缘情况
 function calcEdges(blackboard, frame, dur, options, log) {
+  let _fps = 30;
   let skillId = blackboard.id;
-  //let attackBegin = checkSpecs(skillId, "attack_begin") || 12;  // specialtags记载的抬手时间，=前摇时间+1
-  //attackBegin = Math.ceil((attackBegin-1) * 100 / dur.attackSpeed + 1);  // 前摇部分受攻速影响
-  let attackBegin = calcAttackBegin(skillId, dur.attackSpeed, options, new NoLog());
 
-  let durationF = Math.round(30 * dur.duration);
+  let attackBegin = dur.attackBegin;
+  if (dur.attackBegin == 12)
+    attackBegin = calcAttackBegin(skillId, dur.attackSpeed, options, new NoLog());
+  let durationF = Math.round(_fps * dur.duration);  
   let remainF = attackBegin + frame * dur.attackCount - durationF;
   let passF = frame - remainF;
+  // 类似能天使3这种，最后一次连击可能丢伤害的计算
+  // 如果连击不丢伤害，则不需要这样计算
+  let trigger = checkSpecs(skillId, "trigger_interval");  // triggerInterval / triggerDelta 连击间隔秒数
+  let triggerCount = checkSpecs(skillId, "trigger_count");
 
   if (dur.tags.edge) {
     passF = dur.tags.edge;
     remainF = frame - passF;
   }
 
-  log.write("**【边缘情况估算(测试)】**");
+  log.write("**【边缘情况估算(试验功能，结果仅供参考)】**");
   log.write(`技能持续时间: ${durationF} 帧, 攻速 ${dur.attackSpeed}%, 抬手 ${attackBegin} 帧(受攻速影响), 攻击间隔 ${frame} 帧`);
   log.write(`技能结束时，前一次攻击经过: **${passF} 帧**`);
   log.write(`技能结束时，下一次攻击判定还需: **${remainF} 帧**`);
+  if (trigger) {
+    let triggerF = trigger * _fps;
+    let totalTriggerF = Math.ceil(triggerF * triggerCount);
+    log.write(`连击间隔 ${triggerF.toFixed(2)} 帧, 连击共耗时 ${totalTriggerF} 帧`);
+    if (passF < attackBegin + totalTriggerF) {
+      log.write('** 技能结束时，可能正在连击 **');
+      let passHit = Math.floor(passF / triggerF);
+      log.writeNote(`最后一次攻击${passHit}/${triggerCount}次在技能内`);
+    }
+  }
   if (remainF <= attackBegin)
     log.write('** 技能结束时，可能正在抬手 **');
 
@@ -4028,7 +4109,7 @@ function calculateAttack(charAttr, enemy, raidBlackboard, isSkill, charData, lev
     calcEdges(blackboard, frame, dur, options, log);
   }
   // 暴击次数
-  if (options.crit && critBuffFrame["prob"]) {
+  if (options.crit && critBuffFrame["prob"] !== null) {
     if (damageType != 2) {
       if (buffList["tachr_155_tiger_1"])
         dur.critCount = dur.duration / 3 * critBuffFrame.prob;
@@ -4063,6 +4144,10 @@ function calculateAttack(charAttr, enemy, raidBlackboard, isSkill, charData, lev
       if (charId == "char_1021_kroos2") {
         dur.critHitCount = Math.floor(dur.hitCount * critBuffFrame.prob);
         dur.hitCount -= dur.critHitCount;
+      } else if (buffList["tachr_2012_typhon_2"]) {
+        dur.critHitCount = 1;  // 固定首次攻击
+        dur.hitCount -= 1;
+        log.writeNote("触发1次第二天赋")
       } else if (charId == "char_4015_spuria") {
         dur.hitCount = dur.attackCount - Math.floor(dur.attackCount * critBuffFrame.prob);
         if ((dur.attackCount - dur.hitCount - dur.critCount) % 2 == 1) {
@@ -4105,7 +4190,7 @@ function calculateAttack(charAttr, enemy, raidBlackboard, isSkill, charData, lev
 
   // 计算伤害
   log.write("\n**【伤害计算】**");
-  log.write(`伤害类型: ${['物理','法术','治疗','真伤'][damageType]}`);
+  log.write(`伤害类型: ${['物理','法术','治疗','真伤','元素'][damageType]}`);
   let dmgPrefix = (damageType == 2) ? "治疗" : "伤害";
   let hitDamage = finalFrame.atk;
   let critDamage = 0;
@@ -5371,6 +5456,20 @@ function calculateAttack(charAttr, enemy, raidBlackboard, isSkill, charData, lev
         log.write(`二连击伤害 ${damage.toFixed(1)}, 命中 ${spur_count*2}`);
         log.write(`穿防伤害 ${damage_defp.toFixed(1)}, 命中 ${spur_count}`);
         break;
+      case "tachr_2012_typhon_1": // 修正提丰叠层期间伤害
+        if (options.typhon_fix) {
+          let edef_table = [2, 3, 4].map(x => enemy.def * (1 - bb.def_penetrate * x));
+          let damage_table = edef_table.map(x => Math.max(finalFrame.atk - x, finalFrame.atk*0.05) * buffFrame.damage_scale);
+          log.write(`第2-4次伤害: ${damage_table.map(x => x.toFixed(1))}`);
+          let delta = hitDamage * 3 - damage_table.reduce((x, y)=>x+y);
+          log.write(`损失伤害 ${delta.toFixed(1)}`);
+          pool[0] -= delta;
+        }
+        break;
+      case "uniequip_003_helage":
+        heal = finalFrame.maxHp * bb.trait.hp_ratio;
+        log.writeNote(`被击倒时恢复HP ${heal.toFixed(1)}`);
+        break;   
     }; // extraDamage switch ends here
 
     // 百分比/固定回血
@@ -5486,6 +5585,7 @@ function calculateAttack(charAttr, enemy, raidBlackboard, isSkill, charData, lev
         case "tachr_1028_texas2_1":
         case "tachr_4017_puzzle_1":
         case "tachr_1030_noirc2_2":
+        case "tachr_188_helage_2":
         case "tachr_1031_slent2_1":
           break;
         case "skchr_gravel_2":
@@ -5570,6 +5670,7 @@ function calculateAttack(charAttr, enemy, raidBlackboard, isSkill, charData, lev
   } 
 
   // 整理返回
+  // todo: 元素损伤相关
   let totalDamage = [0, 1, 3].reduce((x, y) => x + damagePool[y] + extraDamagePool[y], 0);
   let totalHeal = [2, 4].reduce((x, y) => x + damagePool[y] + extraDamagePool[y], 0);
   let extraDamage = [0, 1, 3].reduce((x, y) => x + extraDamagePool[y], 0);
@@ -5933,7 +6034,7 @@ function getAttributes(char, log) { //charId, phase = -1, level = -1
             // 如果天赋被模组修改，覆盖对应面板
             if (attributesKeyFrames.equip_blackboard) {
               let ebb = attributesKeyFrames.equip_blackboard; 
-              if (ebb.override_talent == cd.prefabKey) {
+              if (ebb.override_talent == cd.prefabKey && ebb.talent) {
                 var tb = ebb.talent;
                 ebb.remove_keys.forEach(k => {
                   delete tb[k];
@@ -6082,8 +6183,11 @@ function applyEquip(char, basic, log) {
     // which = 1, 2, "1+"
     var which = checkSpecs(equipId, "override_talent");
     // console.log(which);
-    if (which && which.toString().length > 0 && char.equipLevel > 1)
+    if (which && which.toString().length > 0 && char.equipLevel >= 1) {
       blackboard.override_talent = which.toString();
+      if (char.equipLevel == 1)
+        log.writeNote("1级模组覆盖天赋，需要核对");
+    }
     // override_trait 为true时才把装备特性面板覆盖到原本特性上，否则把装备和特性作为不同buff处理。
     blackboard.override_trait = checkSpecs(equipId, "override_trait");
     blackboard.remove_keys = checkSpecs(equipId, "remove_keys") || [];

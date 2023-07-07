@@ -359,6 +359,35 @@
     },
     "Stun": 30
   },
+  "char_1001_amiya2_casc#1": {
+    "version": "3.8.99",
+    "Attack": {
+      "duration": 38,
+      "OnAttack": 17
+    },
+    "Default": 0,
+    "Idle": 120,
+    "Skill_1": {
+      "duration": 38,
+      "OnAttack": 22
+    },
+    "Skill_2": {
+      "duration": 92,
+      "OnAttack": 92
+    },
+    "Skill_2_End": 6,
+    "Skill_2_Idle": 120,
+    "Skill_2_Loop": {
+      "duration": 38,
+      "OnAttack": 13
+    },
+    "Start": {
+      "duration": 30,
+      "OnStart": 12
+    },
+    "Die": 30,
+    "Stun": 30
+  },
   "char_1011_lava2": {
     "version": "3.8.99",
     "Attack": {
@@ -1697,6 +1726,20 @@
       "duration": 30,
       "OnStart": 4
     }
+  },
+  "char_121_lava_sale#9": {
+    "version": "3.8.99",
+    "Attack": {
+      "duration": 47,
+      "OnAttack": 25
+    },
+    "Default": 0,
+    "Idle": 160,
+    "Start": {
+      "duration": 30,
+      "OnStart": 4
+    },
+    "Die": 30
   },
   "char_122_beagle": {
     "version": "3.8.99",
@@ -3601,6 +3644,76 @@
       "OnStart": 8
     },
     "Die": 30
+  },
+  "char_2012_typhon": {
+    "version": "3.8.99",
+    "Attack_Begin": {
+      "duration": 5,
+      "OnPlayAudio": 2
+    },
+    "Attack_Down_Begin": {
+      "duration": 5,
+      "OnPlayAudio": 2
+    },
+    "Attack_Down_End": 10,
+    "Attack_Down_Loop": {
+      "duration": 72,
+      "OnAttack": 1,
+      "OnPlayAudio": 52
+    },
+    "Attack_End": 10,
+    "Attack_Loop": {
+      "duration": 72,
+      "OnAttack": 1,
+      "OnPlayAudio": 52
+    },
+    "Default": 0,
+    "Die": 30,
+    "Idle": 60,
+    "Skill_2_1_Begin": {
+      "duration": 5,
+      "OnPlayAudio": 2
+    },
+    "Skill_2_1_End": 10,
+    "Skill_2_1_Loop": {
+      "duration": 72,
+      "OnAttack": 1,
+      "OnPlayAudio": 52
+    },
+    "Skill_2_2_Begin": 20,
+    "Skill_2_2_Idle": 60,
+    "Skill_2_2_Loop": {
+      "duration": 72,
+      "OnAttack": 1
+    },
+    "Skill_3_Begin": 30,
+    "Skill_3_End": 20,
+    "Skill_3_Idle": 80,
+    "Skill_3_Loop": {
+      "duration": 144,
+      "OnAttack": 1,
+      "OnAttackFinished": 33,
+      "OnPlayAudio": 95
+    },
+    "Skill_Down_2_1_Begin": {
+      "duration": 5,
+      "OnPlayAudio": 2
+    },
+    "Skill_Down_2_1_End": 10,
+    "Skill_Down_2_1_Loop": {
+      "duration": 72,
+      "OnAttack": 1
+    },
+    "Skill_Down_2_2_Begin": 20,
+    "Skill_Down_2_2_Idle": 240,
+    "Skill_Down_2_2_Loop": {
+      "duration": 72,
+      "OnAttack": 1
+    },
+    "Start": {
+      "duration": 30,
+      "OnStart": 3
+    }
   },
   "char_2013_cerber": {
     "version": "3.8.99",
@@ -6669,6 +6782,40 @@
       "OnAttack": 27
     }
   },
+  "char_302_glaze_summer#11": {
+    "version": "3.8.99",
+    "Attack": {
+      "duration": 40,
+      "OnAttack": 18
+    },
+    "Attack_Down": {
+      "duration": 40,
+      "OnAttack": 18
+    },
+    "Default": 0,
+    "Die": 30,
+    "Idle": 30,
+    "Skill": {
+      "duration": 49,
+      "OnAttack": 27
+    },
+    "Skill_Down": {
+      "duration": 49,
+      "OnAttack": 27
+    },
+    "Start": {
+      "duration": 30,
+      "OnStart": 17
+    },
+    "Attack_Up": {
+      "duration": 40,
+      "OnAttack": 18
+    },
+    "Skill_Up": {
+      "duration": 49,
+      "OnAttack": 27
+    }
+  },
   "char_304_zebra": {
     "version": "3.8.99",
     "Attack": {
@@ -7294,6 +7441,26 @@
       "OnStart": 5
     }
   },
+  "char_341_sntlla": {
+    "version": "3.8.99",
+    "Attack": {
+      "duration": 87,
+      "OnAttack": 15
+    },
+    "Default": 0,
+    "Idle": 90,
+    "Skill_Begin": 15,
+    "Skill_End": 10,
+    "Skill_Loop": {
+      "duration": 30,
+      "OnAttack": 0
+    },
+    "Start": {
+      "duration": 30,
+      "OnStart": 12
+    },
+    "Die": 30
+  },
   "char_343_tknogi": {
     "version": "3.8.99",
     "Attack": {
@@ -7369,6 +7536,23 @@
       "duration": 30,
       "OnStart": 6
     }
+  },
+  "char_344_beewax_summer#11": {
+    "version": "3.8.99",
+    "Default": 0,
+    "Idle": 120,
+    "Skill_Begin": 20,
+    "Skill_End": 20,
+    "Skill_Idle": 60,
+    "Skill_Loop": {
+      "duration": 30,
+      "OnAttack": 4
+    },
+    "Start": {
+      "duration": 30,
+      "OnStart": 6
+    },
+    "Die": 30
   },
   "char_345_folnic": {
     "version": "3.8.99",
@@ -7817,6 +8001,33 @@
       "OnStart": 5
     },
     "Die": 30
+  },
+  "char_362_saga_sale#9": {
+    "version": "3.8.99",
+    "Attack_Begin": 4,
+    "Attack_End": 4,
+    "Attack_Loop": {
+      "duration": 30,
+      "OnAttack": 4
+    },
+    "Default": 0,
+    "Die": 30,
+    "Idle": 120,
+    "Skill": {
+      "duration": 25,
+      "OnAttack": 10
+    },
+    "Skill_2_Begin": 4,
+    "Skill_2_End": 4,
+    "Skill_2_Idle": 120,
+    "Skill_2_Loop": {
+      "duration": 30,
+      "OnAttack": 10
+    },
+    "Start": {
+      "duration": 30,
+      "OnStart": 5
+    }
   },
   "char_363_toddi": {
     "version": "3.8.99",
@@ -8410,6 +8621,20 @@
     },
     "Die": 30
   },
+  "char_4000_jnight_boc#7": {
+    "version": "3.8.99",
+    "Attack": {
+      "duration": 30,
+      "OnAttack": 7
+    },
+    "Default": 0,
+    "Die": 30,
+    "Idle": 20,
+    "Start": {
+      "duration": 30,
+      "OnStart": 10
+    }
+  },
   "char_4004_pudd": {
     "version": "3.8.99",
     "Attack": {
@@ -8907,6 +9132,33 @@
       "OnStart": 5
     },
     "Die": 30
+  },
+  "char_4025_aprot2_whirlwind#5": {
+    "version": "3.8.99",
+    "Attack": {
+      "duration": 50,
+      "OnAttack": 26
+    },
+    "Default": 0,
+    "Die": 30,
+    "Idle": 100,
+    "Skill_2_Begin": 25,
+    "Skill_2_End": 10,
+    "Skill_2_Loop": 50,
+    "Skill_Begin": 25,
+    "Skill_End": {
+      "duration": 10,
+      "OnAttack": 0
+    },
+    "Skill_Idle": 100,
+    "Skill_Loop": {
+      "duration": 30,
+      "OnAttack": 0
+    },
+    "Start": {
+      "duration": 30,
+      "OnStart": 5
+    }
   },
   "char_4027_heyak": {
     "version": "3.8.99",
@@ -9601,6 +9853,30 @@
       "OnStart": 7
     }
   },
+  "char_4047_pianst_wild#8": {
+    "version": "3.8.99",
+    "Attack": {
+      "duration": 48,
+      "OnAttack": 14
+    },
+    "Default": 0,
+    "Die": 30,
+    "Idle": 120,
+    "Skill_2_Attack": {
+      "duration": 48,
+      "OnAttack": 14
+    },
+    "Skill_2_Begin": 5,
+    "Skill_2_End": {
+      "duration": 47,
+      "OnAttack": 16
+    },
+    "Skill_2_Idle": 60,
+    "Start": {
+      "duration": 30,
+      "OnStart": 7
+    }
+  },
   "char_4048_doroth": {
     "version": "3.8.84",
     "Attack": {
@@ -9952,6 +10228,24 @@
     "Start": 30,
     "Die": 30
   },
+  "char_4071_peper_whirlwind#5": {
+    "version": "3.8.99",
+    "Attack": {
+      "duration": 30,
+      "OnAttack": 13
+    },
+    "Default": 0,
+    "Idle": 120,
+    "Skill_2_Begin": 8,
+    "Skill_2_End": 8,
+    "Skill_2_Idle": 120,
+    "Skill_2_Loop": {
+      "duration": 35,
+      "OnAttack": 8
+    },
+    "Start": 30,
+    "Die": 30
+  },
   "char_4072_ironmn": {
     "version": "3.8.99",
     "Attack": {
@@ -9977,6 +10271,32 @@
       "duration": 30,
       "OnStart": 5
     }
+  },
+  "char_4072_ironmn_summer#11": {
+    "version": "3.8.99",
+    "Attack": {
+      "duration": 45,
+      "OnAttack": 13
+    },
+    "Default": 0,
+    "Idle": 160,
+    "Skill_1": {
+      "duration": 45,
+      "OnAttack": 13
+    },
+    "Skill_2": {
+      "duration": 45,
+      "OnAttack": 14
+    },
+    "Skill_3": {
+      "duration": 45,
+      "OnAttack": 14
+    },
+    "Start": {
+      "duration": 30,
+      "OnStart": 5
+    },
+    "Die": 30
   },
   "char_4077_palico": {
     "version": "3.8.99",
@@ -10758,6 +11078,38 @@
     "Die": 30
   },
   "char_430_fartth": {
+    "version": "3.8.99",
+    "Attack_Begin": 5,
+    "Attack_Down_Begin": 5,
+    "Attack_Down_End": 5,
+    "Attack_Down_Loop": {
+      "duration": 80,
+      "OnAttack": 3,
+      "OnPlayAudio": 50
+    },
+    "Attack_End": 5,
+    "Attack_Loop": {
+      "duration": 80,
+      "OnAttack": 3,
+      "OnPlayAudio": 50
+    },
+    "Default": 0,
+    "Die": 30,
+    "Idle": 80,
+    "Skill3_Begin": 5,
+    "Skill3_End": 5,
+    "Skill3_Idle": 80,
+    "Skill3_Loop": {
+      "duration": 80,
+      "OnAttack": 3,
+      "OnPlayAudio": 50
+    },
+    "Start": {
+      "duration": 30,
+      "OnStart": 7
+    }
+  },
+  "char_430_fartth_whirlwind#5": {
     "version": "3.8.99",
     "Attack_Begin": 5,
     "Attack_Down_Begin": 5,
@@ -11973,6 +12325,30 @@
     "Die": 40,
     "Die_Skill": 40
   },
+  "char_479_sleach_summer#11": {
+    "version": "3.8.99",
+    "Attack": {
+      "duration": 30,
+      "OnAttack": 11
+    },
+    "Default": 0,
+    "Die": 26,
+    "Die_Skill": 26,
+    "Idle": 80,
+    "Skill_1_Begin": 15,
+    "Skill_1_End": 7,
+    "Skill_1_Loop": 160,
+    "Skill_2_Begin": 28,
+    "Skill_2_End": 15,
+    "Skill_2_Loop": 160,
+    "Skill_3_Begin": 25,
+    "Skill_3_End": 15,
+    "Skill_3_Loop": 160,
+    "Start": {
+      "duration": 30,
+      "OnStart": 6
+    }
+  },
   "char_484_robrta": {
     "version": "3.8.99",
     "Attack": {
@@ -12979,6 +13355,17 @@
     },
     "Stun": 30
   },
+  "token_10011_beewax_oblisk_summer#11": {
+    "version": "3.8.99",
+    "Default": 0,
+    "Die": 30,
+    "Idle": 60,
+    "Start": {
+      "duration": 30,
+      "OnStart": 4
+    },
+    "Stun": 0
+  },
   "token_10012_rosmon_shield_epoque#17": {},
   "token_10013_robin_mine_epoque#13": {
     "version": "3.8.99",
@@ -13241,5 +13628,36 @@
       "duration": 20,
       "OnStart": 5
     }
+  },
+  "token_10027_ironmn_pile1_summer#11": {
+    "version": "3.8.99",
+    "Default": 0,
+    "End": 30,
+    "Idle": 120,
+    "Start": {
+      "duration": 30,
+      "OnStart": 0
+    }
+  },
+  "token_10027_ironmn_pile2_summer#11": {
+    "version": "3.8.99",
+    "Default": 0,
+    "End": 30,
+    "Idle": 120,
+    "Start": {
+      "duration": 30,
+      "OnStart": 0
+    }
+  },
+  "token_10027_ironmn_pile3_summer#11": {
+    "version": "3.8.99",
+    "Attack": {
+      "duration": 10,
+      "OnAttack": 2
+    },
+    "Default": 0,
+    "Die": 30,
+    "Idle": 120,
+    "Start": 30
   }
 }

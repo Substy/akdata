@@ -16,7 +16,7 @@
     "char_128_plosis":  { "mod_update_time": "2022/6/15" },
     "char_275_breeze":  { "mod_update_time": "2022/6/15" },
     "char_181_flower":  { "mod_update_time": "2022/6/15" },
-    "char_250_phatom":  { "mod_update_time": "2022/6/15" },
+    "char_250_phatom":  { "mod_update_time": "2023/7/7" },
     "char_214_kafka":   { "mod_update_time": "2022/6/15" },
     "char_144_red":     { "mod_update_time": "2022/6/15" },
     "char_243_waaifu":  { "mod_update_time": "2022/6/15" },
@@ -132,7 +132,7 @@
     "char_363_toddi":  { "mod_update_time": "2022/12/18" },
     "char_4043_erato":  { "mod_update_time": "2022/12/18" },
     "char_4062_totter":  { "mod_update_time": "2022/12/18" },
-    "char_188_helage":  { "mod_update_time": "2022/12/18", "options": { "musha_hp": 30 }, "note": "最大攻速" },
+    "char_188_helage":  { "mod_update_time": "2023/7/7", "options": { "musha_hp": 30 }, "note": "最大攻速" },
     "char_475_akafyu":  { "mod_update_time": "2022/12/18", "options": { "musha_hp": 30 }, "note": "最大攻速" },
     "char_337_utage":  { "mod_update_time": "2022/12/18", "options": { "musha_hp": 30 }, "note": "最大攻速" },
     "char_180_amgoat":  { "mod_update_time": "2023/1/19", "emr": 10 },
@@ -178,5 +178,10 @@
     "char_4015_spuria": { "mod_update_time": "2023/6/10" },
     "char_4072_ironmn": { "mod_update_time": "2023/6/10" },
     "char_433_windft":  { "mod_update_time": "2023/6/10" },
-    "char_484_robrta":  { "mod_update_time": "2023/6/10" }
+    "char_484_robrta":  { "mod_update_time": "2023/6/10" },
+    "char_2012_typhon": { "mod_update_time": "2023/7/7" },
+    "char_341_sntlla":  { "mod_update_time": "2023/7/7" },
+    "char_401_elysm":   { "mod_update_time": "2023/7/7" },
+    "char_479_sleach":  { "mod_update_time": "2023/7/7" },
+    "char_151_myrtle":  { "mod_update_time": "2023/7/7" }
 }

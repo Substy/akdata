@@ -7,7 +7,7 @@ const DefaultAttribute = {
   skillLevel: 9,  // 0-9,
   equip: false,
   equipLevel: 1,
-  options: { cond: true, crit: true, stack: true, warmup: true, charge: true, equip: true, far: true, block: true }
+  options: { cond: true, stack: true, warmup: true, charge: true, equip: true, far: true, block: true }
 };
 const DefaultEnemy = { def: 0, magicResistance: 0, count: 1, hp: 0 };
 
@@ -491,7 +491,7 @@ function load() {
 
   window.vue_app.hash_args = window.location.hash.replace("#", "").split("/");
   let args = window.vue_app.hash_args;
-  console.log("args:", args);
+  //console.log("args:", args);
   if (args[0]) {
     window.vue_app.charId = args[0]; window.vue_app.changeChar();
   }
@@ -536,6 +536,8 @@ function buildChar(charId, skillId, recipe) {
       || checkSpecs(charId, "token", "mastery"))
     char.options.token = true;
   else char.options.token = false;
+  if (_opts.includes("crit"))
+    char.options.crit = true;
 
   // 模组
   let edb = AKDATA.Data.uniequip_table["equipDict"];
@@ -608,6 +610,7 @@ function calculate(charId) {
         Object.assign(ch.options, masterySpecs.options);
       }
       ch.dps = AKDATA.attributes.calculateDps(ch, enemy, raidBuff);
+    //  console.log(ch, ch.dps.skill.dps);
       if (ch.options.token && !extraNotes.includes("召唤物")) {
         extraNotes.push("召唤物");
       }
@@ -751,8 +754,9 @@ function buildChartView(resultView, key) {
       else
         entry.push(value.toFixed(1));
       last[skill] = value;
-      if (stg == window.vue_app.stageKeys[window.vue_app.pivotStageId])
+      if (stg == window.vue_app.stageKeys[window.vue_app.pivotStageId]) {
         pivots.push(value);
+      }
     }
     columns.push(entry);
     groups.push(stg);
@@ -924,12 +928,6 @@ function calcSubClass(x, prof) {
     }
   });
   let pats = patterns.slice(0, view.length);
-  /*
-  if (s>0) {
-    view.push(["其他", (s*100).toFixed(2)]);
-    groups.push("其他");
-    pats.push("#cccccc");
-  }*/
 
   return {
     rate, view, groups, pats
@@ -1145,7 +1143,7 @@ function plotPivotCompare(chartView) {
   // 处理chartView基于pivot的平移
   // pivotStageId == 0时不进行平移
   if (window.vue_app.pivotStageId > 0) {
-    console.log(window.vue_app.resultView);
+    //console.log(window.vue_app.resultView);
     let part = window.vue_app.pivotStageId - 1;
     for (let col=1; col<=3; ++col) {
       let pivot = chartView.pivots[col-1];
@@ -1184,7 +1182,7 @@ function plotPivotCompare(chartView) {
     ]
   };
   //console.log(dataset);
-  console.log(chartView);
+  //console.log(chartView);
 
   let seriesTemplate = {
     type: 'bar',

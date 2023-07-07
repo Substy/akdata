@@ -130,8 +130,11 @@ function load() {
             charId,
             skillId: skill.skillId,
             skillLevel: skillLevel-1,
-            options: { cond: true, buff: true, crit: true, equip: true },
+            options: { cond: true, buff: true, crit: false, equip: true },
           };
+          if (AKDATA.Data.dps_options.char[charId].includes("crit"))
+            char.options.crit = true;
+            
           let dps = AKDATA.attributes.calculateDps(char);
           if ( !dps ) return;
           if ( dps.skill.hps == 0 || !dps.skill.hps ) return;
