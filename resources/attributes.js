@@ -5486,22 +5486,22 @@ function calculateAttack(charAttr, enemy, raidBlackboard, isSkill, charData, lev
         break;   
       case "tachr_4102_threye_2": // ID为2但是是第一天赋
         if (options.cond) {
-          damage = finalFrame.atk / buffFrame.atk_scale * bb.ep_damage_ratio * (100 - enemy.epResistance)/100;
+          damage = finalFrame.atk / buffFrame.atk_scale * bb.ep_damage_ratio * (100 - enemy.epDamageResistance)/100;
           log.write(`${displayNames[buffName]}: 单次攻击元素损伤 ${damage.toFixed(1)}`);
           pool[6] += damage * dur.hitCount;
         }
         break;
       case "skchr_threye_1":
-        damage = finalFrame.atk / buffFrame.atk_scale * bb.ep_damage_ratio * (100 - enemy.epResistance)/100;
+        damage = finalFrame.atk / buffFrame.atk_scale * bb.ep_damage_ratio * (100 - enemy.epDamageResistance)/100;
         log.write(`${displayNames[buffName]}: 单次攻击元素损伤 ${damage.toFixed(1)}`);
         pool[6] += damage * dur.hitCount;
         break;
       case "skchr_threye_2":
-        damage = finalFrame.atk * bb["attack@ep_damage_ratio"] * (100 - enemy.epResistance)/100;
+        damage = finalFrame.atk * bb["attack@ep_damage_ratio"] * (100 - enemy.epDamageResistance)/100;
         log.write(`${displayNames[buffName]}: 单次攻击元素损伤 ${damage.toFixed(1)}`);
         log.writeNote("以每目标爆发1次计算");
         pool[6] += damage * dur.hitCount; // 元素槽损伤
-        pool[5] += 800 * 15 * ecount * (100 - enemy.epDamageResistance) / 100; // 元素伤害
+        pool[5] += 800 * 15 * ecount * (100 - enemy.epResistance) / 100; // 元素伤害
         break;
         
     }; // extraDamage switch ends here

@@ -137,12 +137,12 @@ function load() {
         <th>
           元素抗性
           <i class="fas fa-info-circle pull-right" data-toggle="tooltip" data-placement="right"
-             title="对【累积】元素损伤的抗性，一般为0"></i>
+             title="元素类型伤害的抗性(削减HP槽)；一般为0"></i>
         </th>
         <th>
-          元素伤害抗性
+          元素损伤抗性
           <i class="fas fa-info-circle pull-right" data-toggle="tooltip" data-placement="right"
-             title="对元素损伤爆发造成的【元素伤害】的抗性，一般为0"></i>
+             title="元素损伤的抗性(削减元素槽)一般为0"></i>
         </th>
         <th>
           减伤%
@@ -155,7 +155,7 @@ function load() {
       <td data-th="法抗"><input type="text" class="dps__enemy-mr" value="0" style="width: 80%"></td>
       <td data-th="数量"><input type="text" class="dps__enemy-count" value="1" style="width: 80%"></td>
       <td data-th="元素抗性"><input type="text" class="dps__enemy-er" value="0" style="width: 80%"></td>
-      <td data-th="元素伤害抗性"><input type="text" class="dps__enemy-edr" value="0" style="width: 80%"></td>
+      <td data-th="元素损伤抗性"><input type="text" class="dps__enemy-edr" value="0" style="width: 80%"></td>
       <td data-th="减伤%"><input type="text" class="dps__enemy-dr" value="0" style="width: 80%"></td>
       </tr>
     </tbody>
