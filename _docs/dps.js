@@ -134,36 +134,68 @@ function load() {
         <th>防御力</th>
         <th>法术抗性</th>
         <th>数量</th>
+        <th>
+          元素抗性
+          <i class="fas fa-info-circle pull-right" data-toggle="tooltip" data-placement="right"
+             title="对【累积】元素损伤的抗性，一般为0"></i>
+        </th>
+        <th>
+          元素伤害抗性
+          <i class="fas fa-info-circle pull-right" data-toggle="tooltip" data-placement="right"
+             title="对元素损伤爆发造成的【元素伤害】的抗性，一般为0"></i>
+        </th>
+        <th>
+          减伤%
+          <i class="fas fa-info-circle pull-right" data-toggle="tooltip" data-placement="right"
+             title="乘算，百分比减少所有伤害，一般为0"></i>
+        </th>
       </tr>
       <tr>
       <td data-th="防御"><input type="text" class="dps__enemy-def" value="0" style="width: 80%"></td>
       <td data-th="法抗"><input type="text" class="dps__enemy-mr" value="0" style="width: 80%"></td>
       <td data-th="数量"><input type="text" class="dps__enemy-count" value="1" style="width: 80%"></td>
+      <td data-th="元素抗性"><input type="text" class="dps__enemy-er" value="0" style="width: 80%"></td>
+      <td data-th="元素伤害抗性"><input type="text" class="dps__enemy-edr" value="0" style="width: 80%"></td>
+      <td data-th="减伤%"><input type="text" class="dps__enemy-dr" value="0" style="width: 80%"></td>
       </tr>
     </tbody>
   </table>
 </div>
 <div class="card">
   <div class="card-header">
-    <div class="card-title mb-0">团辅（输入整数）</div>
+    <div class="card-title mb-0">团辅（详见选项内说明）</div>
   </div>
   <table class="table dps dps_responsive" style="table-layout:fixed;">
     <tbody>
       <tr>
-        <th>攻击力(+x)</th>
-        <th>攻击力(+x%)</th>
-        <th>攻速(+x)</th>
-        <th>技力恢复(+x%)</th>
-        <th>原本攻击力变化<br>(合约Tag/保全装备 +x%)</th>
-        <th>伤害倍率<br>(damage_scale + x%)</th>
+        <th>攻击力/最终加算
+         <i class="fas fa-info-circle pull-right" data-toggle="tooltip" data-placement="right"
+            title="加算的攻击力，如：吟游者"></i>
+        </th>
+        <th>攻击力%/直接乘算
+          <i class="fas fa-info-circle pull-right" data-toggle="tooltip" data-placement="right"
+            title="乘算后相加的攻击力百分比，如：华法琳"></i>
+        </th>
+        <th>攻速/加算</th>
+        <th>技力%/直接乘算
+          <i class="fas fa-info-circle pull-right" data-toggle="tooltip" data-placement="right"
+          title="乘算后相加的技力百分比，如：白面鸮"></i>
+        </th>
+        <th>攻击力/直接加算
+          <i class="fas fa-info-circle pull-right" data-toggle="tooltip" data-placement="right"
+              title="直接加基础攻击力"></i>
+        </th>
+        <th>增伤%/最终乘算
+          <i class="fas fa-info-circle pull-right" data-toggle="tooltip" data-placement="right"
+             title="连乘区，包括增伤、脆弱和法术脆弱，仅能增强物理、法术、真伤；不能增加元素伤害"></i></th>
       </tr>
       <tr>
-      <td data-th="攻击力(+x)"><input type="text" class="dps__buff-atk" value="0" style="width: 90%" ></td>
-      <td data-th="攻击力(+x%)"><input type="text" class="dps__buff-atkpct" value="0" style="width: 90%" ></td>
-      <td data-th="攻速(+x)"><input type="text" class="dps__buff-ats" value="0" style="width: 90%"></td>
-      <td data-th="技力恢复(+x%)"><input type="text" class="dps__buff-cdr" value="0" style="width: 90%"></td>
-      <td data-th="原本攻击力(+x%)"><input type="text" class="dps__buff-batk" value="0" style="width: 90%"></td>
-      <td data-th="伤害倍率(+x%)"><input type="text" class="dps__buff-scale" value="0" style="width: 90%"></td>
+      <td><input type="text" class="dps__buff-atk" value="0" style="width: 90%" ></td>
+      <td><input type="text" class="dps__buff-atkpct" value="0" style="width: 90%" ></td>
+      <td><input type="text" class="dps__buff-ats" value="0" style="width: 90%"></td>
+      <td><input type="text" class="dps__buff-cdr" value="0" style="width: 90%"></td>
+      <td><input type="text" class="dps__buff-batk" value="0" style="width: 90%"></td>
+      <td><input type="text" class="dps__buff-scale" value="0" style="width: 90%"></td>
       </tr>
     </tbody>
   </table>
@@ -263,6 +295,7 @@ function load() {
   $('.dps__skill, .dps__skilllevel, .dps__potentialrank, .dps__favor').change(chooseSkill);
   $('.dps__enemy-def, .dps__enemy-mr, .dps__enemy-count, .dps__enemy-hp').change(calculateAll);
   $('.dps__buff-atk, .dps__buff-atkpct, .dps__buff-ats, .dps__buff-cdr, .dps__buff-batk, .dps__buff-scale').change(calculateAll);
+  $('.dps__enemy-er, .dps__enemy-edr, .dps__enemy-dr').change(calculateAll);
 
   $('.dps__results').click(showDetail);
   $('.dps__explain').click(showExplain);
@@ -400,6 +433,8 @@ function showDamage() {
     <th>法术</th>
     <th>治疗</th>
     <th width="100px">真伤/护盾</th>
+    <th>元素伤害</th>
+    <th>元素损伤</th>
     </tr>
     <tr>
     <th>普攻</th>
@@ -429,7 +464,7 @@ function showDamage() {
     let d = dps[row];
     let row_html = $(`.damage tr:nth-child(${row+2})`);
     
-    let pool = [0, 1, 2, 3].map(x => Math.round(d.damagePool[x] + d.extraDamagePool[x]), 0);
+    let pool = [0, 1, 2, 3, 5, 6].map(x => Math.round(d.damagePool[x] + d.extraDamagePool[x]), 0);
     pool[3] += d.damagePool[4] + d.extraDamagePool[4];
 
     let data = [Math.round(d.atk), `${d.attackTime.toFixed(3)}s<br>${Math.round(d.attackTime * 30)}帧`, Math.round(d.dur.hitCount), d.dur.duration.toFixed(2), ...pool];
@@ -815,6 +850,9 @@ function calculate(index) {
     count: $('.dps__enemy-count').val(),
   //  hp: ~~$('.dps__enemy-hp').val(),
     hp: 0,
+    epResistance: $('.dps__enemy-er').val(),
+    epDamageResistance: $('.dps__enemy-edr').val(),
+    dr: $('.dps__enemy-dr').val()
   };
   let raidBuff = {
     atk: parseFloat($('.dps__buff-atk').val()),

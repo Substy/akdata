@@ -729,7 +729,7 @@
     "uniequip_002_robrta":  { "override_talent": 1 },
     "uniequip_003_blemsh":  { "override_talent": 2 },
     "uniequip_003_flamtl":  { "override_talent": 2 },
-    "uniequip_002_typhon":  { "override_talent": 1 },
+    "uniequip_002_typhon":  { "override_talent": 1, "override_lv1": true },
     "uniequip_002_sntlla":  { "override_talent": 1 },
     "uniequip_002_elysm":   { "override_talent": 1 },
     "uniequip_002_sleach":   { "override_talent": 1 },

@@ -10522,6 +10522,24 @@
       "OnStart": 5
     }
   },
+  "char_4102_threye": {
+    "version": "3.8.99",
+    "Attack": {
+      "duration": 45,
+      "OnAttack": 19
+    },
+    "Default": 0,
+    "Die": 30,
+    "Idle": 120,
+    "Skill_2": {
+      "duration": 45,
+      "OnAttack": 19
+    },
+    "Start": {
+      "duration": 30,
+      "OnStart": 12
+    }
+  },
   "char_411_tomimi": {
     "version": "3.8.99",
     "Attack": {

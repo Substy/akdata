@@ -130,7 +130,7 @@ function buildVueModel() {
     equipList: [],
     equip_hint: "",
     calculating: false,
-    pivotStageId: 0,
+    pivotStageId: 2,
     stageKeys: [0, ...Object.keys(Stages)]
   };
 }
@@ -202,7 +202,7 @@ function load() {
   <div class="card mb-2 col-12">
     <div class="card-header">
       <div class="card-title">
-        专精收益（以精2 1级 7级技能为基准计算）{{ equip_hint }}
+        <span class="float-left pt-1">专精收益 // {{ equip_hint }}</span>
         <span class="float-right">
           <input type="radio" id="btn_avg" value="dps" v-model="chartKey">
           <label for="btn_avg" style="margin: 5px">平均dps/hps</label>
@@ -211,7 +211,8 @@ function load() {
           <input type="radio" id="btn_total" value="s_dmg" v-model="chartKey">
           <label for="btn_total" style="margin: 5px">技能总伤害/治疗</label>
         </span>
-        <span class="float-right" style="padding-right: 50px">
+        <span class="float-right" style="padding-right: 80px">
+          选择模组: 
           <template v-for="e in equipList">
             <input type="radio" :id="'btn_' + e.id" :value="e.id" v-model="equipId">
             <label :for="'btn_' + e.id" style="margin: 5px">{{ e.name }}</label>
@@ -223,7 +224,7 @@ function load() {
   </div>
   <div class="card mb-2 col-12">
     <div class="card-header">
-      <div class="card-title mb-0">专精提升率对比</div>
+      <div class="card-title mb-0">专精提升率对比（提示：在上面图选择模组和比较项目，下面选择分母）</div>
     </div>
     <div class="toolbar mb-2" role="toolbar">
       <span class="ml-2">选择比较基准练度</span>
@@ -332,7 +333,7 @@ function load() {
           }
           this.updateLevelingTable();
           let uptime = checkSpecs(this.charId, "mod_update_time", "mastery");
-          this.equip_hint = (uptime ? `模组升级收益已更新: ${uptime}` : "(模组升级收益暂未更新)");
+          this.equip_hint = (uptime ? `模组更新时间: ${uptime}` : "(模组暂未更新)");
           if (!this.equipId) this.equip_hint = ""; 
         }
       },

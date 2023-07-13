@@ -24,7 +24,11 @@ var DisplayType = {
   RECRUIT_TICKET: "招募券",
   ACTIVE_TOOL: "战术道具",
   CUSTOM_TICKET: "净化券",
-  LOCKED_TREASURE: "上锁的宝箱"
+  LOCKED_TREASURE: "上锁的宝箱",
+  TOTEM: "密文板",
+  TOTEM_UPPER: "布局",
+  TOTEM_LOWER: "本因",
+  VISION: "抗干扰"
 };
 
 function makeList(which=1) {
@@ -34,6 +38,7 @@ function makeList(which=1) {
   let relicBlackboard = rogue.relics;
   let rogueItems = rogue.items;
   let relics = {};
+  let modules = AKDATA.Data.roguelike_topic_table.modules[`rogue_${which}`];
 
   // join
   Object.values(rogueItems).forEach(item => {
@@ -60,17 +65,29 @@ function makeList(which=1) {
   let list = pmBase.component.create({
     type: 'list',
     columns: [ "编号", {header:'道具',width:'12%'}, {header:'类别',width:'8%'},
-              {header:'价值',width:'8%'}, "效果/描述", "解锁方式", {header:'数值',width:'15%'} ],
-    list: Object.values(relics).orderby(x=>rank(x)).map( item=> [
-      item.orderId || "-",
-      (item.orderId ? `<img class="figure" loading="lazy" src="/akdata/assets/images/relic/${which}/${item.orderId}.png" /><br>` : "")
-       + "<strong>" + item.name + "</strong>",
-      DisplayType[item.type],
-      item.value || "-",
-      item.usage + "<br><i><small>" + (item.description || "") + "</small></i>",
-      item.unlockCondDesc || "-",
-      JSON.stringify(item.blackboard, null, 2)
-    ]),
+              {header:'价值',width:'8%'}, {header:"效果/描述",width:"30%"}, {header:"解锁方式", width: "25%"}, {header:'数值',width:'15%'} ],
+    list: Object.values(relics).orderby(x=>rank(x)).map( item=> {
+      let listView = [
+        item.orderId || "-",
+        (item.orderId ? `<img class="figure" loading="lazy" src="/akdata/assets/images/relic/${which}/${item.orderId}.png" /><br>` : "")
+        + "<strong>" + item.name + "</strong>",
+        DisplayType[item.type] || item.type,
+        item.value || "-",
+        item.usage + "<br><i><small>" + (item.description || "") + "</small></i>",
+        item.unlockCondDesc || "-",
+        JSON.stringify(item.blackboard, null, 2)
+      ];
+      if (item.type == "TOTEM") {
+        let totemBuffs = modules.totemBuff.totemBuffDatas[item.id];
+        let color = totemBuffs.color.toLowerCase();
+        listView[2] += `<br><i><small>${DisplayType[item.subType]}<small></i>`;
+        listView[4] = totemBuffs.archiveDesc.replace("（", "<br>（")
+                    + `<br><span style="font-style: italic; font-size: 80%; font-weight: 300; color: ${color}">
+                        ${totemBuffs.rhythm}
+                      </span>`;
+      }
+      return listView;
+  }),
     sortable: true,
     card: true,
   });
@@ -87,8 +104,11 @@ function load() {
     },{
       text: '水月与深蓝之树',
       content: makeList(2),
+    },{
+      text: '探索者的银凇止境',
+      content: makeList(3),
     }],
-    active: 1
+    active: 2
   });
 
   pmBase.content.build({

@@ -136,7 +136,8 @@
         "char_1031_slent2": 2,
         "char_4027_heyak": 1,
         "char_249_mlyss": "trait",
-        "char_250_phatom": 1
+        "char_250_phatom": 1,
+        "char_4102_threye": 1
     },
     "char" : {
         "char_103_angel": [ "equip", "archet", "chen" ],
@@ -342,6 +343,7 @@
         "char_4015_spuria": [ "crit", "equip" ],
         "char_498_inside":  [ "equip" ],
         "char_2012_typhon": [ "crit", "equip", "warmup", "typhon_fix" ],
-        "char_341_sntlla":  [ "freeze" ]
+        "char_341_sntlla":  [ "freeze" ],
+        "char_4102_threye": [ "cond" ]
     }
 }

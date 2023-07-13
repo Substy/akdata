@@ -259,11 +259,20 @@ function calculateDps(char, enemy, raidBuff) {
     def: 0,
     magicResistance: 0,
     count: 1,
+    epResistance: 0,
+    epDamageResistance: 0,
+    dr: 0,
   };
+  // 以后再优化，担心影响全局计算
   if (!enemy.def) enemy.def = 0;
   if (!enemy.magicResistance) enemy.magicResistance = 0;
   if (!enemy.count || enemy.count<1) enemy.count = 1;
+  if (!enemy.epResistance) enemy.epResistance = 0;
+  if (!enemy.epDamageResistance) enemy.epDamageResistance = 0;
+  if (!enemy.dr) enemy.dr = 0;
+
   enemy.count = Math.round(enemy.count);
+  enemy.dr = Math.min(100, Math.max(0, enemy.dr));
 
   raidBuff = raidBuff || { atk: 0, atkpct: 0, ats: 0, cdr: 0, base_atk: 0, damage_scale: 0 };
   // 把raidBuff处理成blackboard的格式
@@ -325,9 +334,6 @@ function calculateDps(char, enemy, raidBuff) {
   log.write("----");
   var _backup = {
 	basic: {...attr.basic},
-//	enemy: {...enemy},
-//	chr: {...charData},
-//	level: {...levelData}
   };
   var _note = "";
   let normalAttack = null;
@@ -415,10 +421,15 @@ function calculateDpsSeries(char, enemy, raidBuff, key, series) {
     def: 0,
     magicResistance: 0,
     count: 1,
+    epResistance: 0,
+    epDamageResistance: 0
   };
   if (!enemy.def) enemy.def = 0;
   if (!enemy.magicResistance) enemy.magicResistance = 0;
   if (!enemy.count || enemy.count<1) enemy.count = 1;
+  if (!enemy.epResistance) enemy.epResistance = 0;
+  if (!enemy.epDamageResistance) enemy.epDamageResistance = 0;
+
   enemy.count = Math.round(enemy.count);
 
   raidBuff = raidBuff || { atk: 0, atkpct: 0, ats: 0, cdr: 0, base_atk: 0, damage_scale: 0 };
@@ -1249,6 +1260,7 @@ function applyBuff(charAttr, buffFrm, tag, blackbd, isSkill, isCrit, log, enemy)
       case "skchr_myrrh_2":
       case "skchr_whispr_1":
       case "skchr_ling_2":
+      case "skchr_threye_2":
         buffFrame.maxTarget = 2;
         writeBuff(`最大目标数 = ${buffFrame.maxTarget}`);
         break;
@@ -4070,11 +4082,13 @@ function calculateAttack(charAttr, enemy, raidBlackboard, isSkill, charData, lev
       enemyBuffFrame = applyBuff(charAttr, enemyBuffFrame, buffName, buffList[b], true, false, new Log(), enemy);
     }
   }
+  // "用于计算伤害"的敌人属性
   let edef = Math.max(0, ((enemy.def + enemyBuffFrame.edef) * enemyBuffFrame.edef_scale - enemyBuffFrame.edef_pene) * (1-enemyBuffFrame.edef_pene_scale) );
   let emr = Math.min((enemy.magicResistance + enemyBuffFrame.emr) * enemyBuffFrame.emr_scale, 100);
   emr = Math.max(emr - enemyBuffFrame.emr_pene, 0);
   let emrpct = emr / 100;
   let ecount = Math.min(buffFrame.maxTarget, enemy.count);
+
   if (blackboard.id == "skchr_pudd_2" && isSkill && ecount > 1) {
     ecount = buffFrame.maxTarget;
     log.writeNote(`相当于命中 ${ecount} 个敌人`); 
@@ -4109,7 +4123,7 @@ function calculateAttack(charAttr, enemy, raidBlackboard, isSkill, charData, lev
     calcEdges(blackboard, frame, dur, options, log);
   }
   // 暴击次数
-  if (options.crit && critBuffFrame["prob"] && critBuffFrame["prob"] !== null) {
+  if (options.crit && !isNaN(critBuffFrame["prob"]) && critBuffFrame["prob"] !== null) {
     if (damageType != 2) {
       if (buffList["tachr_155_tiger_1"])
         dur.critCount = dur.duration / 3 * critBuffFrame.prob;
@@ -4190,12 +4204,12 @@ function calculateAttack(charAttr, enemy, raidBlackboard, isSkill, charData, lev
 
   // 计算伤害
   log.write("\n**【伤害计算】**");
-  log.write(`伤害类型: ${['物理','法术','治疗','真伤','元素'][damageType]}`);
+  log.write(`伤害类型: ${['物理','法术','治疗','真伤','护盾','元素','元素损伤'][damageType]}`);
   let dmgPrefix = (damageType == 2) ? "治疗" : "伤害";
   let hitDamage = finalFrame.atk;
   let critDamage = 0;
-  let damagePool = [0, 0, 0, 0, 0]; // 物理，魔法，治疗，真伤，盾
-  let extraDamagePool = [0, 0, 0, 0, 0];
+  let damagePool = [0, 0, 0, 0, 0, 0, 0]; // 物理，魔法，治疗，真伤，盾，元素，元素损伤
+  let extraDamagePool = [0, 0, 0, 0, 0, 0, 0];
   let move = 0;
 
   function calculateHitDamage(frame, scale) {
@@ -4295,7 +4309,7 @@ function calculateAttack(charAttr, enemy, raidBlackboard, isSkill, charData, lev
     if (buffName == "skill") {
       buffName = bb.id;
     }
-    let pool = [0, 0, 0, 0, 0]; // 物理，魔法，治疗，真伤，盾
+    let pool = [0, 0, 0, 0, 0, 0, 0]; // *物理，*魔法，治疗，*真伤，盾，*元素伤害，元素损伤
     let damage = 0;
     let heal = 0, atk = 0;
 
@@ -5470,6 +5484,26 @@ function calculateAttack(charAttr, enemy, raidBlackboard, isSkill, charData, lev
         heal = finalFrame.maxHp * bb.trait.hp_ratio;
         log.writeNote(`被击倒时恢复HP ${heal.toFixed(1)}`);
         break;   
+      case "tachr_4102_threye_2": // ID为2但是是第一天赋
+        if (options.cond) {
+          damage = finalFrame.atk / buffFrame.atk_scale * bb.ep_damage_ratio * (100 - enemy.epResistance)/100;
+          log.write(`${displayNames[buffName]}: 单次攻击元素损伤 ${damage.toFixed(1)}`);
+          pool[6] += damage * dur.hitCount;
+        }
+        break;
+      case "skchr_threye_1":
+        damage = finalFrame.atk / buffFrame.atk_scale * bb.ep_damage_ratio * (100 - enemy.epResistance)/100;
+        log.write(`${displayNames[buffName]}: 单次攻击元素损伤 ${damage.toFixed(1)}`);
+        pool[6] += damage * dur.hitCount;
+        break;
+      case "skchr_threye_2":
+        damage = finalFrame.atk * bb["attack@ep_damage_ratio"] * (100 - enemy.epResistance)/100;
+        log.write(`${displayNames[buffName]}: 单次攻击元素损伤 ${damage.toFixed(1)}`);
+        log.writeNote("以每目标爆发1次计算");
+        pool[6] += damage * dur.hitCount; // 元素槽损伤
+        pool[5] += 800 * 15 * ecount * (100 - enemy.epDamageResistance) / 100; // 元素伤害
+        break;
+        
     }; // extraDamage switch ends here
 
     // 百分比/固定回血
@@ -5662,19 +5696,31 @@ function calculateAttack(charAttr, enemy, raidBlackboard, isSkill, charData, lev
       };
     }
 
-    let dmg = pool[0] + pool[1] + pool[3];
+    let dmg = pool[0] + pool[1] + pool[3] + pool[5];
     if (dmg > 0) log.write(`[特殊] ${displayNames[buffName]}: 额外伤害 ${dmg.toFixed(2)}`);
     if (pool[2] > 0) log.write(`[特殊] ${displayNames[buffName]}: 额外治疗 ${pool[2].toFixed(2)}`);
     else if (pool[2] < 0) log.write(`[特殊] ${displayNames[buffName]}: 自身伤害 ${pool[2].toFixed(2)}`);
-    for (let i=0; i<5; ++i) extraDamagePool[i] += pool[i];
+    
+    if (pool[6] > 0)
+      log.write(`[特殊] ${displayNames[buffName]}: 元素损伤 ${pool[6].toFixed(2)}`);
+
+    for (let i=0; i<7; ++i) extraDamagePool[i] += pool[i];
   } 
+  // 减伤计算
+  if (enemy.dr) {
+    log.write(`[减伤] 所有伤害减免 ${enemy.dr}%`);
+    [0, 1, 3, 5].forEach(x => {
+      damagePool[x] *= (1-enemy.dr/100);
+      extraDamagePool[x] *= (1-enemy.dr/100);
+    });
+  }
 
   // 整理返回
-  // todo: 元素损伤相关
-  let totalDamage = [0, 1, 3].reduce((x, y) => x + damagePool[y] + extraDamagePool[y], 0);
+  let totalDamage = [0, 1, 3, 5].reduce((x, y) => x + damagePool[y] + extraDamagePool[y], 0);
   let totalHeal = [2, 4].reduce((x, y) => x + damagePool[y] + extraDamagePool[y], 0);
-  let extraDamage = [0, 1, 3].reduce((x, y) => x + extraDamagePool[y], 0);
+  let extraDamage = [0, 1, 3, 5].reduce((x, y) => x + extraDamagePool[y], 0);
   let extraHeal = [2, 4].reduce((x, y) => x + extraDamagePool[y], 0);
+  let totalEpDamage = damagePool[6] + extraDamagePool[6];
 
   log.write(`总伤害: ${totalDamage.toFixed(2)}`);
   if (totalHeal != 0) log.write(`总治疗: ${totalHeal.toFixed(2)}`);
@@ -5685,12 +5731,16 @@ function calculateAttack(charAttr, enemy, raidBlackboard, isSkill, charData, lev
     log.write(`以 ${dpsDuration.toFixed(1)}s 计算DPS/HPS`);
   let dps = totalDamage / dpsDuration;
   let hps = totalHeal / dpsDuration;
+  let eps = totalEpDamage / dpsDuration;
   // 均匀化重置普攻时的普攻dps
   if (!isSkill && checkResetAttack(blackboard.id, blackboard, options)) {
     let d = dur.attackCount * attackTime;
     log.write(`以 ${d.toFixed(3)}s (${dur.attackCount} 个攻击间隔) 计算普攻dps`);
     dps = totalDamage / d; hps = totalHeal / d;
   }
+  if (eps > 0)
+    log.writeNote(`${isSkill ? '技能':'普攻'}EPS: ${eps.toFixed(1)}/${ecount}目标`);
+
   log.write(`DPS: ${dps.toFixed(1)}, HPS: ${hps.toFixed(1)}`);
   log.write("----");
 
@@ -6183,8 +6233,9 @@ function applyEquip(char, basic, log) {
     // which = 1, 2, "1+"
     var which = checkSpecs(equipId, "override_talent");
     // console.log(which);
-    if (which && which.toString().length > 0 && char.equipLevel >= 1) {
-      blackboard.override_talent = which.toString();
+    if (which && which.toString().length > 0) {
+      if (char.equipLevel > 1 || (char.equipLevel == 1 && checkSpecs(equipId, "override_lv1")))
+        blackboard.override_talent = which.toString();
       if (char.equipLevel == 1)
         log.writeNote("1级模组覆盖天赋，需要核对");
     }
