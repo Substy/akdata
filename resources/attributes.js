@@ -4109,7 +4109,7 @@ function calculateAttack(charAttr, enemy, raidBlackboard, isSkill, charData, lev
     calcEdges(blackboard, frame, dur, options, log);
   }
   // 暴击次数
-  if (options.crit && critBuffFrame["prob"] !== null) {
+  if (options.crit && critBuffFrame["prob"] && critBuffFrame["prob"] !== null) {
     if (damageType != 2) {
       if (buffList["tachr_155_tiger_1"])
         dur.critCount = dur.duration / 3 * critBuffFrame.prob;

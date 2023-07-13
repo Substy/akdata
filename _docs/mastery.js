@@ -536,7 +536,7 @@ function buildChar(charId, skillId, recipe) {
       || checkSpecs(charId, "token", "mastery"))
     char.options.token = true;
   else char.options.token = false;
-  if (_opts.includes("crit"))
+  if (_opts && _opts.includes("crit"))
     char.options.crit = true;
 
   // 模组
