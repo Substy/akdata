@@ -181,7 +181,7 @@ function load() {
           <i class="fas fa-info-circle pull-right" data-toggle="tooltip" data-placement="right"
           title="乘算后相加的技力百分比，如：白面鸮"></i>
         </th>
-        <th>攻击力/直接加算
+        <th>攻击力%/直接加乘
           <i class="fas fa-info-circle pull-right" data-toggle="tooltip" data-placement="right"
               title="直接加基础攻击力"></i>
         </th>
@@ -190,12 +190,12 @@ function load() {
              title="连乘区，包括增伤、脆弱和法术脆弱，仅能增强物理、法术、真伤；不能增加元素伤害"></i></th>
       </tr>
       <tr>
-      <td><input type="text" class="dps__buff-atk" value="0" style="width: 90%" ></td>
-      <td><input type="text" class="dps__buff-atkpct" value="0" style="width: 90%" ></td>
-      <td><input type="text" class="dps__buff-ats" value="0" style="width: 90%"></td>
-      <td><input type="text" class="dps__buff-cdr" value="0" style="width: 90%"></td>
-      <td><input type="text" class="dps__buff-batk" value="0" style="width: 90%"></td>
-      <td><input type="text" class="dps__buff-scale" value="0" style="width: 90%"></td>
+      <td data-th="攻击力-加算"><input type="text" class="dps__buff-atk" value="0" style="width: 90%" ></td>
+      <td data-th="攻击力%-加乘"><input type="text" class="dps__buff-atkpct" value="0" style="width: 90%" ></td>
+      <td data-th="攻速-加算"><input type="text" class="dps__buff-ats" value="0" style="width: 90%"></td>
+      <td data-th="技力%-加乘"><input type="text" class="dps__buff-cdr" value="0" style="width: 90%"></td>
+      <td data-th="基础攻击力%"><input type="text" class="dps__buff-batk" value="0" style="width: 90%"></td>
+      <td data-th="增伤%-乘算"><input type="text" class="dps__buff-scale" value="0" style="width: 90%"></td>
       </tr>
     </tbody>
   </table>
