@@ -610,6 +610,7 @@
     "uniequip_002_bibeak":  { "override_talent": 1 },
     "uniequip_002_cutter":  { "override_talent": 1 },
     "uniequip_002_bpipe":   { "override_talent": 2 },
+    "uniequip_002_nearl":   { "override_talent": 1 },
     "uniequip_002_nearl2":  { "override_talent": 2 },
     "uniequip_002_irene":   { "override_talent": 2 },
     "uniequip_002_ghost2":  { "override_talent": 1 },

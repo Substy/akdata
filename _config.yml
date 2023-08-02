@@ -22,7 +22,7 @@ description: >- # this means to ignore newlines until "baseurl:"
 baseurl: "/akdata" # the subpath of your site, e.g. /blog
 url: "" # the base hostname & protocol for your site, e.g. http://example.com
 repository: xulai1001/akdata
-logo: penguin.gif
+logo: https://akdata-site.oss-cn-guangzhou.aliyuncs.com/penguin.gif
 
 analytics:
   baidu: true

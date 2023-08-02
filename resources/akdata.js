@@ -120,9 +120,9 @@ window.AKDATA = {
         if (AKDATA.useLocal || isCustomData)
           urlList = [local];
         else if (isGamedata)
-          urlList = [aliyun, github, local];
+          urlList = [aliyun, github];
         else
-          urlList = [aliyun, github, local];
+          urlList = [aliyun, github];
 
         // convert path to Promise.race()
         paths[i] = loadJSONFromSources(name, urlList, !isGamedata, result => {
