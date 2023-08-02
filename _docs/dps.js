@@ -103,8 +103,7 @@ function load() {
       </th>
     </tr>
     <tr class="dps__row-s_damage"> <th>技能总伤害 <i class="fas fa-info-circle pull-right" data-toggle="tooltip" data-placement="right" title="单次伤害 x 命中数"></i></th> </tr>
-
-    <tr class="dps__row-s_dps"> <th><font color="blue"><span>技能DPS</span></font><i class="fas fa-info-circle pull-right" data-toggle="tooltip" data-placement="right" title="技能总伤害 / 持续时间（包括罚站时间）"></i></th></tr>
+    <tr class="dps__row-s_dps"> <th><font color="blue"><span>技能DPS</span></font><i class="fas fa-info-circle pull-right" data-toggle="tooltip" data-placement="right" title="技能总伤害（攻击+额外伤害）÷持续时间（包括罚站时间）"></i></th></tr>
     <tr class="dps__row-n_dps"> <th>普攻</th> </tr>
     <tr class="dps__row-g_dps"> <th>平均</th> </tr>
     <tr class="dps__row-s_att"> <th>技能攻击间隔</th> </tr>
@@ -112,9 +111,10 @@ function load() {
     <tr class="dps__row-note"> <th>注记</th> </tr>  
   </tbody>
   <tbody>
+  <!--  <tr class="dps__row-a_dps"> <th>技能DPS(攻击)</th> </tr> -->
     <tr class="dps__row-s_diff"> <th>技能总伤害 提升% <i class="fas fa-info-circle pull-right" data-toggle="tooltip" data-placement="right" title="和【第一列】结果相比的提升比例 +/-%"></i></th> </tr>
     <tr class="dps__row-g_diff"> <th>平均DPS 提升% <i class="fas fa-info-circle pull-right" data-toggle="tooltip" data-placement="right" title="和【第一列】结果相比的提升比例 +/-%"></i></th> </tr>
-  </tbody>
+    </tbody>
   <tbody class="">
     <tr class="dps__row-damagepool"> <th>伤害表<i class="fas fa-info-circle pull-right" data-toggle="tooltip" title="详细的伤害表格"></i></th></tr>
     <tr class="dps__row-anim"> <th>动画帧数</th></tr>
@@ -133,7 +133,7 @@ function load() {
       <tr>
         <th>防御力</th>
         <th>法术抗性</th>
-        <th>数量</th>
+        <th>敌人/我方数量</th>
         <th>
           元素抗性
           <i class="fas fa-info-circle pull-right" data-toggle="tooltip" data-placement="right"
@@ -145,18 +145,18 @@ function load() {
              title="元素损伤的抗性(削减元素槽)一般为0"></i>
         </th>
         <th>
-          减伤%
+          物理/法术减伤%
           <i class="fas fa-info-circle pull-right" data-toggle="tooltip" data-placement="right"
-             title="乘算，百分比减少所有伤害，一般为0"></i>
+             title="乘算，百分比减少物理/法术伤害，一般为0"></i>
         </th>
       </tr>
       <tr>
       <td data-th="防御"><input type="text" class="dps__enemy-def" value="0" style="width: 80%"></td>
       <td data-th="法抗"><input type="text" class="dps__enemy-mr" value="0" style="width: 80%"></td>
-      <td data-th="数量"><input type="text" class="dps__enemy-count" value="1" style="width: 80%"></td>
+      <td data-th="敌人/我方数量"><input type="text" class="dps__enemy-count" value="1" style="width: 80%"></td>
       <td data-th="元素抗性"><input type="text" class="dps__enemy-er" value="0" style="width: 80%"></td>
       <td data-th="元素损伤抗性"><input type="text" class="dps__enemy-edr" value="0" style="width: 80%"></td>
-      <td data-th="减伤%"><input type="text" class="dps__enemy-dr" value="0" style="width: 80%"></td>
+      <td data-th="物法减伤%"><input type="text" class="dps__enemy-dr" value="0" style="width: 80%"></td>
       </tr>
     </tbody>
   </table>
@@ -176,14 +176,14 @@ function load() {
           <i class="fas fa-info-circle pull-right" data-toggle="tooltip" data-placement="right"
             title="乘算后相加的攻击力百分比，如：华法琳"></i>
         </th>
+        <th>基础攻击%/直接加算
+        <i class="fas fa-info-circle pull-right" data-toggle="tooltip" data-placement="right"
+            title="按【百分比】加算到基础攻击力上"></i>
+        </th>
         <th>攻速/加算</th>
         <th>技力%/直接乘算
           <i class="fas fa-info-circle pull-right" data-toggle="tooltip" data-placement="right"
           title="乘算后相加的技力百分比，如：白面鸮"></i>
-        </th>
-        <th>攻击力%/直接加乘
-          <i class="fas fa-info-circle pull-right" data-toggle="tooltip" data-placement="right"
-              title="直接加基础攻击力"></i>
         </th>
         <th>增伤%/最终乘算
           <i class="fas fa-info-circle pull-right" data-toggle="tooltip" data-placement="right"
@@ -192,9 +192,9 @@ function load() {
       <tr>
       <td data-th="攻击力-加算"><input type="text" class="dps__buff-atk" value="0" style="width: 90%" ></td>
       <td data-th="攻击力%-加乘"><input type="text" class="dps__buff-atkpct" value="0" style="width: 90%" ></td>
+      <td data-th="基础攻击力%"><input type="text" class="dps__buff-batk" value="0" style="width: 90%"></td>
       <td data-th="攻速-加算"><input type="text" class="dps__buff-ats" value="0" style="width: 90%"></td>
       <td data-th="技力%-加乘"><input type="text" class="dps__buff-cdr" value="0" style="width: 90%"></td>
-      <td data-th="基础攻击力%"><input type="text" class="dps__buff-batk" value="0" style="width: 90%"></td>
       <td data-th="增伤%-乘算"><input type="text" class="dps__buff-scale" value="0" style="width: 90%"></td>
       </tr>
     </tbody>
@@ -323,9 +323,13 @@ window.onhashchange = function () {
 function selectChar(charId, i) {
   //console.log(charId);
   if (charId && charId != "-") {
-    var name = AKDATA.Data.character_table[charId].name;
+    let name = AKDATA.Data.character_table[charId].name;
+    let imgUrl = `https://akdata-site.oss-cn-guangzhou.aliyuncs.com/assets/images/char/${charId}.png`;
+    if (AKDATA.useLocal)
+      imgUrl = `/akdata/assets/images/char/${charId}.png`;
+
     $(`.txt_char:eq(${i})`).text(name);
-    $(`.img_char:eq(${i})`).attr("src", `https://akdata-site.oss-cn-guangzhou.aliyuncs.com/assets/images/char/${charId}.png`);
+    $(`.img_char:eq(${i})`).attr("src", imgUrl);
     
     window.hashChangedBySelect = true;
     setTimeout((x) => { location.hash = "#" + x; }, 500, charId);
@@ -435,6 +439,7 @@ function showDamage() {
     <th width="100px">真伤/护盾</th>
     <th>元素伤害</th>
     <th>元素损伤</th>
+    <th>元素治疗</th>
     </tr>
     <tr>
     <th>普攻</th>
@@ -464,7 +469,7 @@ function showDamage() {
     let d = dps[row];
     let row_html = $(`.damage tr:nth-child(${row+2})`);
     
-    let pool = [0, 1, 2, 3, 5, 6].map(x => Math.round(d.damagePool[x] + d.extraDamagePool[x]), 0);
+    let pool = [0, 1, 2, 3, 5, 6, 7].map(x => Math.round(d.damagePool[x] + d.extraDamagePool[x]), 0);
     pool[3] += d.damagePool[4] + d.extraDamagePool[4];
 
     let data = [Math.round(d.atk), `${d.attackTime.toFixed(3)}s<br>${Math.round(d.attackTime * 30)}帧`, Math.round(d.dur.hitCount), d.dur.duration.toFixed(2), ...pool];
@@ -562,7 +567,7 @@ function updateChar(charId, index) {
 
   let charData = AKDATA.Data.character_table[charId];
   let phaseCount = charData.phases.length;
-  let html = [...Array(phaseCount).keys()].map(x => `<option value="${x}">精英${x}</option>`).join('');
+  let html = [...Array(phaseCount-1).keys()].map(x => `<option value="${x+1}">精英${x+1}</option>`).join('');
   let $phase = getElement('phase', index);
   $phase.html(html);
   setSelectValue('phase', index, phaseCount - 1);
@@ -823,7 +828,8 @@ function chooseEquip() {
   else calculate(index);
 }
 
-const DamageColors = ['black','blue','limegreen','gold','#43c6db','#f70d1a'];
+// 物理，魔法，治疗，真伤，盾，元素，元素损伤，元素治疗
+const DamageColors = ['black','blue','limegreen','gold','#43c6db','#f70d1a','gray','#40e0d0'];
 
 function _fmt(x) {
   return isFinite(x) ? Math.round(x) : "-";
@@ -837,9 +843,20 @@ function formatDps(dps, damageType, tag=null, precision=0, bold=true) {
   return `<span style="color: ${DamageColors[damageType]}">${line}</span>`;
 }
 
-function hpsColor(s) {
-  let h = (s.extraDamagePool[4] > 0 ? 4 : 2);
-  return s.hps < 0 ? 5 : h;
+// x = { dps, hps, ehps, (extraDamagePool) }
+function formatDpsList(x, precision=0, bold=false) {
+  let hasTag = ([x.dps, x.hps, x.ehps].count(x => x!=0) > 1);
+  let lines = [];
+  if (x.dps != 0)
+    lines.push(formatDps(x.dps, x.damageType, (hasTag ? "DPS" : null), precision, bold));
+  if (x.hps != 0) {
+    let hpsColor = x.hps<0 ? 5 : 2;
+    if (x.extraDamagePool && x.extraDamagePool[4] > 0) hpsColor = 4;
+    lines.push(formatDps(x.hps, hpsColor, (hasTag ? "HPS" : null), precision, bold));
+  }
+  if (x.ehps != 0)
+    lines.push(formatDps(x.ehps, 7, (hasTag ? "EHPS" : null), precision, bold));
+  return lines.length == 0 ? "-" : lines.join(", ");
 }
 
 function calculate(index) {
@@ -903,16 +920,20 @@ function calculate(index) {
   if (dps.normal.damageType != 2) {
     $(".dps__row-n_dps th").text("普攻DPS");
     $(".dps__row-g_dps th").text("平均DPS");
+    $(".dps__row-s_dps th").text("技能DPS");
+  //  $(".dps__row-a_dps th").text("技能DPS(攻击)");
   } else {
     $(".dps__row-n_dps th").text("普攻HPS");
     $(".dps__row-g_dps th").text("平均HPS");
+    $(".dps__row-s_dps th").text("技能HPS");
+  //  $(".dps__row-a_dps th").text("技能HPS(攻击)");
   }
 
   let line = `${s.hitDamage.toFixed(2)} * ${Math.round(s.dur.hitCount*100)/100}`;
   if (s.damageType != 2) {
     $(".dps__row-s_damage th").text("技能总伤害");
-    $("dps__row-s_dps span").text("技能DPS(均摊)");
-    $("dps__row-a_dps span").text("技能DPS(攻击)");
+   // $("dps__row-s_dps span").text("技能DPS(均摊)");
+
     var skillDamage = s.totalDamage;    
     if (s.critDamage > 0) line += ` + ${s.critDamage.toFixed(2)} * ${s.dur.critHitCount}`;
     if (s.extraDamage > 0) line += ` + ${s.extraDamage.toFixed(2)}`;
@@ -926,8 +947,6 @@ function calculate(index) {
     }
   } else {
     $(".dps__row-s_damage th").text("技能总治疗");
-    $("dps__row-s_dps span").text("技能HPS(均摊)");
-    $("dps__row-a_dps span").text("技能HPS(攻击)");
     var skillDamage = s.totalHeal;
     if (s.extraHeal > 0) line += ` + ${s.extraHeal.toFixed(2)}`;
     var tmp = s.hitDamage * s.dur.hitCount + s.extraHeal;
@@ -945,28 +964,19 @@ function calculate(index) {
   getElement('g_diff', index).text((gdiff*100).toFixed(1));
   
   // skill dps
-  var colorType = (s.dps == 0) ? hpsColor(s) : s.damageType;  
-  if (s.hps == 0 || s.dps == 0) {                       
-    getElement('s_dps', index).html(formatDps((s.dps || s.hps || "-"), colorType));
-  } else {
-    getElement('s_dps', index).html(formatDps(s.dps, s.damageType, "DPS") + ", " + formatDps(s.hps, hpsColor(s), "HPS"));
-  }
-  // attack dps
-  /*
-  if (s.attackTime > 0) {
-    getElement('a_dps', index).html(_fmt(s.hitDamage / s.attackTime)).css("color", color);
-  } else {
-    getElement('a_dps', index).text("瞬发");
-  }
-  */
+  getElement('s_dps', index).html(formatDpsList(s));
+
   // normal dps
-  if (dps.normal.hps == 0 || dps.normal.dps == 0) {
-    colorType = (dps.normal.dps == 0) ? hpsColor(dps.normal) : dps.normal.damageType;    
-    getElement('n_dps', index).html(formatDps((dps.normal.dps || dps.normal.hps || "-"), colorType, null, 0, false));
-  } else {
-    getElement('n_dps', index).html(formatDps(dps.normal.dps, dps.normal.damageType, "DPS", 0, false) + ", " +
-                                    formatDps(dps.normal.hps, hpsColor(dps.normal), "HPS", null, 0, false));
-  }
+  getElement('n_dps', index).html(formatDpsList(dps.normal));
+
+  // globalDps
+  getElement('g_dps', index).html(formatDpsList({
+    dps: dps.globalDps, 
+    hps: dps.globalHps, 
+    ehps: dps.globalEhps, 
+    damageType: dps.skill.damageType
+  }));
+
   // period
   if (dps.normal.dur.stunDuration > 0)
     getElement('period', index).html(`眩晕${dps.normal.dur.stunDuration}s + ${Math.round(dps.normal.dur.duration*100)/100}s + ${Math.round(s.dur.duration*100)/100}s`);
@@ -999,13 +1009,6 @@ function calculate(index) {
   }
   if (s.dur.tags.includes("hit"))
     getElement('period', index).append(" / 受击回复");
-
-    // globalDps
-  if (dps.globalDps == 0 || dps.globalHps == 0)
-    getElement('g_dps', index).html(formatDps((dps.globalDps || dps.globalHps), dps.normal.damageType));
-  else 
-    getElement('g_dps', index).html(formatDps(dps.globalDps, dps.normal.damageType, "DPS", 1) + ", " + 
-                                    formatDps(dps.globalHps, hpsColor(dps.skill), "HPS", 1));
 
   let equip_prompt = "";
   if (!(char.charId in AKDATA.Data.mastery) && char.equipId.length > 0 && char.equipLevel > 1)

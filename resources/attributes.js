@@ -324,7 +324,7 @@ function calculateDps(char, enemy, raidBuff) {
   }
 
   // 原本攻击力的修正量
-  if (raidBlackboard.base_atk != 0) {
+  if (raidBlackboard.base_atk != 0 && char.options.buff) {
     let delta = attr.basic.atk * raidBlackboard.base_atk;
     let prefix = (delta > 0 ? "+" : "");
     attr.basic.atk = Math.round(attr.basic.atk + delta);
@@ -395,11 +395,10 @@ function calculateDps(char, enemy, raidBuff) {
     if (!normalAttack) return;
   }
  
-  var globalDps = Math.round((normalAttack.totalDamage + skillAttack.totalDamage) / 
-                         (normalAttack.dur.duration + normalAttack.dur.stunDuration + skillAttack.dur.duration + skillAttack.dur.prepDuration));
-  var globalHps = Math.round((normalAttack.totalHeal + skillAttack.totalHeal) /
-                         (normalAttack.dur.duration + normalAttack.dur.stunDuration + skillAttack.dur.duration + skillAttack.dur.prepDuration));
-  //console.log(globalDps, globalHps);
+  let totalDuration = normalAttack.dur.duration + normalAttack.dur.stunDuration + skillAttack.dur.duration + skillAttack.dur.prepDuration;
+  var globalDps = Math.round((normalAttack.totalDamage + skillAttack.totalDamage) / totalDuration);
+  var globalHps = Math.round((normalAttack.totalHeal + skillAttack.totalHeal) / totalDuration);
+  var globalEhps = Math.round((normalAttack.totalEpHeal + skillAttack.totalEpHeal) / totalDuration);
   let killTime = 0;
   return {
     normal: normalAttack,
@@ -409,6 +408,7 @@ function calculateDps(char, enemy, raidBuff) {
     killTime: killTime,
     globalDps,
     globalHps,
+    globalEhps,
     log: log.toString(),
     note: _note
   };
@@ -471,7 +471,7 @@ function calculateDpsSeries(char, enemy, raidBuff, key, series) {
   }
 
   // 原本攻击力的修正量
-  if (raidBlackboard.base_atk != 0) {
+  if (raidBlackboard.base_atk != 0 && char.options.buff) {
     let delta = attr.basic.atk * raidBlackboard.base_atk;
     let prefix = (delta > 0 ? "+" : "");
     attr.basic.atk = Math.round(attr.basic.atk + delta);
@@ -507,7 +507,7 @@ function calculateDpsSeries(char, enemy, raidBuff, key, series) {
       // merge result
       var merged = Object.assign({}, od_p2);
       merged.dur = Object.assign({}, od_p2.dur);
-      ["totalDamage", "totalHeal", "extraDamage", "extraHeal"].forEach(key => {
+      ["totalDamage", "totalHeal", "extraDamage", "extraHeal", "totalEpDamage", "totalEpHeal"].forEach(key => {
         merged[key] += od_p1[key];
       });
       for (var i=0; i<merged.damagePool.length; ++i) {
@@ -1217,6 +1217,7 @@ function applyBuff(charAttr, buffFrm, tag, blackbd, isSkill, isCrit, log, enemy)
       case "skchr_doroth_2":
       case "skchr_doroth_3":
       case "skchr_cement_1":
+      case "skchr_agoat2_2":
         buffFrame.maxTarget = 999;
         writeBuff(`最大目标数 = ${buffFrame.maxTarget}`);
         break;
@@ -1261,6 +1262,7 @@ function applyBuff(charAttr, buffFrm, tag, blackbd, isSkill, isCrit, log, enemy)
       case "skchr_whispr_1":
       case "skchr_ling_2":
       case "skchr_threye_2":
+      case "skchr_agoat2_1":
         buffFrame.maxTarget = 2;
         writeBuff(`最大目标数 = ${buffFrame.maxTarget}`);
         break;
@@ -1753,7 +1755,8 @@ function applyBuff(charAttr, buffFrm, tag, blackbd, isSkill, isCrit, log, enemy)
       case "tachr_489_serum_1":
         done = true; break;
       case "skchr_glider_1":
-        buffFrame.maxTarget = 2; break;
+        buffFrame.maxTarget = 2;
+        break;
       case "skchr_aurora_2":
         blackboard.prob_override = 0.1; // any value
         if (!isCrit) delete blackboard.atk_scale;
@@ -2381,6 +2384,8 @@ function applyBuff(charAttr, buffFrm, tag, blackbd, isSkill, isCrit, log, enemy)
           log.writeNote("维持冻结: -15法抗");
         }
         break;
+      case "tachr_1016_agoat2_1":
+        done = true; break;
     }
   }
   // --- applyBuff switch ends here ---
@@ -3011,6 +3016,10 @@ function calcDurations(isSkill, attackTime, attackSpeed, levelData, buffList, bu
     if (isSkill) {
       attackCount = total.skill;
       duration = attackCount * skill_time / fps;
+      if (buffFrame.dpsDuration) {
+        log.write(`以${buffFrame.dpsDuration}s 计算每次技能时间`);
+        duration = attackCount * buffFrame.dpsDuration;
+      }
     } else {
       attackCount = total.attack;
       duration -= total.skill * skill_time / fps;
@@ -3446,6 +3455,7 @@ function calcDurations(isSkill, attackTime, attackSpeed, levelData, buffList, bu
       let n = Math.min(attackCount, stackCount);
       let stackProb = prob + prob_add * (n-1);  // 等差数列了
       let expect = (prob + stackProb) * n / 2 + Math.max(attackCount-n, 0);
+
       log.writeNote(`技能连击期望 ${expect.toFixed(2)}`);
       tags["origAttackCount"] = attackCount;
       tags["extraAttack"] = expect;
@@ -4208,8 +4218,8 @@ function calculateAttack(charAttr, enemy, raidBlackboard, isSkill, charData, lev
   let dmgPrefix = (damageType == 2) ? "治疗" : "伤害";
   let hitDamage = finalFrame.atk;
   let critDamage = 0;
-  let damagePool = [0, 0, 0, 0, 0, 0, 0]; // 物理，魔法，治疗，真伤，盾，元素，元素损伤
-  let extraDamagePool = [0, 0, 0, 0, 0, 0, 0];
+  let damagePool = [0, 0, 0, 0, 0, 0, 0, 0]; // 物理，魔法，治疗，真伤，盾，元素，元素损伤，元素治疗
+  let extraDamagePool = [0, 0, 0, 0, 0, 0, 0, 0];
   let move = 0;
 
   function calculateHitDamage(frame, scale) {
@@ -4309,7 +4319,7 @@ function calculateAttack(charAttr, enemy, raidBlackboard, isSkill, charData, lev
     if (buffName == "skill") {
       buffName = bb.id;
     }
-    let pool = [0, 0, 0, 0, 0, 0, 0]; // *物理，*魔法，治疗，*真伤，盾，*元素伤害，元素损伤
+    let pool = [0, 0, 0, 0, 0, 0, 0, 0]; // *物理，*魔法，治疗，*真伤，盾，*元素伤害，元素损伤，元素治疗
     let damage = 0;
     let heal = 0, atk = 0;
 
@@ -4878,6 +4888,7 @@ function calculateAttack(charAttr, enemy, raidBlackboard, isSkill, charData, lev
       case "tachr_473_mberry_trait":
       case "tachr_449_glider_trait":
       case "tachr_4041_chnut_trait":
+      case "tachr_1016_agoat2_trait":
         let ep_ratio = bb.ep_heal_ratio;
         let ep_scale = 1;
         if (isSkill) {
@@ -4888,7 +4899,6 @@ function calculateAttack(charAttr, enemy, raidBlackboard, isSkill, charData, lev
             case "skchr_glider_1":
               ep_ratio = buffList.skill["glider_s_1.ep_heal_ratio"];
               ep_scale = 3;
-              log.writeNote("计算3秒内总元素回复量");
               break;
             case "skchr_chnut_1":
               ep_scale = buffList.skill.trait_scale;
@@ -4907,8 +4917,10 @@ function calculateAttack(charAttr, enemy, raidBlackboard, isSkill, charData, lev
 
         damage = finalFrame.atk / buffFrame.heal_scale * ep_ratio * ep_scale;
         let ep_total = damage * dur.hitCount;
-        log.writeNote(`元素治疗 ${damage.toFixed(1)} (${(ep_ratio*ep_scale).toFixed(2)} x)`);
-        log.writeNote(`技能元素HPS ${(ep_total / dur.duration).toFixed(1)}`);
+       // log.writeNote(`元素治疗 ${damage.toFixed(1)} (${(ep_ratio*ep_scale).toFixed(2)} x)`);
+        if (isSkill && blackboard.id == "skchr_glider_1")
+          log.writeNote(`技能元素HPS ${(ep_total / (dur.attackCount*3)).toFixed(1)}`);
+        pool[7] += ep_total;
         break;
       case "skchr_sleach_2":
         damagePool[0] = 0; damagePool[1] = 0; damagePool[2] = 0;
@@ -5503,7 +5515,44 @@ function calculateAttack(charAttr, enemy, raidBlackboard, isSkill, charData, lev
         pool[6] += damage * dur.hitCount; // 元素槽损伤
         pool[5] += 800 * 15 * ecount * (100 - enemy.epResistance) / 100; // 元素伤害
         break;
-        
+      case "tachr_1016_agoat2_1":
+        let agoat2_stack = options.agoat2_stack;
+        let agoat2_t1_count = 1;
+        if (isSkill) {
+          if (blackboard.id == "skchr_agoat2_3") {
+            agoat2_stack = 3;
+            agoat2_t1_count = Math.min(enemy.count, 5);
+            log.writeNote(`第一天赋按满层/${agoat2_t1_count}目标计算`);
+          } else if (blackboard.id == "skchr_agoat2_1") {
+            agoat2_t1_count = ecount;
+            log.writeNote(`第一天赋按${agoat2_t1_count}目标计算`);
+          }
+        }
+        // 不受技能治疗系数影响
+        heal = finalFrame.atk / buffFrame.heal_scale * bb.heal_scale * agoat2_stack;
+        let agoat2_t1_ep_heal = heal * buffList["tachr_1016_agoat2_trait"].ep_heal_ratio;
+        pool[2] += heal * dur.duration * agoat2_t1_count;
+        pool[7] += agoat2_t1_ep_heal * dur.duration * agoat2_t1_count;
+        log.write(`${displayNames[buffName]}: 额外治疗 ${heal.toFixed(1)}/s, 元素治疗 ${agoat2_t1_ep_heal.toFixed(1)}/s`);
+        break;
+      case "skchr_agoat2_1":
+        heal = finalFrame.atk * bb["agoat2_s_1[aura].ep_heal_ratio"];
+        pool[7] += heal * dur.duration * enemy.count;
+        log.writeNote(`缓回元素治疗 ${heal.toFixed(1)}/s/${enemy.count}目标`);
+        break;
+      case "skchr_agoat2_2":
+        heal = finalFrame.atk * bb["agoat2_s_2[shield].atk_scale"];
+        pool[7] += heal;
+        log.writeNote(`元素屏障值 ${heal.toFixed(1)}`);
+        if (ecount > 1) {
+          let t1bb = buffList["tachr_1016_agoat2_1"];
+          let t1heal = finalFrame.atk / buffFrame.heal_scale * t1bb.heal_scale;
+          let t1ep = t1heal * buffList["tachr_1016_agoat2_trait"].ep_heal_ratio;
+          pool[2] += t1heal * t1bb.duration * (ecount-1);
+          pool[7] += t1ep * t1bb.duration * (ecount-1);
+          log.writeNote("非主目标按1层第一天赋计算");      
+        }
+        break;
     }; // extraDamage switch ends here
 
     // 百分比/固定回血
@@ -5704,12 +5753,12 @@ function calculateAttack(charAttr, enemy, raidBlackboard, isSkill, charData, lev
     if (pool[6] > 0)
       log.write(`[特殊] ${displayNames[buffName]}: 元素损伤 ${pool[6].toFixed(2)}`);
 
-    for (let i=0; i<7; ++i) extraDamagePool[i] += pool[i];
+    for (let i=0; i<8; ++i) extraDamagePool[i] += pool[i];
   } 
   // 减伤计算
   if (enemy.dr) {
-    log.write(`[减伤] 所有伤害减免 ${enemy.dr}%`);
-    [0, 1, 3, 5].forEach(x => {
+    log.write(`[减伤] 物理/法术伤害减免 ${enemy.dr}%`);
+    [0, 1].forEach(x => {
       damagePool[x] *= (1-enemy.dr/100);
       extraDamagePool[x] *= (1-enemy.dr/100);
     });
@@ -5721,6 +5770,7 @@ function calculateAttack(charAttr, enemy, raidBlackboard, isSkill, charData, lev
   let extraDamage = [0, 1, 3, 5].reduce((x, y) => x + extraDamagePool[y], 0);
   let extraHeal = [2, 4].reduce((x, y) => x + extraDamagePool[y], 0);
   let totalEpDamage = damagePool[6] + extraDamagePool[6];
+  let totalEpHeal = damagePool[7] + extraDamagePool[7];
 
   log.write(`总伤害: ${totalDamage.toFixed(2)}`);
   if (totalHeal != 0) log.write(`总治疗: ${totalHeal.toFixed(2)}`);
@@ -5732,6 +5782,7 @@ function calculateAttack(charAttr, enemy, raidBlackboard, isSkill, charData, lev
   let dps = totalDamage / dpsDuration;
   let hps = totalHeal / dpsDuration;
   let eps = totalEpDamage / dpsDuration;
+  let ehps = totalEpHeal / dpsDuration;
   // 均匀化重置普攻时的普攻dps
   if (!isSkill && checkResetAttack(blackboard.id, blackboard, options)) {
     let d = dur.attackCount * attackTime;
@@ -5748,6 +5799,7 @@ function calculateAttack(charAttr, enemy, raidBlackboard, isSkill, charData, lev
     atk: finalFrame.atk,
     dps,
     hps,
+    ehps,
     dur,
     damageType,
     hitDamage,
@@ -5756,6 +5808,8 @@ function calculateAttack(charAttr, enemy, raidBlackboard, isSkill, charData, lev
     extraHeal,
     totalDamage,
     totalHeal,
+    totalEpDamage,
+    totalEpHeal,
     maxTarget: ecount,
     damagePool,
     extraDamagePool,
@@ -5855,12 +5909,18 @@ function calculateGradDamage(_) { // _ -> args
     let excu2_dmg = excu2_atk.map(
       x => Math.max(x-_.edef, x*0.05) * _.buffFrame.damage_scale  // 伤害
     );
+    let edef_extra = _.edef;
+    if (_.buffList["tachr_1032_excu2_1"].def_penetrate_fixed) // 计算模组额外穿防
+      edef_extra = Math.max(0, edef_extra - _.buffList["tachr_1032_excu2_1"].def_penetrate_fixed);
+    let excu2_dmg_extra = excu2_atk.map(
+      x => Math.max(x-edef_extra, x*0.05) * _.buffFrame.damage_scale  // 伤害
+    );
     let {prob, prob_add} = _.buffList["tachr_1032_excu2_1"];
     let excu2_prob = seq.map(
       x => Math.min(1, prob + prob_add * x) // 连击概率
     );
     let excu2_expect = seq.map(
-      x => excu2_dmg[x] + excu2_prob[x] * excu2_dmg[x+1]
+      x => excu2_dmg[x] + excu2_prob[x] * excu2_dmg_extra[x+1]
     );
     ret = excu2_expect.reduce((x, y) => x + y) * _.ecount;   
     // explain with markdown

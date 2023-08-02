@@ -2,19 +2,21 @@ const stringRegex = /<[@\$](.+?)>(.+?)<\/>/g;
 const variableRegex = /{(\-)*(.+?)(?:\:(.+?))?}/g;
 
 let CacheList = null;
-let _use_local = false;
 let _use_todo_list = true;
 
 const useCache = true;
 const cacheBeginTime = new Date(2019, 12, 10).getTime();
 
 window.AKDATA = {
-  akdata: "230714", // jsdelivr tag version
+  akdata: "230802", // jsdelivr tag version
+  useLocal: false,
 
   Data: {},
 
-  new_op: [ "char_2012_typhon", "char_341_sntlla", "char_4102_threye" ],
-  todo_list: [],
+  new_op: [ "char_1016_agoat2"],
+  todo_list: ["char_1033_swire2", "char_488_buildr", "char_4106_bryota", "char_421_crow",
+              "char_4066_highmo", "char_491_humus", "char_017_huang", "char_1026_gvial2",
+              "char_143_ghost", "char_356_broca", "char_230_savage", "char_127_estell"],
 
   professionNames: {
     "PIONEER": "先锋",
@@ -115,7 +117,7 @@ window.AKDATA = {
         let aliyun = "https://akdata-site.oss-cn-guangzhou.aliyuncs.com/" + path;
 
         let urlList = [];
-        if (_use_local || isCustomData)
+        if (AKDATA.useLocal || isCustomData)
           urlList = [local];
         else if (isGamedata)
           urlList = [aliyun, github, local];

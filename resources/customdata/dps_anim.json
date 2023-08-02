@@ -649,6 +649,37 @@
       "OnStart": 10
     }
   },
+  "char_1016_agoat2": {
+    "version": "3.8.99",
+    "Attack": {
+      "duration": 40,
+      "OnAttack": 12
+    },
+    "Default": 0,
+    "Idle": 80,
+    "Skill_1_Begin": 15,
+    "Skill_1_Idle": 80,
+    "Skill_1_Loop": {
+      "duration": 40,
+      "OnAttack": 13
+    },
+    "Skill_2": {
+      "duration": 30,
+      "OnAttack": 8
+    },
+    "Skill_3_Begin": 12,
+    "Skill_3_End": 10,
+    "Skill_3_Idle": 80,
+    "Skill_3_Loop": {
+      "duration": 85,
+      "OnAttack": 8
+    },
+    "Start": {
+      "duration": 30,
+      "OnStart": 10
+    },
+    "Die": 20
+  },
   "char_101_sora": {
     "version": "3.8.99",
     "Default": 0,
@@ -1204,6 +1235,38 @@
     "Skill_Down_3_Attack_B": {
       "duration": 49,
       "OnAttack": 11
+    }
+  },
+  "char_1033_swire2": {
+    "version": "3.8.99",
+    "Attack": {
+      "duration": 30,
+      "OnAttack": 6
+    },
+    "Default": 0,
+    "Die": 30,
+    "Idle": 120,
+    "Skill_1": {
+      "duration": 30,
+      "OnAttack": 6
+    },
+    "Skill_2": {
+      "duration": 30,
+      "OnAttack": 10
+    },
+    "Skill_3_Begin": 10,
+    "Skill_3_End": {
+      "duration": 40,
+      "OnAttack": 13
+    },
+    "Skill_3_Idle": 64,
+    "Skill_3_Loop": {
+      "duration": 30,
+      "OnAttack": 15
+    },
+    "Start": {
+      "duration": 30,
+      "OnStart": 15
     }
   },
   "char_103_angel": {
@@ -10540,6 +10603,32 @@
       "OnStart": 12
     }
   },
+  "char_4106_bryota": {
+    "version": "3.8.99",
+    "Attack": {
+      "duration": 32,
+      "OnAttack": 13
+    },
+    "Attack_Down": {
+      "duration": 32,
+      "OnAttack": 13
+    },
+    "Default": 0,
+    "Die": 30,
+    "Idle": 120,
+    "Skill": {
+      "duration": 32,
+      "OnAttack": 13
+    },
+    "Skill_Down": {
+      "duration": 32,
+      "OnAttack": 13
+    },
+    "Start": {
+      "duration": 30,
+      "OnStart": 4
+    }
+  },
   "char_411_tomimi": {
     "version": "3.8.99",
     "Attack": {
@@ -12600,6 +12689,27 @@
       "OnStart": 7
     },
     "Die": 30
+  },
+  "char_488_buildr": {
+    "version": "3.8.99",
+    "Attack": {
+      "duration": 38,
+      "OnAttack": 15
+    },
+    "Default": 0,
+    "Die": 30,
+    "Idle": 80,
+    "Skill_2_Begin": 5,
+    "Skill_2_End": 5,
+    "Skill_2_Idle": 80,
+    "Skill_2_Loop": {
+      "duration": 38,
+      "OnAttack": 15
+    },
+    "Start": {
+      "duration": 30,
+      "OnStart": 5
+    }
   },
   "char_489_serum": {
     "version": "3.8.99",

@@ -94,6 +94,8 @@
     "skchr_aglina_1":   { "reset_attack": true, "attack_begin": 19 },
     "skchr_aglina_2":   { "attack_begin": 10 },
     "skchr_aglina_3":	{ "attack_begin": 23 },
+    "skchr_agoat2_2":   { "cast_time": 30, "attack_begin": 8, "reset_attack": "ogcd" },
+    "skchr_agoat2_3":   { "times": 5, "reset_attack": true, "attack_begin": 8, "trigger_interval": 0.2, "trigger_count": 5 },
     "skchr_amgoat_2":   { "keep_debuff": true, "cast_time": 36, "sim": true },
     "skchr_amiya_3":	{ "damage_type": 3 },
     "skchr_amiya2_1":   { "times": 2 },
@@ -212,7 +214,7 @@
     "skchr_glady_3":    { "damage_type": 1, "sec": true, "interval": 1.5 },
     "skchr_glassb_2":   { "frame_corr": 0 },
     "skchr_glaze_2":    { "attack_begin": 18 },
-    "skchr_glider_1":   { "cast_time": 40, "sim": true, "note": "每秒" },
+    "skchr_glider_1":   { "cast_time": 40, "sim": true },
     "skchr_gnosis_1":   { "sim": true, "cast_time": 25, "attack_begin": 13 },
     "skchr_gnosis_2":   { "charge": true, "reset_attack": true, "sim": true, "cast_time": 35, "attack_begin": 13, "attack_animation": 14 },
     "skchr_gnosis_3":   { "note": "爆炸时长35帧(记为准备时间)", "reset_attack": true, "cast_time": 13 },
@@ -586,6 +588,7 @@
     "tachr_4083_chimes_1":  { "cond": true },
     "tachr_4027_heyak_1":   { "cond": true },
     "tachr_4015_spuria_1":  { "crit": true },
+    "tachr_1016_agoat2_1":  { "note": "第一天赋一直覆盖" },
     "uniequip_002_kafka":   { "override_talent": 1 },
     "uniequip_002_red":     { "override_talent": 1 },
     "uniequip_002_pallas":  { "override_trait": true, "override_talent": 1 },
@@ -735,5 +738,6 @@
     "uniequip_002_sleach":   { "override_talent": 1 },
     "uniequip_002_myrtle":   { "override_talent": 1 },
     "uniequip_003_helage":  { "override_talent": 2 },
-    "uniequip_003_phatom":  { "override_talent": 1 }
+    "uniequip_003_phatom":  { "override_talent": 1 },
+    "uniequip_002_excu2":   { "override_talent": 1, "override_trait": true }
 }

@@ -183,5 +183,6 @@
     "char_341_sntlla":  { "mod_update_time": "2023/7/7" },
     "char_401_elysm":   { "mod_update_time": "2023/7/7" },
     "char_479_sleach":  { "mod_update_time": "2023/7/7" },
-    "char_151_myrtle":  { "mod_update_time": "2023/7/7" }
+    "char_151_myrtle":  { "mod_update_time": "2023/7/7" },
+    "char_1032_excu2":  { "mod_update_time": "2023/8/1", "edef": 500 }
 }
