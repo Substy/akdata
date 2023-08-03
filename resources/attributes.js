@@ -3904,7 +3904,7 @@ function calcEdges(blackboard, frame, dur, options, log) {
     log.write(`连击间隔 ${triggerF.toFixed(2)} 帧, 连击共耗时 ${totalTriggerF} 帧`);
     if (passF < attackBegin + totalTriggerF) {
       log.write('** 技能结束时，可能正在连击 **');
-      let passHit = Math.floor(passF / triggerF);
+      let passHit = Math.min(Math.ceil(passF / triggerF), triggerCount);
       log.writeNote(`最后一次攻击${passHit}/${triggerCount}次在技能内`);
     }
   }
@@ -4916,6 +4916,9 @@ function calculateAttack(charAttr, enemy, raidBlackboard, isSkill, charData, lev
           log.write(`元素治疗倍率: ${ep_scale.toFixed(2)}x`);
 
         damage = finalFrame.atk / buffFrame.heal_scale * ep_ratio * ep_scale;
+        if (isSkill && blackboard.id == "skchr_agoat2_3")
+            damage *= buffFrame.heal_scale; // 仅纯艾3受直接治疗系数影响
+
         let ep_total = damage * dur.hitCount;
        // log.writeNote(`元素治疗 ${damage.toFixed(1)} (${(ep_ratio*ep_scale).toFixed(2)} x)`);
         if (isSkill && blackboard.id == "skchr_glider_1")
@@ -5528,7 +5531,6 @@ function calculateAttack(charAttr, enemy, raidBlackboard, isSkill, charData, lev
             log.writeNote(`第一天赋按${agoat2_t1_count}目标计算`);
           }
         }
-        // 不受技能治疗系数影响
         heal = finalFrame.atk / buffFrame.heal_scale * bb.heal_scale * agoat2_stack;
         let agoat2_t1_ep_heal = heal * buffList["tachr_1016_agoat2_trait"].ep_heal_ratio;
         pool[2] += heal * dur.duration * agoat2_t1_count;
