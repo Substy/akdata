@@ -32,7 +32,8 @@
         "mlyss_count": { "type": "scroll", "displaytext": "流形数量", "min": 1, "max": 5, "value": 1 },
         "extra_magazine": { "type": "scroll", "displaytext": "额外弹药<br>(包括第二天赋)", "min": 0, "max": 15, "value": 1 },
         "typhon_fix": { "type": "bool", "displaytext": "穿防叠层修正", "explain": "考虑第一天赋叠层过程", "off": true },
-        "agoat2_stack": { "type": "scroll", "displaytext": "1天赋层数", "min": 0, "max": 3, "value": 3 }
+        "agoat2_stack": { "type": "scroll", "displaytext": "1天赋层数", "min": 0, "max": 3, "value": 3 },
+        "swire2_s3_coin":   { "type": "scroll", "displaytext": "[s3]金币数", "min": 1, "max": 10, "value": 10 }
     },
     "cond_info": {
         "char_126_shotst": 1,
@@ -138,7 +139,9 @@
         "char_4027_heyak": 1,
         "char_249_mlyss": "trait",
         "char_250_phatom": 1,
-        "char_4102_threye": 1
+        "char_4102_threye": 1,
+        "char_488_buildr":  1,
+        "char_1033_swire2": { "text": "[s2]放置三秒", "tooltip": "2技能-香槟3秒后2连击" }
     },
     "char" : {
         "char_103_angel": [ "equip", "archet", "chen" ],
@@ -347,6 +350,9 @@
         "char_341_sntlla":  [ "freeze" ],
         "char_4102_threye": [ "cond" ],
         "char_1016_agoat2": [ "agoat2_stack" ],
-        "char_148_nearl":   [ "equip" ]
+        "char_148_nearl":   [ "equip" ],
+        "char_488_buildr":  [ "cond", "warmup" ],
+        "char_4106_bryota": [ "noblock" ],
+        "char_1033_swire2": [ "stack", "cond", "swire2_s3_coin" ]
     }
 }

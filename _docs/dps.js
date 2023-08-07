@@ -640,9 +640,12 @@ function updateOptions(charId, index) {
   let scroll_evts = [];
   let html = `    
   <div class="form-check">
-    <label class="form-check-label" data-toggle="tooltip" data-placement="right" title="${opts.tags['buff'].explain}">
+    <label class="form-check-label">
       <input class="form-check-input dps__buff" type="checkbox" value="" data-index="${index}" checked>
         计算团辅
+        <i class="fas fa-question-circle pull-right" data-toggle="tooltip" data-placement="right"
+           title="${opts.tags['buff'].explain}">
+        </i>
     </label> </div>`;   // 默认计算团辅
     
   if (opts.char[charId]) {
@@ -689,9 +692,10 @@ function updateOptions(charId, index) {
         case "bool":
           let html_bool = `
           <div class="form-check">
-            <label class="form-check-label" data-toggle="tooltip" data-placement="right" title="${tooltip}">
+            <label class="form-check-label">
               <input class="form-check-input dps__${t}" type="checkbox" value="" data-index="${index}" ${checked} ${disabled}>
                 ${text}
+                <i class="fas fa-question-circle pull-right" data-toggle="tooltip" data-placement="right" title="${tooltip}"></i>
             </label> </div>`;
           html += html_bool;
           break;

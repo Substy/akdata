@@ -398,6 +398,9 @@
     "skchr_surtr_1":    { "damage_type": 1 },
     "skchr_surtr_3":    { "damage_type": 1, "attack_begin": 10, "frame_corr": 1 },
     "skchr_svrash_2":   { "toggle": true },
+    "skchr_swire2_1":   { "cast_time": 30, "attack_begin": 6, "note": "以2s普攻计算" },
+    "skchr_swire2_2":   { "cast_time": 30, "attack_begin": 10, "note": "以2s普攻计算" },
+    "skchr_swire2_3":   { "times": 2 },
     "skchr_swllow_1":   { "sim": true },
     "skchr_swllow_2":   { "reset_attack": true, "attack_begin": 2 },
     "skchr_tachak_1":   { "times": 2, "note": "未计算无视防御效果" },
@@ -439,6 +442,7 @@
     "tachr_1013_chen2_trait": { "cond": true },
     "tachr_1029_yato2_2":   { "note": "假设2天赋一直生效" },
     "tachr_1030_noirc2_2":  { "cond": true },
+    "tachr_1033_swire2_1":  { "stack": true },
     "tachr_107_liskam_1":   { "cloneable": true },
     "tachr_113_cqbw_2":     { "cond": true },
     "tachr_118_yuki_1":     { "cloneable": true },
@@ -554,6 +558,7 @@
     "tachr_476_blkngt_trait":   { "cond": true },
     "tachr_478_kirara_1":   { "cond": true },
     "tachr_485_pallas_1":   { "cond": true },
+    "tachr_488_buildr_1":   { "cond": true },
     "tachr_503_rang_1":	{ "cond": true },
     "tachr_511_asnipe_1":   { "crit": true },
     "tachr_1012_skadi2_2":  { "cond": true },
@@ -744,5 +749,8 @@
     "uniequip_002_myrtle":   { "override_talent": 1 },
     "uniequip_003_helage":  { "override_talent": 2 },
     "uniequip_003_phatom":  { "override_talent": 1 },
-    "uniequip_002_excu2":   { "override_talent": 1, "override_trait": true }
+    "uniequip_002_excu2":   { "override_talent": 1, "override_trait": true },
+    "uniequip_002_buildr":  { "override_talent": 1 },
+    "uniequip_002_bryota":  { "override_talent": 1, "override_trait": true },
+    "uniequip_002_swire2":  { "override_talent": 1 }
 }

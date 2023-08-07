@@ -185,5 +185,8 @@
     "char_479_sleach":  { "mod_update_time": "2023/7/7" },
     "char_151_myrtle":  { "mod_update_time": "2023/7/7" },
     "char_1032_excu2":  { "mod_update_time": "2023/8/1", "edef": 500 },
-    "char_1016_agoat2": { "options": { "agoat2_stack": 3 }  }
+    "char_1016_agoat2": { "options": { "agoat2_stack": 3 }  },
+    "char_488_buildr":  { "mod_update_time": "2023/8/7" },
+    "char_4106_bryota": { "mod_update_time": "2023/8/7" },
+    "char_1033_swire2": { "mod_update_time": "2023/8/7", "options": { "swire2_s3_coin": 10 } }
 }

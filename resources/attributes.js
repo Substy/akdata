@@ -1693,6 +1693,7 @@ function applyBuff(charAttr, buffFrm, tag, blackbd, isSkill, isCrit, log, enemy)
       case "tachr_485_pallas_trait":
       case "tachr_308_swire_trait":
       case "tachr_265_sophia_trait":
+      case "tachr_4106_bryota_trait":
         if (!options.noblock) 
           done = true;
         break;
@@ -2385,6 +2386,16 @@ function applyBuff(charAttr, buffFrm, tag, blackbd, isSkill, isCrit, log, enemy)
         }
         break;
       case "tachr_1016_agoat2_1":
+        done = true; break;
+      case "tachr_4106_bryota_1":
+        if (options.noblock)
+          blackboard.def = blackboard["bryota_t_self.def"];
+        break;
+      case "skchr_swire2_2":
+        if (options.cond)
+          blackboard.times = 2;
+        break;
+      case "skchr_swire2_3":
         done = true; break;
     }
   }
@@ -3136,6 +3147,7 @@ function calcDurations(isSkill, attackTime, attackSpeed, levelData, buffList, bu
     // 技能类型
     if (levelData.description.includes("持续时间无限") || checkSpecs(skillId, "toggle")) {
       if (skillId == "skchr_thorns_3" && !options.warmup) {}
+      else if (skillId == "skchr_buildr_2" && !options.warmup) {}
       else if (skillId == "skchr_tuye_2") {
         log.writeNote("取技能时间=暖机时间");
         duration = spData.spCost / (1 + buffFrame.spRecoveryPerSec);
@@ -3149,6 +3161,12 @@ function calcDurations(isSkill, attackTime, attackSpeed, levelData, buffList, bu
       } else if (skillId == "skchr_typhon_2" && !options.warmup) {
         duration = blackboard.first_duration;
         attackCount = Math.ceil(duration / attackTime);
+      } else if (skillId == "skchr_swire2_3") {
+        duration = 3 * options.swire2_s3_coin;
+        attackCount = Math.ceil(duration / attackTime);
+        log.writeNote(`以${duration.toFixed(2)}s(${options.swire2_s3_coin}金币)计算技能时间`);
+        log.writeNote(`终结动画40帧`);
+        duration += 1.33;
       } else {
         var d = (options.short_mode ? 180 : 1000);
         attackCount = Math.ceil(d / attackTime);
@@ -3188,7 +3206,7 @@ function calcDurations(isSkill, attackTime, attackSpeed, levelData, buffList, bu
         else if (skillId == "skchr_yato2_3") {
           attackCount = (options.cond ? 18 : 5);
           log.writeNote(`以${attackCount}段伤害计算`);
-        }
+        } 
       }
     } else if (levelData.duration <= 0) { 
       if (checkSpecs(skillId, "instant_buff")) { // 瞬发的有持续时间的buff，例如血浆
@@ -3594,6 +3612,11 @@ function calcDurations(isSkill, attackTime, attackSpeed, levelData, buffList, bu
           tags.push("passive");
           log.write(`[特殊] 被动 - 以10次普攻计算`);
           log.writeNote("以10次普攻计算");
+        } else if (skillId == "skchr_swire2_1" || skillId == "skchr_swire2_2") {
+          attackDuration = 2;
+          attackCount = Math.ceil(attackDuration / attackTime);
+          duration = attackCount * attackTime;
+          tags.push("auto", "instant");
         } else {
           attackDuration = 10;
           attackCount = Math.ceil(attackDuration / attackTime);
@@ -5555,6 +5578,12 @@ function calculateAttack(charAttr, enemy, raidBlackboard, isSkill, charData, lev
           log.writeNote("非主目标按1层第一天赋计算");      
         }
         break;
+      case "skchr_swire2_3":
+        let swire2_s3_atk = finalFrame.atk * bb.atk_scale;
+        damage = Math.max(swire2_s3_atk - edef, swire2_s3_atk * 0.05) * buffFrame.damage_scale;
+        pool[0] += damage * options.swire2_s3_coin;
+        log.write(`终结伤害 ${damage.toFixed(1)} x ${options.swire2_s3_coin}`);
+        break;
     }; // extraDamage switch ends here
 
     // 百分比/固定回血
@@ -5741,6 +5770,10 @@ function calculateAttack(charAttr, enemy, raidBlackboard, isSkill, charData, lev
             log.writeNote(`2天赋HPS: ${heal.toFixed(1)}`); 
             pool[2] += heal * dur.duration * ecount;
           }
+          break;
+        case "tachr_1033_swire2_2":
+          heal = finalFrame.maxHp * bb.hp_ratio;
+          log.writeNote(`买活HP ${heal.toFixed(1)}`);
           break;
         default:
           pool[2] += bb.hp_ratio * finalFrame.maxHp * dur.attackCount;
