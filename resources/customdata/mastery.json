@@ -188,5 +188,14 @@
     "char_1016_agoat2": { "options": { "agoat2_stack": 3 }  },
     "char_488_buildr":  { "mod_update_time": "2023/8/7" },
     "char_4106_bryota": { "mod_update_time": "2023/8/7" },
-    "char_1033_swire2": { "mod_update_time": "2023/8/7", "options": { "swire2_s3_coin": 10 } }
+    "char_1033_swire2": { "mod_update_time": "2023/8/7", "options": { "swire2_s3_coin": 10 } },
+    "char_421_crow":    { "mod_update_time": "2023/8/8" },
+    "char_4066_highmo": { "mod_update_time": "2023/8/8" },
+    "char_491_humus":   { "mod_update_time": "2023/8/8", "options": { "musha_hp": 100 } },
+    "char_1026_gvial2": { "mod_update_time": "2023/8/8", "options": { "gvial2_blk": 3 } },
+    "char_017_huang":   { "mod_update_time": "2023/8/8" },
+    "char_356_broca":   { "mod_update_time": "2023/8/8" },
+    "char_230_savage":  { "mod_update_time": "2023/8/8" },
+    "char_143_ghost":   { "mod_update_time": "2023/8/8" },
+    "char_127_estell":  { "mod_update_time": "2023/8/8" }
 }

@@ -14,9 +14,7 @@ window.AKDATA = {
   Data: {},
 
   new_op: [ "char_1016_agoat2", "char_1033_swire2", "char_488_buildr", "char_4106_bryota"],
-  todo_list: [ "char_421_crow",
-              "char_4066_highmo", "char_491_humus", "char_017_huang", "char_1026_gvial2",
-              "char_143_ghost", "char_356_broca", "char_230_savage", "char_127_estell"],
+  todo_list: [ ],
 
   professionNames: {
     "PIONEER": "先锋",

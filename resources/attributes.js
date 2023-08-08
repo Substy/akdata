@@ -961,6 +961,10 @@ function applyBuff(charAttr, buffFrm, tag, blackbd, isSkill, isCrit, log, enemy)
         case "tachr_2015_dusk_1":
         case "tachr_2023_ling_2":
           if (options.token) done = true; break;
+        case "tachr_421_crow_1":
+          blackboard.attack_speed *= blackboard.max_stack_cnt;
+          delete blackboard.max_stack_cnt;  // 不叠乘攻速
+          break;
       }
       if (!done && blackboard.max_stack_cnt) {
         ["atk", "def", "attack_speed", "max_hp"].forEach(key => {
@@ -1908,16 +1912,12 @@ function applyBuff(charAttr, buffFrm, tag, blackbd, isSkill, isCrit, log, enemy)
       case "tachr_129_bluep_1":
         done = true; break;
       case "tachr_1026_gvial2_1":
-        if (options.block) {
-          // 确认阻挡数
-          let gvial2_blk = (skillId == "skchr_gvial2_3" && isSkill ? 5 : 3);
-          let ecount = Math.min(enemy.count, gvial2_blk);
-          let atk_add = blackboard.atk_add * ecount;
-          blackboard.atk += atk_add;
-          blackboard.def += atk_add;
-          writeBuff(`阻挡数: ${ecount}, 额外加成 +${atk_add.toFixed(2)}`);
-          log.writeNote(`按阻挡${ecount}个敌人计算`);
-        }
+        // 确认阻挡数
+        let atk_add = blackboard.atk_add * options.gvial2_blk;
+        blackboard.atk += atk_add;
+        blackboard.def += atk_add;
+        writeBuff(`阻挡 ${options.gvial2_blk} 个敌人, 额外加成 +${atk_add.toFixed(2)}`);
+        log.writeNote(`按阻挡${options.gvial2_blk}个敌人计算`);
         break;
       case "skchr_gvial2_3":
         blackboard.max_target = 5;
@@ -2191,10 +2191,10 @@ function applyBuff(charAttr, buffFrm, tag, blackbd, isSkill, isCrit, log, enemy)
         break;
       case "skchr_humus_2":
         buffFrame.maxTarget = 3;
-        if (options.cond_80) {
+        if (options.musha_hp >= 80) {
           blackboard.atk = blackboard["humus_s_2[peak_2].peak_performance.atk"];
           log.writeNote("HP>80%");
-        } else if (options.cond_50) {
+        } else if (options.musha_hp >= 50) {
           blackboard.atk = blackboard["humus_s_2[peak_1].peak_performance.atk"];
           log.writeNote("HP>50%");
         }
@@ -2397,6 +2397,13 @@ function applyBuff(charAttr, buffFrm, tag, blackbd, isSkill, isCrit, log, enemy)
         break;
       case "skchr_swire2_3":
         done = true; break;
+      case "tachr_017_huang_2":
+        if (options.cond && blackboard["huang_t_2[e_002_atk].atk"]) {
+          blackboard.atk =  blackboard["huang_t_2[e_002_atk].atk"];
+          blackboard.attack_speed = blackboard["huang_t_2[e_002_atk_speed].attack_speed"];
+          log.writeNote("以停留45s以上计");
+        }
+        break;
     }
   }
   // --- applyBuff switch ends here ---
@@ -2766,6 +2773,14 @@ function applyBuff(charAttr, buffFrm, tag, blackbd, isSkill, isCrit, log, enemy)
     case "uniequip_002_ironmn":
       if (options.equip)
         blackboard.sp_recovery_per_sec = blackboard.talent.sp_recovery_per_sec;
+      break;
+    case "uniequip_002_gvial2":
+    case "uniequip_002_huang":
+    case "uniequip_002_broca":
+    case "uniequip_002_ghost":
+    case "uniequip_002_savage":
+      if (options.equip)
+        blackboard.atk_scale = blackboard.trait.atk_scale;
       break;
   }
   // -- uniequip switch ends here --
@@ -4460,7 +4475,18 @@ function calculateAttack(charAttr, enemy, raidBlackboard, isSkill, charData, lev
       case "tachr_421_crow_trait":
       case "tachr_4066_highmo_trait":
       case "tachr_491_humus_trait":
-        pool[2] += bb.value * dur.attackCount * Math.min(ecount, 2);
+        let reaper_blk = 2;
+        if (buffList["tachr_4066_highmo_1"] && options.cond)
+          reaper_blk += 1;
+        pool[2] += bb.value * dur.attackCount * Math.min(ecount, reaper_blk);
+        break;
+      case "tachr_4066_highmo_2": // 海沫天赋ID是反的
+        let highmo_blk = 2;
+        if (buffList["tachr_4066_highmo_1"] && options.cond)
+          highmo_blk += 1;
+        let highmo_count = dur.attackCount * Math.min(ecount, highmo_blk);
+        log.write(`元素治疗 ${bb.value}, 命中 ${highmo_count}`);
+        pool[7] += bb.value * highmo_count;
         break;
       case "tachr_1032_excu2_trait":
         let excu2_trait_ratio = (isSkill && blackboard.id == "skchr_excu2_3") ? blackboard.trait_ratio : 1;
@@ -5774,6 +5800,10 @@ function calculateAttack(charAttr, enemy, raidBlackboard, isSkill, charData, lev
         case "tachr_1033_swire2_2":
           heal = finalFrame.maxHp * bb.hp_ratio;
           log.writeNote(`买活HP ${heal.toFixed(1)}`);
+          break;
+        case "tachr_127_estell_1":
+          heal = finalFrame.maxHp * bb.hp_ratio;
+          log.writeNote(`天赋治疗 ${heal.toFixed(1)}/目标`);
           break;
         default:
           pool[2] += bb.hp_ratio * finalFrame.maxHp * dur.attackCount;

@@ -33,7 +33,8 @@
         "extra_magazine": { "type": "scroll", "displaytext": "额外弹药<br>(包括第二天赋)", "min": 0, "max": 15, "value": 1 },
         "typhon_fix": { "type": "bool", "displaytext": "穿防叠层修正", "explain": "考虑第一天赋叠层过程", "off": true },
         "agoat2_stack": { "type": "scroll", "displaytext": "1天赋层数", "min": 0, "max": 3, "value": 3 },
-        "swire2_s3_coin":   { "type": "scroll", "displaytext": "[s3]金币数", "min": 1, "max": 10, "value": 10 }
+        "swire2_s3_coin":   { "type": "scroll", "displaytext": "[s3]金币数", "min": 1, "max": 10, "value": 10 },
+        "gvial2_blk":   { "type": "scroll", "displaytext": "阻挡敌人数", "min": 0, "max": 5, "value": 1 }
     },
     "cond_info": {
         "char_126_shotst": 1,
@@ -132,8 +133,6 @@
         "char_4082_qiubai": 1,
         "char_1030_noirc2": 2,
         "char_1029_yato2":  { "text": "[s3]巨型敌人", "tooltip": "勾选表示3技能的最大命中次数" },
-        "char_491_humus_50": { "text": "[s2]HP>50%", "tooltip": "触发I级精力充沛（同种效果取最高）" },
-        "char_491_humus_80": { "text": "[s2]HP>80%", "tooltip": "触发II级精力充沛（同种效果取最高）" },
         "char_4006_melnte_front": { "text": "正前方", "tooltip": "敌人在正前方" },
         "char_1031_slent2": 2,
         "char_4027_heyak": 1,
@@ -141,7 +140,8 @@
         "char_250_phatom": 1,
         "char_4102_threye": 1,
         "char_488_buildr":  1,
-        "char_1033_swire2": { "text": "[s2]放置三秒", "tooltip": "2技能-香槟3秒后2连击" }
+        "char_1033_swire2": { "text": "[s2]放置三秒", "tooltip": "2技能-香槟3秒后2连击" },
+        "char_017_huang":   2
     },
     "char" : {
         "char_103_angel": [ "equip", "archet", "chen" ],
@@ -154,12 +154,12 @@
         "char_158_milu" : [ "cond", "equip" ],
         "char_173_slchan" : [ "cond" ],
         "char_180_amgoat" : [ "warmup" ],
-        "char_230_savage" : [ "cond" ],
+        "char_230_savage" : [ "cond", "equip" ],
         "char_188_helage" : [ "noblock", "musha_hp" ],
         "char_166_skfire" : [ "cond" ],
         "char_145_prove" : [ "cond", "crit" ],
         "char_340_shwaz" : [ "cond", "crit", "equip", "archet", "chen" ],
-        "char_356_broca" : [ "cond" ],
+        "char_356_broca" : [ "cond", "equip" ],
         "char_274_astesi" : [ "stack" ],
         "char_298_susuro" : [ "cond", "equip" ],
         "char_348_ceylon" : [ "cond", "ranged_penalty" ],
@@ -285,7 +285,7 @@
         "char_4009_irene":  [ "cond", "crit" ],
         "char_204_platnm":  [ "equip", "short_mode" ],
         "char_492_quercu":  [ "short_mode" ],
-        "char_017_huang":   [ "short_mode" ],
+        "char_017_huang":   [ "cond", "equip", "short_mode" ],
         "char_4043_erato":  [ "cond", "equip" ],
         "char_4046_ebnhlz": [ "equip", "cond_elite" ],
         "char_128_plosis":  [ "equip" ],
@@ -294,7 +294,7 @@
         "char_190_clour":   [ "equip" ],
         "char_235_jesica":  [ "equip" ],
         "char_4054_malist": [ "crit" ],
-        "char_1026_gvial2": [ "cond", "block" ],
+        "char_1026_gvial2": [ "cond", "equip", "gvial2_blk" ],
         "char_4055_bgsnow": [ "token", "short_mode", "cond_def", "cond_near", "cond_front", "crit" ],
         "char_497_ctable":  [ "noblock" ],
         "char_4032_provs":  [ "equip" ],
@@ -334,7 +334,7 @@
         "char_1029_yato2":  [ "cond", "equip"],
         "char_134_ifrit":   [ "equip" ],
         "char_489_serum":   [ "equip" ],
-        "char_491_humus":   [ "cond_50", "cond_80" ],
+        "char_491_humus":   [ "musha_hp" ],
         "char_464_cement":  [ "block" ],
         "char_154_morgan":  [ "equip" ],
         "char_451_robin":   [ "crit" ],
@@ -353,6 +353,7 @@
         "char_148_nearl":   [ "equip" ],
         "char_488_buildr":  [ "cond", "warmup" ],
         "char_4106_bryota": [ "noblock" ],
-        "char_1033_swire2": [ "stack", "cond", "swire2_s3_coin" ]
+        "char_1033_swire2": [ "stack", "cond", "swire2_s3_coin" ],
+        "char_143_ghost":   [ "equip" ]
     }
 }
