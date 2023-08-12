@@ -19,6 +19,7 @@ function init() {
     'excel/gamedata_const.json',
     '../version.json',
     '../customdata/dps_specialtags.json',
+    '../customdata/enums.json',
     '../customdata/dps_options.json',
     '../customdata/dps_anim.json',
     '../resources/attributes.js'
