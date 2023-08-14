@@ -569,7 +569,7 @@ function calculate(charId) {
   let itemdb = AKDATA.Data.item_table.items;
   let edb = AKDATA.Data.uniequip_table["equipDict"];
   let recipe = {};
-  let enemy = DefaultEnemy;
+  let enemy = {...DefaultEnemy};
   let stages = Stages;
   let raidBuff = { atk: 0, atkpct: 0, ats: 0, cdr: 0, base_atk: 0, damage_scale: 0 };
   let result = {}, mats = {};
@@ -604,6 +604,7 @@ function calculate(charId) {
   db.skills.forEach(skill => {
     let entry = {};
     recipe = {}; $.extend(recipe, DefaultAttribute);
+    recipe.options = {...DefaultAttribute.options};
     for (let st in Stages) {
       $.extend(recipe, stages[st]);
       let ch = buildChar(charId, skill.skillId, recipe);

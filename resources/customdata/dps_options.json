@@ -351,7 +351,7 @@
         "char_4102_threye": [ "cond" ],
         "char_1016_agoat2": [ "agoat2_stack" ],
         "char_148_nearl":   [ "equip" ],
-        "char_488_buildr":  [ "cond", "warmup" ],
+        "char_488_buildr":  [ "cond", "equip", "warmup" ],
         "char_4106_bryota": [ "noblock" ],
         "char_1033_swire2": [ "stack", "cond", "swire2_s3_coin" ],
         "char_143_ghost":   [ "equip" ]

@@ -6,6 +6,9 @@ category: 帮助与支持
 icon: cloud-upload
 layout: text-page
 ---
+## 23.08.14
+- [fix] 修正了圣葬1/2技能和普攻的连击穿防和HPS计算
+
 ## 23.08.03-08
 - [update] 琳琅诗怀雅，青枳，苍苔及模组
 - [update] 强攻手、收割者模组

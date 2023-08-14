@@ -2346,12 +2346,6 @@ function applyBuff(charAttr, buffFrm, tag, blackbd, isSkill, isCrit, log, enemy)
           x => blackboard["attack@atk"] * x
         );
         break;
-      case "tachr_1032_excu2_1":
-        if (!isSkill) {
-          buffFrame.times = 1 + blackboard.prob;
-          log.write("普攻：计算期望攻击次数（类似慕斯天赋算法）");  // 但是慕斯连击不加技力
-        }
-        break;
       case "skchr_spuria_2":
         delete blackboard.prob;
         break;
@@ -2709,6 +2703,7 @@ function applyBuff(charAttr, buffFrm, tag, blackbd, isSkill, isCrit, log, enemy)
     case "uniequip_002_scave":
     case "uniequip_002_headbr":
     case "uniequip_003_flamtl":
+    case "uniequip_002_buildr":
       if (options.equip)
         blackboard = blackboard.trait;
       break;
@@ -3492,7 +3487,7 @@ function calcDurations(isSkill, attackTime, attackSpeed, levelData, buffList, bu
       log.writeNote(`技能连击期望 ${expect.toFixed(2)}`);
       tags["origAttackCount"] = attackCount;
       tags["extraAttack"] = expect;
-      attackCount += expect;
+      // attackCount += expect; // Aug 14: 因为连击穿防，不能当做直接攻击计算
       if (skillId == "skchr_excu2_3") {
         duration += 1;
         log.writeNote("尾刀动画时间1s");
@@ -3698,6 +3693,7 @@ function calcDurations(isSkill, attackTime, attackSpeed, levelData, buffList, bu
           let p = buffList["tachr_1032_excu2_1"].prob;
           let _n = attackCount*p;
           line.push(`连击期望 ${_n.toFixed(2)} 次`);
+          tags["extraAttack"] = _n; // 记录连击次数
         }
         if (line.length > 0) log.write(`[特殊] ${line.join(", ")}`);
         if (rst) {
@@ -4491,8 +4487,8 @@ function calculateAttack(charAttr, enemy, raidBlackboard, isSkill, charData, lev
       case "tachr_1032_excu2_trait":
         let excu2_trait_ratio = (isSkill && blackboard.id == "skchr_excu2_3") ? blackboard.trait_ratio : 1;
         let block = (isSkill && blackboard.id == "skchr_excu2_2") ? 3 : 2;
-        log.write(`特性倍率 ${excu2_trait_ratio}x`);
-        pool[2] += bb.value * dur.attackCount * Math.min(ecount, block) * excu2_trait_ratio;
+        log.write(`特性倍率 ${excu2_trait_ratio}x, 以攻击 ${(dur.attackCount +dur.tags["extraAttack"]).toFixed(2)} 次计算治疗量`);
+        pool[2] += bb.value * (dur.attackCount + dur.tags["extraAttack"]) * Math.min(ecount, block) * excu2_trait_ratio;
         break;
       case "tachr_2013_cerber_1":
         let cerber_t1_scale = bb.atk_scale;
@@ -5609,6 +5605,19 @@ function calculateAttack(charAttr, enemy, raidBlackboard, isSkill, charData, lev
         damage = Math.max(swire2_s3_atk - edef, swire2_s3_atk * 0.05) * buffFrame.damage_scale;
         pool[0] += damage * options.swire2_s3_coin;
         log.write(`终结伤害 ${damage.toFixed(1)} x ${options.swire2_s3_coin}`);
+        break;
+      case "tachr_1032_excu2_1":
+        // 3技能在calcGradDamage里计算，其他技能和普攻的连击伤害在这里计算
+        if (!(blackboard.id == "skchr_excu2_3" && isSkill)) {
+          let excu2_t1_edef = edef;
+          if (bb.def_penetrate_fixed) {
+            excu2_t1_edef = Math.max(edef - bb.def_penetrate_fixed, 0);
+          }
+          log.write(`连击次数 ${dur.tags["extraAttack"].toFixed(2)}, 触发连击时敌人防御: ${excu2_t1_edef}`);
+          damage = Math.max(finalFrame.atk - excu2_t1_edef, finalFrame.atk * 0.05) * buffFrame.damage_scale;
+          log.write(`连击伤害 ${damage.toFixed(1)}, 命中 ${dur.tags["extraAttack"].toFixed(2)} * ${ecount}`);
+          pool[0] += damage * dur.tags["extraAttack"] * ecount;
+        }
         break;
     }; // extraDamage switch ends here
 
