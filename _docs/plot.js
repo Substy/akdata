@@ -114,10 +114,25 @@ let page_html = `
           </select>
         </td>
         <td><b>条件</b><br>
-          <label v-for="opt in opt_options" class="form-check-label" data-toggle="tooltip"
-                 :title="opt.tooltip" style="margin-left: 30px" >
-            <input class="form-check-input" type="checkbox" checked :value="opt.tag" :id="opt.tag" v-model="details.options" :disabled="opt.disabled">
-            {{ opt.text }}
+          <label v-for="opt in opt_options" class="form-check-label" style="margin-left: 30px" >
+            <template v-if="opt.type == 'bool'">
+              <input class="form-check-input" type="checkbox" checked :value="opt.tag" :id="opt.tag" v-model="details.options" :disabled="opt.disabled">
+              {{ opt.text }}
+              <i class="fas fa-question-circle pull-right" data-toggle="tooltip" data-placement="right" :title="opt.tooltip"></i>
+            </template>
+            <template v-else-if="opt.type == 'scroll'">
+              <div class="form-group d-flex">
+                <span style="margin: 0.6rem 0.5rem 0 0.8rem">{{ opt.text }}</span>
+                <input type="range" class="form-control-range" style="width: 40%"
+                      :min="opt.min" :max="opt.max" :value="opt.value" :step="opt.step"
+                      v-model="details.options"
+                >
+                {{ opt.value }}
+              </div>
+            </template>
+            <template v-else-if="opt.type == 'dialog'">
+              {{ opt.text }}
+            </template>
           </label>
         </td>
         </tr>
@@ -398,12 +413,25 @@ function load() {
       
                 if (talent) {
                   text = "触发 - " + talent.candidates[0].name;
+                  if (talent.candidates[0].description)
+                    tooltip = talent.candidates[0].description.replace(/<.*?>/g, '').replace(/\d+/g, "[x]");
+                  tooltip += " 　 (效果可能被模组改变)";
                   if (which == "trait") {
                     text = "触发 - 特性";
                   }
                 }
               } else tooltip = `触发条件${suffix}`;
-              return { tag: x, text, tooltip };
+              return { type: "bool", tag: x, text, tooltip };
+            } else if (optionDB.tags[x].type == "scroll") {
+              let info = optionDB.tags[x];
+              return {
+                type: "scroll",
+                tag: x,
+                text: info.displaytext,
+                min: info.min,
+                max: info.max,
+                value: info.value
+              };
             } else {
               let ret = { tag: x, text: optionDB.tags[x].displaytext, tooltip: optionDB.tags[x].explain };
               if (ret.tag == "crit") ret.disabled = true;

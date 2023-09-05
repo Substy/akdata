@@ -34,7 +34,8 @@
         "typhon_fix": { "type": "bool", "displaytext": "穿防叠层修正", "explain": "考虑第一天赋叠层过程", "off": true },
         "agoat2_stack": { "type": "scroll", "displaytext": "1天赋层数", "min": 0, "max": 3, "value": 3 },
         "swire2_s3_coin":   { "type": "scroll", "displaytext": "[s3]金币数", "min": 1, "max": 10, "value": 10 },
-        "gvial2_blk":   { "type": "scroll", "displaytext": "阻挡敌人数", "min": 0, "max": 5, "value": 1 }
+        "gvial2_blk":   { "type": "scroll", "displaytext": "阻挡敌人数", "min": 0, "max": 5, "value": 1 },
+        "hunter_loaded":{ "type": "bool", "displaytext": "从满子弹开始", "off": true, "tooltip": "假设普攻和技能都从满子弹开始攻击" }
     },
     "cond_info": {
         "char_126_shotst": 1,
@@ -78,7 +79,7 @@
         "char_440_pinecn":  "trait",
         "char_452_bstalk":  "trait",
         "char_402_tuye":    1,
-        "char_362_saga":    { "text": "[s3]半血敌人", "tooltip": "勾选表示3技能攻击半血敌人" },
+        "char_362_saga":    { "text": "敌人HP<50%", "tooltip": "勾选表示攻击半血敌人" },
         "char_2015_dusk":   { "text": "[s2]半血敌人", "tooltip": "勾选表示2技能攻击半血敌人" },
         "char_455_nothin":  1,
         "char_456_ash":     { "text": "[s2]眩晕", "tooltip": "勾选表示2技能攻击眩晕敌人" },
@@ -141,7 +142,8 @@
         "char_4102_threye": 1,
         "char_488_buildr":  1,
         "char_1033_swire2": { "text": "[s2]放置三秒", "tooltip": "2技能-香槟3秒后2连击" },
-        "char_017_huang":   2
+        "char_017_huang":   2,
+        "char_1034_jesca2": 1
     },
     "char" : {
         "char_103_angel": [ "equip", "archet", "chen" ],
@@ -354,6 +356,8 @@
         "char_488_buildr":  [ "cond", "equip", "warmup" ],
         "char_4106_bryota": [ "noblock" ],
         "char_1033_swire2": [ "stack", "cond", "swire2_s3_coin" ],
-        "char_143_ghost":   [ "equip" ]
+        "char_143_ghost":   [ "equip" ],
+        "char_1034_jesca2": [ "cond" ],
+        "char_4104_coldst": [ "hunter_loaded", "crit" ]
     }
 }

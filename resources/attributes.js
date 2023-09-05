@@ -1330,6 +1330,7 @@ function applyBuff(charAttr, buffFrm, tag, blackbd, isSkill, isCrit, log, enemy)
       case "skchr_mlynar_2":
       case "skchr_judge_3":
       case "skchr_lin_1":
+      case "skchr_jesca2_3":
         buffFrame.baseAttackTime += blackboard.base_attack_time;
         writeBuff(`base_attack_time + ${blackboard.base_attack_time}s`);
         blackboard.base_attack_time = 0;
@@ -2770,6 +2771,9 @@ function applyBuff(charAttr, buffFrm, tag, blackbd, isSkill, isCrit, log, enemy)
         blackboard.sp_recovery_per_sec = blackboard.talent.sp_recovery_per_sec;
       break;
     case "uniequip_002_gvial2":
+      if (options.equip && options.gvial2_blk > 0)
+        blackboard.atk_scale = blackboard.trait.atk_scale;
+      break;
     case "uniequip_002_huang":
     case "uniequip_002_broca":
     case "uniequip_002_ghost":
@@ -2777,6 +2781,10 @@ function applyBuff(charAttr, buffFrm, tag, blackbd, isSkill, isCrit, log, enemy)
       if (options.equip)
         blackboard.atk_scale = blackboard.trait.atk_scale;
       break;
+    case "uniequip_003_chen":
+      blackboard.edef_pene = blackboard.trait.def_penetrate_fixed;
+      break;
+      
   }
   // -- uniequip switch ends here --
 
@@ -3155,7 +3163,7 @@ function calcDurations(isSkill, attackTime, attackSpeed, levelData, buffList, bu
 
     }
     // 技能类型
-    if (levelData.description.includes("持续时间无限") || checkSpecs(skillId, "toggle")) {
+    if (levelData.description.includes("持续时间无限") || checkSpecs(skillId, "toggle") || checkSpecs(skillId, "infinity")) {
       if (skillId == "skchr_thorns_3" && !options.warmup) {}
       else if (skillId == "skchr_buildr_2" && !options.warmup) {}
       else if (skillId == "skchr_tuye_2") {
@@ -3252,6 +3260,8 @@ function calcDurations(isSkill, attackTime, attackSpeed, levelData, buffList, bu
         attackCount = mag;
         duration = attackTime * attackCount;
         if (rst) duration -= attackTime;
+        if (skillId == "skchr_jesca2_3")
+          duration += attackTime; // 额外攻击占用攻击间隔
       } else if (skillId == "skchr_blkngt_2" && options.token) {
         duration = blackboard["blkngt_s_2.duration"];
         attackCount = Math.ceil(duration / attackTime);
@@ -3527,7 +3537,7 @@ function calcDurations(isSkill, attackTime, attackSpeed, levelData, buffList, bu
       stunDuration = blackboard["failure.stun"] * (1 - blackboard.prob);
       log.write(`[特殊] 计算平均晕眩时间`);
     } else if (["skchr_amiya_2", "skchr_liskam_2", "skchr_ghost_2",
-                "skchr_broca_2", "skchr_serum_1", "skchr_aurora_1"].includes(skillId)) {
+                "skchr_broca_2", "skchr_serum_1", "skchr_aurora_1", "skchr_zumama_3"].includes(skillId)) {
       stunDuration = blackboard.stun;
     } else if (skillId == "skchr_folivo_2" && options.token) {
       stunDuration = blackboard.stun;
@@ -3548,8 +3558,8 @@ function calcDurations(isSkill, attackTime, attackSpeed, levelData, buffList, bu
     }
     let attackDuration = spData.spCost / ((1 + buffFrame.spRecoveryPerSec) * spRatio) - stunDuration;
     if (spRatio == 0) {
-      attackDuration = 180;
-      log.writeNote("以180s计算普攻DPS");
+      attackDuration = 1000;
+      log.writeNote("以1000s计算普攻DPS");
     }
 
     // 施法时间
@@ -3792,6 +3802,13 @@ function calcDurations(isSkill, attackTime, attackSpeed, levelData, buffList, bu
         } else if (skillId == "skchr_ironmn_3" && options.token) {
           attackCount = 1;
           duration = 3 * 100 / attackSpeed;
+        } else if (skillId == "skchr_zumama_3" && options.block) {
+          let zumama_3_sp_ratio = buffList["uniequip_002_zumama"] ? buffList["uniequip_002_zumama"].trait.sp_recover_ratio : -1;
+          let zumama_3_stun_sp = stunDuration * (1+buffFrame.spRecoveryPerSec) * (1+zumama_3_sp_ratio);
+          attackDuration = (spData.spCost - zumama_3_stun_sp) / ((1 + buffFrame.spRecoveryPerSec) * spRatio);
+          attackCount = Math.ceil(attackDuration / attackTime);
+          duration = attackDuration;
+          log.write(`晕眩期间恢复 ${zumama_3_stun_sp.toFixed(1)}技力`);
         }
         // todo: cast time
     } // switch
@@ -3854,7 +3871,35 @@ function calcDurations(isSkill, attackTime, attackSpeed, levelData, buffList, bu
     hitCount -= 1;
     log.writeNote("最后一次普攻只有1段伤害");
   }
+  // 猎手：计算装弹次数
+  if (subProf == "hunter") {
+    let magazine = 0;
+    if (options.hunter_loaded) {
+      if (buffList["tachr_4104_coldst_trait"])
+        magazine = buffList["tachr_4104_coldst_trait"].value;
+    } 
+    let reloadTime = attackTime;
+    if (skillId == "skchr_coldst_2" && isSkill)
+      reloadTime += blackboard.reload_interval;
+    log.write(`初始子弹数 ${magazine}, 装弹时间 ${reloadTime.toFixed(1)}s`);
 
+    // magazine * attackTime + (reloadTime+attackTime) * reloadAttackCount = duration
+    let raTime = reloadTime + attackTime;
+    let reloadAttackCount = Math.floor((duration - magazine*attackTime) / raTime);
+    if (reloadAttackCount > 0) {
+      log.write(`换弹攻击 ${reloadAttackCount} 次, 换弹攻击间隔 ${raTime.toFixed(3)}s`);
+      attackCount = magazine + reloadAttackCount;
+      hitCount = attackCount;
+      tags["hunterCrit"] = 0;
+      if (buffList["tachr_4104_coldst_1"]) {
+        let delay = buffList["tachr_4104_coldst_1"]["attack@delay"];
+        if (attackTime >= delay)
+          tags["hunterCrit"] += magazine;
+        if (raTime >= delay)
+          tags["hunterCrit"] += reloadAttackCount;
+      }
+    }
+  }
   log.write(`持续: ${duration.toFixed(3)} s`);
   log.write(`攻击次数: ${hitCount} (${buffFrame.times} 连击 x ${attackCount})`);
 
@@ -4167,7 +4212,7 @@ function calculateAttack(charAttr, enemy, raidBlackboard, isSkill, charData, lev
     calcEdges(blackboard, frame, dur, options, log);
   }
   // 暴击次数
-  if (options.crit && !isNaN(critBuffFrame["prob"]) && critBuffFrame["prob"] !== null) {
+  if (options.crit && (!isNaN(critBuffFrame["prob"]) && critBuffFrame["prob"] !== null) || charData.subProfessionId == "hunter") {
     if (damageType != 2) {
       if (buffList["tachr_155_tiger_1"])
         dur.critCount = dur.duration / 3 * critBuffFrame.prob;
@@ -4187,6 +4232,8 @@ function calculateAttack(charAttr, enemy, raidBlackboard, isSkill, charData, lev
       } else if (charId == "char_4015_spuria") {
         // 只把晕眩的计入暴击次数，其他（二连击，无视防御）记为额外伤害
         dur.critCount = Math.ceil(dur.attackCount * critBuffFrame.prob / 3);
+      } else if (dur.tags["hunterCrit"]) {
+        dur.critCount = dur.tags["hunterCrit"];
       } else 
         dur.critCount = dur.attackCount * critBuffFrame.prob;
 
@@ -4778,6 +4825,7 @@ function calculateAttack(charAttr, enemy, raidBlackboard, isSkill, charData, lev
       case "uniequip_002_slchan":
       case "uniequip_002_snsant":
       case "uniequip_002_glady":
+      case "uniequip_002_almond":
         if (isSkill) {
           let force = buffList.skill.force || buffList.skill["attack@force"];
           move = force+1;
@@ -4792,6 +4840,7 @@ function calculateAttack(charAttr, enemy, raidBlackboard, isSkill, charData, lev
         pool[2] += damagePool[0] * bb.scale; break;
       case "skcom_heal_self[1]":
       case "skcom_heal_self[2]":
+      case "skcom_heal_self[3]":
         damagePool[2] = 0;
         // console.log(finalFrame);
         pool[2] += bb.heal_scale * finalFrame.maxHp; break;
@@ -5618,6 +5667,12 @@ function calculateAttack(charAttr, enemy, raidBlackboard, isSkill, charData, lev
           log.write(`连击伤害 ${damage.toFixed(1)}, 命中 ${dur.tags["extraAttack"].toFixed(2)} * ${ecount}`);
           pool[0] += damage * dur.tags["extraAttack"] * ecount;
         }
+        break;
+      case "skchr_jesca2_3":
+        let jesca2_atk = finalFrame.atk * bb["attack@extrabomb.atk_scale"];
+        damage = Math.max(jesca2_atk * 0.05, jesca2_atk - edef) * buffFrame.damage_scale;
+        pool[0] += damage * ecount;
+        log.write(`炮击伤害 ${damage.toFixed(1)}, 命中 ${ecount}`);
         break;
     }; // extraDamage switch ends here
 
