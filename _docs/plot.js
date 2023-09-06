@@ -122,12 +122,13 @@ let page_html = `
             </template>
             <template v-else-if="opt.type == 'scroll'">
               <div class="form-group d-flex">
-                <span style="margin: 0.6rem 0.5rem 0 0.8rem">{{ opt.text }}</span>
+                {{ opt.text }}
+                <br>
                 <input type="range" class="form-control-range" style="width: 40%"
-                      :min="opt.min" :max="opt.max" :value="opt.value" :step="opt.step"
-                      v-model="details.options"
+                      :min="opt.min" :max="opt.max" :step="opt.step"
+                      v-model="details.scrollValue"
                 >
-                {{ opt.value }}
+                {{ details.scrollValue }}
               </div>
             </template>
             <template v-else-if="opt.type == 'dialog'">
@@ -285,7 +286,8 @@ function buildVueModel() {
     chartKey: "dps",
     enemyKey: "def",
     test: {},
-    details: { phase: 2, level: 90, potential: 5, skillId: "-", skillLevel: 9, favor: 200, options: [], equipId: "", equipLevel: 3 },
+    details: { phase: 2, level: 90, potential: 5, skillId: "-", skillLevel: 9, favor: 200,
+               options: [], equipId: "", equipLevel: 3, scrollValue: 0 },
     enemy: { def: 0, magicResistance: 0, count: 1 },
     raidBuff: { atk: 0, atkpct: 0, ats: 0, cdr: 0, base_atk: 0, damage_scale: 0},
     resultCache: {},
@@ -365,10 +367,14 @@ function load() {
         var levelStr = `精${char.phase} ${char.level}级, 潜能${char.potential+1}, `;
         var skillStr = skillDB[char.skillId] ? `${skillDB[char.skillId].levels[0].name} 等级${char.skillLevel+1}` : "";
         var equipStr = (char.equipId.length>0) ? `${equipDB[char.equipId].uniEquipName} 等级${char.equipLevel}<br>` : "";
-        var optionStr = char.options.map(x => optionDB.tags[x] ? 
-          optionDB.tags[x].displaytext : 
-          optionDB.cond_info[x.replace("cond", char.charId)].text
-        ).join("/");
+        var optionStr = char.options.map(x => {
+          let ret = optionDB.tags[x] ? 
+                      optionDB.tags[x].displaytext :
+                      optionDB.cond_info[x.replace("cond", char.charId)].text;
+          if (optionDB.tags[x].type == "scroll")
+            ret += `=${char.scrollValue}`;
+          return ret;
+        }).join("/");
         return { name: charDB[char.charId].name, text: levelStr + equipStr + skillStr, option: optionStr }
       },
       explainArgs: function() {
@@ -424,16 +430,16 @@ function load() {
               return { type: "bool", tag: x, text, tooltip };
             } else if (optionDB.tags[x].type == "scroll") {
               let info = optionDB.tags[x];
+              this.details.scrollValue = info.value;
               return {
                 type: "scroll",
                 tag: x,
                 text: info.displaytext,
                 min: info.min,
-                max: info.max,
-                value: info.value
+                max: info.max
               };
             } else {
-              let ret = { tag: x, text: optionDB.tags[x].displaytext, tooltip: optionDB.tags[x].explain };
+              let ret = { type: 'bool', tag: x, text: optionDB.tags[x].displaytext, tooltip: optionDB.tags[x].explain };
               if (ret.tag == "crit") ret.disabled = true;
               return ret;
             }
@@ -610,7 +616,12 @@ function buildArgs(info, enemy, raidBuff, key) {
     equipId: info.equipId,
     equipLevel: info.equipLevel
   };
-  info.options.forEach(x => { char_obj.options[x] = true; });
+  info.options.forEach(x => {
+    char_obj.options[x] = true; 
+    if (optionDB.tags[x].type == "scroll")
+    char_obj.options[x] = info.scrollValue;
+  });
+
   let enemy_obj = {
     def: parseFloat(enemy.def) || 0,
     magicResistance: parseFloat(enemy.magicResistance) || 0 ,

@@ -2708,6 +2708,14 @@ function applyBuff(charAttr, buffFrm, tag, blackbd, isSkill, isCrit, log, enemy)
       if (options.equip)
         blackboard = blackboard.trait;
       break;
+    case "uniequip_003_saga":
+      blackbd = {};
+      if (options.equip)
+        blackbd = blackboard.trait;
+      if (options.cond && blackboard.talent && blackboard.talent.damage_scale)
+        blackbd.damage_scale = blackboard.talent.damage_scale;
+      blackboard = {...blackbd};
+      break;
     case "uniequip_002_texas":
       if (isSkill)
         blackboard = blackboard.talent;
@@ -3878,10 +3886,11 @@ function calcDurations(isSkill, attackTime, attackSpeed, levelData, buffList, bu
       if (buffList["tachr_4104_coldst_trait"])
         magazine = buffList["tachr_4104_coldst_trait"].value;
     } 
-    let reloadTime = attackTime;
+    // 装弹时间为攻击间隔，不受攻速影响
+    let reloadTime = attackTime * attackSpeed / 100;
     if (skillId == "skchr_coldst_2" && isSkill)
       reloadTime += blackboard.reload_interval;
-    log.write(`初始子弹数 ${magazine}, 装弹时间 ${reloadTime.toFixed(1)}s`);
+    log.write(`初始子弹数 ${magazine}, 装弹时间 ${reloadTime.toFixed(1)}s（不受攻速影响）`);
 
     // magazine * attackTime + (reloadTime+attackTime) * reloadAttackCount = duration
     let raTime = reloadTime + attackTime;
@@ -3893,12 +3902,12 @@ function calcDurations(isSkill, attackTime, attackSpeed, levelData, buffList, bu
       tags["hunterCrit"] = 0;
       if (buffList["tachr_4104_coldst_1"]) {
         let delay = buffList["tachr_4104_coldst_1"]["attack@delay"];
-        if (attackTime >= delay)
-          tags["hunterCrit"] += magazine;
-        if (raTime >= delay)
+        // 普攻间隔>2s时也不能触发天赋，必须装弹时间>2s
+        if (reloadTime >= delay)
           tags["hunterCrit"] += reloadAttackCount;
       }
-    }
+    } else
+      tags["hunterCrit"] = 0;
   }
   log.write(`持续: ${duration.toFixed(3)} s`);
   log.write(`攻击次数: ${hitCount} (${buffFrame.times} 连击 x ${attackCount})`);
@@ -4232,7 +4241,7 @@ function calculateAttack(charAttr, enemy, raidBlackboard, isSkill, charData, lev
       } else if (charId == "char_4015_spuria") {
         // 只把晕眩的计入暴击次数，其他（二连击，无视防御）记为额外伤害
         dur.critCount = Math.ceil(dur.attackCount * critBuffFrame.prob / 3);
-      } else if (dur.tags["hunterCrit"]) {
+      } else if (dur.tags["hunterCrit"] !== null) {
         dur.critCount = dur.tags["hunterCrit"];
       } else 
         dur.critCount = dur.attackCount * critBuffFrame.prob;

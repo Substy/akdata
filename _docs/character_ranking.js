@@ -61,7 +61,7 @@ function load() {
       rankingList.push([
         `<a href="../character/#!/${charId}" target="_blank">${displayName}</a>`,
         getJobName(charData),
-        charData.rarity + 1,
+        [...Array(AKDATA.checkEnum("rarity", charData.rarity)+1)].map(x=>"☆").join(""),
         defaultChar.potentialRank + 1,
         getEquipName(defaultChar.equipId),
         Math.floor(perfectAttr.respawnTime),
@@ -113,7 +113,7 @@ function load() {
 
           costList.push([
             `<a href="../character/#!/${charId}" target="_blank">${displayName}</a>`,
-            charData.rarity + 1,
+            [...Array(AKDATA.checkEnum("rarity", charData.rarity)+1)].map(x=>"☆").join(""),
             levelData.name,
             skillLevel,
             desc,
@@ -164,7 +164,7 @@ function load() {
 
           hpsList.push([
             `<a href="../character/#!/${charId}" target="_blank">${displayName}</a>`,
-            charData.rarity + 1,
+            [...Array(AKDATA.checkEnum("rarity", charData.rarity)+1)].map(x=>"☆").join(""),
             levelData.name,
             skillLevel,
             getEquipName(defaultChar.equipId),

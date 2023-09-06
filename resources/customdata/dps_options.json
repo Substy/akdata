@@ -35,7 +35,8 @@
         "agoat2_stack": { "type": "scroll", "displaytext": "1天赋层数", "min": 0, "max": 3, "value": 3 },
         "swire2_s3_coin":   { "type": "scroll", "displaytext": "[s3]金币数", "min": 1, "max": 10, "value": 10 },
         "gvial2_blk":   { "type": "scroll", "displaytext": "阻挡敌人数", "min": 0, "max": 5, "value": 1 },
-        "hunter_loaded":{ "type": "bool", "displaytext": "从满子弹开始", "off": true, "tooltip": "假设普攻和技能都从满子弹开始攻击" }
+        "hunter_loaded":{ "type": "bool", "displaytext": "从满子弹开始", "off": true, "tooltip": "假设普攻和技能都从满子弹开始攻击" },
+        "enemy":        { "type": "bool", "displaytext": "计算敌人防御/法抗", "tooltip": "勾选时计算填写的敌人防御/法抗数据，不勾选时以0计算" }
     },
     "cond_info": {
         "char_126_shotst": 1,
@@ -228,7 +229,7 @@
         "char_452_bstalk":  [ "cond", "token" ],
         "char_332_archet":  [ "chen", "equip" ],
         "char_402_tuye":    [ "cond", "short_mode", "equip" ],
-        "char_362_saga":    [ "cond" ],
+        "char_362_saga":    [ "cond", "equip" ],
         "char_2015_dusk":   [ "stack", "token", "cond" ],
         "char_455_nothin":  [ "cond", "short_mode" ],
         "char_456_ash":     [ "cond", "equip", "short_mode" ],

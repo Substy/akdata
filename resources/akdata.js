@@ -14,7 +14,7 @@ window.AKDATA = {
   Data: {},
 
   new_op: [ "char_1034_jesca2", "char_4105_almond", "char_4104_coldst"],
-  todo_list: [ "char_1031_slent2", "char_362_saga" ],
+  todo_list: [ ],
 
   professionNames: {
     "PIONEER": "先锋",
