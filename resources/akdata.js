@@ -9,7 +9,7 @@ const cacheBeginTime = new Date(2019, 12, 10).getTime();
 
 window.AKDATA = {
   akdata: "230905", // jsdelivr tag version
-  useLocal: false,
+  useLocal: true,
 
   Data: {},
 
